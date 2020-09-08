@@ -249,6 +249,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Biped
       objectReference: {fileID: 0}
+    - target: {fileID: 6564970802536407144, guid: 05e4bf8de5058174f9e1baa229dc7266, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7872344862562488955, guid: 05e4bf8de5058174f9e1baa229dc7266, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.56
@@ -321,6 +325,18 @@ MonoBehaviour:
   blendDuration: 0.25
   applyRootMotion: 1
   _deltaTime: 0
+--- !u!114 &292963785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292963783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63f7197100da7644b913945e5b363447, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1655804471
 GameObject:
   m_ObjectHideFlags: 0

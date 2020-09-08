@@ -1,0 +1,128 @@
+<Binary>
+  <AnimationRig>
+    <Joint name="Biped" parent="-1">
+      <Position x="0" y="0" z="0" />
+      <Rotation x="0" y="0" z="0" w="1" />
+    </Joint>
+    <Joint name="Hips" parent="0">
+      <Position x="-6,997789E-09" y="0,95" z="0,02" />
+      <Rotation x="-0,5000001" y="0,4999999" z="-0,5" w="0,5000001" />
+    </Joint>
+    <Joint name="Spine1" parent="1">
+      <Position x="-0,09000007" y="0" z="1,56522E-07" />
+      <Rotation x="-2,371125E-07" y="2,492161E-08" z="-0,1045288" w="0,9945219" />
+    </Joint>
+    <Joint name="Spine2" parent="2">
+      <Position x="-0,1500001" y="0" z="-1,525772E-07" />
+      <Rotation x="3,136722E-12" y="1,369522E-13" z="0,04361937" w="0,9990482" />
+    </Joint>
+    <Joint name="Spine3" parent="3">
+      <Position x="-0,1499997" y="3,814697E-08" z="3,492459E-11" />
+      <Rotation x="8,293621E-08" y="-2,705928E-08" z="0,2079117" w="0,9781476" />
+    </Joint>
+    <Joint name="Clavicle_L" parent="4">
+      <Position x="-0,1318399" y="-0,07416198" z="-0,02999985" />
+      <Rotation x="0,05263596" y="-0,7552448" z="-0,2904117" w="0,5852315" />
+    </Joint>
+    <Joint name="UpperArm_L" parent="5">
+      <Position x="-0,1900001" y="0" z="-9,155273E-07" />
+      <Rotation x="0,1868344" y="-0,3627145" z="0,1829737" w="0,8944561" />
+    </Joint>
+    <Joint name="Forearm_L" parent="6">
+      <Position x="-0,2700003" y="5,722046E-08" z="7,629394E-08" />
+      <Rotation x="-1,178411E-08" y="-1,747066E-08" z="0,1908091" w="0,9816272" />
+    </Joint>
+    <Joint name="Hand_L" parent="7">
+      <Position x="-0,2600004" y="8,583068E-08" z="-2,288818E-07" />
+      <Rotation x="-0,1246006" y="-0,1102378" z="-0,04258051" w="0,9851443" />
+    </Joint>
+    <Joint name="Clavicle_R" parent="4">
+      <Position x="-0,1318399" y="-0,07416202" z="0,03000031" />
+      <Rotation x="-0,0526385" y="0,7552449" z="-0,2904135" w="0,5852302" />
+    </Joint>
+    <Joint name="UpperArm_R" parent="9">
+      <Position x="-0,1900002" y="-3,814697E-08" z="1,525879E-07" />
+      <Rotation x="-0,1868349" y="0,3627146" z="0,1829742" w="0,8944559" />
+    </Joint>
+    <Joint name="Forearm_R" parent="10">
+      <Position x="-0,2700004" y="0" z="2,288818E-07" />
+      <Rotation x="9,750179E-08" y="-2,087485E-07" z="0,1908089" w="0,9816272" />
+    </Joint>
+    <Joint name="Hand_R" parent="11">
+      <Position x="-0,2600009" y="1,907349E-08" z="6,103515E-07" />
+      <Rotation x="0,1246001" y="0,110235" z="-0,04258034" w="0,9851447" />
+    </Joint>
+    <Joint name="Neck" parent="4">
+      <Position x="-0,1499998" y="-1,907349E-07" z="3,051758E-07" />
+      <Rotation x="-2,844919E-07" y="-2,392451E-08" z="-0,06975648" w="0,9975641" />
+    </Joint>
+    <Joint name="Head" parent="13">
+      <Position x="-0,1200001" y="-1,907349E-08" z="-1,840817E-11" />
+      <Rotation x="1,728976E-10" y="-9,76248E-10" z="-0,07845901" w="0,9969174" />
+    </Joint>
+    <Joint name="Thigh_L" parent="1">
+      <Position x="1,525879E-07" y="-1,66893E-08" z="-0,08999985" />
+      <Rotation x="0,01969436" y="0,9975669" z="0,04264056" w="-0,05151828" />
+    </Joint>
+    <Joint name="Knee_L" parent="15">
+      <Position x="-0,4300004" y="-1,430511E-08" z="2,670288E-07" />
+      <Rotation x="4,15333E-07" y="-1,485432E-07" z="-0,06975632" w="0,9975641" />
+    </Joint>
+    <Joint name="Foot_L" parent="16">
+      <Position x="-0,4600002" y="3,069639E-07" z="1,907349E-08" />
+      <Rotation x="0,002738571" y="-0,05226412" z="0,05226415" w="0,997261" />
+    </Joint>
+    <Joint name="FootBridge_L" parent="17">
+      <Position x="-0,01823899" y="-0,05746197" z="0,01197216" />
+      <Rotation x="0,03039132" y="0,04260699" z="0,5799071" w="0,8129999" />
+    </Joint>
+    <Joint name="Thigh_R" parent="1">
+      <Position x="7,629394E-08" y="8,34465E-09" z="0,09000013" />
+      <Rotation x="0,01969457" y="0,997567" z="-0,04264057" w="0,05151764" />
+    </Joint>
+    <Joint name="Knee_R" parent="19">
+      <Position x="-0,4300002" y="-6,198883E-08" z="-5,722046E-08" />
+      <Rotation x="3,707465E-08" y="-7,728028E-08" z="-0,06975696" w="0,997564" />
+    </Joint>
+    <Joint name="Foot_R" parent="20">
+      <Position x="-0,4600007" y="-5,960464E-08" z="-3,242493E-07" />
+      <Rotation x="-0,002739323" y="0,05226472" z="0,05226443" w="0,9972609" />
+    </Joint>
+    <Joint name="FootBridge_R" parent="21">
+      <Position x="-0,01823905" y="-0,05746178" z="-0,01197208" />
+      <Rotation x="-0,03039136" y="-0,04260848" z="0,5799074" w="0,8129996" />
+    </Joint>
+    <Joint name="Root" parent="0">
+      <Position x="0" y="0" z="0" />
+      <Rotation x="2,185569E-08" y="0" z="0" w="1" />
+    </Joint>
+    <Joint name="Unit_PreviewMesh" parent="0">
+      <Position x="0" y="2,239619E-07" z="0" />
+      <Rotation x="-0,7071068" y="0" z="0" w="0,7071068" />
+    </Joint>
+  </AnimationRig>
+  <Types>
+    <Type name="IdleTrait" size="1" />
+  </Types>
+  <Traits>
+    <Trait index="0" type="IdleTrait" payload="00" />
+  </Traits>
+  <Segments>
+    <Segment index="0" name="Idle" tagIndex="0" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="0" numIntervals="1">
+      <Source firstFrame="0" numFrames="301" />
+      <Destination firstFrame="0" numFrames="301" />
+    </Segment>
+  </Segments>
+  <Tags>
+    <Tag index="0" trait="0" segment="0" firstFrame="0" numFrames="301" />
+  </Tags>
+  <Markers />
+  <Intervals>
+    <Interval index="0" segment="0" firstFrame="0" numFrames="301" tagList="0" codeBook="-1" />
+  </Intervals>
+  <TagLists>
+    <TagList index="0" indices="0;" />
+  </TagLists>
+  <Metrics />
+  <CodeBooks />
+</Binary>

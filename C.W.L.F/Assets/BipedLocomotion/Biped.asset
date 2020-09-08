@@ -17,18 +17,18 @@ MonoBehaviour:
   timeHorizon: 1
   sampleRate: 30
   m_Data:
-    syncedWithBinary: 0
+    syncedWithBinary: 1
     animationLibrary:
     - m_PreBoundaryClipGuid:
-        val0: 0
-        val1: 0
-        val2: 0
-        val3: 0
+        val0: -321645198
+        val1: 1380216274
+        val2: -1358217736
+        val3: 1573519546
       m_PostBoundaryClipGuid:
-        val0: 0
-        val1: 0
-        val2: 0
-        val3: 0
+        val0: -321645198
+        val1: 1380216274
+        val2: -1358217736
+        val3: 1573519546
       m_PreBoundaryClip: {fileID: 0}
       m_PostBoundaryClip: {fileID: 0}
       m_AnimationClipReference: {fileID: 0}
@@ -47,8 +47,8 @@ MonoBehaviour:
         duration: 10.033334
         payload:
           serializedData: '{}'
-          assemblyQualifiedTypeName: Unity.Kinematica.Editor.DefaultTag, Unity.Kinematica.Editor,
-            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          assemblyQualifiedTypeName: IdleTag, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
         name: 
       markers: []
       m_Asset: {fileID: 11400000}

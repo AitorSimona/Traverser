@@ -1,0 +1,25 @@
+#graphRootView
+{
+    background-color: #101010;
+}
+
+#window {
+    flex: 1 0 0;
+    align-items:stretch;
+}
+
+#content {
+    flex-grow: 1;
+}
+
+.message {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.graphView
+{
+    background-color: #101010;
+}

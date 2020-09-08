@@ -1,0 +1,126 @@
+.timelineToolbar {
+    border-bottom-color : #222222;
+}
+
+#frameField {
+    border-color: #202020;
+}
+
+#timelineArea {
+    border-color: #09C2D4;
+}
+
+.timelineTimeRangeLabel {
+    color : white;
+}
+
+
+.tagElementBackground {
+    background-color: #323232;
+}
+
+.clipTag {
+    background-color: #C32148;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.clipTag:hover {
+    border-color: #FFFF00;
+}
+
+.clipTag--checked {
+    border-top-color: #EEEEEE;
+}
+
+.majorTickLabel {
+    color: #B4B4B4;
+}
+
+.majorTickElement {
+    background-color: #EEEEEE;
+}
+
+.tickElement {
+    background-color: #676767;
+}
+
+.playHead {
+    background-color: #FFFFFF;
+}
+
+.playHeadHandle {
+    background-color: #FFFFFF;
+}
+
+.activeDebugTickElement {
+    background-color: #2C5D87;
+}
+
+.activeDebugTickHandle {
+    background-color: #2C5D87;
+}
+
+
+#clipLength {
+    background-color: rgba(38, 80, 154, .4);
+}
+
+.endOfClip {
+    background-color: rgba(38, 80, 154, .5);
+}
+
+.clipArea {
+    background-color: rgba(190, 190, 190, .02);
+}
+
+.endOfClipHead {
+    background-color: rgba(38, 80, 154, .75);
+}
+
+.tagEntry {
+    background-color: #333333;
+}
+
+.metricElement {
+    background-color: #66a39c;
+    border-color: #FFFFFF;
+}
+
+.timelineCell {
+    border-color: #5E5E5E;
+}
+
+.trackElement {
+    border-color: #090909;
+}
+
+#trackLabels {
+    background-color: #292929;
+    border-right-color : #464646;
+}
+
+#trackScrollView {
+    background-color: #292929;
+}
+
+.timeRuler {
+    background-color: rgba(64, 64, 64, 199);
+    border-color: #090909;
+}
+
+.creationManipulator {
+    border-color: #51617A;
+    background-color: rgba(81, 97, 122, .55);
+}
+
+.boundaryClip {
+    background-color: rgba(94, 116, 154, .1);
+}
+
+.manipulationGuideline {
+    background-color: #4F4F4F;
+}
+
+.snapLine {
+    background-color: #FFFFFF;
+}

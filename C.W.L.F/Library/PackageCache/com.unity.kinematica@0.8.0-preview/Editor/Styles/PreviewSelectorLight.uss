@@ -1,0 +1,20 @@
+.previewSelector {
+    background-color: #CBCBCB;
+    border-color: #232323;
+}
+
+.selectorContainer:hover {
+    background-color: #AAAAAA;
+}
+
+.selectorDropdown {
+    background-image: resource("Icons/icon dropdown@2x.png");
+}
+
+.targetContainerActive:hover {
+    background-color: #AAAAAA;
+}
+
+.gameObjectIcon {
+    background-image: resource("GameObject Icon");
+}

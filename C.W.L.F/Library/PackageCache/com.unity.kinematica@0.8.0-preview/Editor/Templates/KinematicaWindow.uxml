@@ -1,0 +1,43 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+      xmlns:kinematica="Unity.Kinematica.Editor">
+    <ui:Template path="packages/com.unity.kinematica/Editor/Templates/AssetDirtyWarning.uxml" name="dirtyWarning"/>
+    <ui:Template path="packages/com.unity.kinematica/Editor/Templates/AnimationClipLibrary.uxml" name="AnimationClipLibrary"/>
+    <ui:VisualElement name="kinematica">
+        <ui:VisualElement name="toolbar" class="toolbarRow">
+            <ui:VisualElement name="toolbarAsset">
+                <uie:ObjectField name="asset" allow-scene-objects="false"/>
+                <ui:Button name="editAssetButton" text="Edit Asset"/>
+                <uie:FloatField name="frameField"/>
+                <uie:ToolbarToggle name="previewToggle" text="Preview"/>
+                <kinematica:PlayControls name="previewPlayControls"/>
+                <kinematica:PreviewSelector/>
+                <ui:Image name="warningImage" class="warningImage" />
+            </ui:VisualElement>
+            <ui:VisualElement name="toolbarButtons">
+                <ui:Instance template="dirtyWarning" name="assetDirtyWarning"/>
+		<uie:ProgressBar name="progressBar" title="Building asset"/>
+                <ui:Button name="buildButton" text="Build"/>
+                <ui:Button name="cancelBuildButton" text="Cancel Build"/>
+                <ui:Button class="viewMode"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="windowContent">
+            <ui:VisualElement class="createLayout">
+                <ui:Label name="createLabel"/>
+                <ui:Button name="createButton"/>
+            </ui:VisualElement>
+            <kinematica:TwoPaneSplitView name="inputLayout" fixed-pane-index="0" fixed-pane-initial-size="200" orientation="horizontal">
+                <ui:VisualElement name="inputArea">
+                    <ui:VisualElement name="gutterArea">
+                        <ui:VisualElement name="gutterToggleArea">
+                            <ui:VisualElement name="gutterToggleMenu" tooltip="Show/Hide Tracks"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="gutterList"/>
+                    </ui:VisualElement>
+                    <ui:Instance template="AnimationClipLibrary" name="animationClipInput" class="flexGrowClass"/>
+                </ui:VisualElement>
+                <kinematica:Timeline name="timeline" class="timelineArea flexGrowClass"/>
+            </kinematica:TwoPaneSplitView>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

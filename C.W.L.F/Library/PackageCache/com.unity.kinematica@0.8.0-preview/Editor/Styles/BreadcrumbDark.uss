@@ -1,0 +1,23 @@
+.breadcrumb .breadcrumbItem #breadcrumbLabel {
+    color: #B4B4B4;
+}
+
+.breadcrumb .breadcrumbItem {
+    background-image: resource("Builtin Skins/DarkSkin/Images/breadcrump mid.png");
+    background-color: #3C3C3C;
+}
+
+.breadcrumb .breadcrumbItem.breadcrumbButton:active {
+    background-image: resource("Builtin Skins/DarkSkin/Images/breadcrump mid act.png");
+    background-color: #3C3C3C;
+}
+
+.breadcrumb .breadcrumbItem.breadcrumbButton.first:active {
+    background-image: resource("Builtin Skins/DarkSkin/Images/breadcrump left act.png");
+    background-color: #3C3C3C;
+}
+
+.breadcrumb .breadcrumbItem.first {
+    background-image: resource("Builtin Skins/DarkSkin/Images/breadcrump left.png");
+    background-color: #3C3C3C;
+}

@@ -1,0 +1,18 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+      xmlns:kinematica="Unity.Kinematica.Editor"
+      xmlns:kinematicaTemp="Unity.Kinematica.Temporary">
+    <ui:VisualElement class="timeline">
+        <ui:VisualElement name="timelineWorkArea">
+            <kinematica:TimeRuler class="timeRuler"/>
+            <ui:VisualElement name="clipLength"/>
+            <ui:VisualElement class="gutter "/>
+            <ui:VisualElement name="trackScrollViewContainer" class="timelineRight">
+                <ui:ScrollView name="trackScrollView" class="timelineRight">
+                    <ui:VisualElement name="scrollableTimeArea" class="timelineRight">
+                        <ui:VisualElement name="tracks"/>
+                    </ui:VisualElement>
+                </ui:ScrollView>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

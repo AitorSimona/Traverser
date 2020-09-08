@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67ddb658bcc363b4bbf299214cfbe711, type: 3}
+  m_Name: MarkerGizmo
+  m_EditorClassIdentifier: 
+  animationLibrary: []
+  destinationAvatar: {fileID: 0}
+  timeHorizon: 1
+  sampleRate: 30
+  m_Data:
+    syncedWithBinary: 0
+    animationLibrary:
+    - m_PreBoundaryClip: {fileID: 0}
+      m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClip: {fileID: 0}
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_AnimationClipReference: {fileID: 0}
+      m_AnimationClipGuid:
+        val0: -321645198
+        val1: 1380216274
+        val2: -1358217736
+        val3: 1573519546
+      m_CachedClipName: Idle
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 10.033334
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: Unity.Kinematica.Editor.DefaultTag, Unity.Kinematica.Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers:
+      - timeInSeconds: 1.1
+        payload:
+          serializedData: '{"m_Position":{"x":1.309999942779541,"y":0.3935903310775757,"z":1.6773053407669068},"m_Normal":{"x":0.8597862720489502,"y":0.0,"z":0.5106539726257324},"m_Rotation":{"x":0.0,"y":0.0,"z":0.0,"w":0.0}}'
+          assemblyQualifiedTypeName: MarkerPositionNormalRotationMarker, Assembly-CSharp,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      - timeInSeconds: 6.4333334
+        payload:
+          serializedData: '{"m_Position":{"x":0.0,"y":0.0,"z":0.0},"m_Normal":{"x":0.0,"y":0.0,"z":0.0},"m_Rotation":{"x":0.0,"y":0.0,"z":0.0,"w":0.0}}'
+          assemblyQualifiedTypeName: MarkerPositionNormalRotationMarker, Assembly-CSharp,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      m_Asset: {fileID: 11400000}
+    destinationAvatar: {fileID: 0}
+    metrics: []
+    timeHorizon: 1
+    sampleRate: 30
+  m_SerializeVersion: 2

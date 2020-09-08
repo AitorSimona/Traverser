@@ -1,0 +1,11 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <uie:ObjectField name="destinationAvatar" label="Destination Avatar" allow-scene-objects="false" tooltip="Building the Kinematica asset will generate animation poses for that avatar. This avatar will also be used as the retargeting destination avatar in case of retargeting."/>
+    <ui:VisualElement class="sliderElement" name="timeSliderArea">
+        <ui:Slider label="Time Horizon" name="timeHorizonSlider" low-value="1" high-value="5" tooltip="Duration in seconds for future trajectory (past trajectory will use the same duration)."/>
+        <uie:FloatField class="sliderFloatField" name="timeHorizon"/>
+    </ui:VisualElement>
+    <ui:VisualElement class="sliderElement" >
+        <ui:Slider label="Sample Rate" name="sampleRateSlider" low-value="1" high-value="120" tooltip="Sample rate used to re-sample all animations."/>
+        <uie:FloatField class="sliderFloatField" name="sampleRate" />
+    </ui:VisualElement>
+</UXML>

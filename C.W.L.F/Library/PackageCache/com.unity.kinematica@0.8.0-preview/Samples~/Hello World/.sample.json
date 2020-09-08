@@ -1,0 +1,5 @@
+{
+   "displayName": "Hello World",
+	"description": "A 'Hello World' sample",
+    "createSeparatePackage": false
+}

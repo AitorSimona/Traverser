@@ -1,0 +1,30 @@
+.breadcrumb {
+    height: 18px;
+    flex-direction: row;
+    background-image: resource("toolbar");
+}
+
+.breadcrumb .breadcrumbItem {
+    height: 20px;
+    padding-left: 20px;
+    padding-right: 15px;
+    -unity-slice-left: 10;
+    -unity-slice-right: 10;
+    -unity-slice-top: 1;
+    -unity-slice-bottom: 1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.breadcrumb .breadcrumbItem.first {
+    -unity-slice-left: 1;
+    left: 0;
+    padding-left: 10px;
+}
+
+.breadcrumb .breadcrumbItem #breadcrumbLabel {
+    height: 15px;
+    margin-bottom: 3px;
+    -unity-text-align: middle-center;
+}

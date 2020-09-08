@@ -1,0 +1,5 @@
+{
+	"displayName": "Snappy Locomotion",
+	"description": "Sample showcasing a reactive player controlled biped with few animations",
+    "createSeparatePackage": false
+}

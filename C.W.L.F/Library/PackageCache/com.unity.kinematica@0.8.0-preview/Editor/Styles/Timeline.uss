@@ -1,0 +1,365 @@
+.timeline {
+    flex: 1 0 0;
+    align-items:stretch;
+}
+
+.timelineToolbar {
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-direction: row;
+    border-bottom-width : 1px;
+    padding-bottom: 4px;
+    min-height: 24px;
+}
+
+
+.track {
+    border-bottom-width: 1px;
+}
+
+.trackElement {
+    flex-grow: 1;
+}
+
+.gutterTrackElement {
+    flex-shrink: 1;
+}
+
+
+#trackLabels {
+    flex-direction: column;
+    flex: 1;
+    border-right-width : 2px;
+}
+
+.markerContainer {
+    position : absolute;
+}
+
+.tag {
+    align-self: center;
+}
+
+
+.tagNameLabel {
+    height: 18px;
+    max-height: 18px;
+    flex: 1;
+}
+
+#previewTarget {
+    max-width: 350px;
+}
+
+#frameField {
+    flex-shrink: 1;
+    max-width: 60px;
+    min-width: 60px;
+    border-left-width: 1px;
+    border-right-width: : 1px;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    padding-left: 2px;
+    padding-right: 3px;
+    padding-bottom: 1px;
+}
+
+#frameField FloatInput {
+    margin-top: 1px;
+}
+
+.markerTrack {
+    min-height: 22px;
+}
+
+#markerArea {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#markerArea .unity-text-element{
+    min-width: 0;
+}
+ .marker {
+    position: absolute;
+    width: 7px;
+    height: 21px;
+    left: -3px;
+}
+
+.markerManipulateLabel {
+    position: absolute;
+    left: 10px;
+}
+
+.markerGuideline {
+    margin-top: -4px;
+    position: absolute;
+    top: 0;
+    bottom:0;
+    right: 0;
+}
+
+.markerOverlap {
+    -unity-text-align: middle-center;
+    top: -2px;
+}
+
+.markerOverlapImage {
+    left: -3px;
+    top: 3px;
+    width: 9px;
+    height: 9px;
+    --unity-image: resource("Packages/com.unity.kinematica/Editor/Images/markerOverlap.png");
+  --unity-image-size: scale-to-fit;
+}
+
+#timelineArea {
+    flex-direction: row;
+    border-width: 2px;
+}
+
+#tagRanges {
+    margin-top: 20px;
+    flex: 1;
+}
+
+#toolbarSpacer {
+    flex-grow: 1;
+}
+
+.tagElementBackground {
+    margin-bottom: 3px;
+    min-height: 22px;
+}
+
+.clipTagRoot {
+    flex: 1 0 0;
+    align-self: stretch;
+    max-height: 22px;
+    min-height: 22px;
+    flex-direction: row;
+    border-left-width: 4px;
+    border-bottom-width: 4px;
+    border-right-width: 4px;
+    margin-bottom: 3px;
+}
+
+.clipTag:hover {
+    border-width: 1px;
+}
+
+.clipTag--checked {
+    border-top-width: 1px;
+}
+
+.tagManipulateLabel {
+    position: absolute;
+    visibility: hidden;
+    top: 3px;
+}
+
+.tagManipulateStartLabel {
+    left: -16px;
+}
+
+.tagManipulateEndLabel {
+    left: 8px;
+}
+
+
+.timelineTimeRangeLabelContainer {
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+
+.timelineTimeRangeLabel {
+    -unity-text-align: middle-center;
+    align-self: center;
+    font-size: 9px;
+    margin-top : 1px;
+    margin-bottom : 1px;
+}
+
+.clipTagDragHandle {
+    flex: 0;
+    min-width: 4px;
+    max-width: 4px;
+    max-height: 20px;
+    cursor: resize-horizontal;
+}
+
+.tagValueColorHash {
+    max-height: 5px;
+    min-height: 5px;
+}
+
+/* Tick Styles */
+
+#clipLength {
+    position : absolute;
+    height: 4px;
+    top: 17px;
+}
+
+
+.clipArea {
+    flex-grow: 1;
+    position: absolute;
+}
+
+.majorTickLabel {
+    position: absolute;
+    top: 0px;
+    bottom:0px;
+    left:2px;
+    right: 0px;
+    width: 16px;
+    font-size: 9px;
+}
+
+.majorTickElement {
+    position: absolute;
+    width: 1px;
+    align-self: flex-end;
+}
+
+.tickElement {
+    position: absolute;
+    width: 1px;
+    align-self: flex-end;
+}
+
+.playHead {
+    top: 2px;
+    bottom:0px;
+    width: 1px;
+    position: absolute;
+}
+
+.playHeadHandle {
+    position: absolute;
+    width: 11px;
+    height: 14px;
+    left: -5px;
+}
+
+.activeTickElement {
+    top: -20px;
+    bottom:0px;
+    left:0px;
+    right: 0px;
+    width: 1px;
+    position: absolute;
+}
+
+.activeTickHead {
+    position: absolute;
+    width: 11px;
+    height: 14px;
+    left: -5px;
+}
+
+/* Timeline Styles */
+
+.tagEntry {
+    flex-direction: row;
+    justify-content: space-between;
+    height: 22px;
+    margin-top: 1px;
+    padding-top: 1px;
+    padding-left: 1px;
+    overflow: hidden;
+}
+
+.metricsTrack {
+    min-height: 22px;
+}
+
+.metricElement {
+    min-height: 21px;
+    position: absolute;
+    -unity-font-style: italic;
+    overflow: hidden;
+}
+
+.metricBorderElement {
+    max-height: 19px;
+    min-height: 21px;
+    position: absolute;
+}
+
+#timelineWorkArea {
+    overflow: hidden;
+    flex-direction: column;
+    flex: 1 0;
+}
+
+.timelineRow {
+    min-height: 20px;
+    height: 20px;
+    max-height: 20px;
+}
+
+.timelineRight {
+    flex: 1;
+    overflow: visible;
+}
+
+#tracks {
+    flex-grow: 1;
+}
+
+.timeline Label {
+    margin-bottom: 0px;
+}
+
+.timeRuler {
+    max-height: 22px;
+    border-bottom-width: 1px;
+}
+
+.creationManipulator {
+    top: 2px;
+    position: absolute;
+    border-width: 1px;
+    min-height: 20px;
+    max-height: 20px;
+}
+
+.boundaryClipTrack {
+    height: 22px;
+}
+
+.boundaryClip {
+    position: absolute;
+    min-width: 80px;
+    margin-left: 2px;
+    flex-direction: row;
+}
+
+.boundaryClip Image {
+    left: 2px;
+    min-width: 18px;
+}
+
+.manipulationGuideline {
+    position: absolute;
+    visibility: hidden;
+    min-width: 1px;
+    max-width: 1px;
+    bottom: 0px;
+    top: 0px;
+}
+
+.snapLine {
+    visibility: hidden;
+    position: absolute;
+    min-width: 1px;
+    max-width: 1px;
+    bottom: 0px;
+    top: 0px;
+}

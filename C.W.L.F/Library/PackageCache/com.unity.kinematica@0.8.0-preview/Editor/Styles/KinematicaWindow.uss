@@ -1,0 +1,298 @@
+#kinematica {
+    flex: 1 0 0;
+    align-items:stretch;
+}
+
+.toolbarRow {
+    flex: 1 0 0;
+    justify-content: space-between;
+    flex-direction: row;
+    max-height: 22px;
+}
+
+#toolbarButtons {
+    flex-direction: row;
+}
+
+#toolbarAsset {
+    flex-direction: row;
+}
+
+#editAssetButton {
+    align-self: flex-start;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-right: 4px;
+}
+
+#progressBar {
+    width: 256px;
+    height: 24px;
+}
+
+#buildButton {
+    align-self: flex-end;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+#cancelBuildButton {
+    align-self: flex-end;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+#editButton {
+    --unity-image : resource("Icons/PackageManager/Dark/edit.png");
+    width: 16px;
+    height: 16px;
+    padding: 2px;
+    display: none;
+}
+
+#windowContent {
+    flex: 1 0 0;
+    align-items:stretch;
+}
+
+#toolbar {
+    height: 21px;
+    border-bottom-width: 1px;
+}
+
+#inputArea {
+    margin-right: 1px;
+    min-width: 200px;
+    flex-direction: column;
+}
+
+#gutterToggleArea {
+    min-height: 22px;
+    max-height: 22px;
+    padding-right: 1px;
+    border-bottom-width: 1px;
+    align-items: flex-end;
+    align-self: auto;
+}
+
+#gutterToggleMenu {
+    min-width: 20px;
+    min-height: 20px;
+}
+
+.viewMode {
+    height: 16px;
+    width: 16px;
+    background-image: resource("d_Settings");
+}
+
+.trackToggle {
+    border-left-width: 1px;
+}
+
+#gutterList Label {
+    border-bottom-width: 1px;
+    min-height: 22px;
+    -unity-text-align : middle-center;
+}
+
+#assetSettingsScrollView {
+    flex-grow: 1;
+}
+
+#targetGameObject {
+    border-width: 1px;
+}
+
+#prefabTarget {
+    margin-bottom: 4px;
+    flex: 1;
+}
+
+.warningImage {
+    --unity-image : resource("Icons/ShortcutManager/alertDialog.png");
+    width: 16px;
+    height: 16px;
+    padding: 2px;
+    display: none;
+}
+
+.infoImage {
+    --unity-image : resource("Icons/console.infoicon.png");
+    width: 16px;
+    height: 16px;
+    padding: 2px;
+    display: none;
+}
+
+.timelineArea {
+    flex-direction: row;
+    justify-content: space-between;
+    min-width: 450px;
+}
+
+#tagArea {
+    flex: 1 0 0;
+    align-content: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.row {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+Slider {
+    flex : 1 0 0;
+}
+
+.arrayButton {
+    align-self: flex-end;
+    border-width: 0px;
+    padding-top: 0px;
+}
+
+.clipTimeline {
+    flex-grow:1;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin: 4px;
+}
+
+.preview {
+    align-self: center;
+}
+
+.createLayout {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+
+.flexGrowClass {
+    flex: 1 0;
+}
+
+.boxed {
+    border-width: 2px;
+}
+
+
+
+#deleteButton {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    max-height: 16px;
+}
+
+.inspectorContainer {
+    margin-left: 5px;
+    margin-top: 20px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+
+/* Asset Editor */
+
+#metrics {
+    flex: 1 0 0;
+    margin-left: 3px;
+}
+
+.metricsDrawers {
+    margin-left: 4px;
+}
+
+.sliderElement {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+
+#timeSliderArea {
+    border-top-width: 2px;
+    padding-top: 2px;
+}
+
+.sliderFloatField {
+    width: 64px;
+}
+
+/* Inspector */
+.inspectorSection {
+    border-width: 1px;
+}
+
+.inspectorSectionLabel{
+    padding-top: 4px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+}
+
+.drawerElement {
+    border-bottom-width: 1px;
+}
+
+.editor {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-right: 2px;
+    padding-left: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.drawerRoot {
+    border-width:1px;
+    margin-top: 4px;
+}
+
+.drawerButtonContainer {
+    flex-direction: row;
+    align-self: flex-end;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 0px;
+
+    top: -1px;
+    left: -2px;
+}
+
+.arrayEntryContents .unity-toggle__text {
+    margin-left: 1px;
+}
+
+.arrayEntryContents {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-bottom-width: 1px;
+}
+
+.arrayEntryContents PropertyField {
+    padding-bottom: 1px;
+}
+
+.warningContainer {
+    flex-direction: row;
+}
+
+.assetDirtyWarningImage {
+    display: flex;
+}

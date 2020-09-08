@@ -1,0 +1,8 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:TextField name="clipNames" label="Selected Animation Clips"/>
+    <ui:VisualElement name="retargeting" class="inspectorSection">
+        <ui:Label text="Retargeting" class="inspectorSectionLabel"/>
+        <uie:ObjectField name="retargetSourceAvatar" class="editor" label="Retarget source avatar" stretch-content-width="true" tooltip="Avatar used as a source when retargeting the clip from this source avatar to the destination avatar of the asset. If null, retargeting won't be applied."/>
+    </ui:VisualElement >
+    <ui:Label class="wrappedLabel footer" text="Tags and Markers cannot be modified when selecting multiple animation clips."/>
+</UXML>

@@ -1,0 +1,8 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+  <ui:VisualElement name="playModeMessage" class="message">
+    <ui:Label text="You must be in play mode to visualize the execution graph"/>
+  </ui:VisualElement>
+  <ui:VisualElement name="debuggerMessage" class="message">
+    <ui:Label text="You must start Snapshot Debugger recording (Window -> Analysis -> Snapshot Debugger) to visualize the execution graph"/>
+  </ui:VisualElement>
+</UXML>

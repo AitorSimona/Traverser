@@ -1,0 +1,7 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Button name="firstFrame" class="playControlClickable controlButton" tooltip="First Frame"/>
+    <ui:Button name="previousFrame" class="playControlClickable controlButton" tooltip="Previous Frame"/>
+    <uie:ToolbarToggle name="play" class="playControlClickable controlToggle" tooltip="Play"/>
+    <ui:Button name="nextFrame" class="playControlClickable controlButton" tooltip="Next Frame"/>
+    <ui:Button name="lastFrame" class="playControlClickable controlButton" tooltip="Last Frame"/>
+</UXML>

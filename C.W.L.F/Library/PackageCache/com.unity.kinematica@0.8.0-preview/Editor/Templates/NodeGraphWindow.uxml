@@ -1,0 +1,8 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Template path="packages/com.unity.kinematica/Editor/Templates/NodeGraphToolbar.uxml" name="Toolbar"/>
+    <ui:Template path="packages/com.unity.kinematica/Editor/Templates/NodeGraph.uxml" name="NodeGraph"/>
+    <ui:VisualElement name="window">
+        <ui:Instance template="Toolbar" name="toolbar"/>
+        <ui:Instance template="NodeGraph" name="content"/>
+    </ui:VisualElement>
+</UXML>

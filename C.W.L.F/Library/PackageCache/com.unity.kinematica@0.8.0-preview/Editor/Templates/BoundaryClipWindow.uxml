@@ -1,0 +1,11 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+      xmlns:kinematica="Unity.Kinematica.Editor">
+    <ui:VisualElement name="inputArea">
+        <kinematica:BoundarySelector class="selectionRow" name="preBoundarySelector" mode="pre"/>
+        <kinematica:BoundarySelector class="selectionRow" name="postBoundarySelector" mode="post"/>
+    </ui:VisualElement>
+    <ui:VisualElement class="buttonContainer">
+        <ui:Button text="OK" name="confirmButton"/>
+        <ui:Button text="Cancel" name="cancelButton"/>
+    </ui:VisualElement>
+</UXML>

@@ -1,0 +1,15 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+      xmlns:kinematica="Unity.Kinematica.Editor">
+    <ui:VisualElement class="arrayEntryContents">
+        <ui:TextField name="tagType" label="Tag Type"/>
+        <ui:TextField name="name" label="Name"/>
+        <ui:TextField name="metricLabel" label="Metric" tooltip="Metric applied to this tag type."/>
+        <kinematica:TimeField name="startTime" label="Start Time"/>
+        <kinematica:TimeField name="durationTime" label="Duration"/>
+
+        <ui:VisualElement name="payloadInspector"/>
+    </ui:VisualElement>
+    <ui:VisualElement class="drawerButtonContainer">
+        <ui:Button name="deleteButton" text="-" class="arrayButton"/>
+    </ui:VisualElement>
+</UXML>

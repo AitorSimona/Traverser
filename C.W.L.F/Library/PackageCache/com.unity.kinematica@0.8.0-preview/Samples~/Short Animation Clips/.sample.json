@@ -1,0 +1,5 @@
+{
+	"displayName": "Short Animation Clips",
+	"description": "A player controlled biped locomotion sample that uses short animation clips",
+    "createSeparatePackage": false
+}

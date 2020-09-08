@@ -1,0 +1,4 @@
+.edge:hover
+{
+	--edge-width: 2
+}

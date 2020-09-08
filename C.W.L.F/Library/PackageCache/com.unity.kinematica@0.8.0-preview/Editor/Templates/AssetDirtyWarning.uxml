@@ -1,0 +1,6 @@
+<UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement class="warningContainer">
+        <ui:Image class="warningImage assetDirtyWarningImage"/>
+        <ui:Label text="Asset has been modified, rebuild required"/>
+    </ui:VisualElement>
+</UXML>

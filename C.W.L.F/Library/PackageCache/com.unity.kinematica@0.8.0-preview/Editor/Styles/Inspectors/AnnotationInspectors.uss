@@ -1,0 +1,33 @@
+#clipName {
+    padding-bottom: 2px;
+}
+
+#clipName Label {
+    font-size: 14px;
+}
+
+.unknownAnnotationTypeLabel {
+    padding-bottom: 2px;
+}
+
+.timeFieldInputContainer {
+    padding-left: 10px;
+}
+
+.timeInput{
+    justify-content: space-between;
+}
+
+.timeField Label {
+    flex-grow: 1;
+}
+
+.timeInput FloatInput {
+    min-width: 75px;
+    max-width: 75px;
+}
+
+.timeInput IntegerInput {
+    min-width: 75px;
+    max-width: 75px;
+}

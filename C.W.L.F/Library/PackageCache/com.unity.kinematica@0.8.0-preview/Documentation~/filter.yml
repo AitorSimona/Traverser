@@ -1,0 +1,13 @@
+apiRules:
+- exclude:
+    uidRegex: ^System\..*$
+- exclude:
+    uidRegex: ^*.\.Tests\..*$
+- exclude:
+    hasAttribute:
+      uid: System.ObsoleteAttribute
+    type: Member
+- exclude:
+    hasAttribute:
+      uid: System.ObsoleteAttribute
+    type: Type

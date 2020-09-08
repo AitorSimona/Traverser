@@ -1,0 +1,9 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+      xmlns:kinematica="Unity.Kinematica.Editor">
+    <ui:VisualElement name="clipsArea">
+        <ui:VisualElement name="clipsHeaders">
+            <ui:Label name="animationLabel" text="Animation Clips"/>
+        </ui:VisualElement>
+        <kinematica:AnimationClipListView name="animationLibrary"/>
+    </ui:VisualElement>
+</UXML>

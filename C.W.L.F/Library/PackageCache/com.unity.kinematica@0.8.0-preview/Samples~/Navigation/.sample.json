@@ -1,0 +1,5 @@
+{
+	"displayName": "Navigation",
+	"description": "Pathfinding and navigation sample on biped using Kinematica",
+    "createSeparatePackage": false
+}

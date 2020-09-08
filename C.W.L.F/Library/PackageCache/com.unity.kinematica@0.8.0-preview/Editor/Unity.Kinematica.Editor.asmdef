@@ -1,0 +1,23 @@
+{
+    "name": "Unity.Kinematica.Editor",
+    "references": [
+        "Unity.Kinematica",
+        "Unity.Collections",
+        "Unity.Mathematics",
+        "Unity.Burst",
+        "Unity.SnapshotDebugger",
+        "Unity.SnapshotDebugger.Editor",
+	"AnimationEditorTools.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

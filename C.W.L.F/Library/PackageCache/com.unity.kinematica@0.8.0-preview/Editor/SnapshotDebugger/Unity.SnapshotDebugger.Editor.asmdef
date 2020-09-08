@@ -1,0 +1,18 @@
+{
+    "name": "Unity.SnapshotDebugger.Editor",
+    "references": [
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:207c4ed8839b140e8a6cd8b0952f9424"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

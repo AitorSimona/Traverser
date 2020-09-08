@@ -1,0 +1,5 @@
+{
+	"displayName": "Snapshot Debugger",
+	"description": "Sample scene showcasing the snapshot debugger",
+    "createSeparatePackage": false
+}

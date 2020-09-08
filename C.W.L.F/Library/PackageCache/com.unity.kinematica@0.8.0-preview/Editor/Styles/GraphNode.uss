@@ -1,0 +1,29 @@
+#state.success > #icon {
+    background-image : url("/Packages/com.unity.kinematica/Editor/Icons/status-success.png");
+    flex-grow: 1;
+	width: 12px;
+	height: 12px;
+	margin-top: 12px;
+	margin-right: 6px;
+}
+
+#state.failure > #icon {
+    background-image : url("/Packages/com.unity.kinematica/Editor/Icons/status-failure.png");
+    flex-grow: 1;
+	width: 12px;
+	height: 12px;
+	margin-top: 12px;
+	margin-right: 6px;
+}
+
+#title
+{
+    background-color: rgb(51, 75, 135);
+}
+
+#title > #title-label
+{
+    color: rgb(255, 255, 255);	
+    font-size: 14px;
+    -unity-font-style: bold;
+}

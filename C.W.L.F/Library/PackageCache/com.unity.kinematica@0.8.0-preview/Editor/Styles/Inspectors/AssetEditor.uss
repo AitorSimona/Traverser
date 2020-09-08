@@ -1,0 +1,25 @@
+.mainContainer {
+    flex: 1 0 0;
+    align-items:stretch;
+}
+
+#buildButton {
+    align-self: center;
+}
+
+.jointList {
+    flex-grow: 1;
+}
+
+.jointsListView {
+    margin-top: 2px;
+    margin-left: 4px;
+    border-width: 1px;
+}
+
+.jointToggle {
+    padding-left: 13px;
+}
+.jointListItem {
+    flex-direction: row;
+}

@@ -1,0 +1,41 @@
+.port
+{
+    --port-color: rgb(255, 255, 255);
+}
+
+GraphNodePort {
+    height: 24px;
+    align-items: center;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+GraphNodePort.input {
+    flex-direction: row;
+}
+
+GraphNodePort.output {
+    flex-direction: row-reverse;
+}
+
+GraphNodePort > #connector {
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 4px;
+    margin-right: 4px;
+    border-left-width:1px;
+    border-top-width:1px;
+    border-right-width:1px;
+    border-bottom-width:1px;
+}
+
+GraphNodePort > #connector > #cap
+{
+    width: 4px;
+    height: 4px;
+    border-radius: 4px;
+}

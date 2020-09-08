@@ -1,0 +1,29 @@
+.controlButton {
+    background-color: #CBCBCB;
+    border-color: #2A2A2A;
+}
+
+.controlButton:hover{
+    background-color: #C1C1C1;
+
+}
+
+#firstFrame {
+    background-image : url("/Packages/com.unity.kinematica/Editor/Images/FirstFrame.png");
+}
+
+#previousFrame {
+    background-image : url("/Packages/com.unity.kinematica/Editor/Images/SkipBack.png");
+}
+
+#play {
+    background-image : url("/Packages/com.unity.kinematica/Editor/Images/Play.png");
+}
+
+#nextFrame {
+    background-image : url("/Packages/com.unity.kinematica/Editor/Images/Skip.png");
+}
+
+#lastFrame {
+    background-image : url("/Packages/com.unity.kinematica/Editor/Images/LastFrame.png");
+}

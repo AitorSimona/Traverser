@@ -1,0 +1,7 @@
+.metricContainer {
+    background-color: #AAAAAA;
+}
+
+.metricsLabel {
+    background-color: #AAAAAA;
+}

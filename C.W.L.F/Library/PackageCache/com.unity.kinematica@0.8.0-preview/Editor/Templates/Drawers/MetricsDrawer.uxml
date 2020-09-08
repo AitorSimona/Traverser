@@ -1,0 +1,6 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement>
+        <ui:Label text="Metrics" class="metricsLabel"/>
+        <ui:VisualElement name="metricsContainer"/>
+    </ui:VisualElement>
+</UXML>

@@ -1,0 +1,22 @@
+{
+    "name": "AnimationEditorTools.Editor",
+    "references": [
+        "AnimationEditorTools",
+        "Unity.AnimationCurves.Hybrid",
+        "Unity.Mathematics",
+        "Unity.Mathematics.Editor",
+        "Unity.Burst",
+        "Unity.Collections"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

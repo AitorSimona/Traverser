@@ -1,0 +1,56 @@
+{
+  "name": "com.unity.kinematica",
+  "displayName": "Kinematica",
+  "version": "0.8.0-preview",
+  "unity": "2019.4",
+  "description": "Kinematica is a next-generation character animation system.\n\nThis technology provides a solution for character animation that does not rely on animation graphs while achieving a higher level of quality and at the same time offers the same level of control, versatility and flexibility.\n\nKinematica allows the use raw animation clips or motion capture data directly without the necessity to organize them in an animation graph. Describe the intended movement of your character and Kinematica produces the corresponding poses automatically.\n\nAt the heart of Kinematica lies a considerably improved version of Motion Matching that achieves a near constant time lookup for arbitrary complex motion databases and does not rely on parameter tweaking or magic numbers.",
+  "dependencies": {
+    "com.unity.collections": "0.5.1-preview.11",
+    "com.unity.mathematics": "1.1.0",
+    "com.unity.jobs": "0.2.4-preview.11",
+    "com.unity.burst": "1.2.3"
+  },
+  "samples": [
+    {
+      "displayName": "Hello World",
+      "description": "A 'Hello World' sample",
+      "path": "Samples~/Hello World"
+    },
+    {
+      "displayName": "Biped Locomotion",
+      "description": "A player controlled biped locomotion sample",
+      "path": "Samples~/Biped Locomotion"
+    },
+    {
+      "displayName": "Navigation",
+      "description": "Pathfinding and navigation sample on biped using Kinematica",
+      "path": "Samples~/Navigation"
+    },
+    {
+      "displayName": "Snappy Locomotion",
+      "description": "Sample showcasing a reactive player controlled biped with few animations",
+      "path": "Samples~/Snappy Locomotion"
+    },
+    {
+      "displayName": "Short Animation Clips",
+      "description": "A player controlled biped locomotion sample that uses short animation clips",
+      "path": "Samples~/Short Animation Clips"
+    },
+    {
+      "displayName": "Snapshot Debugger",
+      "description": "Sample scene showcasing the snapshot debugger",
+      "path": "Samples~/Snapshot Debugger"
+    }
+  ],
+  "relatedPackages": {
+    "com.unity.kinematica.tests": "0.8.0-preview"
+  },
+  "upmCi": {
+    "footprint": "1edef2826c35840b855bcebc5805ee0780e84e99"
+  },
+  "repository": {
+    "url": "https://github.com/Unity-Technologies/com.unity.kinematica.git",
+    "type": "git",
+    "revision": "188714dd91826623583947bb5ae4eb2862fca2e2"
+  }
+}

@@ -1,0 +1,7 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Template path="packages/com.unity.kinematica/Editor/Templates/AssetSettings.uxml" name="AssetSettings"/>
+    <ui:Template path="packages/com.unity.kinematica/Editor/Templates/MetricsEditor.uxml" name="Metrics"/>
+    <ui:Instance template="AssetSettings" name="assetSettings"/>
+    <ui:VisualElement name="metrics"/>
+    <ui:Button name="buildButton" text="Open Kinematica Asset Builder"/>
+</UXML>

@@ -1,0 +1,37 @@
+.previewSelector {
+    flex-direction: row;
+    border-right-width: 1px;
+}
+
+.previewSelector Label {
+    padding-top: 2px;
+}
+
+.selectorContainer {
+    flex-direction: row;
+    padding-right: 2px;
+}
+
+.selectorDropdown {
+    min-height: 16px;
+    min-width: 18px;
+    border-right-width: : 1px;
+    border-left-width: 0px;
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+    border-radius: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.targetContainer {
+    padding-left: 2px;
+    flex-direction: row;
+}
+
+.gameObjectIcon {
+    margin-top: 2px;
+    max-height: 16px;
+    max-width: 16px;
+    min-width: 16px;
+}

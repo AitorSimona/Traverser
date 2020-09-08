@@ -1,0 +1,90 @@
+#toolbar {
+    border-color: #232323;
+}
+
+#gutterToggleArea {
+    border-color: #090909;
+    background-color: rgba(64, 64, 64, 199);
+}
+
+#gutterToggleMenu {
+    background-image: resource("Packages/com.unity.kinematica/Editor/Images/d_Tracks.png");
+}
+
+#gutterToggleMenu:hover {
+    background-color: #5D5D5D;
+}
+
+.trackToggle {
+    border-color: #202020;
+    -unity-text-align: middle-center;
+}
+
+.trackToggle--checked {
+    background-color: #5D5D5D;
+}
+
+
+#gutterList {
+    border-color: #090909;
+}
+
+#gutterList Label {
+    border-color: #090909;
+}
+
+#targetGameObject {
+    border-color: #FF0000;
+}
+
+.arrayButton {
+    background-color: #414141;
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.clipTimeline {
+    background-color: #FFFFFF;
+}
+
+.boxed {
+    border-color: #5E5E5E;
+}
+
+.marker {
+    background-color: #a03406;
+}
+
+#timeSliderArea {
+    border-color: : #5E5E5E;
+}
+
+/* Inspector */
+.inspectorSection {
+    border-color: #242424;
+}
+
+.inspectorSectionLabel{
+    border-color: #1A1A1A;
+}
+
+.drawerElement {
+    border-color: #242424;
+    background-color: #414141;
+}
+
+.drawerRoot {
+    border-color: #242424;
+    background-color: #414141;
+}
+
+.drawerButtonContainer {
+    background-color: #414141;
+    border-top-color: #414141;
+    border-left-color: #242424;
+    border-right-color: #242424;
+    border-bottom-color: #242424;
+}
+
+.arrayEntryContents {
+    border-color: #242424;
+}

@@ -1,0 +1,72 @@
+#inputArea {
+    flex-grow: 1;
+    flex-direction: row;
+}
+.boundaryClipWindow {
+    align-items: stretch;
+}
+
+.selectionRow {
+    flex-grow: .5;
+    min-height: 20px;
+}
+
+.row {
+    flex-direction: row;
+    border-bottom-width: 2px;
+}
+
+.boundarySelector {
+    flex: 1 0;
+    border-top-width: 1px;
+}
+
+#postBoundarySelector {
+    border-left-width: 1px;
+}
+
+.sectionLabel {
+    min-width: 175px;
+    border-right-width: 1px;
+    padding-bottom: 4px;
+}
+
+.clipSelector {
+    flex: 1 0;
+}
+
+.clipSelector Foldout {
+    flex: 1 0;
+}
+
+.clipSelector ToolbarSearchField {
+    width: 215px;
+}
+
+.revertIcon {
+    width: 16px;
+    height: 16px;
+    display: none;
+}
+
+.selectorLabel {
+    height: 16px;
+}
+
+.selectionLabel {
+    padding-bottom: 2px;
+}
+
+.clipList {
+    flex: 1 0;
+}
+
+.toggleItem {
+    flex-direction: row;
+}
+
+.buttonContainer {
+    flex-direction: row;
+    min-height: 20px;
+    justify-content: flex-end;
+}

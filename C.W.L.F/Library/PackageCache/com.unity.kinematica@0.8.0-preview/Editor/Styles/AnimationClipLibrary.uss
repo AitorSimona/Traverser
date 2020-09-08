@@ -1,0 +1,46 @@
+#clipsArea {
+    flex-direction: column;
+    flex: 1 0 0 ;
+}
+
+#clipsHeaders {
+    flex-direction: Row;
+    justify-content: space-between;
+}
+
+#animationLabel {
+    flex: 3 0 0;
+}
+
+.flexGrowClass {
+    flex: 1 0 0 ;
+}
+
+#tagHeader {
+    flex: 1 0 0;
+}
+
+#animationLibrary {
+    flex: 1 0 0;
+    border-top-width : 1px;
+    margin-top: 1px;
+    margin-right: 1px;
+}
+
+.animationClipLabel {
+    flex: 3 0 0;
+    margin-top: 2px;
+    margin-left: 3px;
+}
+
+.animationClipHighlight {
+    width: 2px;
+    margin-left: 3px;
+}
+
+.tagNamesLabel {
+    height: 14px;
+    flex: 1 1 0;
+    margin-top: 2px;
+    -unity-text-align: middle-right;
+}

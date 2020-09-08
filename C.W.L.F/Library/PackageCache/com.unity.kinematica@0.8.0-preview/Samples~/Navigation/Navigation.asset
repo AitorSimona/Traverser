@@ -1,0 +1,1305 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67ddb658bcc363b4bbf299214cfbe711, type: 3}
+  m_Name: Navigation
+  m_EditorClassIdentifier: 
+  animationLibrary: []
+  destinationAvatar: {fileID: 0}
+  timeHorizon: 1
+  sampleRate: 30
+  m_Data:
+    syncedWithBinary: 0
+    animationLibrary:
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: ecd415726dd25244f83d0bafba00ca5d,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -321645198
+        val1: 1380216274
+        val2: -1358217736
+        val3: 1573519546
+      m_CachedClipName: Idle
+      m_CachedClipDuration: 10.033334
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 10.033334
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 0
+        duration: 10.033334
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: Navigation.IdleTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 7103e4b105b5c2c41a6929977bab19d5,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 1896080561
+        val1: -1027340875
+        val2: -1758893798
+        val3: -719737989
+      m_CachedClipName: Circles_Acceleration
+      m_CachedClipDuration: 43.733334
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 43.733337
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 34672868d46c083469befc0eb7214c1d,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 879175784
+        val1: 137679980
+        val2: 251444841
+        val3: 491528631
+      m_CachedClipName: Circles_Jog_1
+      m_CachedClipDuration: 29.533333
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 29.533335
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 86c78094c01438c4c81de74e7e2a53d4,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -2033745772
+        val1: 952418324
+        val2: 1323769288
+        val3: -732747138
+      m_CachedClipName: Circles_Jog_2
+      m_CachedClipDuration: 19.2
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 19.2
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 8d3ef93442382204ca57cc0f1b05399c,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1925252812
+        val1: 570704440
+        val2: 265050058
+        val3: -1673984741
+      m_CachedClipName: Circles_Sprint_1
+      m_CachedClipDuration: 11.2
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 11.200001
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 9236f1a15f9cf3b428b9c29c3a164699,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1841892959
+        val1: -206282852
+        val2: -1664960216
+        val3: -1723460038
+      m_CachedClipName: Circles_Sprint_2
+      m_CachedClipDuration: 10.7
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 10.700001
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 4e6acb7fc5a9cfa4d8f92d9b2594f4ec,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 1315621759
+        val1: -811285079
+        val2: -1691485736
+        val3: -319515611
+      m_CachedClipName: Circles_Walk_1
+      m_CachedClipDuration: 59.566666
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 59.56667
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 1304fc1bedaaffc429f1f6b0e3ffdca8,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 319093787
+        val1: -3871318
+        val2: -1325993687
+        val3: -1461911581
+      m_CachedClipName: Circles_Walk_2
+      m_CachedClipDuration: 59.066666
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 59.06667
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: ea1432a263b6e6949ac35ba66de67bc9,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -367775070
+        val1: -426482762
+        val2: -1503935590
+        val3: -914626963
+      m_CachedClipName: Plants_Turns_Fancy_1
+      m_CachedClipDuration: 45.233334
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 45.233337
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 789de9b6025c86348b075848caa46bc3,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 2023614902
+        val1: -2043411876
+        val2: 1213728651
+        val3: -1016355638
+      m_CachedClipName: Plants_Turns_Fancy_1_M
+      m_CachedClipDuration: 45.233334
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 45.233337
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: c1f67075b1f0cc34099dfddd90dd26d2,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1040813963
+        val1: -868961808
+        val2: -570581751
+        val3: -769204848
+      m_CachedClipName: Plants_Turns_Fancy_2
+      m_CachedClipDuration: 27.866667
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 27.866669
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 0d4e00b59d0e58f4da3cd643538869da,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 223215797
+        val1: 1492425998
+        val2: 1138113754
+        val3: -630618029
+      m_CachedClipName: Plants_Turns_Fancy_2_M
+      m_CachedClipDuration: 27.866667
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 27.866669
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: f115c91d8ddda634e9d2733f63091f1a,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -250230499
+        val1: -1506505251
+        val2: 1064555241
+        val3: 438241635
+      m_CachedClipName: Plants_Turns_Fancy_3
+      m_CachedClipDuration: 24.033333
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 24.033335
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 19a004ea83c30a24a9d028e65c6fa906,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 429917418
+        val1: 170165187
+        val2: -433532759
+        val3: 111767388
+      m_CachedClipName: Plants_Turns_Fancy_3_M
+      m_CachedClipDuration: 24.033333
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 24.033335
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: b8b3dcf0a15299448bd4c4f3fa0d44bd,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1196172048
+        val1: -1723555502
+        val2: -205204341
+        val3: -1119613446
+      m_CachedClipName: Plants_Turns_Regular_1
+      m_CachedClipDuration: 40.733334
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 40.733334
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 5ad6130b01c359f49a51fdc43ff663f9,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 1523979019
+        val1: 1509163459
+        val2: -990031462
+        val3: -110889409
+      m_CachedClipName: Plants_Turns_Regular_1_M
+      m_CachedClipDuration: 40.733334
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 40.733334
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 48fa813c2e938864fa5e452d09f5373c,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 1224376636
+        val1: -2006700397
+        val2: 759521018
+        val3: 1010300169
+      m_CachedClipName: Plants_Turns_Regular_2
+      m_CachedClipDuration: 29.2
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 29.2
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 19c3a6482b5d2fb4f996f75797df2dc3,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 432252488
+        val1: 800336733
+        val2: 1475843833
+        val3: -1020403817
+      m_CachedClipName: Plants_Turns_Regular_2_M
+      m_CachedClipDuration: 29.2
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 29.2
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: e82ad129e70bfd640beb60018771596a,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -399847127
+        val1: -43718901
+        val2: 23128843
+        val3: 1784246663
+      m_CachedClipName: Plants_Turns_Regular_3
+      m_CachedClipDuration: 24.2
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 24.2
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 6e9dd5a2a85a2db4b94af921fbb7ee73,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 1855837602
+        val1: 766814298
+        val2: 569985721
+        val3: 1945024507
+      m_CachedClipName: Plants_Turns_Regular_3_M
+      m_CachedClipDuration: 24.2
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 24.2
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 01f25a1f54c044d47803d706367673c7,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 32659999
+        val1: 1154766016
+        val2: 114754424
+        val3: -948734410
+      m_CachedClipName: Snakes_Jog
+      m_CachedClipDuration: 34.066666
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 34.06667
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 00333627ee334cb4498e31c0ee9795ca,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 3356199
+        val1: 1286925875
+        val2: -1070494135
+        val3: -896165906
+      m_CachedClipName: Snakes_Sprint
+      m_CachedClipDuration: 33.733334
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 33.733334
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 1a4efdfddc79ca84b8d78b75244db5c5,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 441384445
+        val1: -897262471
+        val2: 1972099000
+        val3: -977973980
+      m_CachedClipName: Snakes_Walk
+      m_CachedClipDuration: 33.366665
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 33.36667
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: a80b8d2a37249d748911f18d5ed1c2c4,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1475637974
+        val1: -1653328092
+        val2: -1913581175
+        val3: -993865378
+      m_CachedClipName: Acceleration
+      m_CachedClipDuration: 34.066666
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 34.06667
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: c31dea1727bf78c4c9d05e3650d70314,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1021449705
+        val1: 2026121151
+        val2: 912183497
+        val3: 335796048
+      m_CachedClipName: Start_Stop_1
+      m_CachedClipDuration: 70.1
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 70.100006
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 946e62805041b194fa9dfceb7dfbadd8,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1804705152
+        val1: -1315680191
+        val2: -335766022
+        val3: -659686531
+      m_CachedClipName: Start_Stop_2
+      m_CachedClipDuration: 44.4
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 44.4
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 2c8b02ce687e58845bde482e300c0361,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 747307726
+        val1: 1485072510
+        val2: 776527451
+        val3: 1627589680
+      m_CachedClipName: Start_Stop_3
+      m_CachedClipDuration: 20.7
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 20.7
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: bc0be8716f7452a4bacb96527dc35c84,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1140070287
+        val1: 1386508148
+        val2: 1385614266
+        val3: -2074295427
+      m_CachedClipName: Start_Stop_4
+      m_CachedClipDuration: 4.7
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 4.7000003
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 7e35f7de5fad06446b6d39ca34c979d0,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 2117466078
+        val1: 105144237
+        val2: -902206101
+        val3: -797325004
+      m_CachedClipName: Start_Stop_5
+      m_CachedClipDuration: 6.5333333
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 6.533334
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 71ba5c0d581d8394cb6b5902bc7354b0,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 1908038669
+        val1: -2087430115
+        val2: 39414731
+        val3: -1336642628
+      m_CachedClipName: Start_Stop_6
+      m_CachedClipDuration: 5.7
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 5.7000003
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 765422b3046eba94192ea06457c8bd0b,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 1985225395
+        val1: -1164704658
+        val2: 1688219161
+        val3: 196986967
+      m_CachedClipName: Start_Stop_7
+      m_CachedClipDuration: 5.866667
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 5.866667
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: dc65fcaed37efec498b160b9a6f30387,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -597295954
+        val1: -20655234
+        val2: -1184845416
+        val3: -2029784154
+      m_CachedClipName: Start_Stop_8
+      m_CachedClipDuration: 6.2
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 6.2000003
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: bd8b61033120f1e47baadbe4c26e1f09,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1114939133
+        val1: -236703456
+        val2: -455366021
+        val3: 153054914
+      m_CachedClipName: Start_Stop_9
+      m_CachedClipDuration: 6.5333333
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 6.533334
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 74fcd0bbf78101d4bb3ace525c5ac74b,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 1962725563
+        val1: 30734209
+        val2: 1389247163
+        val3: 1271355996
+      m_CachedClipName: Start_Stop_10
+      m_CachedClipDuration: 6.2
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 6.2000003
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 58880202addce1d418131f47e1ced934,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: 1485308418
+        val1: -506155556
+        val2: 1193218840
+        val3: 886689505
+      m_CachedClipName: Start_Stop_11
+      m_CachedClipDuration: 23.366667
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 23.366669
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: d6962e93e3b714047bb21032e99440a0,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -694800749
+        val1: 335864759
+        val2: 839955067
+        val3: -1606380311
+      m_CachedClipName: Stop_to_Face_1
+      m_CachedClipDuration: 76.1
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 76.100006
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 8009735a0c81bd1418aa1079e5fec66d,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -2146864294
+        val1: -1122759551
+        val2: 2031135256
+        val3: 1841757925
+      m_CachedClipName: Stop_to_Face_2
+      m_CachedClipDuration: 74.433334
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 74.433334
+        payload:
+          serializedData: 
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 1827226128182048838, guid: 9f82716690fd6464f8076cdcdcb9059b,
+        type: 3}
+      m_AnimationClipGuid:
+        val0: -1618841242
+        val1: 1684312317
+        val2: -596899848
+        val3: -1694123556
+      m_CachedClipName: Stop_to_Face_3
+      m_CachedClipDuration: 68.76667
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 0
+        duration: 68.76667
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: Navigation.LocomotionTag, Assembly-CSharp-Editor,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
+    destinationAvatar: {fileID: 9000000, guid: 74cebad771d996c4cb5b49a97f4a567a, type: 3}
+    metrics:
+    - name: Default
+      tagTypes:
+        m_TagTypeNames:
+        - Navigation.LocomotionTag
+        - Navigation.IdleTag
+      numPoses: 2
+      poseSampleRatio: 0.3333
+      joints:
+      - Foot_L
+      - Foot_R
+      - Neck
+      trajectorySampleRatio: 0.3333
+      trajectorySampleRange: 0
+      trajectoryDisplacements: 0
+      numAttempts: 1
+      numIterations: 25
+      minimumNumberSamples: 32
+      maximumNumberSamples: 256
+    timeHorizon: 1
+    sampleRate: 30
+  m_SerializeVersion: 3

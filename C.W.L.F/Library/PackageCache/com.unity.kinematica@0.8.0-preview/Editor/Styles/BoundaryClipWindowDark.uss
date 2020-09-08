@@ -1,0 +1,27 @@
+.boundarySelector {
+    border-color: #202020;
+}
+
+.selectionRow {
+    border-color: #202020;
+}
+
+.sectionLabel {
+    border-color: #202020;
+}
+
+.row {
+    border-color: #202020;
+}
+
+.revertIcon {
+    background-image : url("/Packages/com.unity.kinematica/Editor/Images/d_Revert.png");
+}
+
+.toggleItem--checked {
+    background-color: #3E5F96;
+}
+
+.toggleItem {
+    border-color: #202020;
+}

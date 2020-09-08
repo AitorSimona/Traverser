@@ -1,0 +1,6 @@
+.metricsLabel {
+    padding-left: 2px;
+    padding-top: 4px;
+    padding-bottom: 2px;
+    margin-bottom: 1px;
+}

@@ -1,0 +1,14 @@
+{
+    "name": "Unity.PerformanceTesting.Tests.Editor",
+    "references": [
+        "Unity.PerformanceTesting"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

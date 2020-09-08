@@ -1,0 +1,18 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+
+    <ui:TextField name="clipName" label="AnimationClip"/>
+    <ui:VisualElement name="retargeting" class="inspectorSection">
+        <ui:Label text="Retargeting" class="inspectorSectionLabel"/>
+        <uie:ObjectField name="retargetSourceAvatar" class="editor" label="Retarget source avatar" stretch-content-width="true" tooltip="Avatar used as a source when retargeting the clip from this source avatar to the destination avatar of the asset. If null, retargeting won't be applied."/>
+    </ui:VisualElement >
+    <ui:VisualElement class="inspectorSection">
+        <ui:VisualElement name="tags" >
+            <ui:Label text="Tags" class="inspectorSectionLabel"/>
+            <ui:VisualElement name="tagsList"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="markers" >
+            <ui:Label text="Markers" class="inspectorSectionLabel"/>
+            <ui:VisualElement name="markersList"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

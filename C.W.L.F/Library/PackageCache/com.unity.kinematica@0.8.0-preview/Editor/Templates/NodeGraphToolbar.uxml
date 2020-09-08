@@ -1,0 +1,9 @@
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:uai="Unity.Kinematica.Editor">
+  <uie:Toolbar>
+    <uie:ToolbarButton name="saveAsset" text="Save Asset"/>
+    <uie:ToolbarButton name="selectAsset" text="Select Asset"/>
+    <uai:Breadcrumb name="breadcrumb"/>
+    <uie:ToolbarSpacer/>
+    <uie:ToolbarButton name="buildButton" text="Build"/>
+  </uie:Toolbar>
+</UXML>

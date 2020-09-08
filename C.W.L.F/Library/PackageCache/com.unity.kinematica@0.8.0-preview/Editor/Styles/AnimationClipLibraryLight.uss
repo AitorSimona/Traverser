@@ -1,0 +1,11 @@
+#clipsArea {
+    border-color: #5E5E5E;
+}
+
+#animationLibrary {
+    background-color: #AAAAAA;
+}
+
+.animationClipHighlight {
+    background-color: #FFFFFF;
+}

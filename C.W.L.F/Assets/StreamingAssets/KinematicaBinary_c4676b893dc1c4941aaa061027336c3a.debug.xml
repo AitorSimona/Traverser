@@ -103,25 +103,55 @@
   </AnimationRig>
   <Types>
     <Type name="IdleTrait" size="1" />
+    <Type name="RunTrait" size="1" />
   </Types>
   <Traits>
     <Trait index="0" type="IdleTrait" payload="00" />
+    <Trait index="1" type="RunTrait" payload="00" />
   </Traits>
   <Segments>
     <Segment index="0" name="Idle" tagIndex="0" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="0" numIntervals="1">
       <Source firstFrame="0" numFrames="301" />
       <Destination firstFrame="0" numFrames="301" />
     </Segment>
+    <Segment index="1" name="Acceleration" tagIndex="1" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="1" numIntervals="1">
+      <Source firstFrame="85" numFrames="94" />
+      <Destination firstFrame="301" numFrames="94" />
+    </Segment>
+    <Segment index="2" name="Acceleration" tagIndex="2" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="2" numIntervals="1">
+      <Source firstFrame="311" numFrames="109" />
+      <Destination firstFrame="395" numFrames="109" />
+    </Segment>
+    <Segment index="3" name="Acceleration" tagIndex="3" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="3" numIntervals="1">
+      <Source firstFrame="572" numFrames="130" />
+      <Destination firstFrame="504" numFrames="130" />
+    </Segment>
+    <Segment index="4" name="Acceleration" tagIndex="4" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="4" numIntervals="1">
+      <Source firstFrame="820" numFrames="78" />
+      <Destination firstFrame="634" numFrames="78" />
+    </Segment>
   </Segments>
   <Tags>
     <Tag index="0" trait="0" segment="0" firstFrame="0" numFrames="301" />
+    <Tag index="1" trait="1" segment="1" firstFrame="0" numFrames="94" />
+    <Tag index="2" trait="1" segment="2" firstFrame="0" numFrames="109" />
+    <Tag index="3" trait="1" segment="3" firstFrame="0" numFrames="130" />
+    <Tag index="4" trait="1" segment="4" firstFrame="0" numFrames="78" />
   </Tags>
   <Markers />
   <Intervals>
     <Interval index="0" segment="0" firstFrame="0" numFrames="301" tagList="0" codeBook="-1" />
+    <Interval index="1" segment="1" firstFrame="0" numFrames="94" tagList="1" codeBook="-1" />
+    <Interval index="2" segment="2" firstFrame="0" numFrames="109" tagList="2" codeBook="-1" />
+    <Interval index="3" segment="3" firstFrame="0" numFrames="130" tagList="3" codeBook="-1" />
+    <Interval index="4" segment="4" firstFrame="0" numFrames="78" tagList="4" codeBook="-1" />
   </Intervals>
   <TagLists>
     <TagList index="0" indices="0;" />
+    <TagList index="1" indices="1;" />
+    <TagList index="2" indices="2;" />
+    <TagList index="3" indices="3;" />
+    <TagList index="4" indices="4;" />
   </TagLists>
   <Metrics />
   <CodeBooks />

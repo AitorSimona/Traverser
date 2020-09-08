@@ -52,6 +52,60 @@ MonoBehaviour:
         name: 
       markers: []
       m_Asset: {fileID: 11400000}
+    - m_PreBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PostBoundaryClipGuid:
+        val0: 0
+        val1: 0
+        val2: 0
+        val3: 0
+      m_PreBoundaryClip: {fileID: 0}
+      m_PostBoundaryClip: {fileID: 0}
+      m_AnimationClipReference: {fileID: 0}
+      m_AnimationClipGuid:
+        val0: -1475637974
+        val1: -1653328092
+        val2: -1913581175
+        val3: -993865378
+      m_CachedClipVersion: 1
+      m_CachedClipName: Acceleration
+      m_CachedClipDuration: 34.066666
+      m_CachedSampleRate: 30
+      m_RetargetSourceAvatar: {fileID: 0}
+      tags:
+      - startTime: 2.8333333
+        duration: 3.1333334
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: RunTag, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        name: 
+      - startTime: 10.366667
+        duration: 3.6333334
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: RunTag, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        name: 
+      - startTime: 19.066668
+        duration: 4.3333335
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: RunTag, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        name: 
+      - startTime: 27.333334
+        duration: 2.6
+        payload:
+          serializedData: '{}'
+          assemblyQualifiedTypeName: RunTag, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+        name: 
+      markers: []
+      m_Asset: {fileID: 11400000}
     destinationAvatar: {fileID: 9000000, guid: 74cebad771d996c4cb5b49a97f4a567a, type: 3}
     metrics: []
     timeHorizon: 1

@@ -102,57 +102,297 @@
     </Joint>
   </AnimationRig>
   <Types>
-    <Type name="IdleTrait" size="1" />
-    <Type name="RunTrait" size="1" />
+    <Type name="Locomotion" size="1" />
+    <Type name="Idle" size="1" />
   </Types>
   <Traits>
-    <Trait index="0" type="IdleTrait" payload="00" />
-    <Trait index="1" type="RunTrait" payload="00" />
+    <Trait index="0" type="Locomotion" payload="00" />
+    <Trait index="1" type="Idle" payload="00" />
   </Traits>
   <Segments>
-    <Segment index="0" name="Idle" tagIndex="0" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="0" numIntervals="1">
+    <Segment index="0" name="Idle" tagIndex="0" numTags="2" markerIndex="-1" numMarkers="0" intervalIndex="0" numIntervals="1">
       <Source firstFrame="0" numFrames="301" />
       <Destination firstFrame="0" numFrames="301" />
     </Segment>
-    <Segment index="1" name="Acceleration" tagIndex="1" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="1" numIntervals="1">
-      <Source firstFrame="85" numFrames="94" />
-      <Destination firstFrame="301" numFrames="94" />
+    <Segment index="1" name="Circles_Acceleration" tagIndex="2" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="1" numIntervals="1">
+      <Source firstFrame="0" numFrames="1310" />
+      <Destination firstFrame="301" numFrames="1310" />
     </Segment>
-    <Segment index="2" name="Acceleration" tagIndex="2" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="2" numIntervals="1">
-      <Source firstFrame="311" numFrames="109" />
-      <Destination firstFrame="395" numFrames="109" />
+    <Segment index="2" name="Circles_Jog_1" tagIndex="3" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="2" numIntervals="1">
+      <Source firstFrame="0" numFrames="882" />
+      <Destination firstFrame="1611" numFrames="882" />
     </Segment>
-    <Segment index="3" name="Acceleration" tagIndex="3" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="3" numIntervals="1">
-      <Source firstFrame="572" numFrames="130" />
-      <Destination firstFrame="504" numFrames="130" />
+    <Segment index="3" name="Circles_Jog_2" tagIndex="4" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="3" numIntervals="1">
+      <Source firstFrame="0" numFrames="571" />
+      <Destination firstFrame="2493" numFrames="571" />
     </Segment>
-    <Segment index="4" name="Acceleration" tagIndex="4" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="4" numIntervals="1">
-      <Source firstFrame="820" numFrames="78" />
-      <Destination firstFrame="634" numFrames="78" />
+    <Segment index="4" name="Circles_Sprint_1" tagIndex="5" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="4" numIntervals="1">
+      <Source firstFrame="0" numFrames="336" />
+      <Destination firstFrame="3064" numFrames="336" />
+    </Segment>
+    <Segment index="5" name="Circles_Sprint_2" tagIndex="6" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="5" numIntervals="1">
+      <Source firstFrame="0" numFrames="321" />
+      <Destination firstFrame="3400" numFrames="321" />
+    </Segment>
+    <Segment index="6" name="Circles_Walk_1" tagIndex="7" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="6" numIntervals="1">
+      <Source firstFrame="0" numFrames="1785" />
+      <Destination firstFrame="3721" numFrames="1785" />
+    </Segment>
+    <Segment index="7" name="Circles_Walk_2" tagIndex="8" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="7" numIntervals="1">
+      <Source firstFrame="0" numFrames="1772" />
+      <Destination firstFrame="5506" numFrames="1772" />
+    </Segment>
+    <Segment index="8" name="Plants_Turns_Fancy_1" tagIndex="9" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="8" numIntervals="1">
+      <Source firstFrame="0" numFrames="1357" />
+      <Destination firstFrame="7278" numFrames="1357" />
+    </Segment>
+    <Segment index="9" name="Plants_Turns_Fancy_1_M" tagIndex="10" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="9" numIntervals="1">
+      <Source firstFrame="1" numFrames="1356" />
+      <Destination firstFrame="8635" numFrames="1356" />
+    </Segment>
+    <Segment index="10" name="Plants_Turns_Fancy_2" tagIndex="11" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="10" numIntervals="1">
+      <Source firstFrame="0" numFrames="836" />
+      <Destination firstFrame="9991" numFrames="836" />
+    </Segment>
+    <Segment index="11" name="Plants_Turns_Fancy_2_M" tagIndex="12" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="11" numIntervals="1">
+      <Source firstFrame="0" numFrames="836" />
+      <Destination firstFrame="10827" numFrames="836" />
+    </Segment>
+    <Segment index="12" name="Plants_Turns_Fancy_3" tagIndex="13" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="12" numIntervals="1">
+      <Source firstFrame="0" numFrames="721" />
+      <Destination firstFrame="11663" numFrames="721" />
+    </Segment>
+    <Segment index="13" name="Plants_Turns_Fancy_3_M" tagIndex="14" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="13" numIntervals="1">
+      <Source firstFrame="0" numFrames="721" />
+      <Destination firstFrame="12384" numFrames="721" />
+    </Segment>
+    <Segment index="14" name="Plants_Turns_Regular_1" tagIndex="15" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="14" numIntervals="1">
+      <Source firstFrame="0" numFrames="1222" />
+      <Destination firstFrame="13105" numFrames="1222" />
+    </Segment>
+    <Segment index="15" name="Plants_Turns_Regular_1_M" tagIndex="16" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="15" numIntervals="1">
+      <Source firstFrame="0" numFrames="1222" />
+      <Destination firstFrame="14327" numFrames="1222" />
+    </Segment>
+    <Segment index="16" name="Plants_Turns_Regular_2" tagIndex="17" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="16" numIntervals="1">
+      <Source firstFrame="0" numFrames="876" />
+      <Destination firstFrame="15549" numFrames="876" />
+    </Segment>
+    <Segment index="17" name="Plants_Turns_Regular_2_M" tagIndex="18" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="17" numIntervals="1">
+      <Source firstFrame="0" numFrames="876" />
+      <Destination firstFrame="16425" numFrames="876" />
+    </Segment>
+    <Segment index="18" name="Plants_Turns_Regular_3" tagIndex="19" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="18" numIntervals="1">
+      <Source firstFrame="0" numFrames="726" />
+      <Destination firstFrame="17301" numFrames="726" />
+    </Segment>
+    <Segment index="19" name="Plants_Turns_Regular_3_M" tagIndex="20" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="19" numIntervals="1">
+      <Source firstFrame="0" numFrames="726" />
+      <Destination firstFrame="18027" numFrames="726" />
+    </Segment>
+    <Segment index="20" name="Snakes_Jog" tagIndex="21" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="20" numIntervals="1">
+      <Source firstFrame="0" numFrames="1022" />
+      <Destination firstFrame="18753" numFrames="1022" />
+    </Segment>
+    <Segment index="21" name="Snakes_Sprint" tagIndex="22" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="21" numIntervals="1">
+      <Source firstFrame="0" numFrames="1012" />
+      <Destination firstFrame="19775" numFrames="1012" />
+    </Segment>
+    <Segment index="22" name="Snakes_Walk" tagIndex="23" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="22" numIntervals="1">
+      <Source firstFrame="0" numFrames="1000" />
+      <Destination firstFrame="20787" numFrames="1000" />
+    </Segment>
+    <Segment index="23" name="Acceleration" tagIndex="24" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="23" numIntervals="1">
+      <Source firstFrame="0" numFrames="1022" />
+      <Destination firstFrame="21787" numFrames="1022" />
+    </Segment>
+    <Segment index="24" name="Start_Stop_1" tagIndex="25" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="24" numIntervals="1">
+      <Source firstFrame="2" numFrames="2101" />
+      <Destination firstFrame="22809" numFrames="2101" />
+    </Segment>
+    <Segment index="25" name="Start_Stop_2" tagIndex="26" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="25" numIntervals="1">
+      <Source firstFrame="0" numFrames="1332" />
+      <Destination firstFrame="24910" numFrames="1332" />
+    </Segment>
+    <Segment index="26" name="Start_Stop_3" tagIndex="27" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="26" numIntervals="1">
+      <Source firstFrame="0" numFrames="621" />
+      <Destination firstFrame="26242" numFrames="621" />
+    </Segment>
+    <Segment index="27" name="Start_Stop_4" tagIndex="28" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="27" numIntervals="1">
+      <Source firstFrame="0" numFrames="141" />
+      <Destination firstFrame="26863" numFrames="141" />
+    </Segment>
+    <Segment index="28" name="Start_Stop_5" tagIndex="29" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="28" numIntervals="1">
+      <Source firstFrame="0" numFrames="196" />
+      <Destination firstFrame="27004" numFrames="196" />
+    </Segment>
+    <Segment index="29" name="Start_Stop_6" tagIndex="30" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="29" numIntervals="1">
+      <Source firstFrame="0" numFrames="171" />
+      <Destination firstFrame="27200" numFrames="171" />
+    </Segment>
+    <Segment index="30" name="Start_Stop_7" tagIndex="31" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="30" numIntervals="1">
+      <Source firstFrame="0" numFrames="176" />
+      <Destination firstFrame="27371" numFrames="176" />
+    </Segment>
+    <Segment index="31" name="Start_Stop_8" tagIndex="32" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="31" numIntervals="1">
+      <Source firstFrame="0" numFrames="186" />
+      <Destination firstFrame="27547" numFrames="186" />
+    </Segment>
+    <Segment index="32" name="Start_Stop_9" tagIndex="33" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="32" numIntervals="1">
+      <Source firstFrame="0" numFrames="196" />
+      <Destination firstFrame="27733" numFrames="196" />
+    </Segment>
+    <Segment index="33" name="Start_Stop_10" tagIndex="34" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="33" numIntervals="1">
+      <Source firstFrame="0" numFrames="186" />
+      <Destination firstFrame="27929" numFrames="186" />
+    </Segment>
+    <Segment index="34" name="Start_Stop_11" tagIndex="35" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="34" numIntervals="1">
+      <Source firstFrame="0" numFrames="701" />
+      <Destination firstFrame="28115" numFrames="701" />
+    </Segment>
+    <Segment index="35" name="Stop_to_Face_1" tagIndex="36" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="35" numIntervals="1">
+      <Source firstFrame="0" numFrames="2283" />
+      <Destination firstFrame="28816" numFrames="2283" />
+    </Segment>
+    <Segment index="36" name="Stop_to_Face_2" tagIndex="37" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="36" numIntervals="1">
+      <Source firstFrame="0" numFrames="2231" />
+      <Destination firstFrame="31099" numFrames="2231" />
+    </Segment>
+    <Segment index="37" name="Stop_to_Face_3" tagIndex="38" numTags="1" markerIndex="-1" numMarkers="0" intervalIndex="37" numIntervals="1">
+      <Source firstFrame="0" numFrames="2062" />
+      <Destination firstFrame="33330" numFrames="2062" />
     </Segment>
   </Segments>
   <Tags>
     <Tag index="0" trait="0" segment="0" firstFrame="0" numFrames="301" />
-    <Tag index="1" trait="1" segment="1" firstFrame="0" numFrames="94" />
-    <Tag index="2" trait="1" segment="2" firstFrame="0" numFrames="109" />
-    <Tag index="3" trait="1" segment="3" firstFrame="0" numFrames="130" />
-    <Tag index="4" trait="1" segment="4" firstFrame="0" numFrames="78" />
+    <Tag index="1" trait="1" segment="0" firstFrame="0" numFrames="301" />
+    <Tag index="2" trait="0" segment="1" firstFrame="0" numFrames="1310" />
+    <Tag index="3" trait="0" segment="2" firstFrame="0" numFrames="882" />
+    <Tag index="4" trait="0" segment="3" firstFrame="0" numFrames="571" />
+    <Tag index="5" trait="0" segment="4" firstFrame="0" numFrames="336" />
+    <Tag index="6" trait="0" segment="5" firstFrame="0" numFrames="321" />
+    <Tag index="7" trait="0" segment="6" firstFrame="0" numFrames="1785" />
+    <Tag index="8" trait="0" segment="7" firstFrame="0" numFrames="1772" />
+    <Tag index="9" trait="0" segment="8" firstFrame="0" numFrames="1357" />
+    <Tag index="10" trait="0" segment="9" firstFrame="0" numFrames="1356" />
+    <Tag index="11" trait="0" segment="10" firstFrame="0" numFrames="836" />
+    <Tag index="12" trait="0" segment="11" firstFrame="0" numFrames="836" />
+    <Tag index="13" trait="0" segment="12" firstFrame="0" numFrames="721" />
+    <Tag index="14" trait="0" segment="13" firstFrame="0" numFrames="721" />
+    <Tag index="15" trait="0" segment="14" firstFrame="0" numFrames="1222" />
+    <Tag index="16" trait="0" segment="15" firstFrame="0" numFrames="1222" />
+    <Tag index="17" trait="0" segment="16" firstFrame="0" numFrames="876" />
+    <Tag index="18" trait="0" segment="17" firstFrame="0" numFrames="876" />
+    <Tag index="19" trait="0" segment="18" firstFrame="0" numFrames="726" />
+    <Tag index="20" trait="0" segment="19" firstFrame="0" numFrames="726" />
+    <Tag index="21" trait="0" segment="20" firstFrame="0" numFrames="1022" />
+    <Tag index="22" trait="0" segment="21" firstFrame="0" numFrames="1012" />
+    <Tag index="23" trait="0" segment="22" firstFrame="0" numFrames="1000" />
+    <Tag index="24" trait="0" segment="23" firstFrame="0" numFrames="1022" />
+    <Tag index="25" trait="0" segment="24" firstFrame="0" numFrames="2101" />
+    <Tag index="26" trait="0" segment="25" firstFrame="0" numFrames="1332" />
+    <Tag index="27" trait="0" segment="26" firstFrame="0" numFrames="621" />
+    <Tag index="28" trait="0" segment="27" firstFrame="0" numFrames="141" />
+    <Tag index="29" trait="0" segment="28" firstFrame="0" numFrames="196" />
+    <Tag index="30" trait="0" segment="29" firstFrame="0" numFrames="171" />
+    <Tag index="31" trait="0" segment="30" firstFrame="0" numFrames="176" />
+    <Tag index="32" trait="0" segment="31" firstFrame="0" numFrames="186" />
+    <Tag index="33" trait="0" segment="32" firstFrame="0" numFrames="196" />
+    <Tag index="34" trait="0" segment="33" firstFrame="0" numFrames="186" />
+    <Tag index="35" trait="0" segment="34" firstFrame="0" numFrames="701" />
+    <Tag index="36" trait="0" segment="35" firstFrame="0" numFrames="2283" />
+    <Tag index="37" trait="0" segment="36" firstFrame="0" numFrames="2231" />
+    <Tag index="38" trait="0" segment="37" firstFrame="0" numFrames="2062" />
   </Tags>
   <Markers />
   <Intervals>
-    <Interval index="0" segment="0" firstFrame="0" numFrames="301" tagList="0" codeBook="-1" />
-    <Interval index="1" segment="1" firstFrame="0" numFrames="94" tagList="1" codeBook="-1" />
-    <Interval index="2" segment="2" firstFrame="0" numFrames="109" tagList="2" codeBook="-1" />
-    <Interval index="3" segment="3" firstFrame="0" numFrames="130" tagList="3" codeBook="-1" />
-    <Interval index="4" segment="4" firstFrame="0" numFrames="78" tagList="4" codeBook="-1" />
+    <Interval index="0" segment="0" firstFrame="0" numFrames="301" tagList="0" codeBook="0" />
+    <Interval index="1" segment="1" firstFrame="0" numFrames="1310" tagList="1" codeBook="0" />
+    <Interval index="2" segment="2" firstFrame="0" numFrames="882" tagList="2" codeBook="0" />
+    <Interval index="3" segment="3" firstFrame="0" numFrames="571" tagList="3" codeBook="0" />
+    <Interval index="4" segment="4" firstFrame="0" numFrames="336" tagList="4" codeBook="0" />
+    <Interval index="5" segment="5" firstFrame="0" numFrames="321" tagList="5" codeBook="0" />
+    <Interval index="6" segment="6" firstFrame="0" numFrames="1785" tagList="6" codeBook="0" />
+    <Interval index="7" segment="7" firstFrame="0" numFrames="1772" tagList="7" codeBook="0" />
+    <Interval index="8" segment="8" firstFrame="0" numFrames="1357" tagList="8" codeBook="0" />
+    <Interval index="9" segment="9" firstFrame="0" numFrames="1356" tagList="9" codeBook="0" />
+    <Interval index="10" segment="10" firstFrame="0" numFrames="836" tagList="10" codeBook="0" />
+    <Interval index="11" segment="11" firstFrame="0" numFrames="836" tagList="11" codeBook="0" />
+    <Interval index="12" segment="12" firstFrame="0" numFrames="721" tagList="12" codeBook="0" />
+    <Interval index="13" segment="13" firstFrame="0" numFrames="721" tagList="13" codeBook="0" />
+    <Interval index="14" segment="14" firstFrame="0" numFrames="1222" tagList="14" codeBook="0" />
+    <Interval index="15" segment="15" firstFrame="0" numFrames="1222" tagList="15" codeBook="0" />
+    <Interval index="16" segment="16" firstFrame="0" numFrames="876" tagList="16" codeBook="0" />
+    <Interval index="17" segment="17" firstFrame="0" numFrames="876" tagList="17" codeBook="0" />
+    <Interval index="18" segment="18" firstFrame="0" numFrames="726" tagList="18" codeBook="0" />
+    <Interval index="19" segment="19" firstFrame="0" numFrames="726" tagList="19" codeBook="0" />
+    <Interval index="20" segment="20" firstFrame="0" numFrames="1022" tagList="20" codeBook="0" />
+    <Interval index="21" segment="21" firstFrame="0" numFrames="1012" tagList="21" codeBook="0" />
+    <Interval index="22" segment="22" firstFrame="0" numFrames="1000" tagList="22" codeBook="0" />
+    <Interval index="23" segment="23" firstFrame="0" numFrames="1022" tagList="23" codeBook="0" />
+    <Interval index="24" segment="24" firstFrame="0" numFrames="2101" tagList="24" codeBook="0" />
+    <Interval index="25" segment="25" firstFrame="0" numFrames="1332" tagList="25" codeBook="0" />
+    <Interval index="26" segment="26" firstFrame="0" numFrames="621" tagList="26" codeBook="0" />
+    <Interval index="27" segment="27" firstFrame="0" numFrames="141" tagList="27" codeBook="0" />
+    <Interval index="28" segment="28" firstFrame="0" numFrames="196" tagList="28" codeBook="0" />
+    <Interval index="29" segment="29" firstFrame="0" numFrames="171" tagList="29" codeBook="0" />
+    <Interval index="30" segment="30" firstFrame="0" numFrames="176" tagList="30" codeBook="0" />
+    <Interval index="31" segment="31" firstFrame="0" numFrames="186" tagList="31" codeBook="0" />
+    <Interval index="32" segment="32" firstFrame="0" numFrames="196" tagList="32" codeBook="0" />
+    <Interval index="33" segment="33" firstFrame="0" numFrames="186" tagList="33" codeBook="0" />
+    <Interval index="34" segment="34" firstFrame="0" numFrames="701" tagList="34" codeBook="0" />
+    <Interval index="35" segment="35" firstFrame="0" numFrames="2283" tagList="35" codeBook="0" />
+    <Interval index="36" segment="36" firstFrame="0" numFrames="2231" tagList="36" codeBook="0" />
+    <Interval index="37" segment="37" firstFrame="0" numFrames="2062" tagList="37" codeBook="0" />
   </Intervals>
   <TagLists>
-    <TagList index="0" indices="0;" />
-    <TagList index="1" indices="1;" />
-    <TagList index="2" indices="2;" />
-    <TagList index="3" indices="3;" />
-    <TagList index="4" indices="4;" />
+    <TagList index="0" indices="0;1;" />
+    <TagList index="1" indices="2;" />
+    <TagList index="2" indices="3;" />
+    <TagList index="3" indices="4;" />
+    <TagList index="4" indices="5;" />
+    <TagList index="5" indices="6;" />
+    <TagList index="6" indices="7;" />
+    <TagList index="7" indices="8;" />
+    <TagList index="8" indices="9;" />
+    <TagList index="9" indices="10;" />
+    <TagList index="10" indices="11;" />
+    <TagList index="11" indices="12;" />
+    <TagList index="12" indices="13;" />
+    <TagList index="13" indices="14;" />
+    <TagList index="14" indices="15;" />
+    <TagList index="15" indices="16;" />
+    <TagList index="16" indices="17;" />
+    <TagList index="17" indices="18;" />
+    <TagList index="18" indices="19;" />
+    <TagList index="19" indices="20;" />
+    <TagList index="20" indices="21;" />
+    <TagList index="21" indices="22;" />
+    <TagList index="22" indices="23;" />
+    <TagList index="23" indices="24;" />
+    <TagList index="24" indices="25;" />
+    <TagList index="25" indices="26;" />
+    <TagList index="26" indices="27;" />
+    <TagList index="27" indices="28;" />
+    <TagList index="28" indices="29;" />
+    <TagList index="29" indices="30;" />
+    <TagList index="30" indices="31;" />
+    <TagList index="31" indices="32;" />
+    <TagList index="32" indices="33;" />
+    <TagList index="33" indices="34;" />
+    <TagList index="34" indices="35;" />
+    <TagList index="35" indices="36;" />
+    <TagList index="36" indices="37;" />
+    <TagList index="37" indices="38;" />
   </TagLists>
-  <Metrics />
-  <CodeBooks />
+  <Metrics>
+    <Metric index="0" poseTimeSpan="0,06666667">
+      <Joint name="Neck" index="13" />
+      <Joint name="Foot_L" index="17" />
+      <Joint name="Foot_R" index="21" />
+    </Metric>
+  </Metrics>
+  <CodeBooks>
+    <CodeBook index="0" metric="0" trait="0" />
+  </CodeBooks>
 </Binary>

@@ -157,5 +157,53 @@ namespace CWLF
         {
 
         }
+
+
+        // --- Utilities ---
+        public void SetState(State newState)
+        {
+            previousState = state;
+            state = newState;
+            lastCollidingClimbingState = ClimbingState.None;
+        }
+
+        public bool IsState(State queryState)
+        {
+            return state == queryState;
+        }
+
+        public void SetClimbingState(ClimbingState climbingState)
+        {
+            previousClimbingState = this.climbingState;
+            this.climbingState = climbingState;
+        }
+
+        public bool IsClimbingState(ClimbingState climbingState)
+        {
+            return this.climbingState == climbingState;
+        }
+        public void PlayFirstSequence(PoseSet poses)
+        {
+            kinematica.Synthesizer.Ref.PlayFirstSequence(poses);
+            poses.Dispose();
+        }
+
+        float2 GetStickInput()
+        {
+            float2 stickInput =
+                new float2(capture.stickHorizontal,
+                    capture.stickVertical);
+
+            if (math.length(stickInput) >= 0.1f)
+            {
+                if (math.length(stickInput) > 1.0f)
+                    stickInput =
+                        math.normalize(stickInput);
+
+                return stickInput;
+            }
+
+            return float2.zero;
+        }
     }
 }

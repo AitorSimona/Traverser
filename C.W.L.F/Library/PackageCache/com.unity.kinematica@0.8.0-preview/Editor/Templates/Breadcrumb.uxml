@@ -1,3 +1,0 @@
-<UXML xmlns:ui="UnityEngine.UIElements">
-        <ui:Label name="breadcrumbLabel"></ui:Label>
-</UXML>

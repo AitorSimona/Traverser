@@ -107,8 +107,44 @@ namespace CWLF
 
         ClimbingState climbingState; // Actual Climbing direction
         ClimbingState previousClimbingState; // Previous Climbing direction
-        ClimbingState lastCollidingClimbingState; 
+        ClimbingState lastCollidingClimbingState;
 
+        // Snapshot: compatible with snapshotdebugger
+
+        [Snapshot]
+        FrameCapture capture; // input
+
+        // TODO: Missing definitions of world elements (wall, ledge)
+
+        // --- Methods ---
+        public override void OnEnable()
+        {
+            base.OnEnable();
+
+            kinematica = GetComponent<Kinematica>();
+
+            state = State.Suspended;
+            previousState = State.Suspended;
+
+            climbingState = ClimbingState.Idle;
+            previousClimbingState = ClimbingState.Idle;
+            lastCollidingClimbingState = ClimbingState.None;
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+        }
+
+        public override void OnEarlyUpdate(bool rewind)
+        {
+            base.OnEarlyUpdate(rewind);
+
+            if (!rewind)
+            {
+                capture.Update();
+            }
+        }
 
         // Start is called before the first frame update
         void Start()

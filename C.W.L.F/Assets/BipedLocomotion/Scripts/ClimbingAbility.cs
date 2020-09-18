@@ -64,6 +64,52 @@ namespace CWLF
             }
         }
 
+        // --- Climbing movement/state ---
+        public enum State
+        {
+            Suspended,
+            Mounting,
+            Climbing,
+            FreeClimbing,
+            Dismount,
+            PullUp,
+            DropDown
+        }
+
+        // --- Climbing directions ---
+        public enum ClimbingState
+        {
+            Idle,
+            Up,
+            Down,
+            Left,
+            Right,
+            UpLeft,
+            UpRight,
+            DownLeft,
+            DownRight,
+            CornerRight,
+            CornerLeft,
+            None
+        }
+
+        // --- Contact filters (what do we react to) ---
+        public enum Layer
+        {
+            Wall = 8
+        }
+
+        // --- Internal variables ---
+        Kinematica kinematica; // system
+
+        State state; // Actual Climbing movement/state
+        State previousState; // Previous Climbing movement/state
+
+        ClimbingState climbingState; // Actual Climbing direction
+        ClimbingState previousClimbingState; // Previous Climbing direction
+        ClimbingState lastCollidingClimbingState; 
+
+
         // Start is called before the first frame update
         void Start()
         {

@@ -11,7 +11,7 @@ namespace CWLF
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]
 
-    public class ClimbingAbility : SnapshotProvider
+    public class ClimbingAbility : SnapshotProvider, Ability
     {
         // --- Inspector variables ---
         [Header("Transition settings")]
@@ -170,17 +170,53 @@ namespace CWLF
 
         }
 
-        
-
-        // Update is called once per frame
-        void Update()
+        // --- Ability class methods ---
+        public Ability OnUpdate(float deltaTime)
         {
             ref var synthesizer = ref kinematica.Synthesizer.Ref;
 
+            // --- React to character falling ---
+            ConfigureController(!IsState(State.Suspended));
+
+            // --- If character is not falling ---
+            if(!IsState(State.Suspended))
+            {
+
+                switch (state)
+                {
+                    case State.Mounting:
+                        break;
+                    case State.Climbing:
+                        break;
+                    case State.FreeClimbing:
+                        break;
+                    case State.Dismount:
+                        break;
+                    case State.PullUp:
+                        break;
+                    case State.DropDown:
+                        break;
+                    default:
+                        break;
+                }
+
+                return this;
+            }
+
+            return null;
         }
 
+        public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
+        {
 
-        // --- Utilities ---
+            return false;
+        }
+        public bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime)
+        {
+            return false;
+        }
+
+        // --- Utilities ---     
         public void SetState(State newState)
         {
             previousState = state;
@@ -226,14 +262,15 @@ namespace CWLF
 
             return float2.zero;
         }
-        //void ConfigureController(bool active)
-        //{
-        //    var controller = GetComponent<MovementController>();
 
-        //    controller.collisionEnabled = !active;
-        //    controller.groundSnap = !active;
-        //    controller.resolveGroundPenetration = !active;
-        //    controller.gravityEnabled = !active;
-        //}
+        void ConfigureController(bool active)
+        {
+            var controller = GetComponent<MovementController>();
+
+            controller.collisionEnabled = !active;
+            controller.groundSnap = !active;
+            controller.resolveGroundPenetration = !active;
+            controller.gravityEnabled = !active;
+        }
     }
 }

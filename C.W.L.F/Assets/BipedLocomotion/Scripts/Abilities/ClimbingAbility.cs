@@ -8,6 +8,8 @@ using UnityEngine;
 namespace CWLF
 {
     [RequireComponent(typeof(Kinematica))]
+    //[RequireComponent(typeof(MovementController))]
+
     public class ClimbingAbility : SnapshotProvider
     {
         // --- Inspector variables ---
@@ -116,6 +118,21 @@ namespace CWLF
 
         // TODO: Missing definitions of world elements (wall, ledge)
 
+        //[Snapshot]
+        //LedgeGeometry ledgeGeometry;
+
+        //[Snapshot]
+        //WallGeometry wallGeometry;
+
+        //[Snapshot]
+        //LedgeAnchor ledgeAnchor;
+
+        //[Snapshot]
+        //WallAnchor wallAnchor;
+
+        //[Snapshot]
+        //AnchoredTransitionTask anchoredTransition;
+
         // --- Methods ---
         public override void OnEnable()
         {
@@ -152,9 +169,12 @@ namespace CWLF
 
         }
 
+        
+
         // Update is called once per frame
         void Update()
         {
+            ref var synthesizer = ref kinematica.Synthesizer.Ref;
 
         }
 
@@ -205,5 +225,14 @@ namespace CWLF
 
             return float2.zero;
         }
+        //void ConfigureController(bool active)
+        //{
+        //    var controller = GetComponent<MovementController>();
+
+        //    controller.collisionEnabled = !active;
+        //    controller.groundSnap = !active;
+        //    controller.resolveGroundPenetration = !active;
+        //    controller.gravityEnabled = !active;
+        //}
     }
 }

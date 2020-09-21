@@ -8,7 +8,8 @@ using UnityEngine;
 namespace CWLF
 {
     [RequireComponent(typeof(Kinematica))]
-    //[RequireComponent(typeof(MovementController))]
+    [RequireComponent(typeof(AbilityController))]
+    [RequireComponent(typeof(MovementController))]
 
     public class ClimbingAbility : SnapshotProvider
     {

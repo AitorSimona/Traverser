@@ -22,6 +22,20 @@ namespace CWLF
             {
                 return new WallAnchor();
             }
+
+            // --- IO ---
+            public void WriteToStream(Buffer buffer)
+            {
+                buffer.Write(x);
+                buffer.Write(y);
+            }
+
+            public void ReadFromStream(Buffer buffer)
+            {
+                x = buffer.ReadSingle();
+
+                y = buffer.ReadSingle();
+            }
         }
 
         // --- Definition of wall geometry, so we can adapt motion when colliding into it ---

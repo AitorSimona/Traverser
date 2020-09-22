@@ -49,7 +49,29 @@ namespace CWLF
                 center = collider.center;
                 size = collider.size;
 
-                //Initialize(contactTransform);
+                Initialize(contactTransform);
+            }
+
+            public void Initialize(AffineTransform contactTransform)
+            {
+                // World space contact position to local canonical cube position
+                float3 localPosition = WorldToLocal(contactTransform.t);
+
+                normal = GetNormal(0);
+                float minimumDistance = math.abs(PlaneDistance(normal, Missing.up, localPosition));
+                
+                for (int i = 1; i < 4; ++i)
+                {
+                    float3 n = GetNormal(i);
+
+                    float distance = math.abs(PlaneDistance(n, Missing.up, localPosition));
+
+                    if (distance < minimumDistance)
+                    {
+                        normal = n;
+                        minimumDistance = distance;
+                    }
+                }
             }
 
             // --- Utility transformation methods ---

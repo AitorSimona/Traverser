@@ -11,7 +11,7 @@ namespace CWLF
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]
 
-    public class ClimbingAbility : SnapshotProvider, Ability
+    public partial class ClimbingAbility : SnapshotProvider, Ability
     {
         // --- Inspector variables ---
         [Header("Transition settings")]

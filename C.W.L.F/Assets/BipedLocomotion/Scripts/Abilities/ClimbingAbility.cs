@@ -207,7 +207,7 @@ namespace CWLF
                         break;
 
                     case State.FreeClimbing:
-                        HandleFreeClimbingState(ref synthesizer);
+                        HandleFreeClimbingState(ref synthesizer, deltaTime);
                         break;
 
                     case State.Dismount:
@@ -277,9 +277,60 @@ namespace CWLF
 
         }
 
-        void HandleFreeClimbingState(ref MotionSynthesizer synthesizer)
+        void HandleFreeClimbingState(ref MotionSynthesizer synthesizer, float deltaTime)
         {
+            UpdateFreeClimbing(ref synthesizer, deltaTime);
 
+            var desiredState = GetDesiredFreeClimbingState();
+
+            if (!IsClimbingState(desiredState))
+            {
+                var climbingTrait = Climbing.Create(Climbing.Type.Wall);
+
+                if (desiredState == ClimbingState.Idle)
+                {
+                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                }
+                else if (desiredState == ClimbingState.Down)
+                {
+                    var direction = Direction.Create(Direction.Type.Down);
+                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                }
+                else if (desiredState == ClimbingState.UpRight)
+                {
+                    var direction = Direction.Create(Direction.Type.UpRight);
+                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                }
+                else if (desiredState == ClimbingState.UpLeft)
+                {
+                    var direction = Direction.Create(Direction.Type.UpLeft);
+                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                }
+
+                SetClimbingState(desiredState);
+            }
+
+
+            float height = wallGeometry.GetHeight(ref wallAnchor);
+            float totalHeight = wallGeometry.GetHeight();
+            bool closeToLedge = math.abs(totalHeight - height) <= 0.095f;
+            bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
+
+            if (closeToLedge && capture.stickVertical >= 0.9f)
+            {
+                float3 rootPosition = synthesizer.WorldRootTransform.t;
+
+                ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
+                float3 ledgePosition = ledgeGeometry.GetPosition(ledgeAnchor);
+
+                SetState(State.Climbing);
+            }
+            else if (closeToDrop && capture.stickVertical <= -0.9f)
+            {
+                //RequestDismountTransition(ref synthesizer, deltaTime);
+
+                SetState(State.Dismount);
+            }
         }
 
         void HandleDismountState(ref MotionSynthesizer synthesizer)
@@ -294,7 +345,51 @@ namespace CWLF
 
         void HandleDropDownState(ref MotionSynthesizer synthesizer)
         {
+            ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
 
+            SetState(State.Climbing);
+        }
+
+        void UpdateFreeClimbing(ref MotionSynthesizer synthesizer, float deltaTime)
+        {
+            //
+            // Smoothly adjust current root transform towards the anchor transform
+            //
+
+            AffineTransform deltaTransform = synthesizer.GetTrajectoryDeltaTransform(deltaTime);
+            AffineTransform rootTransform = synthesizer.WorldRootTransform * deltaTransform;
+
+            wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
+            float y = 1.0f - (2.8f / wallGeometry.GetHeight());
+            wallAnchor.y = math.min(y, wallAnchor.y);
+
+            float3 position = wallGeometry.GetPosition(wallAnchor);
+            float distance = math.length(rootTransform.t - position);
+
+            if (distance >= 0.01f)
+            {
+                float3 normal = math.normalize(position - rootTransform.t);
+                rootTransform.t += normal * 0.5f * deltaTime;
+            }
+            rootTransform.t = position;
+
+            float angle;
+            float3 currentForward = Missing.zaxis(rootTransform.q);
+            float3 desiredForward = -wallGeometry.GetNormalWorldSpace();
+
+            quaternion q = Missing.forRotation(currentForward, desiredForward);
+            float maximumAngle = math.radians(90.0f) * deltaTime;
+            float3 axis = Missing.axisAngle(q, out angle);
+            angle = math.min(angle, maximumAngle);
+            rootTransform.q = math.mul(quaternion.AxisAngle(axis, angle), rootTransform.q);
+
+            rootTransform *= deltaTransform.inverse();
+            rootTransform.q = math.normalize(rootTransform.q);
+
+            synthesizer.WorldRootTransform = rootTransform;
+
+            wallGeometry.DebugDraw();
+            wallGeometry.DebugDraw(ref wallAnchor);
         }
 
         // --------------------------------
@@ -368,6 +463,45 @@ namespace CWLF
             }
 
             return float2.zero;
+        }
+
+        ClimbingState GetDesiredFreeClimbingState()
+        {
+            float2 stickInput = GetStickInput();
+
+            if (math.length(stickInput) >= 0.1f)
+            {
+                if (stickInput.y < stickInput.x)
+                {
+                    return ClimbingState.Down;
+                }
+
+                if (stickInput.x > 0.0f)
+                {
+                    return ClimbingState.UpRight;
+                }
+
+                return ClimbingState.UpLeft;
+            }
+
+            return ClimbingState.Idle;
+        }
+
+        ClimbingState GetDesiredClimbingState()
+        {
+            float2 stickInput = GetStickInput();
+
+            if (math.abs(stickInput.x) >= 0.5f)
+            {
+                if (stickInput.x > 0.0f)
+                {
+                    return ClimbingState.Right;
+                }
+
+                return ClimbingState.Left;
+            }
+
+            return ClimbingState.Idle;
         }
 
         void ConfigureController(bool active)

@@ -117,24 +117,25 @@ namespace CWLF
         [Snapshot]
         FrameCapture capture; // input
 
-        // TODO: Missing definitions of world elements (wall, ledge)
 
-        //[Snapshot]
-        //LedgeGeometry ledgeGeometry;
+        // --- World interactable elements ---
 
-        //[Snapshot]
-        //WallGeometry wallGeometry;
+        [Snapshot]
+        LedgeGeometry ledgeGeometry;
 
-        //[Snapshot]
-        //LedgeAnchor ledgeAnchor;
+        [Snapshot]
+        WallGeometry wallGeometry;
 
-        //[Snapshot]
-        //WallAnchor wallAnchor;
+        [Snapshot]
+        LedgeAnchor ledgeAnchor;
+
+        [Snapshot]
+        WallAnchor wallAnchor;
 
         //[Snapshot]
         //AnchoredTransitionTask anchoredTransition;
 
-        // --- Methods ---
+        // --- Basic Methods ---
         public override void OnEnable()
         {
             base.OnEnable();
@@ -147,11 +148,19 @@ namespace CWLF
             climbingState = ClimbingState.Idle;
             previousClimbingState = ClimbingState.Idle;
             lastCollidingClimbingState = ClimbingState.None;
+
+            ledgeGeometry = LedgeGeometry.Create();
+            wallGeometry = WallGeometry.Create();
+
+            ledgeAnchor = LedgeAnchor.Create();
+            wallAnchor = WallAnchor.Create();
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
+
+            ledgeGeometry.Dispose();
         }
 
         public override void OnEarlyUpdate(bool rewind)
@@ -162,12 +171,6 @@ namespace CWLF
             {
                 capture.Update();
             }
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
         }
 
         // --- Ability class methods ---
@@ -185,16 +188,22 @@ namespace CWLF
                 switch (state)
                 {
                     case State.Mounting:
+                        HandleMountingState(ref synthesizer);
                         break;
                     case State.Climbing:
+                        HandleClimbingState(ref synthesizer);
                         break;
                     case State.FreeClimbing:
+                        HandleFreeClimbingState(ref synthesizer);
                         break;
                     case State.Dismount:
+                        HandleDismountState(ref synthesizer);
                         break;
                     case State.PullUp:
+                        HandlePullUpState(ref synthesizer);
                         break;
                     case State.DropDown:
+                        HandleDropDownState(ref synthesizer);
                         break;
                     default:
                         break;
@@ -205,6 +214,40 @@ namespace CWLF
 
             return null;
         }
+
+        // --- Climbing states wrappers ---
+
+        void HandleMountingState(ref MotionSynthesizer synthesizer)
+        {
+
+        }
+
+        void HandleClimbingState(ref MotionSynthesizer synthesizer)
+        {
+
+        }
+
+        void HandleFreeClimbingState(ref MotionSynthesizer synthesizer)
+        {
+
+        }
+
+        void HandleDismountState(ref MotionSynthesizer synthesizer)
+        {
+
+        }
+
+        void HandlePullUpState(ref MotionSynthesizer synthesizer)
+        {
+
+        }
+
+        void HandleDropDownState(ref MotionSynthesizer synthesizer)
+        {
+
+        }
+
+        // --------------------------------
 
         public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
         {

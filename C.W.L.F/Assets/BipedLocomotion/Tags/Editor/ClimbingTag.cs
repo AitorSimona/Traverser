@@ -1,22 +1,25 @@
 using System;
 using Unity.Kinematica.Editor;
 
-[Serializable]
-[Tag("Climbing", "#d25048")]
-public struct ClimbingTag : Payload<Climbing>
+namespace CWLF
 {
-    public Climbing.Type type;
-
-    public Climbing Build(PayloadBuilder builder)
+    [Serializable]
+    [Tag("Climbing", "#d25048")]
+    public struct ClimbingTag : Payload<Climbing>
     {
-        return Climbing.Create(type);
-    }
+        public Climbing.Type type;
 
-    public static ClimbingTag Create(Climbing.Type type)
-    {
-        return new ClimbingTag
+        public Climbing Build(PayloadBuilder builder)
         {
-            type = type
-        };
+            return Climbing.Create(type);
+        }
+
+        public static ClimbingTag Create(Climbing.Type type)
+        {
+            return new ClimbingTag
+            {
+                type = type
+            };
+        }
     }
 }

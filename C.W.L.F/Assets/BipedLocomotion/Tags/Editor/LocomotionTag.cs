@@ -1,13 +1,15 @@
 ﻿using System;
 using Unity.Kinematica.Editor;
 
-[Serializable]
-[Tag("Locomotion", "#4850d2")]
-public struct LocomotionTag : Payload<Locomotion>
+namespace CWLF
 {
-    public Locomotion Build(PayloadBuilder builder)
+    [Serializable]
+    [Tag("Locomotion", "#4850d2")]
+    public struct LocomotionTag : Payload<Locomotion>
     {
-        return Locomotion.Default;
+        public Locomotion Build(PayloadBuilder builder)
+        {
+            return Locomotion.Default;
+        }
     }
 }
-

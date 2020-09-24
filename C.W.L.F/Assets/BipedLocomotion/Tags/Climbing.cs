@@ -1,31 +1,34 @@
 using Unity.Kinematica;
 
-[Trait]
-public struct Climbing
+namespace CWLF
 {
-    public enum Type
+    [Trait]
+    public struct Climbing
     {
-        Ledge,
-        Wall
-    }
-
-    public Type type;
-
-    public bool IsType(Type type)
-    {
-        return this.type == type;
-    }
-
-    public static Climbing Create(Type type)
-    {
-        return new Climbing
+        public enum Type
         {
-            type = type
-        };
-    }
+            Ledge,
+            Wall
+        }
 
-    public static Climbing Create(int layer)
-    {
-        return Create((Type)layer);
+        public Type type;
+
+        public bool IsType(Type type)
+        {
+            return this.type == type;
+        }
+
+        public static Climbing Create(Type type)
+        {
+            return new Climbing
+            {
+                type = type
+            };
+        }
+
+        public static Climbing Create(int layer)
+        {
+            return Create((Type)layer);
+        }
     }
 }

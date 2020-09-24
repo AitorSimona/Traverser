@@ -207,7 +207,7 @@ namespace CWLF
                         break;
 
                     case State.Climbing:
-                        HandleClimbingState(ref synthesizer);
+                        HandleClimbingState(ref synthesizer, deltaTime);
                         break;
 
                     case State.FreeClimbing:
@@ -280,9 +280,59 @@ namespace CWLF
             PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
         }
 
-        void HandleClimbingState(ref MotionSynthesizer synthesizer)
+        void HandleClimbingState(ref MotionSynthesizer synthesizer, float deltaTime)
         {
+            UpdateClimbing(ref synthesizer, deltaTime);
 
+            var desiredState = GetDesiredClimbingState();
+            if (desiredState == lastCollidingClimbingState)
+            {
+                desiredState = ClimbingState.Idle;
+            }
+
+            if (!IsClimbingState(desiredState))
+            {
+                var climbingTrait = Climbing.Create(Climbing.Type.Ledge);
+
+                if (desiredState == ClimbingState.Idle)
+                {
+                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                }
+                else if (desiredState == ClimbingState.Right)
+                {
+                    var direction = Direction.Create(Direction.Type.Right);
+                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                }
+                else if (desiredState == ClimbingState.Left)
+                {
+                    var direction = Direction.Create(Direction.Type.Left);
+                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                }
+
+                SetClimbingState(desiredState);
+            }
+
+            AffineTransform rootTransform = synthesizer.WorldRootTransform;
+            wallGeometry.Initialize(rootTransform);
+            wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
+            float height = wallGeometry.GetHeight(ref wallAnchor);
+            float totalHeight = wallGeometry.GetHeight();
+            bool closeToDrop = math.abs(height - 2.8f) <= 0.05f;
+
+            //if (capture.pullUpButton && CanPullUp())
+            //{
+            //    AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
+
+            //    RequestPullUpTransition(ref synthesizer, contactTransform);
+
+            //    SetState(State.PullUp);
+            //}
+            //else if (capture.dismountButton /*&& closeToDrop*/)
+            //{
+            //    RequestDismountTransition(ref synthesizer, deltaTime);
+
+            //    SetState(State.Dismount);
+            //}
         }
 
         void HandleFreeClimbingState(ref MotionSynthesizer synthesizer, float deltaTime)
@@ -356,6 +406,69 @@ namespace CWLF
             ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
 
             SetState(State.Climbing);
+        }
+
+        bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
+        {
+            bool bCollision = IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f));
+
+            if (climbingState == ClimbingState.Idle)
+            {
+                lastCollidingClimbingState = ClimbingState.None;
+            }
+            else if (bCollision)
+            {
+                float currentMoveDirection = climbingState == ClimbingState.Left ? 1.0f : -1.0f;
+                if (currentMoveDirection * desiredMoveOnLedge > 0.0f)
+                {
+                    lastCollidingClimbingState = climbingState;
+                }
+            }
+
+            return bCollision;
+        }
+
+        void UpdateClimbing(ref MotionSynthesizer synthesizer, float deltaTime)
+        {
+            //
+            // Smoothly adjust current root transform towards the anchor transform
+            //
+
+            AffineTransform deltaTransform = synthesizer.GetTrajectoryDeltaTransform(deltaTime);
+            AffineTransform rootTransform = synthesizer.WorldRootTransform * deltaTransform;
+
+            float linearDisplacement = -deltaTransform.t.x;
+
+            LedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
+
+            float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
+            float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
+
+            if (!UpdateCollidingClimbingState(linearDisplacement, position, desiredForward))
+            {
+                ledgeAnchor = desiredLedgeAnchor;
+            }
+
+            float distance = math.length(rootTransform.t - position);
+            if (distance >= 0.01f)
+            {
+                float3 normal = math.normalize(position - rootTransform.t);
+                rootTransform.t += normal * 0.5f * deltaTime;
+            }
+            rootTransform.t = position;
+
+            float angle;
+            float3 currentForward = Missing.zaxis(rootTransform.q);
+            quaternion q = Missing.forRotation(currentForward, desiredForward);
+            float maximumAngle = math.radians(90.0f) * deltaTime;
+            float3 axis = Missing.axisAngle(q, out angle);
+            angle = math.min(angle, maximumAngle);
+            rootTransform.q = math.mul(quaternion.AxisAngle(axis, angle), rootTransform.q);
+
+            synthesizer.WorldRootTransform = rootTransform;
+
+            ledgeGeometry.DebugDraw();
+            ledgeGeometry.DebugDraw(ref ledgeAnchor);
         }
 
         void UpdateFreeClimbing(ref MotionSynthesizer synthesizer, float deltaTime)
@@ -527,6 +640,20 @@ namespace CWLF
             }
 
             return ClimbingState.Idle;
+        }
+
+        bool CanPullUp()
+        {
+            return !IsCharacterCapsuleColliding(transform.position);
+        }
+
+        bool IsCharacterCapsuleColliding(Vector3 rootPosition)
+        {
+            CapsuleCollider capsule = GetComponent<CapsuleCollider>();
+            Vector3 capsuleCenter = rootPosition + capsule.center;
+            Vector3 capsuleOffset = Vector3.up * (capsule.height * 0.5f - capsule.radius);
+
+            return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, capsule.radius - 0.1f, TagExtensions.EnvironmentCollisionMask);
         }
 
         void ConfigureController(bool active)

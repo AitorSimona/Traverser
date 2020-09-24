@@ -214,16 +214,6 @@ namespace CWLF
                         HandleFreeClimbingState(ref synthesizer, deltaTime);
                         break;
 
-                    case State.Dismount:
-                        //if (IsTransitionComplete())
-                            HandleDismountState(ref synthesizer);
-                        break;
-
-                    case State.PullUp:
-                        //if (IsTransitionComplete())
-                            HandlePullUpState(ref synthesizer);
-                        break;
-
                     case State.DropDown:
                         {
                             bool TransitionSuccess;
@@ -243,6 +233,28 @@ namespace CWLF
 
                     default:
                         break;
+                }
+
+                if (IsState(State.Dismount) || IsState(State.PullUp) || IsState(State.DropDown))
+                {
+                    bool bTransitionSucceeded;
+                    if (IsTransitionComplete(out bTransitionSucceeded))
+                    {
+                        SetState(State.Suspended);
+                    }
+                }
+
+                if (anchoredTransition.isValid)
+                {
+                    if (!anchoredTransition.IsState(AnchoredTransitionTask.State.Complete) && !anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
+                    {
+                        anchoredTransition.synthesizer = MemoryRef<MotionSynthesizer>.Create(ref synthesizer);
+                        kinematica.AddJobDependency(AnchoredTransitionJob.Schedule(ref anchoredTransition));
+                    }
+                    else
+                    {
+                        anchoredTransition.Dispose();
+                    }
                 }
 
                 return this;
@@ -319,20 +331,17 @@ namespace CWLF
             float totalHeight = wallGeometry.GetHeight();
             bool closeToDrop = math.abs(height - 2.8f) <= 0.05f;
 
-            //if (capture.pullUpButton && CanPullUp())
-            //{
-            //    AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
-
-            //    RequestPullUpTransition(ref synthesizer, contactTransform);
-
-            //    SetState(State.PullUp);
-            //}
-            //else if (capture.dismountButton /*&& closeToDrop*/)
-            //{
-            //    RequestDismountTransition(ref synthesizer, deltaTime);
-
-            //    SetState(State.Dismount);
-            //}
+            if (capture.pullUpButton && CanPullUp())
+            {
+                AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
+                RequestTransition(ref synthesizer, contactTransform, Ledge.Type.PullUp);
+                SetState(State.PullUp);
+            }
+            else if (capture.dismountButton /*&& closeToDrop*/)
+            {
+                RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
+                SetState(State.Dismount);
+            }
         }
 
         void HandleFreeClimbingState(ref MotionSynthesizer synthesizer, float deltaTime)
@@ -368,7 +377,6 @@ namespace CWLF
                 SetClimbingState(desiredState);
             }
 
-
             float height = wallGeometry.GetHeight(ref wallAnchor);
             float totalHeight = wallGeometry.GetHeight();
             bool closeToLedge = math.abs(totalHeight - height) <= 0.095f;
@@ -385,26 +393,14 @@ namespace CWLF
             }
             else if (closeToDrop && capture.stickVertical <= -0.9f)
             {
-                //RequestDismountTransition(ref synthesizer, deltaTime);
-
+                RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
                 SetState(State.Dismount);
             }
-        }
-
-        void HandleDismountState(ref MotionSynthesizer synthesizer)
-        {
-
-        }
-
-        void HandlePullUpState(ref MotionSynthesizer synthesizer)
-        {
-
         }
 
         void HandleDropDownState(ref MotionSynthesizer synthesizer)
         {
             ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-
             SetState(State.Climbing);
         }
 
@@ -517,6 +513,29 @@ namespace CWLF
 
         public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
         {
+            if (capture.mountButton)
+            {
+                if (IsState(State.Suspended))
+                {
+                    MovementController controller = GetComponent<MovementController>();
+                    BoxCollider collider = controller.current.collider as BoxCollider;
+
+                    if (collider != null)
+                    {
+                        if (collider.gameObject.layer == (int)Layer.Wall)
+                        {
+                            ledgeGeometry.Initialize(collider);
+                            wallGeometry.Initialize(collider, contactTransform);
+
+                            RequestTransition(ref synthesizer, contactTransform, Ledge.Type.Mount);
+
+                            SetState(State.Mounting);
+
+                            return true;
+                        }
+                    }
+                }
+            }
 
             return false;
         }
@@ -524,6 +543,76 @@ namespace CWLF
         public bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime)
         {
             return false;
+        }
+
+        public void RequestTransition(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Ledge.Type type)
+        {
+            ref Binary binary = ref synthesizer.Binary;
+
+            Ledge trait = Ledge.Create(type);
+
+            var sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, trait, contactThreshold);
+            bool rootadjust = trait.type == Ledge.Type.PullUp ? false : true;
+
+            anchoredTransition.Dispose();
+            anchoredTransition = AnchoredTransitionTask.Create(ref synthesizer,
+                    sequence, contactTransform, maximumLinearError,
+                        maximumAngularError, rootadjust);
+
+            if (enableDebugging)
+                DisplayTransition(ref synthesizer,contactTransform, trait,contactThreshold);
+        }
+        void DisplayTransition<T>(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
+        {
+            if (enableDebugging)
+            {
+                ref Binary binary = ref synthesizer.Binary;
+
+                NativeArray<TagExtensions.OBB> obbs =
+                    TagExtensions.GetBoundsFromContactPoints(ref binary,
+                        contactTransform, value, contactThreshold);
+
+                //
+                // Display all relevant box colliders
+                //
+
+                int numObbs = obbs.Length;
+                for (int i = 0; i < numObbs; ++i)
+                {
+                    TagExtensions.OBB obb = obbs[i];
+                    obb.transform = contactTransform * obb.transform;
+                    TagExtensions.DebugDraw(obb, Color.cyan);
+                }
+
+                var tagTraitIndex = binary.GetTraitIndex(value);
+
+                int numTags = binary.numTags;
+
+                int validIndex = 0;
+
+                for (int i = 0; i < numTags; ++i)
+                {
+                    ref Binary.Tag tag = ref binary.GetTag(i);
+
+                    if (tag.traitIndex == tagTraitIndex)
+                    {
+                        if (validIndex == debugIndex)
+                        {
+                            TagExtensions.DebugDrawContacts(ref binary, ref tag,
+                                contactTransform, obbs, contactThreshold);
+
+                            TagExtensions.DebugDrawPoseAndTrajectory(ref binary, ref tag,
+                                contactTransform, debugPoseIndex);
+
+                            return;
+                        }
+
+                        validIndex++;
+                    }
+                }
+
+                obbs.Dispose();
+            }
         }
 
         // --- Utilities ---     

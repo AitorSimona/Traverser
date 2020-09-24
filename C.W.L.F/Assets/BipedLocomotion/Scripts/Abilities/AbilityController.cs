@@ -48,5 +48,33 @@ namespace CWLF
             base.Update();
         }
 
+        public override void OnAnimatorMove()
+        {
+            ref MotionSynthesizer synthesizer = ref Synthesizer.Ref;
+
+            if (currentAbility is AbilityAnimatorMove abilityAnimatorMove)
+            {
+                abilityAnimatorMove.OnAbilityAnimatorMove();
+            }
+
+            MovementController controller = GetComponent<MovementController>();
+
+            Assert.IsTrue(controller != null);
+
+            float3 controllerPosition = controller.Position;
+
+            float3 desiredLinearDisplacement = synthesizer.WorldRootTransform.t - controllerPosition;
+
+            controller.Move(desiredLinearDisplacement);
+            controller.Tick(Debugger.instance.deltaTime);
+
+            var worldRootTransform = AffineTransform.Create(controller.Position, synthesizer.WorldRootTransform.q);
+
+            synthesizer.SetWorldTransform(worldRootTransform, true);
+
+            transform.position = worldRootTransform.t;
+            transform.rotation = worldRootTransform.q;
+        }
+
     }
 }

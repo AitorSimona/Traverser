@@ -34,4 +34,9 @@ namespace CWLF
 
         bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime);
     }
+
+    public interface AbilityAnimatorMove
+    {
+        void OnAbilityAnimatorMove();
+    }
 }

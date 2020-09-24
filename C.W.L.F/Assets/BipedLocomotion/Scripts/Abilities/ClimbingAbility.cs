@@ -190,15 +190,19 @@ namespace CWLF
                 switch (state)
                 {
                     case State.Mounting:
-                        if (IsTransitionComplete())
                         {
-                            if (!IsTransitionSuccess())
-                            {
-                                SetState(State.Suspended);
-                                return null;
-                            }
+                            bool TransitionSuccess;
 
-                            HandleMountingState(ref synthesizer);
+                            if (IsTransitionComplete(out TransitionSuccess))
+                            {
+                                if (!TransitionSuccess)
+                                {
+                                    SetState(State.Suspended);
+                                    return null;
+                                }
+
+                                HandleMountingState(ref synthesizer);
+                            }
                         }
                         break;
 
@@ -211,25 +215,29 @@ namespace CWLF
                         break;
 
                     case State.Dismount:
-                        if (IsTransitionComplete())
+                        //if (IsTransitionComplete())
                             HandleDismountState(ref synthesizer);
                         break;
 
                     case State.PullUp:
-                        if (IsTransitionComplete())
+                        //if (IsTransitionComplete())
                             HandlePullUpState(ref synthesizer);
                         break;
 
                     case State.DropDown:
-                        if (IsTransitionComplete())
                         {
-                            if (!IsTransitionSuccess())
-                            {
-                                SetState(State.Suspended);
-                                return null;
-                            }
+                            bool TransitionSuccess;
 
-                            HandleDropDownState(ref synthesizer);
+                            if (IsTransitionComplete(out TransitionSuccess))
+                            {
+                                if (!TransitionSuccess)
+                                {
+                                    SetState(State.Suspended);
+                                    return null;
+                                }
+
+                                HandleDropDownState(ref synthesizer);
+                            }
                         }
                         break;
 
@@ -399,22 +407,39 @@ namespace CWLF
 
             return false;
         }
+
         public bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime)
         {
             return false;
         }
 
         // --- Utilities ---     
-        public bool IsTransitionComplete()
+        public bool IsTransitionComplete(out bool TransitionSuccess)
         {
-            bool ret = false;
+            bool ret = true;
+            TransitionSuccess = false;
+            bool active = anchoredTransition.isValid;
 
-            return ret;
-        }
-
-        public bool IsTransitionSuccess()
-        {
-            bool ret = false;
+            if (active)
+            {
+                if (anchoredTransition.IsState(AnchoredTransitionTask.State.Complete))
+                {
+                    anchoredTransition.Dispose();
+                    anchoredTransition = AnchoredTransitionTask.Invalid;
+                    TransitionSuccess = true;
+                    ret = true;
+                }
+                else if (anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
+                {
+                    anchoredTransition.Dispose();
+                    anchoredTransition = AnchoredTransitionTask.Invalid;
+                    ret = true;
+                }
+                else
+                {
+                    ret = false;
+                }
+            }
 
             return ret;
         }

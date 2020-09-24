@@ -117,7 +117,6 @@ namespace CWLF
         [Snapshot]
         FrameCapture capture; // input
 
-
         // --- World interactable elements ---
 
         [Snapshot]
@@ -132,8 +131,8 @@ namespace CWLF
         [Snapshot]
         WallAnchor wallAnchor;
 
-        //[Snapshot]
-        //AnchoredTransitionTask anchoredTransition;
+        [Snapshot]
+        AnchoredTransitionTask anchoredTransition;
 
         // --- Basic Methods ---
         public override void OnEnable()
@@ -154,6 +153,8 @@ namespace CWLF
 
             ledgeAnchor = LedgeAnchor.Create();
             wallAnchor = WallAnchor.Create();
+
+            anchoredTransition = AnchoredTransitionTask.Invalid;
         }
 
         public override void OnDisable()
@@ -161,6 +162,7 @@ namespace CWLF
             base.OnDisable();
 
             ledgeGeometry.Dispose();
+            anchoredTransition.Dispose();
         }
 
         public override void OnEarlyUpdate(bool rewind)
@@ -191,7 +193,10 @@ namespace CWLF
                         if (IsTransitionComplete())
                         {
                             if (!IsTransitionSuccess())
+                            {
+                                SetState(State.Suspended);
                                 return null;
+                            }
 
                             HandleMountingState(ref synthesizer);
                         }
@@ -219,7 +224,10 @@ namespace CWLF
                         if (IsTransitionComplete())
                         {
                             if (!IsTransitionSuccess())
+                            {
+                                SetState(State.Suspended);
                                 return null;
+                            }
 
                             HandleDropDownState(ref synthesizer);
                         }
@@ -239,7 +247,29 @@ namespace CWLF
 
         void HandleMountingState(ref MotionSynthesizer synthesizer)
         {
-            
+            float3 rootPosition = synthesizer.WorldRootTransform.t;
+
+            ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
+            float3 ledgePosition = ledgeGeometry.GetPosition(ledgeAnchor);
+            float ledgeDistance = math.length(rootPosition - ledgePosition);
+
+            bool freeClimbing = false; // ledgeDistance >= 0.1f;
+
+            Climbing climbingTrait = freeClimbing ? Climbing.Create(Climbing.Type.Wall) : Climbing.Create(Climbing.Type.Ledge);
+
+            if (freeClimbing)
+            {
+                wallAnchor = wallGeometry.GetAnchor(rootPosition);
+                SetState(State.FreeClimbing);
+            }
+            else
+            {
+                SetState(State.Climbing);
+            }
+
+            SetClimbingState(ClimbingState.Idle);
+
+            PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
         }
 
         void HandleClimbingState(ref MotionSynthesizer synthesizer)

@@ -188,23 +188,43 @@ namespace CWLF
                 switch (state)
                 {
                     case State.Mounting:
-                        HandleMountingState(ref synthesizer);
+                        if (IsTransitionComplete())
+                        {
+                            if (!IsTransitionSuccess())
+                                return null;
+
+                            HandleMountingState(ref synthesizer);
+                        }
                         break;
+
                     case State.Climbing:
                         HandleClimbingState(ref synthesizer);
                         break;
+
                     case State.FreeClimbing:
                         HandleFreeClimbingState(ref synthesizer);
                         break;
+
                     case State.Dismount:
-                        HandleDismountState(ref synthesizer);
+                        if (IsTransitionComplete())
+                            HandleDismountState(ref synthesizer);
                         break;
+
                     case State.PullUp:
-                        HandlePullUpState(ref synthesizer);
+                        if (IsTransitionComplete())
+                            HandlePullUpState(ref synthesizer);
                         break;
+
                     case State.DropDown:
-                        HandleDropDownState(ref synthesizer);
+                        if (IsTransitionComplete())
+                        {
+                            if (!IsTransitionSuccess())
+                                return null;
+
+                            HandleDropDownState(ref synthesizer);
+                        }
                         break;
+
                     default:
                         break;
                 }
@@ -219,7 +239,7 @@ namespace CWLF
 
         void HandleMountingState(ref MotionSynthesizer synthesizer)
         {
-
+            
         }
 
         void HandleClimbingState(ref MotionSynthesizer synthesizer)
@@ -260,6 +280,20 @@ namespace CWLF
         }
 
         // --- Utilities ---     
+        public bool IsTransitionComplete()
+        {
+            bool ret = false;
+
+            return ret;
+        }
+
+        public bool IsTransitionSuccess()
+        {
+            bool ret = false;
+
+            return ret;
+        }
+
         public void SetState(State newState)
         {
             previousState = state;

@@ -183,7 +183,7 @@ namespace CWLF
                 responsiveness = responsiveness
             };
 
-            // --- Finally tell kinematica to wait for this job to finish before executing other stuff ---¡
+            // --- Finally tell kinematica to wait for this job to finish before executing other stuff ---
             kinematica.AddJobDependency(job.Schedule());
 
             // --- Another ability has been triggered ---

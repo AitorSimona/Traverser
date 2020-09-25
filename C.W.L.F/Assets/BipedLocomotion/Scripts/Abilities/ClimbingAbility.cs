@@ -5,6 +5,7 @@ using Unity.Collections;
 
 using UnityEngine;
 
+
 namespace CWLF
 {
     [RequireComponent(typeof(AbilityController))]
@@ -54,7 +55,7 @@ namespace CWLF
             public bool mountButton;
             public bool dismountButton;
             public bool pullUpButton;
-
+            
             public void Update()
             {
                 stickHorizontal = Input.GetAxis("Left Analog Horizontal");

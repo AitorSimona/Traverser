@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace CWLF
 {
-    [RequireComponent(typeof(Kinematica))]
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]
 
@@ -169,7 +168,7 @@ namespace CWLF
         {
             base.OnEarlyUpdate(rewind);
 
-            if (!rewind)
+            if (!rewind) // if we are not using snapshot debugger to rewind
             {
                 capture.Update();
             }

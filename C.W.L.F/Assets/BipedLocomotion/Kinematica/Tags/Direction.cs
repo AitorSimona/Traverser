@@ -1,7 +1,6 @@
 using Unity.Kinematica;
 
-namespace CWLF
-{
+
     [Trait]
     public struct Direction
     {
@@ -32,4 +31,4 @@ namespace CWLF
             };
         }
     }
-}
+

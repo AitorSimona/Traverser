@@ -1,7 +1,6 @@
 using Unity.Kinematica;
 
-namespace CWLF
-{
+
     [Trait]
     public struct Climbing
     {
@@ -31,4 +30,4 @@ namespace CWLF
             return Create((Type)layer);
         }
     }
-}
+

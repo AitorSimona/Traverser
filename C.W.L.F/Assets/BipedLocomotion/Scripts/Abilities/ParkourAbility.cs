@@ -77,11 +77,14 @@ namespace CWLF
         public Ability OnUpdate(float deltaTime)
         {
             MovementController controller = GetComponent<MovementController>();
+            bool active = anchoredTransition.isValid;
 
-            controller.collisionEnabled = controller.groundSnap = controller.resolveGroundPenetration 
-                = controller.gravityEnabled = !anchoredTransition.isValid;
+            controller.collisionEnabled = !active;
+            controller.groundSnap = !active;
+            controller.resolveGroundPenetration = !active;
+            controller.gravityEnabled = !active;
 
-            if (anchoredTransition.isValid)
+            if (active)
             {
                 Kinematica kinematica = GetComponent<Kinematica>();
                 ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;

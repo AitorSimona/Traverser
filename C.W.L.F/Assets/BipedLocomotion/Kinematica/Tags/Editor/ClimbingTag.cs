@@ -1,8 +1,7 @@
 using System;
 using Unity.Kinematica.Editor;
 
-namespace CWLF
-{
+
     [Serializable]
     [Tag("Climbing", "#d25048")]
     public struct ClimbingTag : Payload<Climbing>
@@ -22,4 +21,4 @@ namespace CWLF
             };
         }
     }
-}
+

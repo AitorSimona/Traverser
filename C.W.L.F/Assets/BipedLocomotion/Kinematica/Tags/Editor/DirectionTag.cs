@@ -1,8 +1,7 @@
 using System;
 using Unity.Kinematica.Editor;
 
-namespace CWLF
-{
+
     [Serializable]
     [Tag("Direction", "#5048d2")]
     public struct DirectionTag : Payload<Direction>
@@ -14,4 +13,4 @@ namespace CWLF
             return Direction.Create(type);
         }
     }
-}
+

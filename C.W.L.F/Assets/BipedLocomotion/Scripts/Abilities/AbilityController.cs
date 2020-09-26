@@ -7,8 +7,7 @@ using System.Collections.Generic;
 
 using Unity.SnapshotDebugger;
 
-namespace CWLF
-{
+
     [RequireComponent(typeof(MovementController))]
     public class AbilityController : Kinematica
     {
@@ -77,4 +76,4 @@ namespace CWLF
         }
 
     }
-}
+

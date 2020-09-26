@@ -2,8 +2,7 @@
 using Unity.Mathematics;
 
 
-namespace CWLF
-{
+
     public interface Ability
     {
         //
@@ -39,4 +38,3 @@ namespace CWLF
     {
         void OnAbilityAnimatorMove();
     }
-}

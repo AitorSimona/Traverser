@@ -17,7 +17,7 @@ MonoBehaviour:
   timeHorizon: 1
   sampleRate: 30
   m_Data:
-    syncedWithBinary: 1
+    syncedWithBinary: 0
     animationLibrary:
     - m_PreBoundaryClipGuid:
         val0: 805636515
@@ -1281,15 +1281,15 @@ MonoBehaviour:
       markers: []
       m_Asset: {fileID: 11400000}
     - m_PreBoundaryClipGuid:
-        val0: 0
-        val1: 0
-        val2: 0
-        val3: 0
+        val0: -745547708
+        val1: -613141723
+        val2: 1819877689
+        val3: 1840869641
       m_PostBoundaryClipGuid:
-        val0: 0
-        val1: 0
-        val2: 0
-        val3: 0
+        val0: -745547708
+        val1: -613141723
+        val2: 1819877689
+        val3: 1840869641
       m_PreBoundaryClip: {fileID: 0}
       m_PostBoundaryClip: {fileID: 0}
       m_AnimationClipReference: {fileID: 7400000, guid: d38fd8443325db743921796c0971b96d, type: 3}

@@ -8,8 +8,6 @@ using UnityEngine;
 
 using Buffer = Unity.SnapshotDebugger.Buffer;
 
-namespace CWLF
-{
 
     // --- Definition of ledge geometry, so we can adapt motion when colliding into it ---
 
@@ -250,4 +248,3 @@ namespace CWLF
             }
         }
     }
-}

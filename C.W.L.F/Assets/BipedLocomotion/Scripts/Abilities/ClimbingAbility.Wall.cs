@@ -5,8 +5,6 @@ using Unity.Kinematica;
 using UnityEngine;
 
 
-namespace CWLF
-{
 
     public partial class ClimbingAbility : SnapshotProvider, Ability
     {
@@ -269,4 +267,4 @@ namespace CWLF
         } // end of wall geometry
 
     }
-}
+

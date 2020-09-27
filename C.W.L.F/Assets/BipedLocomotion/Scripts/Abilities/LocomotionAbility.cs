@@ -9,6 +9,8 @@ using UnityEngine.Assertions;
 
 namespace CWLF
 {
+
+    // --- Locomotion pose prediction job (MT) ---
     [BurstCompile(CompileSynchronously = true)] //Burst is primarily designed to work efficiently with the Job system.
     public struct LocomotionJob : IJob // multhithreaded code, pose prediction will be executed faster
     {
@@ -39,8 +41,11 @@ namespace CWLF
         }
     }
 
+    // -------------------------------------------------
+
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]
+
     public class LocomotionAbility : SnapshotProvider, Ability // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger
     {
         // --- Inspector variables ---
@@ -86,6 +91,8 @@ namespace CWLF
         [Range(0.0f, 10.0f)]
         public float correctMotionEndSpeed = 3.0f;
 
+        // -------------------------------------------------
+
         // --- Internal variables ---
         Kinematica kinematica;
 
@@ -110,12 +117,16 @@ namespace CWLF
 
         float desiredLinearSpeed => run ? desiredSpeedFast : desiredSpeedSlow;
 
+        // -------------------------------------------------
+
         // --- Kinematica internal var ---
         struct SamplingTimeInfo
         {
             public bool isLocomotion;
             public bool hasReachedEndOfSegment;
         }
+
+        // -------------------------------------------------
 
         // --- Basic Methods ---
         public override void OnEnable()
@@ -156,6 +167,8 @@ namespace CWLF
                 run = Input.GetButton("A Button");
             }
         }
+
+        // -------------------------------------------------
 
         // --- Ability class methods ---
         public Ability OnUpdate(float deltaTime)
@@ -327,7 +340,8 @@ namespace CWLF
 
         public void OnAbilityAnimatorMove()
         {
-            var kinematica = GetComponent<Kinematica>();
+            // --- Smooth out/modify motion with locomotion ability's data ---
+            Kinematica kinematica = GetComponent<Kinematica>();
             if (kinematica.Synthesizer.IsValid)
             {
                 ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
@@ -352,7 +366,7 @@ namespace CWLF
                 hasReachedEndOfSegment = false
             };
 
-            var kinematica = GetComponent<Kinematica>();
+            Kinematica kinematica = GetComponent<Kinematica>();
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
             ref Binary binary = ref synthesizer.Binary;
 
@@ -394,5 +408,7 @@ namespace CWLF
         }
 
     }
+
+    // -------------------------------------------------
 
 }

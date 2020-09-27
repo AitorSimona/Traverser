@@ -5,9 +5,9 @@ using Unity.SnapshotDebugger;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-
 [RequireComponent(typeof(AbilityController))]
 [RequireComponent(typeof(MovementController))]
+
 public class ParkourAbility : SnapshotProvider, Ability
 {
     // --- Inspector variables ---
@@ -35,6 +35,8 @@ public class ParkourAbility : SnapshotProvider, Ability
     [Range(0, 100)]
     public int debugPoseIndex;
 
+    // -------------------------------------------------
+
     // --- Input wrapper ---
     public struct FrameCapture
     {
@@ -44,8 +46,10 @@ public class ParkourAbility : SnapshotProvider, Ability
     [Snapshot]
     FrameCapture capture;
 
+    // -------------------------------------------------
+
     [Snapshot]
-    AnchoredTransitionTask anchoredTransition;
+    AnchoredTransitionTask anchoredTransition; // Kinematica animation transition handler
 
     // --- Basic Methods ---
 
@@ -70,6 +74,9 @@ public class ParkourAbility : SnapshotProvider, Ability
             capture.jumpButton = Input.GetButton("A Button");
         }
     }
+
+    // -------------------------------------------------
+
 
     // --- Ability class methods ---
 
@@ -170,6 +177,58 @@ public class ParkourAbility : SnapshotProvider, Ability
         return true;
     }
 
+    public bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime)
+    {
+        bool ret = false;
+        MovementController controller = GetComponent<MovementController>();
+
+        if (controller.previous.isGrounded && controller.previous.ground != null)
+        {
+            Transform ground = controller.previous.ground;
+            BoxCollider collider = ground.GetComponent<BoxCollider>();
+
+            if (collider != null)
+            {
+                NativeArray<float3> vertices = new NativeArray<float3>(4, Allocator.Persistent);
+
+                Vector3 center = collider.center;
+                Vector3 size = collider.size;
+
+                vertices[0] = ground.TransformPoint(center + new Vector3(-size.x, size.y, size.z) * 0.5f);
+                vertices[1] = ground.TransformPoint(center + new Vector3(size.x, size.y, size.z) * 0.5f);
+                vertices[2] = ground.TransformPoint(center + new Vector3(size.x, size.y, -size.z) * 0.5f);
+                vertices[3] = ground.TransformPoint(center + new Vector3(-size.x, size.y, -size.z) * 0.5f);
+
+                float3 p = controller.previous.position;
+                AffineTransform contactTransform = TagExtensions.GetClosestTransform(vertices[0], vertices[1], p);
+                float minimumDistance = math.length(contactTransform.t - p);
+
+                for (int i = 1; i < 4; ++i)
+                {
+                    int j = (i + 1) % 4;
+                    AffineTransform candidateTransform = TagExtensions.GetClosestTransform(vertices[i], vertices[j], p);
+                   
+                    float distance = math.length(candidateTransform.t - p);
+                    if (distance < minimumDistance)
+                    {
+                        minimumDistance = distance;
+                        contactTransform = candidateTransform;
+                    }
+                }
+
+                vertices.Dispose();
+
+                ret = OnParkourContact(ref synthesizer, contactTransform, Parkour.Create(Parkour.Type.DropDown));
+            }
+        }
+
+        return ret;
+    }
+
+    // -------------------------------------------------
+
+    // --- Debug Draw ---
+
     void DisplayTransition<T>(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
     {
         if (enableDebugging)
@@ -221,54 +280,6 @@ public class ParkourAbility : SnapshotProvider, Ability
 
             obbs.Dispose();
         }
-    }
-
-    public bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime)
-    {
-        bool ret = false;
-        MovementController controller = GetComponent<MovementController>();
-
-        if (controller.previous.isGrounded && controller.previous.ground != null)
-        {
-            Transform ground = controller.previous.ground;
-            BoxCollider collider = ground.GetComponent<BoxCollider>();
-
-            if (collider != null)
-            {
-                NativeArray<float3> vertices = new NativeArray<float3>(4, Allocator.Persistent);
-
-                Vector3 center = collider.center;
-                Vector3 size = collider.size;
-
-                vertices[0] = ground.TransformPoint(center + new Vector3(-size.x, size.y, size.z) * 0.5f);
-                vertices[1] = ground.TransformPoint(center + new Vector3(size.x, size.y, size.z) * 0.5f);
-                vertices[2] = ground.TransformPoint(center + new Vector3(size.x, size.y, -size.z) * 0.5f);
-                vertices[3] = ground.TransformPoint(center + new Vector3(-size.x, size.y, -size.z) * 0.5f);
-
-                float3 p = controller.previous.position;
-                AffineTransform contactTransform = TagExtensions.GetClosestTransform(vertices[0], vertices[1], p);
-                float minimumDistance = math.length(contactTransform.t - p);
-
-                for (int i = 1; i < 4; ++i)
-                {
-                    int j = (i + 1) % 4;
-                    AffineTransform candidateTransform = TagExtensions.GetClosestTransform(vertices[i], vertices[j], p);
-                   
-                    float distance = math.length(candidateTransform.t - p);
-                    if (distance < minimumDistance)
-                    {
-                        minimumDistance = distance;
-                        contactTransform = candidateTransform;
-                    }
-                }
-
-                vertices.Dispose();
-
-                ret = OnParkourContact(ref synthesizer, contactTransform, Parkour.Create(Parkour.Type.DropDown));
-            }
-        }
-
-        return ret;
     }
 }
 

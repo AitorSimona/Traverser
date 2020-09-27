@@ -83,6 +83,7 @@ public class ParkourAbility : SnapshotProvider, Ability
         MovementController controller = GetComponent<MovementController>();
         bool active = anchoredTransition.isValid;
 
+        // --- If we are in a transition disable controller ---
         controller.collisionEnabled = !active;
         controller.groundSnap = !active;
         controller.resolveGroundPenetration = !active;
@@ -165,11 +166,13 @@ public class ParkourAbility : SnapshotProvider, Ability
         //    DisplayTransition(ref synthesizer, contactTransform, type, contactThreshold);
         //}
 
+        // --- Get animation data of the type given (Parkour type) ---
         ref Binary binary = ref synthesizer.Binary;
 
-        var sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform,
+        QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform,
                 type, contactThreshold);
 
+        // --- Perform a transition to a 'type' tagged animation ---
         anchoredTransition.Dispose();
         anchoredTransition = AnchoredTransitionTask.Create(ref synthesizer,
                 sequence, contactTransform, maximumLinearError,
@@ -185,11 +188,13 @@ public class ParkourAbility : SnapshotProvider, Ability
 
         if (controller.previous.isGrounded && controller.previous.ground != null)
         {
+            // --- Get the ground's collider ---
             Transform ground = controller.previous.ground;
             BoxCollider collider = ground.GetComponent<BoxCollider>();
 
             if (collider != null)
             {
+                // --- Create all of the collider's vertices ---
                 NativeArray<float3> vertices = new NativeArray<float3>(4, Allocator.Persistent);
 
                 Vector3 center = collider.center;
@@ -204,6 +209,7 @@ public class ParkourAbility : SnapshotProvider, Ability
                 AffineTransform contactTransform = TagExtensions.GetClosestTransform(vertices[0], vertices[1], p);
                 float minimumDistance = math.length(contactTransform.t - p);
 
+                // --- Find out where the character will make contact with the ground ---
                 for (int i = 1; i < 4; ++i)
                 {
                     int j = (i + 1) % 4;
@@ -219,6 +225,7 @@ public class ParkourAbility : SnapshotProvider, Ability
 
                 vertices.Dispose();
 
+                // --- Activate a transition towards the contact point ---
                 ret = OnParkourContact(ref synthesizer, contactTransform, Parkour.Create(Parkour.Type.DropDown));
             }
         }

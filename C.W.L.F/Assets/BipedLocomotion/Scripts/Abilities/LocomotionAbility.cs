@@ -340,16 +340,15 @@ namespace CWLF
 
         public void OnAbilityAnimatorMove() // called by ability controller at OnAnimatorMove()
         {
-            // --- Smooth out/modify motion with locomotion ability's data ---
             Kinematica kinematica = GetComponent<Kinematica>();
 
             if (kinematica.Synthesizer.IsValid)
             {
                 ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
+                // --- Influence motion using locomotion ability attributes ---
                 AffineTransform rootMotion = synthesizer.SteerRootMotion(trajectory, correctTranslationPercentage, correctRotationPercentage, correctMotionStartSpeed, correctMotionEndSpeed);
                 AffineTransform rootTransform = AffineTransform.Create(transform.position, transform.rotation) * rootMotion;
-
                 synthesizer.SetWorldTransform(AffineTransform.Create(rootTransform.t, rootTransform.q), true);
 
                 if (synthesizer.deltaTime >= 0.0f)

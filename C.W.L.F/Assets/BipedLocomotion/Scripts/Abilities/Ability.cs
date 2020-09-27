@@ -1,6 +1,7 @@
 ﻿using Unity.Kinematica;
 using Unity.Mathematics;
 
+// --- All abilities derive from this base interface (class with no implementations) ---
 public interface Ability
 {
     //
@@ -32,9 +33,13 @@ public interface Ability
     bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime);
 }
 
+// -------------------------------------------------
 
 // --- Abilities may implement this to further modify motion after animations have taken place ---
 public interface AbilityAnimatorMove
 {
     void OnAbilityAnimatorMove();
 }
+
+// -------------------------------------------------
+

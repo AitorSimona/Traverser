@@ -130,6 +130,9 @@ public class ParkourAbility : SnapshotProvider, Ability
 
             Parkour type = Parkour.Create(collider.gameObject.layer);
 
+            // Commented ISAxis queries so character is not limited when interacting with objects
+            // MYTODO: these limits should be user defined
+
             if (type.IsType(Parkour.Type.Wall) || type.IsType(Parkour.Type.Table))
             {
                 //if (TagExtensions.IsAxis(collider, contactTransform, Missing.forward))
@@ -281,5 +284,7 @@ public class ParkourAbility : SnapshotProvider, Ability
             obbs.Dispose();
         }
     }
+
+    // -------------------------------------------------
 }
 

@@ -26,7 +26,7 @@ namespace CWLF
 
         public float minTrajectoryDeviation;
 
-        public float responsiveness;
+        public float responsiveness; // how easily the character reacts to input orders 
 
         ref MotionSynthesizer Synthesizer => ref synthesizer.Ref; // reference to the synthesizer
 
@@ -119,7 +119,7 @@ namespace CWLF
 
         // -------------------------------------------------
 
-        // --- Kinematica internal var ---
+        // --- Info about current animation, to help on braking ---
         struct SamplingTimeInfo
         {
             public bool isLocomotion;
@@ -342,6 +342,7 @@ namespace CWLF
         {
             // --- Smooth out/modify motion with locomotion ability's data ---
             Kinematica kinematica = GetComponent<Kinematica>();
+
             if (kinematica.Synthesizer.IsValid)
             {
                 ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
@@ -358,8 +359,13 @@ namespace CWLF
             }
         }
 
+        // -------------------------------------------------
+
+        // --- Utilities ---
         SamplingTimeInfo GetSamplingTimeInfo()
         {
+            // --- Find out if current animation is a locomotive one and if it has ended (for braking) ---
+
             SamplingTimeInfo samplingTimeInfo = new SamplingTimeInfo()
             {
                 isLocomotion = false,
@@ -410,5 +416,4 @@ namespace CWLF
     }
 
     // -------------------------------------------------
-
 }

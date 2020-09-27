@@ -1,17 +1,14 @@
 ﻿using Unity.Kinematica;
 using Unity.SnapshotDebugger;
 using Unity.Mathematics;
-using Unity.Collections;
-
 using UnityEngine;
-
 
 [RequireComponent(typeof(AbilityController))]
 [RequireComponent(typeof(MovementController))]
 
 public partial class ClimbingAbility : SnapshotProvider, Ability
 {
-    // --- Inspector variables ---
+    // --- Attributes ---
     [Header("Transition settings")]
     [Tooltip("Distance in meters for performing movement validity checks")]
     [Range(0.0f, 1.0f)]
@@ -34,16 +31,18 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
     [Range(0.0f, 1.0f)]
     public float velocityPercentageLedge;
 
-    [Header("Debug settings")]
-    [Tooltip("Enables debug display for this ability.")]
-    public bool enableDebugging;
+    //[Header("Debug settings")]
+    //[Tooltip("Enables debug display for this ability.")]
+    //public bool enableDebugging;
 
-    [Tooltip("Determines the movement to debug.")]
-    public int debugIndex;
+    //[Tooltip("Determines the movement to debug.")]
+    //public int debugIndex;
 
-    [Tooltip("Controls the pose debug display.")]
-    [Range(0, 100)]
-    public int debugPoseIndex;
+    //[Tooltip("Controls the pose debug display.")]
+    //[Range(0, 100)]
+    //public int debugPoseIndex;
+
+    // --------------------------------
 
     // --- Input wrapper ---
     public struct FrameCapture
@@ -65,6 +64,8 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         }
     }
 
+    // --------------------------------
+
     // --- Climbing movement/state ---
     public enum State
     {
@@ -76,6 +77,8 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         PullUp,
         DropDown
     }
+
+    // --------------------------------
 
     // --- Climbing directions ---
     public enum ClimbingState
@@ -94,13 +97,18 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         None
     }
 
+    // --------------------------------
+
+    // MYTODO: Reaction filters should be user defined
+
     // --- Contact filters (what do we react to) ---
     public enum Layer
     {
         Wall = 8
     }
 
-    // --- Internal variables ---
+    // --------------------------------
+
     Kinematica kinematica; // system
 
     State state; // Actual Climbing movement/state
@@ -110,13 +118,12 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
     ClimbingState previousClimbingState; // Previous Climbing direction
     ClimbingState lastCollidingClimbingState;
 
-    // Snapshot: compatible with snapshotdebugger
-
-    [Snapshot]
+    [Snapshot]  // Snapshot: compatible with snapshotdebugger
     FrameCapture capture; // input
 
-    // --- World interactable elements ---
+    // --------------------------------
 
+    // --- World interactable elements ---
     [Snapshot]
     LedgeGeometry ledgeGeometry;
 
@@ -131,6 +138,8 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
     [Snapshot]
     AnchoredTransitionTask anchoredTransition;
+
+    // --------------------------------
 
     // --- Basic Methods ---
     public override void OnEnable()
@@ -172,6 +181,8 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
             capture.Update();
         }
     }
+
+    // --------------------------------
 
     // --- Ability class methods ---
     public Ability OnUpdate(float deltaTime)
@@ -262,7 +273,6 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
     }
 
     // --- Climbing states wrappers ---
-
     void HandleMountingState(ref MotionSynthesizer synthesizer)
     {
         float3 rootPosition = synthesizer.WorldRootTransform.t;
@@ -507,8 +517,6 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         wallGeometry.DebugDraw(ref wallAnchor);
     }
 
-    // --------------------------------
-
     public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
     {
         if (capture.mountButton)
@@ -557,61 +565,64 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
                 sequence, contactTransform, maximumLinearError,
                     maximumAngularError, rootadjust);
 
-        if (enableDebugging)
-            DisplayTransition(ref synthesizer,contactTransform, trait,contactThreshold);
+        //if (enableDebugging)
+        //    DisplayTransition(ref synthesizer,contactTransform, trait,contactThreshold);
     }
-    void DisplayTransition<T>(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
-    {
-        if (enableDebugging)
-        {
-            ref Binary binary = ref synthesizer.Binary;
 
-            NativeArray<TagExtensions.OBB> obbs =
-                TagExtensions.GetBoundsFromContactPoints(ref binary,
-                    contactTransform, value, contactThreshold);
+    // --------------------------------
 
-            //
-            // Display all relevant box colliders
-            //
+    //void DisplayTransition<T>(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
+    //{
+    //    if (enableDebugging)
+    //    {
+    //        ref Binary binary = ref synthesizer.Binary;
 
-            int numObbs = obbs.Length;
-            for (int i = 0; i < numObbs; ++i)
-            {
-                TagExtensions.OBB obb = obbs[i];
-                obb.transform = contactTransform * obb.transform;
-                TagExtensions.DebugDraw(obb, Color.cyan);
-            }
+    //        NativeArray<TagExtensions.OBB> obbs =
+    //            TagExtensions.GetBoundsFromContactPoints(ref binary,
+    //                contactTransform, value, contactThreshold);
 
-            var tagTraitIndex = binary.GetTraitIndex(value);
+    //        //
+    //        // Display all relevant box colliders
+    //        //
 
-            int numTags = binary.numTags;
+    //        int numObbs = obbs.Length;
+    //        for (int i = 0; i < numObbs; ++i)
+    //        {
+    //            TagExtensions.OBB obb = obbs[i];
+    //            obb.transform = contactTransform * obb.transform;
+    //            TagExtensions.DebugDraw(obb, Color.cyan);
+    //        }
 
-            int validIndex = 0;
+    //        var tagTraitIndex = binary.GetTraitIndex(value);
 
-            for (int i = 0; i < numTags; ++i)
-            {
-                ref Binary.Tag tag = ref binary.GetTag(i);
+    //        int numTags = binary.numTags;
 
-                if (tag.traitIndex == tagTraitIndex)
-                {
-                    if (validIndex == debugIndex)
-                    {
-                        TagExtensions.DebugDrawContacts(ref binary, ref tag,
-                            contactTransform, obbs, contactThreshold);
+    //        int validIndex = 0;
 
-                        TagExtensions.DebugDrawPoseAndTrajectory(ref binary, ref tag,
-                            contactTransform, debugPoseIndex);
+    //        for (int i = 0; i < numTags; ++i)
+    //        {
+    //            ref Binary.Tag tag = ref binary.GetTag(i);
 
-                        return;
-                    }
+    //            if (tag.traitIndex == tagTraitIndex)
+    //            {
+    //                if (validIndex == debugIndex)
+    //                {
+    //                    TagExtensions.DebugDrawContacts(ref binary, ref tag,
+    //                        contactTransform, obbs, contactThreshold);
 
-                    validIndex++;
-                }
-            }
+    //                    TagExtensions.DebugDrawPoseAndTrajectory(ref binary, ref tag,
+    //                        contactTransform, debugPoseIndex);
 
-            obbs.Dispose();
-        }
-    }
+    //                    return;
+    //                }
+
+    //                validIndex++;
+    //            }
+    //        }
+
+    //        obbs.Dispose();
+    //    }
+    //}
 
     // --- Utilities ---     
     public bool IsTransitionComplete(out bool TransitionSuccess)
@@ -752,5 +763,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         controller.resolveGroundPenetration = !active;
         controller.gravityEnabled = !active;
     }
+
+    // --------------------------------
 }
 

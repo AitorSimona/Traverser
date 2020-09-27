@@ -10,7 +10,7 @@ using UnityEngine.Assertions;
 
 public class ParkourAbility : SnapshotProvider, Ability
 {
-    // --- Inspector variables ---
+    // --- Attributes ---
     [Header("Transition settings")]
     [Tooltip("Distance in meters for performing movement validity checks.")]
     [Range(0.0f, 1.0f)]
@@ -24,16 +24,16 @@ public class ParkourAbility : SnapshotProvider, Ability
     [Range(0.0f, 180.0f)]
     public float maximumAngularError;
 
-    [Header("Debug settings")]
-    [Tooltip("Enables debug display for this ability.")]
-    public bool enableDebugging;
+    //[Header("Debug settings")]
+    //[Tooltip("Enables debug display for this ability.")]
+    //public bool enableDebugging;
 
-    [Tooltip("Determines the movement to debug.")]
-    public int debugIndex;
+    //[Tooltip("Determines the movement to debug.")]
+    //public int debugIndex;
 
-    [Tooltip("Controls the pose debug display.")]
-    [Range(0, 100)]
-    public int debugPoseIndex;
+    //[Tooltip("Controls the pose debug display.")]
+    //[Range(0, 100)]
+    //public int debugPoseIndex;
 
     // -------------------------------------------------
 
@@ -77,9 +77,7 @@ public class ParkourAbility : SnapshotProvider, Ability
 
     // -------------------------------------------------
 
-
     // --- Ability class methods ---
-
     public Ability OnUpdate(float deltaTime)
     {
         MovementController controller = GetComponent<MovementController>();
@@ -162,10 +160,10 @@ public class ParkourAbility : SnapshotProvider, Ability
 
     bool OnParkourContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Parkour type)
     {
-        if (enableDebugging)
-        {
-            DisplayTransition(ref synthesizer, contactTransform, type, contactThreshold);
-        }
+        //if (enableDebugging)
+        //{
+        //    DisplayTransition(ref synthesizer, contactTransform, type, contactThreshold);
+        //}
 
         ref Binary binary = ref synthesizer.Binary;
 
@@ -232,58 +230,58 @@ public class ParkourAbility : SnapshotProvider, Ability
 
     // --- Debug Draw ---
 
-    void DisplayTransition<T>(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
-    {
-        if (enableDebugging)
-        {
-            ref Binary binary = ref synthesizer.Binary;
+    //void DisplayTransition<T>(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
+    //{
+    //    if (enableDebugging)
+    //    {
+    //        ref Binary binary = ref synthesizer.Binary;
 
-            NativeArray<TagExtensions.OBB> obbs =
-                TagExtensions.GetBoundsFromContactPoints(ref binary,
-                    contactTransform, value, contactThreshold);
+    //        NativeArray<TagExtensions.OBB> obbs =
+    //            TagExtensions.GetBoundsFromContactPoints(ref binary,
+    //                contactTransform, value, contactThreshold);
 
-            //
-            // Display all relevant box colliders
-            //
+    //        //
+    //        // Display all relevant box colliders
+    //        //
 
-            int numObbs = obbs.Length;
-            for (int i = 0; i < numObbs; ++i)
-            {
-                TagExtensions.OBB obb = obbs[i];
-                obb.transform = contactTransform * obb.transform;
-                TagExtensions.DebugDraw(obb, Color.cyan);
-            }
+    //        int numObbs = obbs.Length;
+    //        for (int i = 0; i < numObbs; ++i)
+    //        {
+    //            TagExtensions.OBB obb = obbs[i];
+    //            obb.transform = contactTransform * obb.transform;
+    //            TagExtensions.DebugDraw(obb, Color.cyan);
+    //        }
 
-            var tagTraitIndex = binary.GetTraitIndex(value);
+    //        var tagTraitIndex = binary.GetTraitIndex(value);
 
-            int numTags = binary.numTags;
+    //        int numTags = binary.numTags;
 
-            int validIndex = 0;
+    //        int validIndex = 0;
 
-            for (int i = 0; i < numTags; ++i)
-            {
-                ref Binary.Tag tag = ref binary.GetTag(i);
+    //        for (int i = 0; i < numTags; ++i)
+    //        {
+    //            ref Binary.Tag tag = ref binary.GetTag(i);
 
-                if (tag.traitIndex == tagTraitIndex)
-                {
-                    if (validIndex == debugIndex)
-                    {
-                        TagExtensions.DebugDrawContacts(ref binary, ref tag,
-                            contactTransform, obbs, contactThreshold);
+    //            if (tag.traitIndex == tagTraitIndex)
+    //            {
+    //                if (validIndex == debugIndex)
+    //                {
+    //                    TagExtensions.DebugDrawContacts(ref binary, ref tag,
+    //                        contactTransform, obbs, contactThreshold);
 
-                        TagExtensions.DebugDrawPoseAndTrajectory(ref binary, ref tag,
-                            contactTransform, debugPoseIndex);
+    //                    TagExtensions.DebugDrawPoseAndTrajectory(ref binary, ref tag,
+    //                        contactTransform, debugPoseIndex);
 
-                        return;
-                    }
+    //                    return;
+    //                }
 
-                    validIndex++;
-                }
-            }
+    //                validIndex++;
+    //            }
+    //        }
 
-            obbs.Dispose();
-        }
-    }
+    //        obbs.Dispose();
+    //    }
+    //}
 
     // -------------------------------------------------
 }

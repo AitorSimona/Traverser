@@ -9,11 +9,11 @@ using UnityEngine.Assertions;
 
 namespace CWLF
 {
-
     // --- Locomotion pose prediction job (MT) ---
     [BurstCompile(CompileSynchronously = true)] //Burst is primarily designed to work efficiently with the Job system.
     public struct LocomotionJob : IJob // multhithreaded code, pose prediction will be executed faster
     {
+        // --- Attributes ---
         public MemoryRef<MotionSynthesizer> synthesizer;
 
         public PoseSet idlePoses;
@@ -30,6 +30,7 @@ namespace CWLF
 
         ref MotionSynthesizer Synthesizer => ref synthesizer.Ref; // reference to the synthesizer
 
+        // -------------------------------------------------
         public void Execute()
         {
             if (idle && Synthesizer.MatchPose(idlePoses, Synthesizer.Time, MatchOptions.DontMatchIfCandidateIsPlaying | MatchOptions.LoopSegment, 0.01f))
@@ -48,7 +49,7 @@ namespace CWLF
 
     public class LocomotionAbility : SnapshotProvider, Ability // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger
     {
-        // --- Inspector variables ---
+        // --- Attributes ---
         [Header("Prediction settings")]
         [Tooltip("Desired speed in meters per second for slow movement.")]
         [Range(0.0f, 10.0f)]
@@ -93,7 +94,6 @@ namespace CWLF
 
         // -------------------------------------------------
 
-        // --- Internal variables ---
         Kinematica kinematica;
 
         PoseSet idleCandidates;
@@ -338,7 +338,7 @@ namespace CWLF
             return false;
         }
 
-        public void OnAbilityAnimatorMove()
+        public void OnAbilityAnimatorMove() // called by ability controller at OnAnimatorMove()
         {
             // --- Smooth out/modify motion with locomotion ability's data ---
             Kinematica kinematica = GetComponent<Kinematica>();
@@ -413,6 +413,7 @@ namespace CWLF
             return desiredSpeed;
         }
 
+        // -------------------------------------------------
     }
 
     // -------------------------------------------------

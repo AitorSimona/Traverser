@@ -4,12 +4,15 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using Unity.SnapshotDebugger;
 
-
 [RequireComponent(typeof(MovementController))]
-public class AbilityController : Kinematica
+public class AbilityController : Kinematica // Layer to control all of the object's abilities 
 {
+    // --- Attributes ---
     Ability currentAbility;
 
+    // --------------------------------
+
+    // --- Basic methods ---
     public virtual new void Update()
     {
         // --- Keep updating our current ability ---
@@ -79,5 +82,6 @@ public class AbilityController : Kinematica
         transform.rotation = worldRootTransform.q;
     }
 
+    // --------------------------------
 }
 

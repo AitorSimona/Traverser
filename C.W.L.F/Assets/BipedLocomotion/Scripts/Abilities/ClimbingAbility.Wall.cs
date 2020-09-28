@@ -6,12 +6,18 @@ using UnityEngine;
 
 public partial class ClimbingAbility : SnapshotProvider, Ability
 {
-    // --- Definition of a wall's anchor, the point we are attached to --- 
+    // --- Definition of a wall's anchor, the point we are attached to (relative to the wall plane, note it is a 2D point) --- 
     public struct WallAnchor
     {
         // --- Attributes that define an anchor point ---
-        public float x;
+        public float x; // note these two values form a 2D position, expressed from 0 to 1, from top left vertex
         public float y;
+
+        // representation of a wall (plane), point p is built by x and y
+        // v - - - -
+        // -       -
+        // -   p   - x is 0.5, y 0.75, as seen from v (multiply by width and height and you get the 2D point)
+        // - - - - -
 
         // -------------------------------------------------
 
@@ -61,9 +67,15 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
             // World space contact position to local canonical cube position
             float3 localPosition = WorldToLocal(contactTransform.t);
 
+            // --- Find out the wall's closest normal ---
             normal = GetNormal(0);
+
+            // --- Plane to point distance (plane built with normal and up), point is the contact transform ---
             float minimumDistance = math.abs(PlaneDistance(normal, Missing.up, localPosition));
             
+            // The idea is to compute all minimum distances, between the planes and the different normals 
+            // to know exactly in what direction respect the wall the contact has been made
+
             for (int i = 1; i < 4; ++i)
             {
                 float3 n = GetNormal(i);
@@ -107,10 +119,13 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
         public static float PlaneDistance(float3 normal, float3 up, float3 position)
         {
+            // --- Compute the distance between the given normal and the contact transform ---
             float3 orthogonal = math.cross(normal, up);
 
+            // --- Point plane distance ---
+
             // u*V1 + v*V2, where u and v = 1.0f
-            float3 vertex = normal + up + orthogonal;
+            float3 vertex = normal + up + orthogonal; // direction pointing towards where a vertex is
 
             float d = -math.dot(normal, vertex);
 
@@ -149,7 +164,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
         public float3 GetOrthogonalLocalSpace()
         {
-            // return the perpendicular vector to the normal
+            // return the perpendicular vector to the normal/up
             return math.cross(normal, Missing.up);
         }
 
@@ -192,16 +207,18 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
         public float3 GetPosition(WallAnchor anchor)
         {
+            // --- Find the 3d position of our 2D anchor point ---
+
             float3 orthogonal = GetOrthogonalLocalSpace();
             float3 vertex = GetBaseVertex();
 
-            float3 v0 = transformPoint(center + Missing.mul(size, vertex) * 0.5f);
-            float3 o = transformDirection(orthogonal);
+            float3 vertex0World = transformPoint(center + Missing.mul(size, vertex) * 0.5f);
+            float3 orthogonalWorld = transformDirection(orthogonal);
 
-            float u = GetWidth() * anchor.x;
-            float v = GetHeight() * anchor.y;
+            float xLocal = GetWidth() * anchor.x;
+            float yLocal = GetHeight() * anchor.y;
 
-            return v0 - (o * u) - (Missing.up * v);
+            return vertex0World - (orthogonalWorld * xLocal) - (Missing.up * yLocal);
         }
 
         // -------------------------------------------------
@@ -209,6 +226,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         // --- Anchor ---
         public WallAnchor GetAnchor(float3 position)
         {
+            // --- Given a 3d position/ root motion transform, return the closer anchor point ---
             float3 localPosition = WorldToLocal(position);
 
             float distance = math.abs(PlaneDistance(normal, Missing.up, localPosition));
@@ -223,6 +241,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
             return result;
         }
 
+        // MYTODO: Check if this function is used in newer version, else eliminate it
         public WallAnchor UpdateAnchor(WallAnchor anchor, float2 xy)
         {
             WallAnchor result;

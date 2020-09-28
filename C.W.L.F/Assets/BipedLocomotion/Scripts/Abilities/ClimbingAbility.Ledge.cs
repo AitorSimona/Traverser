@@ -12,8 +12,14 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
     public struct LedgeAnchor
     {
         // --- Attributes that define an anchor point ---
-        public int index;
-        public float distance;
+        public int index; // of the 4 lines/edges that compose a ledge, which one is the anchor on
+        public float distance; // from 0 to 1, where in the given ledge line is the anchor
+
+        // representation of a ledge (top view)
+        // - - - - -
+        // -       -
+        // -       - 
+        // - - - p - p is at 0.75 distance and at the 2nd line (index)
 
         // -------------------------------------------------
 
@@ -89,6 +95,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
         public float3 GetNormalizedEdge(int index)
         {
+            // --- Get unitary vector in the direction of edge given by line ---
             float3 a = vertices[index];
             float3 b = vertices[GetNextEdgeIndex(index)];
             return math.normalize(b - a);
@@ -101,6 +108,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
         public float GetLength(int index)
         {
+            // --- Get length of ledge edge given by index ---
             float3 a = vertices[index];
             float3 b = vertices[GetNextEdgeIndex(index)];
 
@@ -109,11 +117,13 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
         public float3 GetPosition(LedgeAnchor anchor)
         {
+            // --- Get 3D position from given ledge 2D anchor point ---
             return vertices[anchor.index] + GetNormalizedEdge(anchor.index) * anchor.distance;
         }
 
         public AffineTransform GetTransform(LedgeAnchor anchor)
         {
+            // --- Get transform out of a 2D ledge anchor --- 
             float3 p = GetPosition(anchor);
             float3 edge = GetNormalizedEdge(anchor.index);
             float3 up = Missing.up;
@@ -127,6 +137,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         // --- Anchor ---
         public LedgeAnchor GetAnchor(float3 position)
         {
+            // --- Given a 3d position/ root motion transform, return the closer anchor point ---
             LedgeAnchor result = new LedgeAnchor();
 
             float3 closestPoint = ClosestPoint.FromPosition(position,vertices[0], vertices[1]);
@@ -189,6 +200,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
         public LedgeAnchor UpdateAnchor(LedgeAnchor anchor, float displacement)
         {
+            // --- Displace ledge anchor point by given displacement ---
             LedgeAnchor result;
 
             int a = anchor.index;

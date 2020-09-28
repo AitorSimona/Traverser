@@ -195,7 +195,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         // --- If character is not falling ---
         if(!IsState(State.Suspended))
         {
-
+            // --- Handle current state ---
             switch (state)
             {
                 case State.Mounting:
@@ -275,13 +275,15 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
     // --- Climbing states wrappers ---
     void HandleMountingState(ref MotionSynthesizer synthesizer)
     {
+        // --- Get object anchor point from root motion transform ---
         float3 rootPosition = synthesizer.WorldRootTransform.t;
-
         ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
         float3 ledgePosition = ledgeGeometry.GetPosition(ledgeAnchor);
         float ledgeDistance = math.length(rootPosition - ledgePosition);
 
         bool freeClimbing = false; // ledgeDistance >= 0.1f;
+
+        // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
 
         Climbing climbingTrait = freeClimbing ? Climbing.Create(Climbing.Type.Wall) : Climbing.Create(Climbing.Type.Ledge);
 
@@ -292,7 +294,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         }
         else
         {
-            SetState(State.Climbing);
+            SetState(State.Climbing); // we are hanging onto a ledge 
         }
 
         SetClimbingState(ClimbingState.Idle);
@@ -310,6 +312,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
             desiredState = ClimbingState.Idle;
         }
 
+        // --- Handle ledge climbing/movement direction ---
         if (!IsClimbingState(desiredState))
         {
             var climbingTrait = Climbing.Create(Climbing.Type.Ledge);
@@ -332,6 +335,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
             SetClimbingState(desiredState);
         }
 
+        // MYTODO: Is this needed?
         AffineTransform rootTransform = synthesizer.WorldRootTransform;
         wallGeometry.Initialize(rootTransform);
         wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
@@ -339,6 +343,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         float totalHeight = wallGeometry.GetHeight();
         bool closeToDrop = math.abs(height - 2.8f) <= 0.05f;
 
+        // --- React to pull up/dismount ---
         if (capture.pullUpButton && CanPullUp())
         {
             AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
@@ -354,12 +359,14 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
     void HandleFreeClimbingState(ref MotionSynthesizer synthesizer, float deltaTime)
     {
+        // --- We are climbing a wall ---
         UpdateFreeClimbing(ref synthesizer, deltaTime);
 
         var desiredState = GetDesiredFreeClimbingState();
 
         if (!IsClimbingState(desiredState))
         {
+            // --- Handle wall climbing state ---
             var climbingTrait = Climbing.Create(Climbing.Type.Wall);
 
             if (desiredState == ClimbingState.Idle)
@@ -390,6 +397,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         bool closeToLedge = math.abs(totalHeight - height) <= 0.095f;
         bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
+        // --- Check if we are close to hanging onto a ledge or almost on the ground ---
         if (closeToLedge && capture.stickVertical >= 0.9f)
         {
             float3 rootPosition = synthesizer.WorldRootTransform.t;
@@ -408,6 +416,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
     void HandleDropDownState(ref MotionSynthesizer synthesizer)
     {
+        // --- From the top of a wall, drop down onto the ledge ---
         ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
         SetState(State.Climbing);
     }
@@ -448,6 +457,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
         float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
 
+        // --- Update current anchor if it is still on the ledge ---
         if (!UpdateCollidingClimbingState(linearDisplacement, position, desiredForward))
         {
             ledgeAnchor = desiredLedgeAnchor;
@@ -469,6 +479,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         angle = math.min(angle, maximumAngle);
         rootTransform.q = math.mul(quaternion.AxisAngle(axis, angle), rootTransform.q);
 
+        // --- Update root motion transform ---
         synthesizer.WorldRootTransform = rootTransform;
 
         ledgeGeometry.DebugDraw();
@@ -480,6 +491,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         //
         // Smoothly adjust current root transform towards the anchor transform
         //
+        // --- Update wall climbing ---
 
         AffineTransform deltaTransform = synthesizer.GetTrajectoryDeltaTransform(deltaTime);
         AffineTransform rootTransform = synthesizer.WorldRootTransform * deltaTransform;
@@ -511,6 +523,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         rootTransform *= deltaTransform.inverse();
         rootTransform.q = math.normalize(rootTransform.q);
 
+        // --- Update root motion transform ---
         synthesizer.WorldRootTransform = rootTransform;
 
         wallGeometry.DebugDraw();
@@ -519,6 +532,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
     public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
     {
+        // --- If we make contact with a climbable surface and player issues climb order, mount ---
         if (capture.mountButton)
         {
             if (IsState(State.Suspended))
@@ -553,6 +567,7 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
 
     public void RequestTransition(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Ledge.Type type)
     {
+        // --- Require transition animation of the type given ---
         ref Binary binary = ref synthesizer.Binary;
 
         Ledge trait = Ledge.Create(type);
@@ -630,6 +645,8 @@ public partial class ClimbingAbility : SnapshotProvider, Ability
         bool ret = true;
         TransitionSuccess = false;
         bool active = anchoredTransition.isValid;
+
+        // --- Check if current transition has been completed ---
 
         if (active)
         {

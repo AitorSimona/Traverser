@@ -94,6 +94,25 @@ namespace CWLF
 
         // -------------------------------------------------
 
+        // --- Input wrapper ---
+        public struct FrameCapture
+        {
+            public float3 movementDirection;
+            public float moveIntensity;
+            public bool run;
+
+            public void Update()
+            {
+                Utility.GetInputMove(ref movementDirection, ref moveIntensity);
+                run = Input.GetButton("A Button");
+            }
+        }
+
+        // -------------------------------------------------
+
+        [Snapshot]
+        FrameCapture capture;
+
         Kinematica kinematica;
 
         PoseSet idleCandidates;
@@ -101,21 +120,12 @@ namespace CWLF
         Trajectory trajectory;
 
         [Snapshot]
-        float3 movementDirection = Missing.forward;
-
-        [Snapshot]
-        float moveIntensity = 0.0f;
-
-        [Snapshot]
-        bool run;
-
-        [Snapshot]
         bool isBraking = false;
 
         [Snapshot]
         float3 rootVelocity = float3.zero;
 
-        float desiredLinearSpeed => run ? desiredSpeedFast : desiredSpeedSlow;
+        float desiredLinearSpeed => capture.run ? desiredSpeedFast : desiredSpeedSlow;
 
         // -------------------------------------------------
 
@@ -134,6 +144,9 @@ namespace CWLF
             base.OnEnable();
             kinematica = GetComponent<Kinematica>();
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
+
+            capture.movementDirection = Missing.forward;
+            capture.moveIntensity = 0.0f;
 
             // --- Initialize arrays ---
             idleCandidates = synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default);
@@ -163,8 +176,7 @@ namespace CWLF
 
             if (!rewind) // if we are not using snapshot debugger to rewind
             {
-                Utility.GetInputMove(ref movementDirection, ref moveIntensity);
-                run = Input.GetButton("A Button");
+                capture.Update();
             }
         }
 
@@ -191,7 +203,7 @@ namespace CWLF
                 idlePoses = idleCandidates,
                 locomotionPoses = locomotionCandidates,
                 trajectory = trajectory,
-                idle = moveIntensity == 0.0f,
+                idle = capture.moveIntensity == 0.0f,
                 minTrajectoryDeviation = minTrajectoryDeviation,
                 responsiveness = responsiveness
             };
@@ -238,7 +250,7 @@ namespace CWLF
         {
             // --- Create final trajectory from given parameters ---
             TrajectoryPrediction prediction = TrajectoryPrediction.CreateFromDirection(ref kinematica.Synthesizer.Ref,
-               movementDirection,
+               capture.movementDirection,
                desiredSpeed,
                trajectory,
                velocityPercentage,
@@ -398,7 +410,7 @@ namespace CWLF
             float desiredSpeed = 0.0f;
 
             // --- If we are idle ---
-            if (moveIntensity == 0.0f)
+            if (capture.moveIntensity == 0.0f)
             {
                 if (!isBraking && math.length(synthesizer.CurrentVelocity) < brakingSpeed)
                     isBraking = true;
@@ -406,7 +418,7 @@ namespace CWLF
             else
             {
                 isBraking = false;
-                desiredSpeed = moveIntensity * desiredLinearSpeed;
+                desiredSpeed = capture.moveIntensity * desiredLinearSpeed;
             }
 
             return desiredSpeed;

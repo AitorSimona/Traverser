@@ -43,6 +43,11 @@ namespace CWLF
         public struct FrameCapture
         {
             public bool jumpButton;
+
+            public void Update()
+            {
+                jumpButton = Input.GetButton("A Button");
+            }
         }
 
         [Snapshot]
@@ -73,7 +78,7 @@ namespace CWLF
 
             if (!rewind) // if we are not using snapshot debugger to rewind
             {
-                capture.jumpButton = Input.GetButton("A Button");
+                capture.Update();
             }
         }
 

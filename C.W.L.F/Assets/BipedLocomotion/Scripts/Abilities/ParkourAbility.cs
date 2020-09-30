@@ -39,6 +39,9 @@ namespace CWLF
 
         // -------------------------------------------------
 
+
+        // TODO: Remove from here
+
         // --- Input wrapper ---
         public struct FrameCapture
         {
@@ -90,12 +93,15 @@ namespace CWLF
             MovementController controller = GetComponent<MovementController>();
             bool active = anchoredTransition.isValid;
 
+
+            // TODO: Remove from here
             // --- If we are in a transition disable controller ---
             controller.collisionEnabled = !active;
             controller.groundSnap = !active;
             controller.resolveGroundPenetration = !active;
             controller.gravityEnabled = !active;
 
+            // TODO: Remove from here
             if (active)
             {
                 Kinematica kinematica = GetComponent<Kinematica>();

@@ -424,6 +424,7 @@ internal static class TagExtensions
 
     private static int ms_EnvironmentCollisionMask = -1;
 
+    // TODO: Remove from here
     public static int EnvironmentCollisionMask
     {
         get

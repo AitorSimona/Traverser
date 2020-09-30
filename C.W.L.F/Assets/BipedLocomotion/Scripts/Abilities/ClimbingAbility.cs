@@ -255,6 +255,7 @@ namespace CWLF
                     }
                 }
 
+                // TODO: Remove from here
                 if (anchoredTransition.isValid)
                 {
                     if (!anchoredTransition.IsState(AnchoredTransitionTask.State.Complete) && !anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
@@ -570,9 +571,11 @@ namespace CWLF
         public void RequestTransition(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Ledge.Type type)
         {
             // --- Require transition animation of the type given ---
-            ref Binary binary = ref synthesizer.Binary;
+            ref Binary binary = ref synthesizer.Binary; // TODO: Remove from here
 
             Ledge trait = Ledge.Create(type);
+
+            // TODO: Remove from here
 
             var sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, trait, contactThreshold);
             bool rootadjust = trait.type == Ledge.Type.PullUp ? false : true;
@@ -587,6 +590,8 @@ namespace CWLF
         }
 
         // --------------------------------
+
+        // TODO: Remove from here
 
         //void DisplayTransition<T>(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
         //{
@@ -642,7 +647,7 @@ namespace CWLF
         //}
 
         // --- Utilities ---     
-        public bool IsTransitionComplete(out bool TransitionSuccess)
+        public bool IsTransitionComplete(out bool TransitionSuccess) // TODO: Remove from here
         {
             bool ret = true;
             TransitionSuccess = false;
@@ -696,13 +701,13 @@ namespace CWLF
         {
             return this.climbingState == climbingState;
         }
-        public void PlayFirstSequence(PoseSet poses)
+        public void PlayFirstSequence(PoseSet poses) // TODO: Remove from here
         {
             kinematica.Synthesizer.Ref.PlayFirstSequence(poses);
             poses.Dispose();
         }
 
-        float2 GetStickInput()
+        float2 GetStickInput() // TODO: Remove from here
         {
             float2 stickInput =
                 new float2(capture.stickHorizontal,
@@ -759,7 +764,7 @@ namespace CWLF
             return ClimbingState.Idle;
         }
 
-        bool CanPullUp()
+        bool CanPullUp() // kill this
         {
             return !IsCharacterCapsuleColliding(transform.position);
         }
@@ -773,6 +778,8 @@ namespace CWLF
             return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, capsule.radius - 0.1f, TagExtensions.EnvironmentCollisionMask);
         }
 
+
+        // TODO: Remove from here
         void ConfigureController(bool active)
         {
             var controller = GetComponent<MovementController>();

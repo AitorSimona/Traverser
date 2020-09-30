@@ -94,6 +94,7 @@ namespace CWLF
 
         // -------------------------------------------------
 
+        // TODO: Remove from here
         // --- Input wrapper ---
         public struct FrameCapture
         {
@@ -123,12 +124,13 @@ namespace CWLF
         bool isBraking = false;
 
         [Snapshot]
-        float3 rootVelocity = float3.zero;
+        float3 rootVelocity = float3.zero;          // TODO: Remove from here
 
         float desiredLinearSpeed => capture.run ? desiredSpeedFast : desiredSpeedSlow;
 
         // -------------------------------------------------
 
+        // TODO: Remove from here
         // --- Info about current animation, to help on braking ---
         struct SamplingTimeInfo
         {
@@ -218,7 +220,7 @@ namespace CWLF
             return ret;
         }
 
-        float HandleBraking()
+        float HandleBraking()         // TODO: Remove from here
         {
             // --- Kinematica comment ---
 
@@ -226,7 +228,7 @@ namespace CWLF
             // because then we want the character to pick a stop clip in the library and stick to it even if Kinematica can jump to a better clip (cost wise) in the middle 
             // of that stop animation. Indeed stop animations have very subtle foot steps (to reposition to idle stance) that would be squeezed by blend/jumping from clip to clip.
             // Moreover, playing a stop clip from start to end will make sure we will reach a valid transition point to idle.
-           
+
             SamplingTimeInfo samplingTimeInfo = GetSamplingTimeInfo();
 
             float minTrajectoryDeviation = 0.03f; // default threshold
@@ -373,7 +375,8 @@ namespace CWLF
         // -------------------------------------------------
 
         // --- Utilities ---
-        SamplingTimeInfo GetSamplingTimeInfo()
+
+        SamplingTimeInfo GetSamplingTimeInfo()         // TODO: Remove from here
         {
             // --- Find out if current animation is a locomotive one and if it has ended (for braking) ---
 
@@ -405,7 +408,7 @@ namespace CWLF
             return samplingTimeInfo;
         }
 
-        float GetDesiredSpeed(ref MotionSynthesizer synthesizer)
+        float GetDesiredSpeed(ref MotionSynthesizer synthesizer)         // TODO: Remove from here
         {
             float desiredSpeed = 0.0f;
 

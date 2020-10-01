@@ -83,31 +83,38 @@ namespace CWLF
         // --- Ability class methods ---
         public Ability OnUpdate(float deltaTime)
         {
-            bool active = anchoredTransition.isValid;
+            //bool active = anchoredTransition.isValid;
 
             // --- If we are in a transition disable controller ---
-            CollisionLayer.ConfigureController(active, ref controller);
+            CollisionLayer.ConfigureController(anchoredTransition.isValid, ref controller);
 
             // TODO: Remove from here
-            if (active)
-            {
-                ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
+            //if (active)
+            //{
 
-                if (!anchoredTransition.IsState(AnchoredTransitionTask.State.Complete) && !anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
-                {
-                    anchoredTransition.synthesizer = MemoryRef<MotionSynthesizer>.Create(ref synthesizer);
+            //    ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
-                    // --- Finally tell kinematica to wait for this job to finish before executing other stuff ---
-                    kinematica.AddJobDependency(AnchoredTransitionJob.Schedule(ref anchoredTransition));
+            //    if (!anchoredTransition.IsState(AnchoredTransitionTask.State.Complete) && !anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
+            //    {
+            //        anchoredTransition.synthesizer = MemoryRef<MotionSynthesizer>.Create(ref synthesizer);
 
-                    return this;
-                }
+            //        // --- Finally tell kinematica to wait for this job to finish before executing other stuff ---
+            //        kinematica.AddJobDependency(AnchoredTransitionJob.Schedule(ref anchoredTransition));
 
-                anchoredTransition.Dispose();
-                anchoredTransition = AnchoredTransitionTask.Invalid;
-            }
+            //        return this;
+            //    }
 
-            return null;
+            //    anchoredTransition.Dispose();
+            //    anchoredTransition = AnchoredTransitionTask.Invalid;
+            //}
+
+
+            //return null;
+
+            if (KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))
+                return this;
+            else
+                return null;
         }
 
         public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
@@ -134,7 +141,7 @@ namespace CWLF
                 {
                     //if (TagExtensions.IsAxis(collider, contactTransform, Missing.forward))
                     //{
-                    ret = OnParkourContact(ref synthesizer, contactTransform, type);
+                    ret = RequestTransition(ref synthesizer, contactTransform, type);
                     //}
                 }
                 else if (type.IsType(Parkour.Type.Platform))
@@ -142,14 +149,14 @@ namespace CWLF
                     //if (TagExtensions.IsAxis(collider, contactTransform, Missing.forward) ||
                     //    TagExtensions.IsAxis(collider, contactTransform, Missing.right))
                     //{
-                    ret = OnParkourContact(ref synthesizer, contactTransform, type);
+                    ret = RequestTransition(ref synthesizer, contactTransform, type);
                     //}
                 }
                 else if (type.IsType(Parkour.Type.Ledge))
                 {
                     //if (TagExtensions.IsAxis(collider, contactTransform, Missing.right))
                     //{
-                    ret = OnParkourContact(ref synthesizer, contactTransform, type);
+                    ret = RequestTransition(ref synthesizer, contactTransform, type);
                     //}
                 }
             }
@@ -157,15 +164,13 @@ namespace CWLF
             return ret;
         }
 
-        bool OnParkourContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Parkour type)
+        bool RequestTransition(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Parkour type)
         {
-            // --- Get animation data of the type given (Parkour type) ---
+            // --- Require transition animation of the type given ---
             ref Binary binary = ref synthesizer.Binary;
-
             QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform,
                     type, contactThreshold);
 
-            // --- Perform a transition to a 'type' tagged animation ---
             anchoredTransition.Dispose();
             anchoredTransition = AnchoredTransitionTask.Create(ref synthesizer,
                     sequence, contactTransform, maximumLinearError,
@@ -218,7 +223,7 @@ namespace CWLF
                     vertices.Dispose();
 
                     // --- Activate a transition towards the contact point ---
-                    ret = OnParkourContact(ref synthesizer, contactTransform, Parkour.Create(Parkour.Type.DropDown));
+                    ret = RequestTransition(ref synthesizer, contactTransform, Parkour.Create(Parkour.Type.DropDown));
                 }
             }
 

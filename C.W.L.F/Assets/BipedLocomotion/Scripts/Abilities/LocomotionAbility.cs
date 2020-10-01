@@ -131,13 +131,13 @@ namespace CWLF
 
         // -------------------------------------------------
 
-        // TODO: Remove from here
-        // --- Info about current animation, to help on braking ---
-        struct SamplingTimeInfo
-        {
-            public bool isLocomotion;
-            public bool hasReachedEndOfSegment;
-        }
+        //// TODO: Remove from here
+        //// --- Info about current animation, to help on braking ---
+        //struct SamplingTimeInfo
+        //{
+        //    public bool isLocomotion;
+        //    public bool hasReachedEndOfSegment;
+        //}
 
         // -------------------------------------------------
 
@@ -229,18 +229,22 @@ namespace CWLF
             // of that stop animation. Indeed stop animations have very subtle foot steps (to reposition to idle stance) that would be squeezed by blend/jumping from clip to clip.
             // Moreover, playing a stop clip from start to end will make sure we will reach a valid transition point to idle.
 
-            SamplingTimeInfo samplingTimeInfo = GetSamplingTimeInfo();
+            //SamplingTimeInfo samplingTimeInfo = GetSamplingTimeInfo();
+
+            bool hasReachedEndOfSegment;
+            MotionSynthesizer synthesizer = kinematica.Synthesizer.Ref;
+            Binary.TypeIndex type = KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out hasReachedEndOfSegment);
 
             float minTrajectoryDeviation = 0.03f; // default threshold
 
-            if (samplingTimeInfo.isLocomotion)
+            if (type == synthesizer.Binary.GetTypeIndex<Locomotion>())
             {
                 if (isBraking)
                 {
                     minTrajectoryDeviation = 0.25f; // high threshold to let stop animation finish
                 }
             }
-            else if (samplingTimeInfo.hasReachedEndOfSegment)
+            else if (hasReachedEndOfSegment)
             {
                 minTrajectoryDeviation = 0.0f; // we are not playing a locomotion segment and we reach the end of that segment, we must force a transition, otherwise character will freeze in the last position
             }
@@ -372,36 +376,36 @@ namespace CWLF
 
         // --- Utilities ---
 
-        SamplingTimeInfo GetSamplingTimeInfo()         // TODO: Remove from here
-        {
-            // --- Find out if current animation is a locomotive one and if it has ended (for braking) ---
+        //SamplingTimeInfo GetSamplingTimeInfo()         // TODO: Remove from here
+        //{
+        //    // --- Find out if current animation is a locomotive one and if it has ended (for braking) ---
 
-            SamplingTimeInfo samplingTimeInfo = new SamplingTimeInfo()
-            {
-                isLocomotion = false,
-                hasReachedEndOfSegment = false
-            };
+        //    SamplingTimeInfo samplingTimeInfo = new SamplingTimeInfo()
+        //    {
+        //        isLocomotion = false,
+        //        hasReachedEndOfSegment = false
+        //    };
 
-            ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
-            ref Binary binary = ref synthesizer.Binary;
+        //    ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
+        //    ref Binary binary = ref synthesizer.Binary;
 
-            SamplingTime samplingTime = synthesizer.Time;
+        //    SamplingTime samplingTime = synthesizer.Time;
 
-            ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
-            ref Binary.Tag tag = ref binary.GetTag(segment.tagIndex);
-            ref Binary.Trait trait = ref binary.GetTrait(tag.traitIndex);
+        //    ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
+        //    ref Binary.Tag tag = ref binary.GetTag(segment.tagIndex);
+        //    ref Binary.Trait trait = ref binary.GetTrait(tag.traitIndex);
 
-            if (trait.typeIndex == binary.GetTypeIndex<Locomotion>())
-            {
-                samplingTimeInfo.isLocomotion = true;
-            }
-            else if (samplingTime.timeIndex.frameIndex >= segment.destination.numFrames - 1)
-            {
-                samplingTimeInfo.hasReachedEndOfSegment = true;
-            }
+        //    if (trait.typeIndex == binary.GetTypeIndex<Locomotion>())
+        //    {
+        //        samplingTimeInfo.isLocomotion = true;
+        //    }
+        //    else if (samplingTime.timeIndex.frameIndex >= segment.destination.numFrames - 1)
+        //    {
+        //        samplingTimeInfo.hasReachedEndOfSegment = true;
+        //    }
 
-            return samplingTimeInfo;
-        }
+        //    return samplingTimeInfo;
+        //}
 
         float GetDesiredSpeed(ref MotionSynthesizer synthesizer)         // TODO: Remove from here
         {

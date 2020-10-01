@@ -187,7 +187,7 @@ namespace CWLF
                         {
                             bool TransitionSuccess;
 
-                            if (IsTransitionComplete(out TransitionSuccess))
+                            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
                             {
                                 if (!TransitionSuccess)
                                 {
@@ -212,7 +212,7 @@ namespace CWLF
                         {
                             bool TransitionSuccess;
 
-                            if (IsTransitionComplete(out TransitionSuccess))
+                            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
                             {
                                 if (!TransitionSuccess)
                                 {
@@ -232,25 +232,27 @@ namespace CWLF
                 if (IsState(State.Dismount) || IsState(State.PullUp) || IsState(State.DropDown))
                 {
                     bool bTransitionSucceeded;
-                    if (IsTransitionComplete(out bTransitionSucceeded))
+                    if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
                     {
                         SetState(State.Suspended);
                     }
                 }
 
                 // TODO: Remove from here
-                if (anchoredTransition.isValid)
-                {
-                    if (!anchoredTransition.IsState(AnchoredTransitionTask.State.Complete) && !anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
-                    {
-                        anchoredTransition.synthesizer = MemoryRef<MotionSynthesizer>.Create(ref synthesizer);
-                        kinematica.AddJobDependency(AnchoredTransitionJob.Schedule(ref anchoredTransition));
-                    }
-                    else
-                    {
-                        anchoredTransition.Dispose();
-                    }
-                }
+                //if (anchoredTransition.isValid)
+                //{
+                //    if (!anchoredTransition.IsState(AnchoredTransitionTask.State.Complete) && !anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
+                //    {
+                //        anchoredTransition.synthesizer = MemoryRef<MotionSynthesizer>.Create(ref synthesizer);
+                //        kinematica.AddJobDependency(AnchoredTransitionJob.Schedule(ref anchoredTransition));
+                //    }
+                //    else
+                //    {
+                //        anchoredTransition.Dispose();
+                //    }
+                //}
+
+                KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
 
                 return this;
             }
@@ -262,6 +264,10 @@ namespace CWLF
         void HandleMountingState(ref MotionSynthesizer synthesizer)
         {
             bool freeClimbing = false; // ledgeDistance >= 0.1f;
+
+            // --- Get ledge anchor point from root motion transform ---
+            float3 rootPosition = synthesizer.WorldRootTransform.t;
+            ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
 
             // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
 
@@ -315,8 +321,12 @@ namespace CWLF
                 SetClimbingState(desiredState);
             }
 
+            AffineTransform rootTransform = synthesizer.WorldRootTransform;
+            wallGeometry.Initialize(rootTransform);
+            wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
+
             // --- React to pull up/dismount ---
-            if (capture.pullUpButton && CanPullUp())
+            if (capture.pullUpButton && !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule))
             {
                 AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
                 RequestTransition(ref synthesizer, contactTransform, Ledge.Type.PullUp);
@@ -535,13 +545,9 @@ namespace CWLF
         public void RequestTransition(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Ledge.Type type)
         {
             // --- Require transition animation of the type given ---
-            ref Binary binary = ref synthesizer.Binary; // TODO: Remove from here
-
+            ref Binary binary = ref synthesizer.Binary; 
             Ledge trait = Ledge.Create(type);
-
-            // TODO: Remove from here
-
-            var sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, trait, contactThreshold);
+            QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, trait, contactThreshold);
             bool rootadjust = trait.type == Ledge.Type.PullUp ? false : true;
 
             anchoredTransition.Dispose();
@@ -553,37 +559,37 @@ namespace CWLF
         // --------------------------------
 
         // --- Utilities ---     
-        public bool IsTransitionComplete(out bool TransitionSuccess) // TODO: Remove from here
-        {
-            bool ret = true;
-            TransitionSuccess = false;
-            bool active = anchoredTransition.isValid;
+        //public bool IsTransitionComplete(out bool TransitionSuccess) // TODO: Remove from here
+        //{
+        //    bool ret = true;
+        //    TransitionSuccess = false;
+        //    bool active = anchoredTransition.isValid;
 
-            // --- Check if current transition has been completed ---
+        //    // --- Check if current transition has been completed ---
 
-            if (active)
-            {
-                if (anchoredTransition.IsState(AnchoredTransitionTask.State.Complete))
-                {
-                    anchoredTransition.Dispose();
-                    anchoredTransition = AnchoredTransitionTask.Invalid;
-                    TransitionSuccess = true;
-                    ret = true;
-                }
-                else if (anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
-                {
-                    anchoredTransition.Dispose();
-                    anchoredTransition = AnchoredTransitionTask.Invalid;
-                    ret = true;
-                }
-                else
-                {
-                    ret = false;
-                }
-            }
+        //    if (active)
+        //    {
+        //        if (anchoredTransition.IsState(AnchoredTransitionTask.State.Complete))
+        //        {
+        //            anchoredTransition.Dispose();
+        //            anchoredTransition = AnchoredTransitionTask.Invalid;
+        //            TransitionSuccess = true;
+        //            ret = true;
+        //        }
+        //        else if (anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
+        //        {
+        //            anchoredTransition.Dispose();
+        //            anchoredTransition = AnchoredTransitionTask.Invalid;
+        //            ret = true;
+        //        }
+        //        else
+        //        {
+        //            ret = false;
+        //        }
+        //    }
 
-            return ret;
-        }
+        //    return ret;
+        //}
 
         public void SetState(State newState)
         {
@@ -670,10 +676,10 @@ namespace CWLF
             return ClimbingState.Idle;
         }
 
-        bool CanPullUp() // kill this
-        {
-            return !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule);
-        }
+        //bool CanPullUp() // kill this
+        //{
+        //    return !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule);
+        //}
 
         // --------------------------------
     }

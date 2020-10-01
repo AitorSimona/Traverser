@@ -258,8 +258,6 @@ namespace CWLF
                velocityPercentage,
                forwardPercentage);
 
-            //MovementController controller = GetComponent<MovementController>();
-
             Assert.IsTrue(controller != null); // just in case :)
 
             // --- Start recording (all Snapshot marked values will be recorded) ---
@@ -354,8 +352,6 @@ namespace CWLF
 
         public void OnAbilityAnimatorMove() // called by ability controller at OnAnimatorMove()
         {
-            //Kinematica kinematica = GetComponent<Kinematica>();
-
             if (kinematica.Synthesizer.IsValid)
             {
                 ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
@@ -386,7 +382,6 @@ namespace CWLF
                 hasReachedEndOfSegment = false
             };
 
-            //Kinematica kinematica = GetComponent<Kinematica>();
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
             ref Binary binary = ref synthesizer.Binary;
 

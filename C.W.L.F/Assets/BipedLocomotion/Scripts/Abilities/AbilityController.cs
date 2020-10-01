@@ -12,10 +12,17 @@ namespace CWLF
     {
         // --- Attributes ---
         Ability currentAbility;
-
+        MovementController controller;
         // --------------------------------
 
         // --- Basic methods ---
+        public virtual new void OnEnable()
+        {
+            base.OnEnable();
+
+            controller = GetComponent<MovementController>();
+        }
+
         public virtual new void Update()
         {
             // --- Keep updating our current ability ---
@@ -44,15 +51,10 @@ namespace CWLF
                     if (result != null)
                     {
                         currentAbility = result;
-                        //AddAbilityDebugRecord(currentAbility);
                         break;
                     }
                 }
             }
-            //else
-            //{
-            //    AddAbilityDebugRecord(currentAbility);
-            //}
 
             base.Update();
         }
@@ -69,7 +71,6 @@ namespace CWLF
                 abilityAnimatorMove.OnAbilityAnimatorMove();
             }
 
-            MovementController controller = GetComponent<MovementController>();
             Assert.IsTrue(controller != null);
 
             // --- Move and update the controller ---

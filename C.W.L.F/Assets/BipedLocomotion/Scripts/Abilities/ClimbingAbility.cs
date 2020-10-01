@@ -33,17 +33,6 @@ namespace CWLF
         [Range(0.0f, 1.0f)]
         public float velocityPercentageLedge;
 
-        //[Header("Debug settings")]
-        //[Tooltip("Enables debug display for this ability.")]
-        //public bool enableDebugging;
-
-        //[Tooltip("Determines the movement to debug.")]
-        //public int debugIndex;
-
-        //[Tooltip("Controls the pose debug display.")]
-        //[Range(0, 100)]
-        //public int debugPoseIndex;
-
         // --------------------------------
 
         // --- Input wrapper ---
@@ -98,16 +87,6 @@ namespace CWLF
             CornerLeft,
             None
         }
-
-        // --------------------------------
-
-        //// MYTODO: Reaction filters should be user defined
-
-        //// --- Contact filters (what do we react to) ---
-        //public enum Layer
-        //{
-        //    Wall = 8
-        //}
 
         // --------------------------------
 
@@ -282,12 +261,6 @@ namespace CWLF
         // --- Climbing states wrappers ---
         void HandleMountingState(ref MotionSynthesizer synthesizer)
         {
-            // --- Get object anchor point from root motion transform ---
-            //float3 rootPosition = synthesizer.WorldRootTransform.t;
-            //ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
-            //float3 ledgePosition = ledgeGeometry.GetPosition(ledgeAnchor);
-            //float ledgeDistance = math.length(rootPosition - ledgePosition);
-
             bool freeClimbing = false; // ledgeDistance >= 0.1f;
 
             // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
@@ -341,14 +314,6 @@ namespace CWLF
 
                 SetClimbingState(desiredState);
             }
-
-            // MYTODO: Is this needed?
-            //AffineTransform rootTransform = synthesizer.WorldRootTransform;
-            //wallGeometry.Initialize(rootTransform);
-            //wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
-            //float height = wallGeometry.GetHeight(ref wallAnchor);
-            //float totalHeight = wallGeometry.GetHeight();
-            //bool closeToDrop = math.abs(height - 2.8f) <= 0.05f;
 
             // --- React to pull up/dismount ---
             if (capture.pullUpButton && CanPullUp())
@@ -408,8 +373,6 @@ namespace CWLF
             if (closeToLedge && capture.stickVertical >= 0.9f)
             {
                 ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
-                //float3 ledgePosition = ledgeGeometry.GetPosition(ledgeAnchor);
-
                 SetState(State.Climbing);
             }
             else if (closeToDrop && capture.stickVertical <= -0.9f)
@@ -585,67 +548,9 @@ namespace CWLF
             anchoredTransition = AnchoredTransitionTask.Create(ref synthesizer,
                     sequence, contactTransform, maximumLinearError,
                         maximumAngularError, rootadjust);
-
-            //if (enableDebugging)
-            //    DisplayTransition(ref synthesizer,contactTransform, trait,contactThreshold);
         }
 
         // --------------------------------
-
-        // TODO: Remove from here
-
-        //void DisplayTransition<T>(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
-        //{
-        //    if (enableDebugging)
-        //    {
-        //        ref Binary binary = ref synthesizer.Binary;
-
-        //        NativeArray<TagExtensions.OBB> obbs =
-        //            TagExtensions.GetBoundsFromContactPoints(ref binary,
-        //                contactTransform, value, contactThreshold);
-
-        //        //
-        //        // Display all relevant box colliders
-        //        //
-
-        //        int numObbs = obbs.Length;
-        //        for (int i = 0; i < numObbs; ++i)
-        //        {
-        //            TagExtensions.OBB obb = obbs[i];
-        //            obb.transform = contactTransform * obb.transform;
-        //            TagExtensions.DebugDraw(obb, Color.cyan);
-        //        }
-
-        //        var tagTraitIndex = binary.GetTraitIndex(value);
-
-        //        int numTags = binary.numTags;
-
-        //        int validIndex = 0;
-
-        //        for (int i = 0; i < numTags; ++i)
-        //        {
-        //            ref Binary.Tag tag = ref binary.GetTag(i);
-
-        //            if (tag.traitIndex == tagTraitIndex)
-        //            {
-        //                if (validIndex == debugIndex)
-        //                {
-        //                    TagExtensions.DebugDrawContacts(ref binary, ref tag,
-        //                        contactTransform, obbs, contactThreshold);
-
-        //                    TagExtensions.DebugDrawPoseAndTrajectory(ref binary, ref tag,
-        //                        contactTransform, debugPoseIndex);
-
-        //                    return;
-        //                }
-
-        //                validIndex++;
-        //            }
-        //        }
-
-        //        obbs.Dispose();
-        //    }
-        //}
 
         // --- Utilities ---     
         public bool IsTransitionComplete(out bool TransitionSuccess) // TODO: Remove from here
@@ -769,27 +674,6 @@ namespace CWLF
         {
             return !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule);
         }
-
-        //bool IsCharacterCapsuleColliding(Vector3 rootPosition)
-        //{
-        //    CapsuleCollider capsule = GetComponent<CapsuleCollider>();
-        //    Vector3 capsuleCenter = rootPosition + capsule.center;
-        //    Vector3 capsuleOffset = Vector3.up * (capsule.height * 0.5f - capsule.radius);
-
-        //    return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, capsule.radius - 0.1f, CollisionLayer.EnvironmentCollisionMask);
-        //}
-
-
-        // TODO: Remove from here
-        //void ConfigureController(bool active)
-        //{
-        //    var controller = GetComponent<MovementController>();
-
-        //    controller.collisionEnabled = !active;
-        //    controller.groundSnap = !active;
-        //    controller.resolveGroundPenetration = !active;
-        //    controller.gravityEnabled = !active;
-        //}
 
         // --------------------------------
     }

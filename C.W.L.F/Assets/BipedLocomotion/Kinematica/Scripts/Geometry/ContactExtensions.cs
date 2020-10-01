@@ -422,22 +422,23 @@ internal static class TagExtensions
         return true;
     }
 
-    private static int ms_EnvironmentCollisionMask = -1;
+    
+    //private static int ms_EnvironmentCollisionMask = -1;
 
-    // TODO: Remove from here
-    public static int EnvironmentCollisionMask
-    {
-        get
-        {
-            if (ms_EnvironmentCollisionMask < 0)
-            {
-                string[] layerNames = new string[] { "Default", "Wall", "Ledge", "Platform", "Table" };
-                ms_EnvironmentCollisionMask = LayerMask.GetMask(layerNames);
-            }
+    //// TODO: Remove from here
+    //public static int EnvironmentCollisionMask
+    //{
+    //    get
+    //    {
+    //        if (ms_EnvironmentCollisionMask < 0)
+    //        {
+    //            string[] layerNames = new string[] { "Default", "Wall", "Ledge", "Platform", "Table" };
+    //            ms_EnvironmentCollisionMask = LayerMask.GetMask(layerNames);
+    //        }
 
-            return ms_EnvironmentCollisionMask;
-        }
-    }
+    //        return ms_EnvironmentCollisionMask;
+    //    }
+    //}
 
     public static bool IsSegmentEndValidPosition(ref Binary binary, Binary.SegmentIndex segmentIndex, AffineTransform contactTransform, float contactThreshold)
     {
@@ -478,10 +479,10 @@ internal static class TagExtensions
         float collisionRadius = 0.1f;
 
         // check character isn't inside geometry
-        bool bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, EnvironmentCollisionMask);
+        bool bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
 
         // check character is on the ground
-        bValidPosition = bValidPosition && Physics.CheckSphere(worldRootTransform.t, collisionRadius, EnvironmentCollisionMask);
+        bValidPosition = bValidPosition && Physics.CheckSphere(worldRootTransform.t, collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
 
         return bValidPosition;
     }

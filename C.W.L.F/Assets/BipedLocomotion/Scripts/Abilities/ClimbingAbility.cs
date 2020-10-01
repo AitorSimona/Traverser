@@ -101,17 +101,19 @@ namespace CWLF
 
         // --------------------------------
 
-        // MYTODO: Reaction filters should be user defined
+        //// MYTODO: Reaction filters should be user defined
 
-        // --- Contact filters (what do we react to) ---
-        public enum Layer
-        {
-            Wall = 8
-        }
+        //// --- Contact filters (what do we react to) ---
+        //public enum Layer
+        //{
+        //    Wall = 8
+        //}
 
         // --------------------------------
 
         Kinematica kinematica; // system
+        MovementController controller;
+        CapsuleCollider capsule;
 
         State state; // Actual Climbing movement/state
         State previousState; // Previous Climbing movement/state
@@ -149,6 +151,8 @@ namespace CWLF
             base.OnEnable();
 
             kinematica = GetComponent<Kinematica>();
+            controller = GetComponent<MovementController>();
+            capsule = GetComponent<CapsuleCollider>();
 
             state = State.Suspended;
             previousState = State.Suspended;
@@ -191,8 +195,8 @@ namespace CWLF
         {
             ref var synthesizer = ref kinematica.Synthesizer.Ref;
 
-            // --- React to character falling ---
-            ConfigureController(!IsState(State.Suspended));
+            // --- Turn off/on controller ---
+            CollisionLayer.ConfigureController(!IsState(State.Suspended), ref controller);
 
             // --- If character is not falling ---
             if (!IsState(State.Suspended))
@@ -279,10 +283,10 @@ namespace CWLF
         void HandleMountingState(ref MotionSynthesizer synthesizer)
         {
             // --- Get object anchor point from root motion transform ---
-            float3 rootPosition = synthesizer.WorldRootTransform.t;
-            ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
-            float3 ledgePosition = ledgeGeometry.GetPosition(ledgeAnchor);
-            float ledgeDistance = math.length(rootPosition - ledgePosition);
+            //float3 rootPosition = synthesizer.WorldRootTransform.t;
+            //ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
+            //float3 ledgePosition = ledgeGeometry.GetPosition(ledgeAnchor);
+            //float ledgeDistance = math.length(rootPosition - ledgePosition);
 
             bool freeClimbing = false; // ledgeDistance >= 0.1f;
 
@@ -292,7 +296,7 @@ namespace CWLF
 
             if (freeClimbing)
             {
-                wallAnchor = wallGeometry.GetAnchor(rootPosition);
+                wallAnchor = wallGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootposition
                 SetState(State.FreeClimbing);
             }
             else
@@ -339,12 +343,12 @@ namespace CWLF
             }
 
             // MYTODO: Is this needed?
-            AffineTransform rootTransform = synthesizer.WorldRootTransform;
-            wallGeometry.Initialize(rootTransform);
-            wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
-            float height = wallGeometry.GetHeight(ref wallAnchor);
-            float totalHeight = wallGeometry.GetHeight();
-            bool closeToDrop = math.abs(height - 2.8f) <= 0.05f;
+            //AffineTransform rootTransform = synthesizer.WorldRootTransform;
+            //wallGeometry.Initialize(rootTransform);
+            //wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
+            //float height = wallGeometry.GetHeight(ref wallAnchor);
+            //float totalHeight = wallGeometry.GetHeight();
+            //bool closeToDrop = math.abs(height - 2.8f) <= 0.05f;
 
             // --- React to pull up/dismount ---
             if (capture.pullUpButton && CanPullUp())
@@ -403,10 +407,8 @@ namespace CWLF
             // --- Check if we are close to hanging onto a ledge or almost on the ground ---
             if (closeToLedge && capture.stickVertical >= 0.9f)
             {
-                float3 rootPosition = synthesizer.WorldRootTransform.t;
-
-                ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
-                float3 ledgePosition = ledgeGeometry.GetPosition(ledgeAnchor);
+                ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
+                //float3 ledgePosition = ledgeGeometry.GetPosition(ledgeAnchor);
 
                 SetState(State.Climbing);
             }
@@ -426,7 +428,7 @@ namespace CWLF
 
         bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
         {
-            bool bCollision = IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f));
+            bool bCollision = CollisionLayer.IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f), ref capsule);
 
             if (climbingState == ClimbingState.Idle)
             {
@@ -540,12 +542,11 @@ namespace CWLF
             {
                 if (IsState(State.Suspended))
                 {
-                    MovementController controller = GetComponent<MovementController>();
                     BoxCollider collider = controller.current.collider as BoxCollider;
 
                     if (collider != null)
                     {
-                        if (collider.gameObject.layer == (int)Layer.Wall)
+                        if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
                         {
                             ledgeGeometry.Initialize(collider);
                             wallGeometry.Initialize(collider, contactTransform);
@@ -766,29 +767,29 @@ namespace CWLF
 
         bool CanPullUp() // kill this
         {
-            return !IsCharacterCapsuleColliding(transform.position);
+            return !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule);
         }
 
-        bool IsCharacterCapsuleColliding(Vector3 rootPosition)
-        {
-            CapsuleCollider capsule = GetComponent<CapsuleCollider>();
-            Vector3 capsuleCenter = rootPosition + capsule.center;
-            Vector3 capsuleOffset = Vector3.up * (capsule.height * 0.5f - capsule.radius);
+        //bool IsCharacterCapsuleColliding(Vector3 rootPosition)
+        //{
+        //    CapsuleCollider capsule = GetComponent<CapsuleCollider>();
+        //    Vector3 capsuleCenter = rootPosition + capsule.center;
+        //    Vector3 capsuleOffset = Vector3.up * (capsule.height * 0.5f - capsule.radius);
 
-            return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, capsule.radius - 0.1f, TagExtensions.EnvironmentCollisionMask);
-        }
+        //    return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, capsule.radius - 0.1f, CollisionLayer.EnvironmentCollisionMask);
+        //}
 
 
         // TODO: Remove from here
-        void ConfigureController(bool active)
-        {
-            var controller = GetComponent<MovementController>();
+        //void ConfigureController(bool active)
+        //{
+        //    var controller = GetComponent<MovementController>();
 
-            controller.collisionEnabled = !active;
-            controller.groundSnap = !active;
-            controller.resolveGroundPenetration = !active;
-            controller.gravityEnabled = !active;
-        }
+        //    controller.collisionEnabled = !active;
+        //    controller.groundSnap = !active;
+        //    controller.resolveGroundPenetration = !active;
+        //    controller.gravityEnabled = !active;
+        //}
 
         // --------------------------------
     }

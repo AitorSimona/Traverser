@@ -115,6 +115,7 @@ namespace CWLF
         FrameCapture capture;
 
         Kinematica kinematica;
+        MovementController controller;
 
         PoseSet idleCandidates;
         PoseSet locomotionCandidates;
@@ -145,6 +146,7 @@ namespace CWLF
         {
             base.OnEnable();
             kinematica = GetComponent<Kinematica>();
+            controller = GetComponent<MovementController>();
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
             capture.movementDirection = Missing.forward;
@@ -190,13 +192,11 @@ namespace CWLF
             Ability ret = this;
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
-            float desiredSpeed = GetDesiredSpeed(ref synthesizer);
-
             // --- Ensure stop animation is properly played, that we do not change to other animations ---
             float minTrajectoryDeviation = HandleBraking();
 
             // --- We perform future movement to check for collisions, then rewind using snapshot debugger's capabilities ---
-            Ability contactAbility = HandleMovementPrediction(ref synthesizer, desiredSpeed, deltaTime);
+            Ability contactAbility = HandleMovementPrediction(ref synthesizer, GetDesiredSpeed(ref synthesizer), deltaTime);
 
             // --- Set up a job so pose prediction runs faster (multithreading) ---
             LocomotionJob job = new LocomotionJob()
@@ -258,7 +258,7 @@ namespace CWLF
                velocityPercentage,
                forwardPercentage);
 
-            MovementController controller = GetComponent<MovementController>();
+            //MovementController controller = GetComponent<MovementController>();
 
             Assert.IsTrue(controller != null); // just in case :)
 
@@ -354,7 +354,7 @@ namespace CWLF
 
         public void OnAbilityAnimatorMove() // called by ability controller at OnAnimatorMove()
         {
-            Kinematica kinematica = GetComponent<Kinematica>();
+            //Kinematica kinematica = GetComponent<Kinematica>();
 
             if (kinematica.Synthesizer.IsValid)
             {
@@ -386,7 +386,7 @@ namespace CWLF
                 hasReachedEndOfSegment = false
             };
 
-            Kinematica kinematica = GetComponent<Kinematica>();
+            //Kinematica kinematica = GetComponent<Kinematica>();
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
             ref Binary binary = ref synthesizer.Binary;
 

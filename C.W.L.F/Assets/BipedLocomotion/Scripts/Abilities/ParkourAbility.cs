@@ -61,12 +61,18 @@ namespace CWLF
         [Snapshot]
         AnchoredTransitionTask anchoredTransition; // Kinematica animation transition handler
 
+        Kinematica kinematica;
+
+        MovementController controller;
+
         // --- Basic Methods ---
 
         public override void OnEnable()
         {
             base.OnEnable();
             anchoredTransition = AnchoredTransitionTask.Invalid;
+            controller = GetComponent<MovementController>();
+            kinematica = GetComponent<Kinematica>();
         }
 
         public override void OnDisable()
@@ -90,21 +96,20 @@ namespace CWLF
         // --- Ability class methods ---
         public Ability OnUpdate(float deltaTime)
         {
-            MovementController controller = GetComponent<MovementController>();
             bool active = anchoredTransition.isValid;
 
+            // --- If we are in a transition disable controller ---
+            CollisionLayer.ConfigureController(active, ref controller);
 
             // TODO: Remove from here
-            // --- If we are in a transition disable controller ---
-            controller.collisionEnabled = !active;
-            controller.groundSnap = !active;
-            controller.resolveGroundPenetration = !active;
-            controller.gravityEnabled = !active;
+            //controller.collisionEnabled = !active;
+            //controller.groundSnap = !active;
+            //controller.resolveGroundPenetration = !active;
+            //controller.gravityEnabled = !active;
 
             // TODO: Remove from here
             if (active)
             {
-                Kinematica kinematica = GetComponent<Kinematica>();
                 ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
                 if (!anchoredTransition.IsState(AnchoredTransitionTask.State.Complete) && !anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
@@ -131,7 +136,6 @@ namespace CWLF
             if (capture.jumpButton)
             {
                 // --- Identify collider's object layer ---
-                MovementController controller = GetComponent<MovementController>();
                 ref MovementController.Closure closure = ref controller.current;
                 Assert.IsTrue(closure.isColliding);
 
@@ -197,7 +201,6 @@ namespace CWLF
         public bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime)
         {
             bool ret = false;
-            MovementController controller = GetComponent<MovementController>();
 
             if (controller.previous.isGrounded && controller.previous.ground != null)
             {

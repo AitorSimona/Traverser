@@ -94,26 +94,6 @@ namespace CWLF
 
         // -------------------------------------------------
 
-        // TODO: Remove from here
-        // --- Input wrapper ---
-        //public struct FrameCapture
-        //{
-        //    public float3 movementDirection;
-        //    public float moveIntensity;
-        //    public bool run;
-
-        //    public void Update()
-        //    {
-        //        Utility.GetInputMove(ref movementDirection, ref moveIntensity);
-        //        run = Input.GetButton("A Button");
-        //    }
-        //}
-
-        // -------------------------------------------------
-
-        //[Snapshot]
-        //FrameCapture capture;
-
         Kinematica kinematica;
         MovementController controller;
 
@@ -164,10 +144,7 @@ namespace CWLF
             base.OnEarlyUpdate(rewind);
 
             if (!rewind) // if we are not using snapshot debugger to rewind
-            {
                 InputLayer.capture.UpdateLocomotion();
-                //Debug.Log(capture.movementDirection);
-            }
         }
 
         // -------------------------------------------------
@@ -355,7 +332,7 @@ namespace CWLF
 
         // --- Utilities ---
 
-        float GetDesiredSpeed(ref MotionSynthesizer synthesizer)         // TODO: Remove from here
+        float GetDesiredSpeed(ref MotionSynthesizer synthesizer)        
         {
             float desiredSpeed = 0.0f;
 

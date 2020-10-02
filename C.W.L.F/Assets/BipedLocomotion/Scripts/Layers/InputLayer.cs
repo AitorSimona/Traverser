@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Kinematica;
+﻿using Unity.Kinematica;
 using Unity.Mathematics;
 using Unity.SnapshotDebugger;
 using UnityEngine;
 
+// --- Wrapper for ability-input interactions ---
 
 namespace CWLF
 {
@@ -15,7 +14,7 @@ namespace CWLF
             // --- Attributes ---
             public float3 movementDirection;
             public float moveIntensity;
-            public bool run; //run
+            public bool run; 
 
             // --------------------------------
 
@@ -59,6 +58,26 @@ namespace CWLF
         // --- Attributes ---
         [Snapshot]
         public static FrameCapture capture;
+
+        // --------------------------------
+
+        // --- Utilities ---
+        public static float2 GetStickInput()
+        {
+            float2 stickInput;
+            stickInput.x = capture.stickHorizontal;
+            stickInput.y = capture.stickVertical;
+
+            if (math.length(stickInput) >= 0.1f)
+            {
+                if (math.length(stickInput) > 1.0f)
+                    stickInput = math.normalize(stickInput);
+            }
+            else
+                stickInput = float2.zero;
+
+            return stickInput;
+        }
 
         // --------------------------------
     }

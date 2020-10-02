@@ -28,23 +28,6 @@ namespace CWLF
 
         // -------------------------------------------------
 
-        // TODO: Remove from here
-        // --- Input wrapper ---
-        //public struct FrameCapture
-        //{
-        //    public bool jumpButton;
-
-        //    public void Update()
-        //    {
-        //        jumpButton = Input.GetButton("A Button");
-        //    }
-        //}
-
-        //[Snapshot]
-        //FrameCapture capture;
-
-        // -------------------------------------------------
-
         [Snapshot]
         AnchoredTransitionTask anchoredTransition; // Kinematica animation transition handler
 
@@ -73,9 +56,7 @@ namespace CWLF
             base.OnEarlyUpdate(rewind);
 
             if (!rewind) // if we are not using snapshot debugger to rewind
-            {
                 InputLayer.capture.UpdateParkour();
-            }
         }
 
         // -------------------------------------------------

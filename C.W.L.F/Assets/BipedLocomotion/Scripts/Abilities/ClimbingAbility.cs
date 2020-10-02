@@ -35,28 +35,6 @@ namespace CWLF
 
         // --------------------------------
 
-        // --- Input wrapper ---
-        //public struct FrameCapture
-        //{
-        //    public float stickHorizontal;
-        //    public float stickVertical;
-        //    public bool mountButton;
-        //    public bool dismountButton;
-        //    public bool pullUpButton;
-
-        //    public void Update()
-        //    {
-        //        stickHorizontal = Input.GetAxis("Left Analog Horizontal");
-        //        stickVertical = Input.GetAxis("Left Analog Vertical");
-
-        //        mountButton = Input.GetButton("B Button") || Input.GetKey("b");
-        //        dismountButton = Input.GetButton("B Button") || Input.GetKey("b");
-        //        pullUpButton = Input.GetButton("A Button") || Input.GetKey("a");
-        //    }
-        //}
-
-        // --------------------------------
-
         // --- Climbing movement/state ---
         public enum State
         {
@@ -100,9 +78,6 @@ namespace CWLF
         ClimbingState climbingState; // Actual Climbing direction
         ClimbingState previousClimbingState; // Previous Climbing direction
         ClimbingState lastCollidingClimbingState;
-
-        //[Snapshot]  // Snapshot: compatible with snapshotdebugger
-        //FrameCapture capture; // input
 
         // --------------------------------
 
@@ -162,9 +137,7 @@ namespace CWLF
             base.OnEarlyUpdate(rewind);
 
             if (!rewind) // if we are not using snapshot debugger to rewind
-            {
                 InputLayer.capture.UpdateClimbing(); // Update climbing input
-            }
         }
 
         // --------------------------------
@@ -172,7 +145,7 @@ namespace CWLF
         // --- Ability class methods ---
         public Ability OnUpdate(float deltaTime)
         {
-            ref var synthesizer = ref kinematica.Synthesizer.Ref;
+            ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
             // --- Turn off/on controller ---
             CollisionLayer.ConfigureController(!IsState(State.Suspended), ref controller);
@@ -572,27 +545,9 @@ namespace CWLF
             poses.Dispose();
         }
 
-        float2 GetStickInput() // TODO: Remove from here
-        {
-            float2 stickInput =
-                new float2(InputLayer.capture.stickHorizontal,
-                    InputLayer.capture.stickVertical);
-
-            if (math.length(stickInput) >= 0.1f)
-            {
-                if (math.length(stickInput) > 1.0f)
-                    stickInput =
-                        math.normalize(stickInput);
-
-                return stickInput;
-            }
-
-            return float2.zero;
-        }
-
         ClimbingState GetDesiredFreeClimbingState()
         {
-            float2 stickInput = GetStickInput();
+            float2 stickInput = InputLayer.GetStickInput();
 
             if (math.length(stickInput) >= 0.1f)
             {
@@ -614,7 +569,7 @@ namespace CWLF
 
         ClimbingState GetDesiredClimbingState()
         {
-            float2 stickInput = GetStickInput();
+            float2 stickInput = InputLayer.GetStickInput();
 
             if (math.abs(stickInput.x) >= 0.5f)
             {

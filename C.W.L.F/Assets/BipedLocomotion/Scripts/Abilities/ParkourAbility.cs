@@ -30,18 +30,18 @@ namespace CWLF
 
         // TODO: Remove from here
         // --- Input wrapper ---
-        public struct FrameCapture
-        {
-            public bool jumpButton;
+        //public struct FrameCapture
+        //{
+        //    public bool jumpButton;
 
-            public void Update()
-            {
-                jumpButton = Input.GetButton("A Button");
-            }
-        }
+        //    public void Update()
+        //    {
+        //        jumpButton = Input.GetButton("A Button");
+        //    }
+        //}
 
-        [Snapshot]
-        FrameCapture capture;
+        //[Snapshot]
+        //FrameCapture capture;
 
         // -------------------------------------------------
 
@@ -74,7 +74,7 @@ namespace CWLF
 
             if (!rewind) // if we are not using snapshot debugger to rewind
             {
-                capture.Update();
+                InputLayer.capture.UpdateParkour();
             }
         }
 
@@ -83,33 +83,8 @@ namespace CWLF
         // --- Ability class methods ---
         public Ability OnUpdate(float deltaTime)
         {
-            //bool active = anchoredTransition.isValid;
-
             // --- If we are in a transition disable controller ---
             CollisionLayer.ConfigureController(anchoredTransition.isValid, ref controller);
-
-            // TODO: Remove from here
-            //if (active)
-            //{
-
-            //    ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
-
-            //    if (!anchoredTransition.IsState(AnchoredTransitionTask.State.Complete) && !anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
-            //    {
-            //        anchoredTransition.synthesizer = MemoryRef<MotionSynthesizer>.Create(ref synthesizer);
-
-            //        // --- Finally tell kinematica to wait for this job to finish before executing other stuff ---
-            //        kinematica.AddJobDependency(AnchoredTransitionJob.Schedule(ref anchoredTransition));
-
-            //        return this;
-            //    }
-
-            //    anchoredTransition.Dispose();
-            //    anchoredTransition = AnchoredTransitionTask.Invalid;
-            //}
-
-
-            //return null;
 
             if (KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))
                 return this;
@@ -121,7 +96,7 @@ namespace CWLF
         {
             bool ret = false;
 
-            if (capture.jumpButton)
+            if (InputLayer.capture.jumpButton)
             {
                 // --- Identify collider's object layer ---
                 ref MovementController.Closure closure = ref controller.current;

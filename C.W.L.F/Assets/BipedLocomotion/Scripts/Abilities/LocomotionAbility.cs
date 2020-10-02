@@ -96,23 +96,23 @@ namespace CWLF
 
         // TODO: Remove from here
         // --- Input wrapper ---
-        public struct FrameCapture
-        {
-            public float3 movementDirection;
-            public float moveIntensity;
-            public bool run;
+        //public struct FrameCapture
+        //{
+        //    public float3 movementDirection;
+        //    public float moveIntensity;
+        //    public bool run;
 
-            public void Update()
-            {
-                Utility.GetInputMove(ref movementDirection, ref moveIntensity);
-                run = Input.GetButton("A Button");
-            }
-        }
+        //    public void Update()
+        //    {
+        //        Utility.GetInputMove(ref movementDirection, ref moveIntensity);
+        //        run = Input.GetButton("A Button");
+        //    }
+        //}
 
         // -------------------------------------------------
 
-        [Snapshot]
-        FrameCapture capture;
+        //[Snapshot]
+        //FrameCapture capture;
 
         Kinematica kinematica;
         MovementController controller;
@@ -124,20 +124,8 @@ namespace CWLF
         [Snapshot]
         bool isBraking = false;
 
-        [Snapshot]
-        float3 rootVelocity = float3.zero;          // TODO: Remove from here
+        float desiredLinearSpeed => InputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;   // TODO: Remove from here
 
-        float desiredLinearSpeed => capture.run ? desiredSpeedFast : desiredSpeedSlow;
-
-        // -------------------------------------------------
-
-        //// TODO: Remove from here
-        //// --- Info about current animation, to help on braking ---
-        //struct SamplingTimeInfo
-        //{
-        //    public bool isLocomotion;
-        //    public bool hasReachedEndOfSegment;
-        //}
 
         // -------------------------------------------------
 
@@ -149,8 +137,8 @@ namespace CWLF
             controller = GetComponent<MovementController>();
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
-            capture.movementDirection = Missing.forward;
-            capture.moveIntensity = 0.0f;
+            InputLayer.capture.movementDirection = Missing.forward;
+            InputLayer.capture.moveIntensity = 0.0f;
 
             // --- Initialize arrays ---
             idleCandidates = synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default);
@@ -159,9 +147,6 @@ namespace CWLF
 
             // --- Play default animation ---
             synthesizer.PlayFirstSequence(idleCandidates);
-
-            rootVelocity = synthesizer.CurrentVelocity;
-
         }
 
         public override void OnDisable()
@@ -180,7 +165,8 @@ namespace CWLF
 
             if (!rewind) // if we are not using snapshot debugger to rewind
             {
-                capture.Update();
+                InputLayer.capture.UpdateLocomotion();
+                //Debug.Log(capture.movementDirection);
             }
         }
 
@@ -205,7 +191,7 @@ namespace CWLF
                 idlePoses = idleCandidates,
                 locomotionPoses = locomotionCandidates,
                 trajectory = trajectory,
-                idle = capture.moveIntensity == 0.0f,
+                idle = InputLayer.capture.moveIntensity == 0.0f,
                 minTrajectoryDeviation = minTrajectoryDeviation,
                 responsiveness = responsiveness
             };
@@ -229,8 +215,6 @@ namespace CWLF
             // of that stop animation. Indeed stop animations have very subtle foot steps (to reposition to idle stance) that would be squeezed by blend/jumping from clip to clip.
             // Moreover, playing a stop clip from start to end will make sure we will reach a valid transition point to idle.
 
-            //SamplingTimeInfo samplingTimeInfo = GetSamplingTimeInfo();
-
             bool hasReachedEndOfSegment;
             MotionSynthesizer synthesizer = kinematica.Synthesizer.Ref;
             Binary.TypeIndex type = KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out hasReachedEndOfSegment);
@@ -241,7 +225,7 @@ namespace CWLF
             {
                 if (isBraking)
                 {
-                    minTrajectoryDeviation = 0.25f; // high threshold to let stop animation finish
+                    minTrajectoryDeviation = 0.3f; // high threshold to let stop animation finish
                 }
             }
             else if (hasReachedEndOfSegment)
@@ -256,7 +240,7 @@ namespace CWLF
         {
             // --- Create final trajectory from given parameters ---
             TrajectoryPrediction prediction = TrajectoryPrediction.CreateFromDirection(ref kinematica.Synthesizer.Ref,
-               capture.movementDirection,
+               InputLayer.capture.movementDirection,
                desiredSpeed,
                trajectory,
                velocityPercentage,
@@ -364,11 +348,6 @@ namespace CWLF
                 AffineTransform rootMotion = synthesizer.SteerRootMotion(trajectory, correctTranslationPercentage, correctRotationPercentage, correctMotionStartSpeed, correctMotionEndSpeed);
                 AffineTransform rootTransform = AffineTransform.Create(transform.position, transform.rotation) * rootMotion;
                 synthesizer.SetWorldTransform(AffineTransform.Create(rootTransform.t, rootTransform.q), true);
-
-                if (synthesizer.deltaTime >= 0.0f)
-                {
-                    rootVelocity = rootMotion.t / synthesizer.deltaTime;
-                }
             }
         }
 
@@ -376,43 +355,12 @@ namespace CWLF
 
         // --- Utilities ---
 
-        //SamplingTimeInfo GetSamplingTimeInfo()         // TODO: Remove from here
-        //{
-        //    // --- Find out if current animation is a locomotive one and if it has ended (for braking) ---
-
-        //    SamplingTimeInfo samplingTimeInfo = new SamplingTimeInfo()
-        //    {
-        //        isLocomotion = false,
-        //        hasReachedEndOfSegment = false
-        //    };
-
-        //    ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
-        //    ref Binary binary = ref synthesizer.Binary;
-
-        //    SamplingTime samplingTime = synthesizer.Time;
-
-        //    ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
-        //    ref Binary.Tag tag = ref binary.GetTag(segment.tagIndex);
-        //    ref Binary.Trait trait = ref binary.GetTrait(tag.traitIndex);
-
-        //    if (trait.typeIndex == binary.GetTypeIndex<Locomotion>())
-        //    {
-        //        samplingTimeInfo.isLocomotion = true;
-        //    }
-        //    else if (samplingTime.timeIndex.frameIndex >= segment.destination.numFrames - 1)
-        //    {
-        //        samplingTimeInfo.hasReachedEndOfSegment = true;
-        //    }
-
-        //    return samplingTimeInfo;
-        //}
-
         float GetDesiredSpeed(ref MotionSynthesizer synthesizer)         // TODO: Remove from here
         {
             float desiredSpeed = 0.0f;
 
             // --- If we are idle ---
-            if (capture.moveIntensity == 0.0f)
+            if (InputLayer.capture.moveIntensity == 0.0f)
             {
                 if (!isBraking && math.length(synthesizer.CurrentVelocity) < brakingSpeed)
                     isBraking = true;
@@ -420,7 +368,7 @@ namespace CWLF
             else
             {
                 isBraking = false;
-                desiredSpeed = capture.moveIntensity * desiredLinearSpeed;
+                desiredSpeed = InputLayer.capture.moveIntensity * desiredLinearSpeed;
             }
 
             return desiredSpeed;

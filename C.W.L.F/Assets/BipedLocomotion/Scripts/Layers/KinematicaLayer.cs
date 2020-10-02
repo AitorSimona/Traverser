@@ -6,8 +6,11 @@ namespace CWLF
 {
     public static class KinematicaLayer
     {
+
+        // --- Utilities ---
         public static bool UpdateAnchoredTransition(ref AnchoredTransitionTask anchoredTransition, ref Kinematica kinematica)
         {
+            // --- Update a valid anchored transition until it is completed or failed ---
             bool ret = false;
 
             if (anchoredTransition.isValid)
@@ -67,6 +70,7 @@ namespace CWLF
 
         public static Binary.TypeIndex GetCurrentAnimationInfo(ref MotionSynthesizer synthesizer, out bool hasReachedEndOfSegment)
         {
+            // --- Retrieve current animation type and whether is has finished ---
             ref Binary binary = ref synthesizer.Binary;
             hasReachedEndOfSegment = false;
 
@@ -81,5 +85,7 @@ namespace CWLF
 
             return trait.typeIndex;
         }
+
+        // --------------------------------
     }
 }

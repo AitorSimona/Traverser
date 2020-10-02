@@ -36,24 +36,24 @@ namespace CWLF
         // --------------------------------
 
         // --- Input wrapper ---
-        public struct FrameCapture
-        {
-            public float stickHorizontal;
-            public float stickVertical;
-            public bool mountButton;
-            public bool dismountButton;
-            public bool pullUpButton;
+        //public struct FrameCapture
+        //{
+        //    public float stickHorizontal;
+        //    public float stickVertical;
+        //    public bool mountButton;
+        //    public bool dismountButton;
+        //    public bool pullUpButton;
 
-            public void Update()
-            {
-                stickHorizontal = Input.GetAxis("Left Analog Horizontal");
-                stickVertical = Input.GetAxis("Left Analog Vertical");
+        //    public void Update()
+        //    {
+        //        stickHorizontal = Input.GetAxis("Left Analog Horizontal");
+        //        stickVertical = Input.GetAxis("Left Analog Vertical");
 
-                mountButton = Input.GetButton("B Button") || Input.GetKey("b");
-                dismountButton = Input.GetButton("B Button") || Input.GetKey("b");
-                pullUpButton = Input.GetButton("A Button") || Input.GetKey("a");
-            }
-        }
+        //        mountButton = Input.GetButton("B Button") || Input.GetKey("b");
+        //        dismountButton = Input.GetButton("B Button") || Input.GetKey("b");
+        //        pullUpButton = Input.GetButton("A Button") || Input.GetKey("a");
+        //    }
+        //}
 
         // --------------------------------
 
@@ -101,8 +101,8 @@ namespace CWLF
         ClimbingState previousClimbingState; // Previous Climbing direction
         ClimbingState lastCollidingClimbingState;
 
-        [Snapshot]  // Snapshot: compatible with snapshotdebugger
-        FrameCapture capture; // input
+        //[Snapshot]  // Snapshot: compatible with snapshotdebugger
+        //FrameCapture capture; // input
 
         // --------------------------------
 
@@ -163,7 +163,7 @@ namespace CWLF
 
             if (!rewind) // if we are not using snapshot debugger to rewind
             {
-                capture.Update();
+                InputLayer.capture.UpdateClimbing(); // Update climbing input
             }
         }
 
@@ -238,20 +238,6 @@ namespace CWLF
                     }
                 }
 
-                // TODO: Remove from here
-                //if (anchoredTransition.isValid)
-                //{
-                //    if (!anchoredTransition.IsState(AnchoredTransitionTask.State.Complete) && !anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
-                //    {
-                //        anchoredTransition.synthesizer = MemoryRef<MotionSynthesizer>.Create(ref synthesizer);
-                //        kinematica.AddJobDependency(AnchoredTransitionJob.Schedule(ref anchoredTransition));
-                //    }
-                //    else
-                //    {
-                //        anchoredTransition.Dispose();
-                //    }
-                //}
-
                 KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
 
                 return this;
@@ -270,7 +256,6 @@ namespace CWLF
             ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
 
             // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
-
             Climbing climbingTrait = freeClimbing ? Climbing.Create(Climbing.Type.Wall) : Climbing.Create(Climbing.Type.Ledge);
 
             if (freeClimbing)
@@ -326,13 +311,13 @@ namespace CWLF
             wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
 
             // --- React to pull up/dismount ---
-            if (capture.pullUpButton && !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule))
+            if (InputLayer.capture.pullUpButton && !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule))
             {
                 AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
                 RequestTransition(ref synthesizer, contactTransform, Ledge.Type.PullUp);
                 SetState(State.PullUp);
             }
-            else if (capture.dismountButton /*&& closeToDrop*/)
+            else if (InputLayer.capture.dismountButton /*&& closeToDrop*/)
             {
                 RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
                 SetState(State.Dismount);
@@ -380,12 +365,12 @@ namespace CWLF
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
             // --- Check if we are close to hanging onto a ledge or almost on the ground ---
-            if (closeToLedge && capture.stickVertical >= 0.9f)
+            if (closeToLedge && InputLayer.capture.stickVertical >= 0.9f)
             {
                 ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
                 SetState(State.Climbing);
             }
-            else if (closeToDrop && capture.stickVertical <= -0.9f)
+            else if (closeToDrop && InputLayer.capture.stickVertical <= -0.9f)
             {
                 RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
                 SetState(State.Dismount);
@@ -511,7 +496,7 @@ namespace CWLF
         public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
         {
             // --- If we make contact with a climbable surface and player issues climb order, mount ---
-            if (capture.mountButton)
+            if (InputLayer.capture.mountButton)
             {
                 if (IsState(State.Suspended))
                 {
@@ -559,38 +544,6 @@ namespace CWLF
         // --------------------------------
 
         // --- Utilities ---     
-        //public bool IsTransitionComplete(out bool TransitionSuccess) // TODO: Remove from here
-        //{
-        //    bool ret = true;
-        //    TransitionSuccess = false;
-        //    bool active = anchoredTransition.isValid;
-
-        //    // --- Check if current transition has been completed ---
-
-        //    if (active)
-        //    {
-        //        if (anchoredTransition.IsState(AnchoredTransitionTask.State.Complete))
-        //        {
-        //            anchoredTransition.Dispose();
-        //            anchoredTransition = AnchoredTransitionTask.Invalid;
-        //            TransitionSuccess = true;
-        //            ret = true;
-        //        }
-        //        else if (anchoredTransition.IsState(AnchoredTransitionTask.State.Failed))
-        //        {
-        //            anchoredTransition.Dispose();
-        //            anchoredTransition = AnchoredTransitionTask.Invalid;
-        //            ret = true;
-        //        }
-        //        else
-        //        {
-        //            ret = false;
-        //        }
-        //    }
-
-        //    return ret;
-        //}
-
         public void SetState(State newState)
         {
             previousState = state;
@@ -613,7 +566,7 @@ namespace CWLF
         {
             return this.climbingState == climbingState;
         }
-        public void PlayFirstSequence(PoseSet poses) // TODO: Remove from here
+        public void PlayFirstSequence(PoseSet poses) 
         {
             kinematica.Synthesizer.Ref.PlayFirstSequence(poses);
             poses.Dispose();
@@ -622,8 +575,8 @@ namespace CWLF
         float2 GetStickInput() // TODO: Remove from here
         {
             float2 stickInput =
-                new float2(capture.stickHorizontal,
-                    capture.stickVertical);
+                new float2(InputLayer.capture.stickHorizontal,
+                    InputLayer.capture.stickVertical);
 
             if (math.length(stickInput) >= 0.1f)
             {
@@ -675,11 +628,6 @@ namespace CWLF
 
             return ClimbingState.Idle;
         }
-
-        //bool CanPullUp() // kill this
-        //{
-        //    return !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule);
-        //}
 
         // --------------------------------
     }

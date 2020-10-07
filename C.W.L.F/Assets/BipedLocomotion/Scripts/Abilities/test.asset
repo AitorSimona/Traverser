@@ -3757,13 +3757,6 @@ MonoBehaviour:
           assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 9.2333
-        duration: 3.1666
-        payload:
-          serializedData: '{"type":9}'
-          assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        name: 
       markers:
       - timeInSeconds: 2
         payload:
@@ -3837,13 +3830,6 @@ MonoBehaviour:
       tags:
       - startTime: 0
         duration: 4.8
-        payload:
-          serializedData: '{"type":9}'
-          assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        name: 
-      - startTime: 9.2333
-        duration: 3.1666
         payload:
           serializedData: '{"type":9}'
           assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,

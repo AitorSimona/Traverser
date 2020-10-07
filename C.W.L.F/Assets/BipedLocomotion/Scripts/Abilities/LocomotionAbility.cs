@@ -92,6 +92,10 @@ namespace CWLF
         [Range(0.0f, 10.0f)]
         public float correctMotionEndSpeed = 3.0f;
 
+        public bool freedrop = false;
+
+        float distance_to_fall = 5.0f;
+
         // -------------------------------------------------
 
         Kinematica kinematica;
@@ -168,7 +172,7 @@ namespace CWLF
                 idlePoses = idleCandidates,
                 locomotionPoses = locomotionCandidates,
                 trajectory = trajectory,
-                idle = InputLayer.capture.moveIntensity == 0.0f,
+                idle = /*InputLayer.capture.moveIntensity*/ GetDesiredSpeed(ref synthesizer) == 0.0f,
                 minTrajectoryDeviation = minTrajectoryDeviation,
                 responsiveness = responsiveness
             };
@@ -207,6 +211,7 @@ namespace CWLF
             }
             else if (hasReachedEndOfSegment)
             {
+
                 minTrajectoryDeviation = 0.0f; // we are not playing a locomotion segment and we reach the end of that segment, we must force a transition, otherwise character will freeze in the last position
             }
 
@@ -263,7 +268,7 @@ namespace CWLF
                     float3 contactPoint = closure.colliderContactPoint;
                     contactPoint.y = controller.Position.y;
                     float3 contactNormal = closure.colliderContactNormal;
-                    quaternion q = math.mul(transform.q, Missing.forRotation(Missing.zaxis(transform.q),contactNormal));
+                    quaternion q = math.mul(transform.q, Missing.forRotation(Missing.zaxis(transform.q), contactNormal));
 
                     AffineTransform contactTransform = new AffineTransform(contactPoint, q);
 
@@ -284,7 +289,19 @@ namespace CWLF
                 }
                 else if (!closure.isGrounded) // we are dropping/falling down
                 {
-                    if (contactAbility == null)
+                    if (!freedrop)
+                    {
+                        // --- Compute distance to fall point ---
+                        Vector3 futurepos;
+                        futurepos.x = controller.current.position.x;
+                        futurepos.y = controller.current.position.y;
+                        futurepos.z = controller.current.position.z;
+                        float brakeratio = 1.0f;
+                        distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeratio;
+                        break;
+                    }
+
+                    else if (contactAbility == null)
                     {
                         foreach (Ability ability in GetComponents(typeof(Ability)))
                         {
@@ -297,6 +314,8 @@ namespace CWLF
                         }
                     }
                 }
+                else
+                    distance_to_fall = 3.0f; // reset distance once no fall is predicted
 
                 transform.t = worldRootTransform.inverseTransform(controller.Position);
                 prediction.Transform = transform;
@@ -346,6 +365,17 @@ namespace CWLF
             {
                 isBraking = false;
                 desiredSpeed = InputLayer.capture.moveIntensity * desiredLinearSpeed;
+            }
+
+            // --- Manually brake the character when about to fall ---
+            if (!freedrop)
+            {
+                if (distance_to_fall < 0.5f)
+                    desiredSpeed = 0.0f;
+                else if (distance_to_fall < 3.0f)
+                {
+                    desiredSpeed *= distance_to_fall / 3.0f;
+                }
             }
 
             return desiredSpeed;

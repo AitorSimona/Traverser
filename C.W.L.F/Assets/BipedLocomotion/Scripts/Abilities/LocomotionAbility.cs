@@ -124,6 +124,8 @@ namespace CWLF
         [Snapshot]
         bool isBraking = false;
 
+        bool preFreedrop = true;
+
         // TODO: Remove from here
         float desiredLinearSpeed => InputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
 
@@ -151,6 +153,8 @@ namespace CWLF
 
             // --- Play default animation ---
             synthesizer.PlayFirstSequence(idleCandidates);
+
+            preFreedrop = freedrop;
         }
 
         public override void OnDisable()
@@ -171,6 +175,11 @@ namespace CWLF
 
             if (!rewind) // if we are not using snapshot debugger to rewind
                 InputLayer.capture.UpdateLocomotion();
+
+            if (InputLayer.capture.run)
+                freedrop = true;
+            else
+                freedrop = preFreedrop;
         }
 
         // -------------------------------------------------

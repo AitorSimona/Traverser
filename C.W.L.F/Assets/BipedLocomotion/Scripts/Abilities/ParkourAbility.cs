@@ -73,6 +73,12 @@ namespace CWLF
                 return null;
         }
 
+        public Ability OnPostUpdate(float deltaTime)
+        {
+
+            return null;
+        }
+
         public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
         {
             bool ret = false;

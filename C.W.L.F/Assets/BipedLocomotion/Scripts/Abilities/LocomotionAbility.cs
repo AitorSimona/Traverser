@@ -92,11 +92,15 @@ namespace CWLF
         [Range(0.0f, 10.0f)]
         public float correctMotionEndSpeed = 3.0f;
 
-        public bool freedrop = false;
+        public bool freedrop = true;
 
         float distance_to_fall = 5.0f;
 
         // -------------------------------------------------
+
+        // --- World interactable elements ---
+        [Snapshot]
+        LedgeObject.LedgeGeometry ledgeGeometry;
 
         Kinematica kinematica;
         MovementController controller;
@@ -129,6 +133,8 @@ namespace CWLF
             locomotionCandidates = synthesizer.Query.Where("Locomotion", Locomotion.Default).Except(Idle.Default);
             trajectory = synthesizer.CreateTrajectory(Allocator.Persistent);
 
+            ledgeGeometry = LedgeObject.LedgeGeometry.Create();
+
             // --- Play default animation ---
             synthesizer.PlayFirstSequence(idleCandidates);
         }
@@ -141,6 +147,8 @@ namespace CWLF
             idleCandidates.Dispose();
             locomotionCandidates.Dispose();
             trajectory.Dispose();
+
+            ledgeGeometry.Dispose();
         }
 
         public override void OnEarlyUpdate(bool rewind)
@@ -184,7 +192,39 @@ namespace CWLF
             if (contactAbility != null)
                 ret = contactAbility;
 
+
             return ret;
+        }
+
+        public Ability OnPostUpdate(float deltaTime)
+        {
+            if (!freedrop)
+            {
+                // --- Prevent character from falling from its current ground ---
+                // --- TODO: Clean this, temporal placement ---
+                if (!freedrop && controller.current.ground)
+                {
+                    BoxCollider collider = controller.current.ground.gameObject.GetComponent<BoxCollider>() as BoxCollider;
+
+                    Debug.Log(controller.current.ground.gameObject.name);
+
+                    if (collider != null)
+                    {
+                        if (collider.gameObject.layer == LayerMask.NameToLayer("Wall")
+                            || collider.gameObject.layer == LayerMask.NameToLayer("Default"))
+                        {
+                            ledgeGeometry.Initialize(collider);
+                        }
+                    }
+
+
+                    ledgeGeometry.DebugDraw(); // TODO: Temporal
+                }
+
+                LimitTransform();
+            }
+
+            return null;
         }
 
         float HandleBraking()         // TODO: Remove from here
@@ -301,6 +341,7 @@ namespace CWLF
                         break;
                     }
 
+                    // TODO: find out the uses of this code below 
                     else if (contactAbility == null)
                     {
                         foreach (Ability ability in GetComponents(typeof(Ability)))
@@ -326,6 +367,17 @@ namespace CWLF
 
         public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
         {
+            //BoxCollider collider = controller.current.collider as BoxCollider;
+
+            //if (collider != null)
+            //{
+            //    if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+            //    {
+            //        ledgeGeometry.Initialize(collider);
+            //        //return true;
+            //    }
+            //}
+
             return false;
         }
 
@@ -379,6 +431,18 @@ namespace CWLF
             }
 
             return desiredSpeed;
+        }
+
+        public void LimitTransform()
+        {
+            if (ledgeGeometry.vertices[0].Equals(float3.zero) || freedrop)
+                return;
+
+            Vector3 pos = gameObject.transform.position;
+            ledgeGeometry.LimitTransform(ref pos);
+            gameObject.transform.position = pos;
+
+            //Debug.Log(pos);
         }
 
         // -------------------------------------------------

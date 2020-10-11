@@ -84,6 +84,9 @@ namespace CWLF
             synthesizer.SetWorldTransform(worldRootTransform, true);
             transform.position = worldRootTransform.t;
             transform.rotation = worldRootTransform.q;
+
+            // --- Let abilities apply final changes to motion, if needed ---
+            currentAbility.OnPostUpdate(_deltaTime);
         }
 
         // --------------------------------

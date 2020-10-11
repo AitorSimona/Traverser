@@ -8,7 +8,7 @@ namespace CWLF
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]
 
-    public partial class ClimbingAbility : SnapshotProvider, Ability
+    public class ClimbingAbility : SnapshotProvider, Ability
     {
         // --- Attributes ---
         [Header("Transition settings")]
@@ -83,16 +83,16 @@ namespace CWLF
 
         // --- World interactable elements ---
         [Snapshot]
-        LedgeGeometry ledgeGeometry;
+        LedgeObject.LedgeGeometry ledgeGeometry;
 
         [Snapshot]
-        WallGeometry wallGeometry;
+        WallObject.WallGeometry wallGeometry;
 
         [Snapshot]
-        LedgeAnchor ledgeAnchor;
+        LedgeObject.LedgeAnchor ledgeAnchor;
 
         [Snapshot]
-        WallAnchor wallAnchor;
+        WallObject.WallAnchor wallAnchor;
 
         [Snapshot]
         AnchoredTransitionTask anchoredTransition;
@@ -115,11 +115,11 @@ namespace CWLF
             previousClimbingState = ClimbingState.Idle;
             lastCollidingClimbingState = ClimbingState.None;
 
-            ledgeGeometry = LedgeGeometry.Create();
-            wallGeometry = WallGeometry.Create();
+            ledgeGeometry = LedgeObject.LedgeGeometry.Create();
+            wallGeometry = WallObject.WallGeometry.Create();
 
-            ledgeAnchor = LedgeAnchor.Create();
-            wallAnchor = WallAnchor.Create();
+            ledgeAnchor = LedgeObject.LedgeAnchor.Create();
+            wallAnchor = WallObject.WallAnchor.Create();
 
             anchoredTransition = AnchoredTransitionTask.Invalid;
         }
@@ -388,7 +388,7 @@ namespace CWLF
 
             float linearDisplacement = -deltaTransform.t.x;
 
-            LedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
+            LedgeObject.LedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
 
             float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
             float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
@@ -418,8 +418,8 @@ namespace CWLF
             // --- Update root motion transform ---
             synthesizer.WorldRootTransform = rootTransform;
 
-            ledgeGeometry.DebugDraw();
-            ledgeGeometry.DebugDraw(ref ledgeAnchor);
+            //ledgeGeometry.DebugDraw();
+            //ledgeGeometry.DebugDraw(ref ledgeAnchor);
         }
 
         void UpdateFreeClimbing(ref MotionSynthesizer synthesizer, float deltaTime)
@@ -464,6 +464,12 @@ namespace CWLF
 
             wallGeometry.DebugDraw();
             wallGeometry.DebugDraw(ref wallAnchor);
+        }
+
+        public Ability OnPostUpdate(float deltaTime)
+        {
+
+            return null;
         }
 
         public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
@@ -583,6 +589,18 @@ namespace CWLF
 
             return ClimbingState.Idle;
         }
+
+        //public void LimitTransform()
+        //{
+        //    if (ledgeGeometry.vertices[0].Equals(float3.zero))
+        //        return;
+
+        //    Vector3 pos = gameObject.transform.position;
+        //    ledgeGeometry.LimitTransform(ref pos);
+        //    gameObject.transform.position = pos;
+
+        //    Debug.Log(pos);
+        //}
 
         // --------------------------------
     }

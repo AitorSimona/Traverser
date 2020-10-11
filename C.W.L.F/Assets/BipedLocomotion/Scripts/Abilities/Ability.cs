@@ -34,6 +34,13 @@ namespace CWLF
         //
 
         bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime);
+
+        //
+        //Called from ablity controller so abilities can apply last moment modifications to motion
+        //
+
+        Ability OnPostUpdate(float deltaTime);
+
     }
 
     // -------------------------------------------------

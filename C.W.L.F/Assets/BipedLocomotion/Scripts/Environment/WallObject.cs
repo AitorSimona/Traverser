@@ -1,12 +1,11 @@
 ﻿using Unity.SnapshotDebugger;
 using Unity.Mathematics;
-using Unity.Kinematica;
 
 using UnityEngine;
 
 namespace CWLF
 {
-    public partial class ClimbingAbility : SnapshotProvider, Ability
+    public class WallObject : SnapshotProvider
     {
         // --- Definition of a wall's anchor, the point we are attached to (relative to the wall plane, note it is a 2D point) --- 
         public struct WallAnchor

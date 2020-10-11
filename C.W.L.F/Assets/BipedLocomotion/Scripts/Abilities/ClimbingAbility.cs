@@ -590,18 +590,6 @@ namespace CWLF
             return ClimbingState.Idle;
         }
 
-        //public void LimitTransform()
-        //{
-        //    if (ledgeGeometry.vertices[0].Equals(float3.zero))
-        //        return;
-
-        //    Vector3 pos = gameObject.transform.position;
-        //    ledgeGeometry.LimitTransform(ref pos);
-        //    gameObject.transform.position = pos;
-
-        //    Debug.Log(pos);
-        //}
-
         // --------------------------------
     }
 }

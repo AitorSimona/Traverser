@@ -88,19 +88,19 @@ namespace CWLF
 
             public void LimitTransform(ref Vector3 position)
             {
-                float offset = 0.0f;
+                float offset = 0.1f;
 
-                if (position.x < vertices[0].x)
+                if (position.x < vertices[0].x + offset)
                     position.x = vertices[0].x + offset;
-                if (position.z > vertices[0].z)
+                if (position.z > vertices[0].z - offset)
                     position.z = vertices[0].z - offset;
 
-                if (position.x > vertices[2].x)
+                if (position.x > vertices[2].x - offset)
                     position.x = vertices[2].x - offset;
-                if (position.z < vertices[2].z)
+                if (position.z < vertices[2].z + offset)
                     position.z = vertices[2].z + offset;
 
-                position.y = vertices[0].y;
+                //position.y = vertices[0].y;
             }
 
             public int GetNextEdgeIndex(int index)

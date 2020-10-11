@@ -367,17 +367,6 @@ namespace CWLF
 
         public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
         {
-            //BoxCollider collider = controller.current.collider as BoxCollider;
-
-            //if (collider != null)
-            //{
-            //    if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
-            //    {
-            //        ledgeGeometry.Initialize(collider);
-            //        //return true;
-            //    }
-            //}
-
             return false;
         }
 
@@ -441,7 +430,8 @@ namespace CWLF
             Vector3 pos = gameObject.transform.position;
             ledgeGeometry.LimitTransform(ref pos);
             gameObject.transform.position = pos;
-
+            AffineTransform worldRootTransform = AffineTransform.Create(pos, kinematica.Synthesizer.Ref.WorldRootTransform.q);
+            kinematica.Synthesizer.Ref.SetWorldTransform(worldRootTransform, true);
             //Debug.Log(pos);
         }
 

@@ -86,10 +86,8 @@ namespace CWLF
 
             // --- Utilities ---
 
-            public void LimitTransform(ref Vector3 position)
+            public void LimitTransform(ref Vector3 position, float offset)
             {
-                float offset = 0.1f;
-
                 if (position.x < vertices[0].x + offset)
                     position.x = vertices[0].x + offset;
                 if (position.z > vertices[0].z - offset)

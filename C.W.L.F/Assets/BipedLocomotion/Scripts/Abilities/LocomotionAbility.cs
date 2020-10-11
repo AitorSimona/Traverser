@@ -336,7 +336,7 @@ namespace CWLF
                         futurepos.x = controller.current.position.x;
                         futurepos.y = controller.current.position.y;
                         futurepos.z = controller.current.position.z;
-                        float brakeratio = 1.0f;
+                        float brakeratio = 0.5f;
                         distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeratio;
                         break;
                     }
@@ -428,7 +428,7 @@ namespace CWLF
                 return;
 
             Vector3 pos = gameObject.transform.position;
-            ledgeGeometry.LimitTransform(ref pos);
+            ledgeGeometry.LimitTransform(ref pos, 0.1f);
             gameObject.transform.position = pos;
             AffineTransform worldRootTransform = AffineTransform.Create(pos, kinematica.Synthesizer.Ref.WorldRootTransform.q);
             kinematica.Synthesizer.Ref.SetWorldTransform(worldRootTransform, true);

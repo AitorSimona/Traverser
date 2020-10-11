@@ -92,9 +92,21 @@ namespace CWLF
         [Range(0.0f, 10.0f)]
         public float correctMotionEndSpeed = 3.0f;
 
+        [Header("Fall limitation")]
+        [Tooltip("Disable to prevent character from falling off obstacles")]
         public bool freedrop = true;
 
-        float distance_to_fall = 5.0f;
+        [Tooltip("[freedrop disabled only] Offsets distance left until falling down point, bigger values make the character brake sooner")]
+        [Range(0.0f, 1.0f)]
+        public float brakeDistance = 0.5f;
+
+        [Tooltip("[freedrop disabled only] Modifies at what distance from falling point the character begins to break")]
+        [Range(0.0f, 5.0f)]
+        public float maxFallPredictionDistance = 3.0f;   // reset distance once no fall is predicted
+
+        [Tooltip("[freedrop disabled only] Modifies at what distance from falling point the character stops")]
+        [Range(0.0f, 1.0f)]
+        public float minFallPredictionDistance = 0.5f;  
 
         // -------------------------------------------------
 
@@ -112,8 +124,10 @@ namespace CWLF
         [Snapshot]
         bool isBraking = false;
 
-        float desiredLinearSpeed => InputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;   // TODO: Remove from here
+        // TODO: Remove from here
+        float desiredLinearSpeed => InputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
 
+        float distance_to_fall = 3.0f; // initialized to maxFallPredictionDistance
 
         // -------------------------------------------------
 
@@ -336,8 +350,7 @@ namespace CWLF
                         futurepos.x = controller.current.position.x;
                         futurepos.y = controller.current.position.y;
                         futurepos.z = controller.current.position.z;
-                        float brakeratio = 0.5f;
-                        distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeratio;
+                        distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
                         break;
                     }
 
@@ -356,7 +369,7 @@ namespace CWLF
                     }
                 }
                 else
-                    distance_to_fall = 3.0f; // reset distance once no fall is predicted
+                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
 
                 transform.t = worldRootTransform.inverseTransform(controller.Position);
                 prediction.Transform = transform;
@@ -411,11 +424,11 @@ namespace CWLF
             // --- Manually brake the character when about to fall ---
             if (!freedrop)
             {
-                if (distance_to_fall < 0.5f)
+                if (distance_to_fall < minFallPredictionDistance)
                     desiredSpeed = 0.0f;
-                else if (distance_to_fall < 3.0f)
+                else if (distance_to_fall < maxFallPredictionDistance)
                 {
-                    desiredSpeed *= distance_to_fall / 3.0f;
+                    desiredSpeed *= distance_to_fall / maxFallPredictionDistance;
                 }
             }
 

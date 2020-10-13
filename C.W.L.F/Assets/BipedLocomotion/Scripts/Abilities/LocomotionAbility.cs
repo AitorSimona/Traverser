@@ -28,12 +28,14 @@ namespace CWLF
 
         public float responsiveness; // how easily the character reacts to input orders 
 
+        public float maxPoseDeviation;
+
         ref MotionSynthesizer Synthesizer => ref synthesizer.Ref; // reference to the synthesizer
 
         // -------------------------------------------------
         public void Execute()
         {
-            if (idle && Synthesizer.MatchPose(idlePoses, Synthesizer.Time, MatchOptions.DontMatchIfCandidateIsPlaying | MatchOptions.LoopSegment, 0.01f))
+            if (idle && Synthesizer.MatchPose(idlePoses, Synthesizer.Time, MatchOptions.DontMatchIfCandidateIsPlaying | MatchOptions.LoopSegment, maxPoseDeviation))
             {
                 return;
             }
@@ -92,6 +94,10 @@ namespace CWLF
         [Range(0.0f, 10.0f)]
         public float correctMotionEndSpeed = 3.0f;
 
+        [Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
+        [Range(-1.0f, 1.0f)]
+        public float maxPoseDeviation = 0.01f;
+
         [Header("Fall limitation")]
         [Tooltip("Disable to prevent character from falling off obstacles")]
         public bool freedrop = true;
@@ -106,7 +112,8 @@ namespace CWLF
 
         [Tooltip("[freedrop disabled only] Modifies at what distance from falling point the character stops")]
         [Range(0.0f, 1.0f)]
-        public float minFallPredictionDistance = 0.5f;  
+        public float minFallPredictionDistance = 0.5f;
+
 
         // -------------------------------------------------
 
@@ -205,7 +212,8 @@ namespace CWLF
                 trajectory = trajectory,
                 idle = /*InputLayer.capture.moveIntensity*/ GetDesiredSpeed(ref synthesizer) == 0.0f,
                 minTrajectoryDeviation = minTrajectoryDeviation,
-                responsiveness = responsiveness
+                responsiveness = responsiveness,
+                maxPoseDeviation = this.maxPoseDeviation
             };
 
             // --- Finally tell kinematica to wait for this job to finish before executing other stuff ---

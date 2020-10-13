@@ -445,7 +445,7 @@ MonoBehaviour:
   velocityPercentage: 0.5
   forwardPercentage: 0.3
   responsiveness: 0.45
-  brakingSpeed: 0.4
+  brakingSpeed: 0.8
   correctTranslationPercentage: 0
   correctRotationPercentage: 1
   correctMotionStartSpeed: 2

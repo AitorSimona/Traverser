@@ -47,6 +47,8 @@ namespace CWLF
                 stickHorizontal = Input.GetAxis("Left Analog Horizontal");
                 stickVertical = Input.GetAxis("Left Analog Vertical");
 
+                //Debug.Log(stickVertical);
+
                 mountButton = Input.GetButton("B Button") || Input.GetKey("b");
                 dismountButton = Input.GetButton("B Button") || Input.GetKey("b");
                 pullUpButton = Input.GetButton("A Button") || Input.GetKey("a");

@@ -17,7 +17,7 @@ MonoBehaviour:
   timeHorizon: 1
   sampleRate: 30
   m_Data:
-    syncedWithBinary: 0
+    syncedWithBinary: 1
     animationLibrary:
     - m_PreBoundaryClipGuid:
         val0: 805636515
@@ -1811,6 +1811,13 @@ MonoBehaviour:
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
+      - startTime: 4.866667
+        duration: 2.5
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
       markers:
       - timeInSeconds: 1.5666
         payload:
@@ -1870,9 +1877,16 @@ MonoBehaviour:
             Culture=neutral, PublicKeyToken=null
         name: 
       - startTime: 10.2
-        duration: 3.56666
+        duration: 2.7666664
         payload:
           serializedData: '{"type":3}'
+          assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 12.966666
+        duration: 3.8666658
+        payload:
+          serializedData: '{"type":1}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
@@ -1946,6 +1960,13 @@ MonoBehaviour:
         duration: 3.7
         payload:
           serializedData: '{"type":3}'
+          assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 11.933333
+        duration: 2
+        payload:
+          serializedData: '{"type":1}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
@@ -3304,8 +3325,15 @@ MonoBehaviour:
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 10.2
-        duration: 3.56666
+      - startTime: 12.933333
+        duration: 4.166667
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 8.333333
+        duration: 3.2333336
         payload:
           serializedData: '{"type":3}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
@@ -3381,6 +3409,13 @@ MonoBehaviour:
         duration: 3.7
         payload:
           serializedData: '{"type":3}'
+          assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 11.933333
+        duration: 2.0666666
+        payload:
+          serializedData: '{"type":1}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 

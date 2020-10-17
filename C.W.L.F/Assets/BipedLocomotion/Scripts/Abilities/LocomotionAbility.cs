@@ -237,7 +237,7 @@ namespace CWLF
                 {
                     BoxCollider collider = controller.current.ground.gameObject.GetComponent<BoxCollider>() as BoxCollider;
 
-                    Debug.Log(controller.current.ground.gameObject.name);
+                    //Debug.Log(controller.current.ground.gameObject.name);
 
                     if (collider != null)
                     {

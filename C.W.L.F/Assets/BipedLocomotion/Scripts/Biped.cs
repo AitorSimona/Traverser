@@ -80,6 +80,9 @@ namespace CWLF
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
             // --- Initialize arrays ---
+            //Ledge trait = Ledge.Create(Ledge.Type.Dismount);
+            //idleCandidates = synthesizer.Query.Where("Ledge", trait).Except(Idle.Default);
+
             idleCandidates = synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default);
             locomotionCandidates = synthesizer.Query.Where("Locomotion", Locomotion.Default).Except(Idle.Default);
             trajectory = synthesizer.CreateTrajectory(Allocator.Persistent);

@@ -1652,7 +1652,7 @@ MonoBehaviour:
             Culture=neutral, PublicKeyToken=null
         name: 
       - startTime: 2
-        duration: 3.2
+        duration: 3
         payload:
           serializedData: '{"type":1}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
@@ -1812,7 +1812,7 @@ MonoBehaviour:
             Culture=neutral, PublicKeyToken=null
         name: 
       - startTime: 4.866667
-        duration: 2.5
+        duration: 2.6333332
         payload:
           serializedData: '{"type":1}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,

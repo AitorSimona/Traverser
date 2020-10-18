@@ -445,13 +445,13 @@ MonoBehaviour:
   velocityPercentage: 0.5
   forwardPercentage: 0.3
   responsiveness: 0.45
-  brakingSpeed: 0.8
+  brakingSpeed: 1
   correctTranslationPercentage: 0
   correctRotationPercentage: 1
   correctMotionStartSpeed: 2
   correctMotionEndSpeed: 3
-  maxPoseDeviation: 0.015
-  freedrop: 0
+  maxPoseDeviation: 0.02
+  freedrop: 1
   brakeDistance: 0.5
   maxFallPredictionDistance: 3
   minFallPredictionDistance: 0.5
@@ -1111,6 +1111,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3669881335200295796, guid: 8f166ce6002047d42880105f61a7dc6c, type: 3}
+      propertyPath: resource.assetGuid.val0
+      value: 695334104
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669881335200295796, guid: 8f166ce6002047d42880105f61a7dc6c, type: 3}
+      propertyPath: resource.assetGuid.val1
+      value: 42216050
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669881335200295796, guid: 8f166ce6002047d42880105f61a7dc6c, type: 3}
+      propertyPath: resource.assetGuid.val2
+      value: -92910101
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669881335200295796, guid: 8f166ce6002047d42880105f61a7dc6c, type: 3}
+      propertyPath: resource.assetGuid.val3
+      value: 1231618777
+      objectReference: {fileID: 0}
     - target: {fileID: 6894490204625418497, guid: 8f166ce6002047d42880105f61a7dc6c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.56

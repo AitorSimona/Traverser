@@ -202,12 +202,25 @@ namespace CWLF
                         break;
                 }
 
-                if (IsState(State.Dismount) || IsState(State.PullUp) || IsState(State.DropDown))
+                if (/*IsState(State.Dismount) ||*/ IsState(State.PullUp) || IsState(State.DropDown))
                 {
                     bool bTransitionSucceeded;
                     if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
                     {
                         SetState(State.Suspended);
+                    }
+                }
+
+                // TODO: Temporal workaround until anchored transition actually works 
+                if(IsState(State.Dismount))
+                {
+                    bool bTransitionSucceeded;
+                    KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+
+                    if (bTransitionSucceeded)
+                    {
+                        SetState(State.Suspended);
+                        PlayFirstSequence(synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default));
                     }
                 }
 
@@ -292,7 +305,11 @@ namespace CWLF
             }
             else if (InputLayer.capture.dismountButton /*&& closeToDrop*/)
             {
-                RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
+                //RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
+
+                var trait = Ledge.Create(Ledge.Type.Dismount); // temporal
+                PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
+
                 SetState(State.Dismount);
             }
         }
@@ -418,8 +435,8 @@ namespace CWLF
             // --- Update root motion transform ---
             synthesizer.WorldRootTransform = rootTransform;
 
-            //ledgeGeometry.DebugDraw();
-            //ledgeGeometry.DebugDraw(ref ledgeAnchor);
+            ledgeGeometry.DebugDraw();
+            ledgeGeometry.DebugDraw(ref ledgeAnchor);
         }
 
         void UpdateFreeClimbing(ref MotionSynthesizer synthesizer, float deltaTime)

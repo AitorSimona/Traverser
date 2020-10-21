@@ -173,6 +173,20 @@ namespace CWLF
                         }
                         break;
 
+                    // TODO: Temporal workaround until anchored transition actually works 
+                    case State.Dismount:
+                        {
+                            bool bTransitionSucceeded;
+                            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+
+                            if (bTransitionSucceeded)
+                            {
+                                SetState(State.Suspended);
+                                PlayFirstSequence(synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default));
+                            }
+                        }
+                        break;
+
                     case State.Climbing:
                         HandleClimbingState(ref synthesizer, deltaTime);
                         break;
@@ -208,19 +222,6 @@ namespace CWLF
                     if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
                     {
                         SetState(State.Suspended);
-                    }
-                }
-
-                // TODO: Temporal workaround until anchored transition actually works 
-                if(IsState(State.Dismount))
-                {
-                    bool bTransitionSucceeded;
-                    KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
-
-                    if (bTransitionSucceeded)
-                    {
-                        SetState(State.Suspended);
-                        PlayFirstSequence(synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default));
                     }
                 }
 
@@ -371,7 +372,12 @@ namespace CWLF
         {
             // --- From the top of a wall, drop down onto the ledge ---
             ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+
+            // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
+            Ledge trait = Ledge.Create(Ledge.Type.DropDown);
             SetState(State.Climbing);
+            SetClimbingState(ClimbingState.Idle);
+            PlayFirstSequence(synthesizer.Query.Where(trait).And(Idle.Default));
         }
 
         bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
@@ -528,7 +534,13 @@ namespace CWLF
             // --- Require transition animation of the type given ---
             ref Binary binary = ref synthesizer.Binary; 
             Ledge trait = Ledge.Create(type);
-            QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, trait, contactThreshold);
+
+            SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.AboveGround | SegmentCollisionCheck.InsideGeometry;
+
+            //if (type == Ledge.Type.Dismount)
+            //    collisionCheck &= ~ SegmentCollisionCheck.InsideGeometry;
+
+            QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, trait, contactThreshold, collisionCheck);
             bool rootadjust = trait.type == Ledge.Type.PullUp ? false : true;
 
             anchoredTransition.Dispose();

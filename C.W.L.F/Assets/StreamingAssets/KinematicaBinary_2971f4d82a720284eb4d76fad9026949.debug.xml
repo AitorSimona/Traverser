@@ -837,244 +837,244 @@
       <Destination firstFrame="43116" numFrames="212" />
     </Segment>
     <Segment index="92" name="Climb_Up_Wall_1_M" tagIndex="112" numTags="1" markerIndex="349" numMarkers="7" intervalIndex="105" numIntervals="1">
-      <Source firstFrame="388" numFrames="125" />
-      <Destination firstFrame="43328" numFrames="125" />
+      <Source firstFrame="394" numFrames="74" />
+      <Destination firstFrame="43328" numFrames="74" />
     </Segment>
     <Segment index="93" name="Climb_Up_Wall_2_M" tagIndex="113" numTags="2" markerIndex="356" numMarkers="4" intervalIndex="106" numIntervals="2">
       <Source firstFrame="247" numFrames="173" />
-      <Destination firstFrame="43453" numFrames="173" />
+      <Destination firstFrame="43402" numFrames="173" />
     </Segment>
     <Segment index="94" name="Vaults_Over_Ledge_Jog" tagIndex="115" numTags="1" markerIndex="360" numMarkers="4" intervalIndex="108" numIntervals="1">
       <Source firstFrame="0" numFrames="99" />
-      <Destination firstFrame="43626" numFrames="99" />
+      <Destination firstFrame="43575" numFrames="99" />
     </Segment>
     <Segment index="95" name="Vaults_Over_Ledge_Jog" tagIndex="116" numTags="1" markerIndex="364" numMarkers="8" intervalIndex="109" numIntervals="1">
       <Source firstFrame="274" numFrames="81" />
-      <Destination firstFrame="43725" numFrames="81" />
+      <Destination firstFrame="43674" numFrames="81" />
     </Segment>
     <Segment index="96" name="Vaults_Over_Ledge_Jog_M" tagIndex="117" numTags="1" markerIndex="372" numMarkers="4" intervalIndex="110" numIntervals="1">
       <Source firstFrame="0" numFrames="99" />
-      <Destination firstFrame="43806" numFrames="99" />
+      <Destination firstFrame="43755" numFrames="99" />
     </Segment>
     <Segment index="97" name="Vaults_Over_Ledge_Jog_M" tagIndex="118" numTags="1" markerIndex="376" numMarkers="8" intervalIndex="111" numIntervals="1">
       <Source firstFrame="274" numFrames="81" />
-      <Destination firstFrame="43905" numFrames="81" />
+      <Destination firstFrame="43854" numFrames="81" />
     </Segment>
     <Segment index="98" name="Vaults_Over_Ledge_Sprint" tagIndex="119" numTags="1" markerIndex="384" numMarkers="4" intervalIndex="112" numIntervals="1">
       <Source firstFrame="0" numFrames="75" />
-      <Destination firstFrame="43986" numFrames="75" />
+      <Destination firstFrame="43935" numFrames="75" />
     </Segment>
     <Segment index="99" name="Vaults_Over_Ledge_Sprint" tagIndex="120" numTags="1" markerIndex="388" numMarkers="8" intervalIndex="113" numIntervals="1">
       <Source firstFrame="250" numFrames="82" />
-      <Destination firstFrame="44061" numFrames="82" />
+      <Destination firstFrame="44010" numFrames="82" />
     </Segment>
     <Segment index="100" name="Vaults_Over_Ledge_Sprint_M" tagIndex="121" numTags="1" markerIndex="396" numMarkers="4" intervalIndex="114" numIntervals="1">
       <Source firstFrame="0" numFrames="75" />
-      <Destination firstFrame="44143" numFrames="75" />
+      <Destination firstFrame="44092" numFrames="75" />
     </Segment>
     <Segment index="101" name="Vaults_Over_Ledge_Sprint_M" tagIndex="122" numTags="1" markerIndex="400" numMarkers="8" intervalIndex="115" numIntervals="1">
       <Source firstFrame="250" numFrames="82" />
-      <Destination firstFrame="44218" numFrames="82" />
+      <Destination firstFrame="44167" numFrames="82" />
     </Segment>
     <Segment index="102" name="Vaults_Over_Ledge_Walk" tagIndex="123" numTags="1" markerIndex="408" numMarkers="5" intervalIndex="116" numIntervals="1">
       <Source firstFrame="0" numFrames="144" />
-      <Destination firstFrame="44300" numFrames="144" />
+      <Destination firstFrame="44249" numFrames="144" />
     </Segment>
     <Segment index="103" name="Vaults_Over_Ledge_Walk_M" tagIndex="124" numTags="1" markerIndex="413" numMarkers="5" intervalIndex="117" numIntervals="1">
       <Source firstFrame="0" numFrames="144" />
-      <Destination firstFrame="44444" numFrames="144" />
+      <Destination firstFrame="44393" numFrames="144" />
     </Segment>
     <Segment index="104" name="Vaults_Over_Table_1" tagIndex="125" numTags="1" markerIndex="418" numMarkers="5" intervalIndex="118" numIntervals="1">
       <Source firstFrame="908" numFrames="86" />
-      <Destination firstFrame="44588" numFrames="86" />
+      <Destination firstFrame="44537" numFrames="86" />
     </Segment>
     <Segment index="105" name="Vaults_Over_Table_1" tagIndex="126" numTags="1" markerIndex="423" numMarkers="9" intervalIndex="119" numIntervals="1">
       <Source firstFrame="1460" numFrames="75" />
-      <Destination firstFrame="44674" numFrames="75" />
+      <Destination firstFrame="44623" numFrames="75" />
     </Segment>
     <Segment index="106" name="Vaults_Over_Table_1_M" tagIndex="127" numTags="1" markerIndex="432" numMarkers="5" intervalIndex="120" numIntervals="1">
       <Source firstFrame="908" numFrames="86" />
-      <Destination firstFrame="44749" numFrames="86" />
+      <Destination firstFrame="44698" numFrames="86" />
     </Segment>
     <Segment index="107" name="Vaults_Over_Table_1_M" tagIndex="128" numTags="1" markerIndex="437" numMarkers="9" intervalIndex="121" numIntervals="1">
       <Source firstFrame="1460" numFrames="75" />
-      <Destination firstFrame="44835" numFrames="75" />
+      <Destination firstFrame="44784" numFrames="75" />
     </Segment>
     <Segment index="108" name="Vaults_Over_Table_2" tagIndex="129" numTags="1" markerIndex="446" numMarkers="5" intervalIndex="122" numIntervals="1">
       <Source firstFrame="336" numFrames="97" />
-      <Destination firstFrame="44910" numFrames="97" />
+      <Destination firstFrame="44859" numFrames="97" />
     </Segment>
     <Segment index="109" name="Vaults_Over_Table_2" tagIndex="130" numTags="1" markerIndex="451" numMarkers="10" intervalIndex="123" numIntervals="1">
       <Source firstFrame="685" numFrames="68" />
-      <Destination firstFrame="45007" numFrames="68" />
+      <Destination firstFrame="44956" numFrames="68" />
     </Segment>
     <Segment index="110" name="Vaults_Over_Table_2_M" tagIndex="131" numTags="1" markerIndex="461" numMarkers="5" intervalIndex="124" numIntervals="1">
       <Source firstFrame="336" numFrames="97" />
-      <Destination firstFrame="45075" numFrames="97" />
+      <Destination firstFrame="45024" numFrames="97" />
     </Segment>
     <Segment index="111" name="Vaults_Over_Table_2_M" tagIndex="132" numTags="1" markerIndex="466" numMarkers="10" intervalIndex="125" numIntervals="1">
       <Source firstFrame="685" numFrames="68" />
-      <Destination firstFrame="45172" numFrames="68" />
+      <Destination firstFrame="45121" numFrames="68" />
     </Segment>
     <Segment index="112" name="Vaults_Sliding_Jog" tagIndex="133" numTags="1" markerIndex="476" numMarkers="5" intervalIndex="126" numIntervals="1">
       <Source firstFrame="22" numFrames="84" />
-      <Destination firstFrame="45240" numFrames="84" />
+      <Destination firstFrame="45189" numFrames="84" />
     </Segment>
     <Segment index="113" name="Vaults_Sliding_Jog" tagIndex="134" numTags="1" markerIndex="481" numMarkers="10" intervalIndex="127" numIntervals="1">
       <Source firstFrame="718" numFrames="96" />
-      <Destination firstFrame="45324" numFrames="96" />
+      <Destination firstFrame="45273" numFrames="96" />
     </Segment>
     <Segment index="114" name="Vaults_Sliding_Jog_M" tagIndex="135" numTags="1" markerIndex="491" numMarkers="5" intervalIndex="128" numIntervals="1">
       <Source firstFrame="22" numFrames="84" />
-      <Destination firstFrame="45420" numFrames="84" />
+      <Destination firstFrame="45369" numFrames="84" />
     </Segment>
     <Segment index="115" name="Vaults_Sliding_Jog_M" tagIndex="136" numTags="1" markerIndex="496" numMarkers="10" intervalIndex="129" numIntervals="1">
       <Source firstFrame="718" numFrames="96" />
-      <Destination firstFrame="45504" numFrames="96" />
+      <Destination firstFrame="45453" numFrames="96" />
     </Segment>
     <Segment index="116" name="Vaults_Sliding_Sprint_1" tagIndex="137" numTags="1" markerIndex="506" numMarkers="5" intervalIndex="130" numIntervals="1">
       <Source firstFrame="0" numFrames="76" />
-      <Destination firstFrame="45600" numFrames="76" />
+      <Destination firstFrame="45549" numFrames="76" />
     </Segment>
     <Segment index="117" name="Vaults_Sliding_Sprint_1_M" tagIndex="138" numTags="1" markerIndex="511" numMarkers="5" intervalIndex="131" numIntervals="1">
       <Source firstFrame="0" numFrames="76" />
-      <Destination firstFrame="45676" numFrames="76" />
+      <Destination firstFrame="45625" numFrames="76" />
     </Segment>
     <Segment index="118" name="Vaults_Sliding_Sprint_2" tagIndex="139" numTags="1" markerIndex="516" numMarkers="5" intervalIndex="132" numIntervals="1">
       <Source firstFrame="20" numFrames="77" />
-      <Destination firstFrame="45752" numFrames="77" />
+      <Destination firstFrame="45701" numFrames="77" />
     </Segment>
     <Segment index="119" name="Vaults_Sliding_Sprint_2_M" tagIndex="140" numTags="1" markerIndex="521" numMarkers="5" intervalIndex="133" numIntervals="1">
       <Source firstFrame="20" numFrames="77" />
-      <Destination firstFrame="45829" numFrames="77" />
+      <Destination firstFrame="45778" numFrames="77" />
     </Segment>
     <Segment index="120" name="Vaults_Sliding_Stand_Walk_1" tagIndex="141" numTags="1" markerIndex="526" numMarkers="5" intervalIndex="134" numIntervals="1">
       <Source firstFrame="0" numFrames="120" />
-      <Destination firstFrame="45906" numFrames="120" />
+      <Destination firstFrame="45855" numFrames="120" />
     </Segment>
     <Segment index="121" name="Vaults_Sliding_Stand_Walk_1_M" tagIndex="142" numTags="1" markerIndex="531" numMarkers="5" intervalIndex="135" numIntervals="1">
       <Source firstFrame="0" numFrames="120" />
-      <Destination firstFrame="46026" numFrames="120" />
+      <Destination firstFrame="45975" numFrames="120" />
     </Segment>
     <Segment index="122" name="Vaults_Sliding_Stand_Walk_2" tagIndex="143" numTags="1" markerIndex="536" numMarkers="5" intervalIndex="136" numIntervals="1">
       <Source firstFrame="30" numFrames="129" />
-      <Destination firstFrame="46146" numFrames="129" />
+      <Destination firstFrame="46095" numFrames="129" />
     </Segment>
     <Segment index="123" name="Vaults_Sliding_Stand_Walk_2_M" tagIndex="144" numTags="1" markerIndex="541" numMarkers="5" intervalIndex="137" numIntervals="1">
       <Source firstFrame="30" numFrames="129" />
-      <Destination firstFrame="46275" numFrames="129" />
+      <Destination firstFrame="46224" numFrames="129" />
     </Segment>
     <Segment index="124" name="Wall_Flip" tagIndex="145" numTags="1" markerIndex="546" numMarkers="4" intervalIndex="138" numIntervals="1">
       <Source firstFrame="0" numFrames="96" />
-      <Destination firstFrame="46404" numFrames="96" />
+      <Destination firstFrame="46353" numFrames="96" />
     </Segment>
     <Segment index="125" name="Wall_Flip_M" tagIndex="146" numTags="1" markerIndex="550" numMarkers="4" intervalIndex="139" numIntervals="1">
       <Source firstFrame="0" numFrames="96" />
-      <Destination firstFrame="46500" numFrames="96" />
+      <Destination firstFrame="46449" numFrames="96" />
     </Segment>
     <Segment index="126" name="Wall_Run_1" tagIndex="147" numTags="1" markerIndex="554" numMarkers="6" intervalIndex="140" numIntervals="1">
       <Source firstFrame="0" numFrames="101" />
-      <Destination firstFrame="46596" numFrames="101" />
+      <Destination firstFrame="46545" numFrames="101" />
     </Segment>
     <Segment index="127" name="Wall_Run_1_M" tagIndex="148" numTags="1" markerIndex="560" numMarkers="6" intervalIndex="141" numIntervals="1">
       <Source firstFrame="0" numFrames="101" />
-      <Destination firstFrame="46697" numFrames="101" />
+      <Destination firstFrame="46646" numFrames="101" />
     </Segment>
     <Segment index="128" name="Wall_Run_2" tagIndex="149" numTags="1" markerIndex="566" numMarkers="6" intervalIndex="142" numIntervals="1">
       <Source firstFrame="0" numFrames="66" />
-      <Destination firstFrame="46798" numFrames="66" />
+      <Destination firstFrame="46747" numFrames="66" />
     </Segment>
     <Segment index="129" name="Wall_Run_2_M" tagIndex="150" numTags="1" markerIndex="572" numMarkers="6" intervalIndex="143" numIntervals="1">
       <Source firstFrame="0" numFrames="66" />
-      <Destination firstFrame="46864" numFrames="66" />
+      <Destination firstFrame="46813" numFrames="66" />
     </Segment>
     <Segment index="130" name="Wall_Run_3" tagIndex="151" numTags="1" markerIndex="578" numMarkers="4" intervalIndex="144" numIntervals="1">
       <Source firstFrame="0" numFrames="81" />
-      <Destination firstFrame="46930" numFrames="81" />
+      <Destination firstFrame="46879" numFrames="81" />
     </Segment>
     <Segment index="131" name="Wall_Run_3_M" tagIndex="152" numTags="1" markerIndex="582" numMarkers="4" intervalIndex="145" numIntervals="1">
       <Source firstFrame="0" numFrames="81" />
-      <Destination firstFrame="47011" numFrames="81" />
+      <Destination firstFrame="46960" numFrames="81" />
     </Segment>
     <Segment index="132" name="Wall_Run_4" tagIndex="153" numTags="1" markerIndex="586" numMarkers="5" intervalIndex="146" numIntervals="1">
       <Source firstFrame="0" numFrames="81" />
-      <Destination firstFrame="47092" numFrames="81" />
+      <Destination firstFrame="47041" numFrames="81" />
     </Segment>
     <Segment index="133" name="Wall_Run_4_M" tagIndex="154" numTags="1" markerIndex="591" numMarkers="5" intervalIndex="147" numIntervals="1">
       <Source firstFrame="0" numFrames="81" />
-      <Destination firstFrame="47173" numFrames="81" />
+      <Destination firstFrame="47122" numFrames="81" />
     </Segment>
     <Segment index="134" name="Wall_Run_5" tagIndex="155" numTags="1" markerIndex="596" numMarkers="4" intervalIndex="148" numIntervals="1">
       <Source firstFrame="0" numFrames="71" />
-      <Destination firstFrame="47254" numFrames="71" />
+      <Destination firstFrame="47203" numFrames="71" />
     </Segment>
     <Segment index="135" name="Wall_Run_5_M" tagIndex="156" numTags="1" markerIndex="600" numMarkers="4" intervalIndex="149" numIntervals="1">
       <Source firstFrame="0" numFrames="71" />
-      <Destination firstFrame="47325" numFrames="71" />
+      <Destination firstFrame="47274" numFrames="71" />
     </Segment>
     <Segment index="136" name="Wall_Run_6" tagIndex="157" numTags="1" markerIndex="604" numMarkers="4" intervalIndex="150" numIntervals="1">
       <Source firstFrame="0" numFrames="71" />
-      <Destination firstFrame="47396" numFrames="71" />
+      <Destination firstFrame="47345" numFrames="71" />
     </Segment>
     <Segment index="137" name="Wall_Run_6_M" tagIndex="158" numTags="1" markerIndex="608" numMarkers="4" intervalIndex="151" numIntervals="1">
       <Source firstFrame="0" numFrames="71" />
-      <Destination firstFrame="47467" numFrames="71" />
+      <Destination firstFrame="47416" numFrames="71" />
     </Segment>
     <Segment index="138" name="Wall_Run_7" tagIndex="159" numTags="1" markerIndex="612" numMarkers="6" intervalIndex="152" numIntervals="1">
       <Source firstFrame="0" numFrames="76" />
-      <Destination firstFrame="47538" numFrames="76" />
+      <Destination firstFrame="47487" numFrames="76" />
     </Segment>
     <Segment index="139" name="Wall_Run_7_M" tagIndex="160" numTags="1" markerIndex="618" numMarkers="6" intervalIndex="153" numIntervals="1">
       <Source firstFrame="0" numFrames="76" />
-      <Destination firstFrame="47614" numFrames="76" />
+      <Destination firstFrame="47563" numFrames="76" />
     </Segment>
     <Segment index="140" name="Wall_Run_8" tagIndex="161" numTags="1" markerIndex="624" numMarkers="5" intervalIndex="154" numIntervals="1">
       <Source firstFrame="0" numFrames="71" />
-      <Destination firstFrame="47690" numFrames="71" />
+      <Destination firstFrame="47639" numFrames="71" />
     </Segment>
     <Segment index="141" name="Wall_Run_8_M" tagIndex="162" numTags="1" markerIndex="629" numMarkers="5" intervalIndex="155" numIntervals="1">
       <Source firstFrame="0" numFrames="71" />
-      <Destination firstFrame="47761" numFrames="71" />
+      <Destination firstFrame="47710" numFrames="71" />
     </Segment>
     <Segment index="142" name="Wall_Run_9" tagIndex="163" numTags="1" markerIndex="634" numMarkers="5" intervalIndex="156" numIntervals="1">
       <Source firstFrame="0" numFrames="76" />
-      <Destination firstFrame="47832" numFrames="76" />
+      <Destination firstFrame="47781" numFrames="76" />
     </Segment>
     <Segment index="143" name="Wall_Run_9_M" tagIndex="164" numTags="1" markerIndex="639" numMarkers="5" intervalIndex="157" numIntervals="1">
       <Source firstFrame="0" numFrames="76" />
-      <Destination firstFrame="47908" numFrames="76" />
+      <Destination firstFrame="47857" numFrames="76" />
     </Segment>
     <Segment index="144" name="Wall_Run_10" tagIndex="165" numTags="1" markerIndex="644" numMarkers="5" intervalIndex="158" numIntervals="1">
       <Source firstFrame="0" numFrames="96" />
-      <Destination firstFrame="47984" numFrames="96" />
+      <Destination firstFrame="47933" numFrames="96" />
     </Segment>
     <Segment index="145" name="Wall_Run_10_M" tagIndex="166" numTags="1" markerIndex="649" numMarkers="5" intervalIndex="159" numIntervals="1">
       <Source firstFrame="0" numFrames="96" />
-      <Destination firstFrame="48080" numFrames="96" />
+      <Destination firstFrame="48029" numFrames="96" />
     </Segment>
     <Segment index="146" name="Wall_Run_11" tagIndex="167" numTags="1" markerIndex="654" numMarkers="5" intervalIndex="160" numIntervals="1">
       <Source firstFrame="0" numFrames="86" />
-      <Destination firstFrame="48176" numFrames="86" />
+      <Destination firstFrame="48125" numFrames="86" />
     </Segment>
     <Segment index="147" name="Wall_Run_11_M" tagIndex="168" numTags="1" markerIndex="659" numMarkers="5" intervalIndex="161" numIntervals="1">
       <Source firstFrame="0" numFrames="86" />
-      <Destination firstFrame="48262" numFrames="86" />
+      <Destination firstFrame="48211" numFrames="86" />
     </Segment>
     <Segment index="148" name="Wall_Run_12" tagIndex="169" numTags="1" markerIndex="664" numMarkers="5" intervalIndex="162" numIntervals="1">
       <Source firstFrame="0" numFrames="90" />
-      <Destination firstFrame="48348" numFrames="90" />
+      <Destination firstFrame="48297" numFrames="90" />
     </Segment>
     <Segment index="149" name="Wall_Run_12_M" tagIndex="170" numTags="1" markerIndex="669" numMarkers="5" intervalIndex="163" numIntervals="1">
       <Source firstFrame="0" numFrames="90" />
-      <Destination firstFrame="48438" numFrames="90" />
+      <Destination firstFrame="48387" numFrames="90" />
     </Segment>
     <Segment index="150" name="Wall_Run_13" tagIndex="171" numTags="1" markerIndex="674" numMarkers="5" intervalIndex="164" numIntervals="1">
       <Source firstFrame="0" numFrames="76" />
-      <Destination firstFrame="48528" numFrames="76" />
+      <Destination firstFrame="48477" numFrames="76" />
     </Segment>
     <Segment index="151" name="Wall_Run_13_M" tagIndex="172" numTags="1" markerIndex="679" numMarkers="5" intervalIndex="165" numIntervals="1">
       <Source firstFrame="0" numFrames="76" />
-      <Destination firstFrame="48604" numFrames="76" />
+      <Destination firstFrame="48553" numFrames="76" />
     </Segment>
   </Segments>
   <Tags>
@@ -1190,7 +1190,7 @@
     <Tag index="109" trait="301" segment="90" firstFrame="0" numFrames="100" />
     <Tag index="110" trait="302" segment="91" firstFrame="0" numFrames="145" />
     <Tag index="111" trait="303" segment="91" firstFrame="115" numFrames="97" />
-    <Tag index="112" trait="301" segment="92" firstFrame="0" numFrames="125" />
+    <Tag index="112" trait="301" segment="92" firstFrame="0" numFrames="74" />
     <Tag index="113" trait="303" segment="93" firstFrame="0" numFrames="111" />
     <Tag index="114" trait="301" segment="93" firstFrame="111" numFrames="62" />
     <Tag index="115" trait="307" segment="94" firstFrame="0" numFrames="99" />
@@ -1608,7 +1608,7 @@
     <Marker index="352" trait="4" frameIndex="68" />
     <Marker index="353" trait="113" frameIndex="197" />
     <Marker index="354" trait="114" frameIndex="197" />
-    <Marker index="355" trait="4" frameIndex="8" />
+    <Marker index="355" trait="4" frameIndex="2" />
     <Marker index="356" trait="115" frameIndex="33" />
     <Marker index="357" trait="116" frameIndex="33" />
     <Marker index="358" trait="67" frameIndex="53" />
@@ -2044,7 +2044,7 @@
     <Interval index="102" segment="91" firstFrame="0" numFrames="115" tagList="102" codeBook="-1" />
     <Interval index="103" segment="91" firstFrame="115" numFrames="30" tagList="103" codeBook="-1" />
     <Interval index="104" segment="91" firstFrame="145" numFrames="67" tagList="104" codeBook="-1" />
-    <Interval index="105" segment="92" firstFrame="0" numFrames="125" tagList="105" codeBook="-1" />
+    <Interval index="105" segment="92" firstFrame="0" numFrames="74" tagList="105" codeBook="-1" />
     <Interval index="106" segment="93" firstFrame="0" numFrames="111" tagList="106" codeBook="-1" />
     <Interval index="107" segment="93" firstFrame="111" numFrames="62" tagList="107" codeBook="-1" />
     <Interval index="108" segment="94" firstFrame="0" numFrames="99" tagList="108" codeBook="-1" />

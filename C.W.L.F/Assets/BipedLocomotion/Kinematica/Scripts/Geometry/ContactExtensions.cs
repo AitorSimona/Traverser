@@ -1,9 +1,19 @@
+using System;
 using Unity;
 using Unity.Collections;
 using Unity.Kinematica;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Assertions;
+
+[Flags]
+internal enum SegmentCollisionCheck
+{
+    // --- We perform bit shift to use the enum as a flag container ---
+    // we shift each flag to its "position"
+    InsideGeometry = 1 << 0, // binary 0001
+    AboveGround = 1 << 1 // binary 0010
+}
 
 internal static class TagExtensions
 {
@@ -29,7 +39,7 @@ internal static class TagExtensions
         return new AffineTransform(closestPoint, q);
     }
 
-    public static QueryResult GetPoseSequence<T>(ref Binary binary, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
+    public static QueryResult GetPoseSequence<T>(ref Binary binary, AffineTransform contactTransform, T value, float contactThreshold, SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.InsideGeometry | SegmentCollisionCheck.AboveGround) where T : struct
     {
         var queryResult = QueryResult.Create();
 
@@ -49,7 +59,7 @@ internal static class TagExtensions
             {
                 ref var segment = ref binary.GetSegment(interval.segmentIndex);
 
-                if (IsSegmentEndValidPosition(ref binary, interval.segmentIndex, contactTransform, contactThreshold))
+                if (IsSegmentEndValidPosition(ref binary, interval.segmentIndex, contactTransform, contactThreshold, collisionCheck))
                 {
                     queryResult.Add(i,
                         interval.firstFrame,
@@ -440,7 +450,7 @@ internal static class TagExtensions
     //    }
     //}
 
-    public static bool IsSegmentEndValidPosition(ref Binary binary, Binary.SegmentIndex segmentIndex, AffineTransform contactTransform, float contactThreshold)
+    public static bool IsSegmentEndValidPosition(ref Binary binary, Binary.SegmentIndex segmentIndex, AffineTransform contactTransform, float contactThreshold, SegmentCollisionCheck collisionCheck)
     {
         ref var segment = ref binary.GetSegment(segmentIndex);
 
@@ -477,12 +487,19 @@ internal static class TagExtensions
                 firstFrame, escapeMarker.frameIndex);
 
         float collisionRadius = 0.1f;
+        bool bValidPosition = true;
 
         // check character isn't inside geometry
-        bool bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+        if ((collisionCheck & SegmentCollisionCheck.InsideGeometry) > 0)
+        {
+            bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+        }
 
         // check character is on the ground
-        bValidPosition = bValidPosition && Physics.CheckSphere(worldRootTransform.t, collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+        if ((collisionCheck & SegmentCollisionCheck.AboveGround) > 0)
+        {
+            bValidPosition = bValidPosition && Physics.CheckSphere(worldRootTransform.t, collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+        }
 
         return bValidPosition;
     }

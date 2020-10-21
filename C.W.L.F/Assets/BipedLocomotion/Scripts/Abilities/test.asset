@@ -3325,17 +3325,17 @@ MonoBehaviour:
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 12.933333
-        duration: 4.166667
-        payload:
-          serializedData: '{"type":1}'
-          assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        name: 
       - startTime: 8.333333
         duration: 3.2333336
         payload:
           serializedData: '{"type":3}'
+          assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 13.133333
+        duration: 2.4666667
+        payload:
+          serializedData: '{"type":1}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 

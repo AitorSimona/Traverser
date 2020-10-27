@@ -3406,7 +3406,7 @@ MonoBehaviour:
       m_RetargetSourceAvatar: {fileID: 0}
       tags:
       - startTime: 8.2333
-        duration: 3.7
+        duration: 3.6666994
         payload:
           serializedData: '{"type":3}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,

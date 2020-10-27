@@ -197,6 +197,33 @@ namespace CWLF
 
                     case State.DropDown:
                         {
+                            if(!anchoredTransition.isValid && previousState != State.DropDown)
+                            {
+                                if (InputLayer.capture.mountButton)
+                                {
+                                    //if (IsState(State.Suspended))
+                                    //{
+                                        BoxCollider collider = controller.current.ground.GetComponent<BoxCollider>();
+
+                                        if (collider != null)
+                                        {
+                                            if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+                                            {
+                                                ledgeGeometry.Initialize(collider);
+                                                //wallGeometry.Initialize(collider, contactTransform);
+                                                ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+
+                                                AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
+                                                RequestTransition(ref synthesizer, contactTransform, Ledge.Type.DropDown);
+
+                                                
+                                                //SetState(State.DropDown);
+                                            }
+                                        }
+                                    //}
+                                }
+                            }
+
                             bool TransitionSuccess;
 
                             if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
@@ -216,7 +243,7 @@ namespace CWLF
                         break;
                 }
 
-                if (/*IsState(State.Dismount) ||*/ IsState(State.PullUp) || IsState(State.DropDown))
+                if (/*IsState(State.Dismount) ||*/ IsState(State.PullUp) /*|| IsState(State.DropDown)*/)
                 {
                     bool bTransitionSucceeded;
                     if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
@@ -374,10 +401,13 @@ namespace CWLF
             ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
 
             // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
-            Ledge trait = Ledge.Create(Ledge.Type.DropDown);
+            //Ledge trait = Ledge.Create(Ledge.Type.);
             SetState(State.Climbing);
             SetClimbingState(ClimbingState.Idle);
-            PlayFirstSequence(synthesizer.Query.Where(trait).And(Idle.Default));
+            //PlayFirstSequence(synthesizer.Query.Where(trait).And(Idle.Default));
+
+            Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
+            PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
         }
 
         bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
@@ -526,7 +556,16 @@ namespace CWLF
 
         public bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime)
         {
-            return false;
+
+            if (IsState(State.DropDown))
+                return false;
+
+            SetState(State.DropDown);
+
+            Debug.Log("HEY");
+            //RequestTransition(ref synthesizer,  ,Ledge.Type.DropDown)
+
+            return true;
         }
 
         public void RequestTransition(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Ledge.Type type)
@@ -537,8 +576,11 @@ namespace CWLF
 
             SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.AboveGround | SegmentCollisionCheck.InsideGeometry;
 
-            //if (type == Ledge.Type.Dismount)
-            //    collisionCheck &= ~ SegmentCollisionCheck.InsideGeometry;
+            if (type == Ledge.Type.DropDown)
+            {
+                collisionCheck &= ~SegmentCollisionCheck.InsideGeometry;
+                collisionCheck &= ~SegmentCollisionCheck.AboveGround;
+            }
 
             QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, trait, contactThreshold, collisionCheck);
             bool rootadjust = trait.type == Ledge.Type.PullUp ? false : true;

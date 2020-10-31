@@ -451,7 +451,7 @@ MonoBehaviour:
   correctMotionStartSpeed: 2
   correctMotionEndSpeed: 3
   maxPoseDeviation: 0.02
-  freedrop: 1
+  freedrop: 0
   brakeDistance: 0.5
   maxFallPredictionDistance: 3
   minFallPredictionDistance: 0.5

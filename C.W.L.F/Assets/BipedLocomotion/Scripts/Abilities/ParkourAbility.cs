@@ -145,49 +145,49 @@ namespace CWLF
         {
             bool ret = false;
 
-            if (controller.previous.isGrounded && controller.previous.ground != null)
-            {
-                // --- Get the ground's collider ---
-                Transform ground = controller.previous.ground;
-                BoxCollider collider = ground.GetComponent<BoxCollider>();
+            //if (controller.previous.isGrounded && controller.previous.ground != null)
+            //{
+            //    // --- Get the ground's collider ---
+            //    Transform ground = controller.previous.ground;
+            //    BoxCollider collider = ground.GetComponent<BoxCollider>();
 
-                if (collider != null)
-                {
-                    // --- Create all of the collider's vertices ---
-                    NativeArray<float3> vertices = new NativeArray<float3>(4, Allocator.Persistent);
+            //    if (collider != null)
+            //    {
+            //        // --- Create all of the collider's vertices ---
+            //        NativeArray<float3> vertices = new NativeArray<float3>(4, Allocator.Persistent);
 
-                    Vector3 center = collider.center;
-                    Vector3 size = collider.size;
+            //        Vector3 center = collider.center;
+            //        Vector3 size = collider.size;
 
-                    vertices[0] = ground.TransformPoint(center + new Vector3(-size.x, size.y, size.z) * 0.5f);
-                    vertices[1] = ground.TransformPoint(center + new Vector3(size.x, size.y, size.z) * 0.5f);
-                    vertices[2] = ground.TransformPoint(center + new Vector3(size.x, size.y, -size.z) * 0.5f);
-                    vertices[3] = ground.TransformPoint(center + new Vector3(-size.x, size.y, -size.z) * 0.5f);
+            //        vertices[0] = ground.TransformPoint(center + new Vector3(-size.x, size.y, size.z) * 0.5f);
+            //        vertices[1] = ground.TransformPoint(center + new Vector3(size.x, size.y, size.z) * 0.5f);
+            //        vertices[2] = ground.TransformPoint(center + new Vector3(size.x, size.y, -size.z) * 0.5f);
+            //        vertices[3] = ground.TransformPoint(center + new Vector3(-size.x, size.y, -size.z) * 0.5f);
 
-                    float3 p = controller.previous.position;
-                    AffineTransform contactTransform = TagExtensions.GetClosestTransform(vertices[0], vertices[1], p);
-                    float minimumDistance = math.length(contactTransform.t - p);
+            //        float3 p = controller.previous.position;
+            //        AffineTransform contactTransform = TagExtensions.GetClosestTransform(vertices[0], vertices[1], p);
+            //        float minimumDistance = math.length(contactTransform.t - p);
 
-                    // --- Find out where the character will make contact with the ground ---
-                    for (int i = 1; i < 4; ++i)
-                    {
-                        int j = (i + 1) % 4;
-                        AffineTransform candidateTransform = TagExtensions.GetClosestTransform(vertices[i], vertices[j], p);
+            //        // --- Find out where the character will make contact with the ground ---
+            //        for (int i = 1; i < 4; ++i)
+            //        {
+            //            int j = (i + 1) % 4;
+            //            AffineTransform candidateTransform = TagExtensions.GetClosestTransform(vertices[i], vertices[j], p);
 
-                        float distance = math.length(candidateTransform.t - p);
-                        if (distance < minimumDistance)
-                        {
-                            minimumDistance = distance;
-                            contactTransform = candidateTransform;
-                        }
-                    }
+            //            float distance = math.length(candidateTransform.t - p);
+            //            if (distance < minimumDistance)
+            //            {
+            //                minimumDistance = distance;
+            //                contactTransform = candidateTransform;
+            //            }
+            //        }
 
-                    vertices.Dispose();
+            //        vertices.Dispose();
 
-                    // --- Activate a transition towards the contact point ---
-                    ret = RequestTransition(ref synthesizer, contactTransform, Parkour.Create(Parkour.Type.DropDown));
-                }
-            }
+            //        // --- Activate a transition towards the contact point ---
+            //        ret = RequestTransition(ref synthesizer, contactTransform, Parkour.Create(Parkour.Type.DropDown));
+            //    }
+            //}
 
             return ret;
         }

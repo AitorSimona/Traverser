@@ -360,19 +360,8 @@ namespace CWLF
                 }
                 else if (!closure.isGrounded) // we are dropping/falling down
                 {
-                    if (!freedrop)
-                    {
-                        // --- Compute distance to fall point ---
-                        Vector3 futurepos;
-                        futurepos.x = controller.current.position.x;
-                        futurepos.y = controller.current.position.y;
-                        futurepos.z = controller.current.position.z;
-                        distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
-                        break;
-                    }
-
-                    // TODO: find out the uses of this code below 
-                    else if (contactAbility == null)
+                    // --- Let other abilities take control on drop ---
+                    if (contactAbility == null)
                     {
                         foreach (Ability ability in GetComponents(typeof(Ability)))
                         {
@@ -383,6 +372,17 @@ namespace CWLF
                                 break;
                             }
                         }
+                    }
+
+                    if (!freedrop)
+                    {
+                        // --- Compute distance to fall point ---
+                        Vector3 futurepos;
+                        futurepos.x = controller.current.position.x;
+                        futurepos.y = controller.current.position.y;
+                        futurepos.z = controller.current.position.z;
+                        distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
+                        break;
                     }
                 }
                 else
@@ -462,7 +462,6 @@ namespace CWLF
             gameObject.transform.position = pos;
             AffineTransform worldRootTransform = AffineTransform.Create(pos, kinematica.Synthesizer.Ref.WorldRootTransform.q);
             kinematica.Synthesizer.Ref.SetWorldTransform(worldRootTransform, true);
-            //Debug.Log(pos);
         }
 
         // -------------------------------------------------

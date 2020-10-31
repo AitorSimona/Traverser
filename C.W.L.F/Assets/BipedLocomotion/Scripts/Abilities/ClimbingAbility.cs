@@ -199,28 +199,18 @@ namespace CWLF
                         {
                             if(!anchoredTransition.isValid && previousState != State.DropDown)
                             {
-                                if (InputLayer.capture.mountButton)
+                                BoxCollider collider = controller.current.ground.GetComponent<BoxCollider>();
+
+                                if (collider != null)
                                 {
-                                    //if (IsState(State.Suspended))
-                                    //{
-                                        BoxCollider collider = controller.current.ground.GetComponent<BoxCollider>();
+                                    if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+                                    {
+                                        ledgeGeometry.Initialize(collider);
+                                        ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
 
-                                        if (collider != null)
-                                        {
-                                            if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
-                                            {
-                                                ledgeGeometry.Initialize(collider);
-                                                //wallGeometry.Initialize(collider, contactTransform);
-                                                ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-
-                                                AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
-                                                RequestTransition(ref synthesizer, contactTransform, Ledge.Type.DropDown);
-
-                                                
-                                                //SetState(State.DropDown);
-                                            }
-                                        }
-                                    //}
+                                        AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
+                                        RequestTransition(ref synthesizer, contactTransform, Ledge.Type.DropDown);                                                
+                                    }
                                 }
                             }
 
@@ -401,11 +391,8 @@ namespace CWLF
             ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
 
             // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
-            //Ledge trait = Ledge.Create(Ledge.Type.);
             SetState(State.Climbing);
             SetClimbingState(ClimbingState.Idle);
-            //PlayFirstSequence(synthesizer.Query.Where(trait).And(Idle.Default));
-
             Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
             PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
         }
@@ -556,16 +543,16 @@ namespace CWLF
 
         public bool OnDrop(ref MotionSynthesizer synthesizer, float deltaTime)
         {
+            bool ret = false;
 
-            if (IsState(State.DropDown))
-                return false;
+            if (InputLayer.capture.mountButton && !IsState(State.DropDown))
+            {
+                SetState(State.DropDown);
+                ret = true;
+            }
 
-            SetState(State.DropDown);
 
-            Debug.Log("HEY");
-            //RequestTransition(ref synthesizer,  ,Ledge.Type.DropDown)
-
-            return true;
+            return ret;
         }
 
         public void RequestTransition(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Ledge.Type type)

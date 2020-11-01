@@ -183,6 +183,7 @@ namespace CWLF
                             {
                                 SetState(State.Suspended);
                                 PlayFirstSequence(synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default));
+                                return null;
                             }
                         }
                         break;
@@ -258,6 +259,12 @@ namespace CWLF
             // --- Get ledge anchor point from root motion transform ---
             float3 rootPosition = synthesizer.WorldRootTransform.t;
             ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
+            float ledgeDistance = math.length(rootPosition - ledgeGeometry.GetPosition(ledgeAnchor));
+
+            if (ledgeDistance >= 0.15f)
+                freeClimbing = true;
+
+            Debug.Log(ledgeDistance);
 
             // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
             Climbing climbingTrait = freeClimbing ? Climbing.Create(Climbing.Type.Wall) : Climbing.Create(Climbing.Type.Ledge);
@@ -563,7 +570,7 @@ namespace CWLF
 
             SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.AboveGround | SegmentCollisionCheck.InsideGeometry;
 
-            if (type == Ledge.Type.DropDown)
+            if (type == Ledge.Type.DropDown || type == Ledge.Type.Mount)
             {
                 collisionCheck &= ~SegmentCollisionCheck.InsideGeometry;
                 collisionCheck &= ~SegmentCollisionCheck.AboveGround;
@@ -580,7 +587,8 @@ namespace CWLF
 
         // --------------------------------
 
-        // --- Utilities ---     
+        // --- Utilities ---    
+
         public void SetState(State newState)
         {
             previousState = state;

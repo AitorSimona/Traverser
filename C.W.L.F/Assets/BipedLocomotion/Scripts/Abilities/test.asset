@@ -1876,8 +1876,8 @@ MonoBehaviour:
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 10.2
-        duration: 2.7666664
+      - startTime: 9.333333
+        duration: 3.6333332
         payload:
           serializedData: '{"type":3}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
@@ -3325,8 +3325,8 @@ MonoBehaviour:
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 8.333333
-        duration: 3.2333336
+      - startTime: 8.866667
+        duration: 4.2666664
         payload:
           serializedData: '{"type":3}'
           assemblyQualifiedTypeName: LedgeTag, Assembly-CSharp-Editor, Version=0.0.0.0,

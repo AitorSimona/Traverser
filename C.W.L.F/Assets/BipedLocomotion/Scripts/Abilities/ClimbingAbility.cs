@@ -208,8 +208,10 @@ namespace CWLF
                                     {
                                         ledgeGeometry.Initialize(collider);
                                         ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+                                        wallGeometry.Initialize(collider, ledgeGeometry.GetTransform(ledgeAnchor));
 
-                                        AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
+                                        // --- Make sure we build the contact transform considering the wall's normal ---
+                                        AffineTransform contactTransform = ledgeGeometry.GetTransformGivenNormal(ledgeAnchor, wallGeometry.GetNormalWorldSpace());
                                         RequestTransition(ref synthesizer, contactTransform, Ledge.Type.DropDown);                                                
                                     }
                                 }
@@ -261,7 +263,7 @@ namespace CWLF
             ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
             float ledgeDistance = math.length(rootPosition - ledgeGeometry.GetPosition(ledgeAnchor));
 
-            if (ledgeDistance >= 0.15f)
+            if (ledgeDistance >= 0.3f)
                 freeClimbing = true;
 
             Debug.Log(ledgeDistance);

@@ -150,6 +150,16 @@ namespace CWLF
                 return new AffineTransform(p, math.quaternion(math.float3x3(edge, up, n)));
             }
 
+            public AffineTransform GetTransformGivenNormal(LedgeAnchor anchor, float3 normal)
+            {
+                // --- Get transform out of a 2D ledge anchor --- 
+                float3 p = GetPosition(anchor);
+                float3 edge = GetNormalizedEdge(anchor.index);
+                float3 up = Missing.up;
+                //float3 n = GetNormal(anchor);
+
+                return new AffineTransform(p, math.quaternion(math.float3x3(edge, up, normal)));
+            }
             // -------------------------------------------------
 
             // --- Anchor ---

@@ -57,12 +57,12 @@ namespace CWLF
             Down,
             Left,
             Right,
-            UpLeft,
             UpRight,
-            DownLeft,
             DownRight,
-            CornerRight,
-            CornerLeft,
+            UpLeft,
+            DownLeft,
+            CornerRight, 
+            CornerLeft, 
             None
         }
 
@@ -346,30 +346,22 @@ namespace CWLF
             // --- We are climbing a wall ---
             UpdateFreeClimbing(ref synthesizer, deltaTime);
 
-            var desiredState = GetDesiredFreeClimbingState();
+            ClimbingState desiredState = GetDesiredFreeClimbingState();
 
             if (!IsClimbingState(desiredState))
             {
                 // --- Handle wall climbing state ---
-                var climbingTrait = Climbing.Create(Climbing.Type.Wall);
+                
+                Climbing climbingTrait = Climbing.Create(Climbing.Type.Wall);
 
                 if (desiredState == ClimbingState.Idle)
                 {
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
                 }
-                else if (desiredState == ClimbingState.Down)
+                else
                 {
-                    var direction = Direction.Create(Direction.Type.Down);
-                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-                }
-                else if (desiredState == ClimbingState.UpRight)
-                {
-                    var direction = Direction.Create(Direction.Type.UpRight);
-                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-                }
-                else if (desiredState == ClimbingState.UpLeft)
-                {
-                    var direction = Direction.Create(Direction.Type.UpLeft);
+                    // Tip: Since Direction and ClimbingState enums follow the same order, we can cast from one to the other, avoiding a switch
+                    Direction direction = Direction.Create((Direction.Type)desiredState - 1);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
                 }
 
@@ -622,26 +614,62 @@ namespace CWLF
         ClimbingState GetDesiredFreeClimbingState()
         {
             float2 stickInput = InputLayer.GetStickInput();
+            stickInput.y = -stickInput.y; // negate y, so positive y means going up
 
+            if(stickInput.x != 0 && stickInput.y != 0)
+               Debug.Log(stickInput);
+
+
+            // --- Depending on stick input, decide climbing direction ---
             if (math.length(stickInput) >= 0.1f)
             {
-                if (stickInput.y < stickInput.x)
-                {
-                    return ClimbingState.Down;
-                }
-
-                if (stickInput.x > 0.0f)
+                if (stickInput.x > 0.3f && stickInput.y > 0.3f)
                 {
                     return ClimbingState.UpRight;
                 }
 
-                return ClimbingState.UpLeft;
+                else if (stickInput.x < -0.3f && stickInput.y > 0.3f)
+                {
+                    return ClimbingState.UpLeft;
+                }
+
+                else if (stickInput.x > 0.3f && stickInput.y < -0.3f)
+                {
+                    return ClimbingState.DownRight;
+                }
+
+                else if (stickInput.x < -0.3f && stickInput.y < -0.3f)
+                {
+                    return ClimbingState.DownLeft;
+                }
+
+                else if (stickInput.x > 0.5f)
+                {
+                    return ClimbingState.Right;
+                }
+
+                else if (stickInput.x < -0.5f)
+                {
+                    return ClimbingState.Left;
+                }
+
+                else if (stickInput.y < -0.5f)
+                {
+                    return ClimbingState.Down;
+                }
+
+                else if (stickInput.y > 0.5f)
+                {
+                    return ClimbingState.Up;
+                }
+
+                // TODO: Missing corner left and right
             }
 
             return ClimbingState.Idle;
         }
 
-        ClimbingState GetDesiredClimbingState()
+        ClimbingState GetDesiredClimbingState() 
         {
             float2 stickInput = InputLayer.GetStickInput();
 

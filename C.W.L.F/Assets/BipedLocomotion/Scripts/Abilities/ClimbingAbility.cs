@@ -290,16 +290,15 @@ namespace CWLF
         {
             UpdateClimbing(ref synthesizer, deltaTime);
 
-            var desiredState = GetDesiredClimbingState();
+            ClimbingState desiredState = GetDesiredClimbingState();
+
             if (desiredState == lastCollidingClimbingState)
-            {
                 desiredState = ClimbingState.Idle;
-            }
 
             // --- Handle ledge climbing/movement direction ---
             if (!IsClimbingState(desiredState))
             {
-                var climbingTrait = Climbing.Create(Climbing.Type.Ledge);
+                Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
 
                 if (desiredState == ClimbingState.Idle)
                 {
@@ -307,12 +306,12 @@ namespace CWLF
                 }
                 else if (desiredState == ClimbingState.Right)
                 {
-                    var direction = Direction.Create(Direction.Type.Right);
+                    Direction direction = Direction.Create(Direction.Type.Right);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
                 }
                 else if (desiredState == ClimbingState.Left)
                 {
-                    var direction = Direction.Create(Direction.Type.Left);
+                    Direction direction = Direction.Create(Direction.Type.Left);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
                 }
 
@@ -334,7 +333,7 @@ namespace CWLF
             {
                 //RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
 
-                var trait = Ledge.Create(Ledge.Type.Dismount); // temporal
+                Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
 
                 SetState(State.Dismount);

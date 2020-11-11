@@ -313,11 +313,11 @@ namespace CWLF
             if (desiredState == lastCollidingClimbingState)
                 desiredState = ClimbingState.Idle;
 
-            //bool bTransitionSucceeded;
-            //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+            bool bTransitionSucceeded;
+            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             // --- Handle ledge climbing/movement direction ---
-            if (!IsClimbingState(desiredState) /*|| bTransitionSucceeded*/)
+            if (!IsClimbingState(desiredState) || bTransitionSucceeded)
             {
                 Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
 

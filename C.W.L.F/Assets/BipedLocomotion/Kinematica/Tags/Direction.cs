@@ -13,7 +13,9 @@ using Unity.Kinematica;
             UpRight,
             DownRight,
             UpLeft,
-            DownLeft
+            DownLeft,
+            CornerRight,
+            CornerLeft
         }
 
         public Type type;

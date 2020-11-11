@@ -133,10 +133,27 @@ namespace CWLF
                 return math.length(b - a);
             }
 
+
             public float3 GetPosition(LedgeAnchor anchor)
             {
                 // --- Get 3D position from given ledge 2D anchor point ---
                 return vertices[anchor.index] + GetNormalizedEdge(anchor.index) * anchor.distance;
+            }
+
+            public float GetDistanceToClosestVertex(float3 position)
+            {
+                float minimumDistance = math.abs(math.length(vertices[0] - position));
+
+                if (minimumDistance > math.abs(math.length(vertices[1] - position)))
+                    minimumDistance = math.abs(math.length(vertices[1] - position));
+
+                if (minimumDistance > math.abs(math.length(vertices[2] - position)))
+                    minimumDistance = math.abs(math.length(vertices[2] - position));
+
+                if (minimumDistance > math.abs(math.length(vertices[3] - position)))
+                    minimumDistance = math.abs(math.length(vertices[3] - position));
+
+                return minimumDistance;
             }
 
             public AffineTransform GetTransform(LedgeAnchor anchor)

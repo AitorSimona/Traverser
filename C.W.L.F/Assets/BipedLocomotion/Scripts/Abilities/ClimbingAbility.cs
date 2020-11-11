@@ -189,7 +189,25 @@ namespace CWLF
                         break;
 
                     case State.Climbing:
-                        HandleClimbingState(ref synthesizer, deltaTime);
+                        {
+                            bool bTransitionSucceeded;
+                            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+
+                            if (climbingState == ClimbingState.CornerRight
+                                || climbingState == ClimbingState.CornerLeft
+                                )
+                            {
+                                if (bTransitionSucceeded)
+                                {
+                                    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+                                    SetClimbingState(ClimbingState.None);
+                                }
+                            }
+                            else
+                            {
+                                HandleClimbingState(ref synthesizer, deltaTime);
+                            }
+                        }
                         break;
 
                     case State.FreeClimbing:
@@ -295,8 +313,11 @@ namespace CWLF
             if (desiredState == lastCollidingClimbingState)
                 desiredState = ClimbingState.Idle;
 
+            //bool bTransitionSucceeded;
+            //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+
             // --- Handle ledge climbing/movement direction ---
-            if (!IsClimbingState(desiredState))
+            if (!IsClimbingState(desiredState) /*|| bTransitionSucceeded*/)
             {
                 Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
 
@@ -312,6 +333,16 @@ namespace CWLF
                 else if (desiredState == ClimbingState.Left)
                 {
                     Direction direction = Direction.Create(Direction.Type.Left);
+                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                }
+                else if (desiredState == ClimbingState.CornerRight)
+                {
+                    Direction direction = Direction.Create(Direction.Type.CornerRight);
+                    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                }
+                else if (desiredState == ClimbingState.CornerLeft)
+                {
+                    Direction direction = Direction.Create(Direction.Type.CornerLeft);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
                 }
 
@@ -674,10 +705,19 @@ namespace CWLF
 
             if (math.abs(stickInput.x) >= 0.5f)
             {
+                float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t);
+                Debug.Log(distance);
+
                 if (stickInput.x > 0.0f)
                 {
+                    if (distance < 0.25f)
+                        return ClimbingState.CornerRight;
+
                     return ClimbingState.Right;
                 }
+
+                if (distance < 0.25f)
+                    return ClimbingState.CornerLeft;
 
                 return ClimbingState.Left;
             }

@@ -1523,7 +1523,7 @@ MonoBehaviour:
             Culture=neutral, PublicKeyToken=null
         name: 
       - startTime: 20.6666
-        duration: 20.16673
+        duration: 3.0334015
         payload:
           serializedData: '{"type":1}'
           assemblyQualifiedTypeName: ClimbingTag, Assembly-CSharp-Editor, Version=0.0.0.0,
@@ -1536,14 +1536,14 @@ MonoBehaviour:
           assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 23.7
-        duration: 10.83333
+      - startTime: 23.733334
+        duration: 10.833332
         payload:
           serializedData: '{"type":4}'
           assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 34.53333
+      - startTime: 34.6
         duration: 6.299999
         payload:
           serializedData: '{"type":1}'
@@ -1561,6 +1561,62 @@ MonoBehaviour:
         duration: 10.73333
         payload:
           serializedData: '{"type":6}'
+          assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 23.733334
+        duration: 10.833332
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: ClimbingTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 34.6
+        duration: 6.299999
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: ClimbingTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 68.73333
+        duration: 5.26667
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: ClimbingTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 68.73333
+        duration: 5.26667
+        payload:
+          serializedData: '{"type":7}'
+          assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 109.26667
+        duration: 2.5
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: ClimbingTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 109.26667
+        duration: 2.5
+        payload:
+          serializedData: '{"type":5}'
+          assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 114.23333
+        duration: 1.9000015
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: ClimbingTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 114.23333
+        duration: 1.9000015
+        payload:
+          serializedData: '{"type":0}'
           assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
@@ -1643,6 +1699,48 @@ MonoBehaviour:
         duration: 10.73333
         payload:
           serializedData: '{"type":4}'
+          assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 69.3
+        duration: 5.366661
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: ClimbingTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 69.3
+        duration: 5.366661
+        payload:
+          serializedData: '{"type":5}'
+          assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 76.76667
+        duration: 3.1666641
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: ClimbingTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 76.76667
+        duration: 3.1666641
+        payload:
+          serializedData: '{"type":0}'
+          assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 114.23333
+        duration: 1.9000015
+        payload:
+          serializedData: '{"type":1}'
+          assemblyQualifiedTypeName: ClimbingTag, Assembly-CSharp-Editor, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        name: 
+      - startTime: 114.23333
+        duration: 1.9000015
+        payload:
+          serializedData: '{"type":0}'
           assemblyQualifiedTypeName: DirectionTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 

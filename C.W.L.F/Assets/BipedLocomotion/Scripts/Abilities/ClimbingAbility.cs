@@ -384,6 +384,12 @@ namespace CWLF
                 
                 Climbing climbingTrait = Climbing.Create(Climbing.Type.Wall);
 
+                if (desiredState == ClimbingState.Right
+                    || desiredState == ClimbingState.Left
+                    || desiredState == ClimbingState.CornerRight
+                    || desiredState == ClimbingState.CornerLeft)
+                    climbingTrait.type = Climbing.Type.Ledge;
+
                 if (desiredState == ClimbingState.Idle)
                 {
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
@@ -404,16 +410,16 @@ namespace CWLF
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
             // --- Check if we are close to hanging onto a ledge or almost on the ground ---
-            if (closeToLedge && InputLayer.capture.stickVertical >= 0.9f)
-            {
-                ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
-                SetState(State.Climbing);
-            }
-            else if (closeToDrop && InputLayer.capture.stickVertical <= -0.9f)
-            {
-                RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
-                SetState(State.Dismount);
-            }
+            //if (closeToLedge && InputLayer.capture.stickVertical >= 0.9f)
+            //{
+            //    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
+            //    SetState(State.Climbing);
+            //}
+            //else if (closeToDrop && InputLayer.capture.stickVertical <= -0.9f)
+            //{
+            //    RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
+            //    SetState(State.Dismount);
+            //}
         }
 
         void HandleDropDownState(ref MotionSynthesizer synthesizer)
@@ -675,11 +681,23 @@ namespace CWLF
 
                 else if (stickInput.x > 0.5f)
                 {
+                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t);
+                    //Debug.Log(distance);
+
+                    if (distance < 0.25f)
+                        return ClimbingState.CornerRight;
+
                     return ClimbingState.Right;
                 }
 
                 else if (stickInput.x < -0.5f)
                 {
+                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t);
+                    //Debug.Log(distance);
+
+                    if (distance < 0.25f)
+                        return ClimbingState.CornerLeft;
+
                     return ClimbingState.Left;
                 }
 
@@ -693,7 +711,6 @@ namespace CWLF
                     return ClimbingState.Up;
                 }
 
-                // TODO: Missing corner left and right
             }
 
             return ClimbingState.Idle;
@@ -706,7 +723,7 @@ namespace CWLF
             if (math.abs(stickInput.x) >= 0.5f)
             {
                 float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t);
-                Debug.Log(distance);
+                //Debug.Log(distance);
 
                 if (stickInput.x > 0.0f)
                 {

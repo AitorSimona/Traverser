@@ -413,16 +413,21 @@ namespace CWLF
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
             // --- Check if we are close to hanging onto a ledge or almost on the ground ---
-            //if (closeToLedge && InputLayer.capture.stickVertical >= 0.9f)
+            //if (closeToLedge /*&& InputLayer.capture.stickVertical >= 0.9f*/)
             //{
             //    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
             //    SetState(State.Climbing);
             //}
-            //else if (closeToDrop && InputLayer.capture.stickVertical <= -0.9f)
-            //{
-            //    RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
-            //    SetState(State.Dismount);
-            //}
+            if (closeToDrop && InputLayer.capture.dismountButton /*<= -0.9f*/)
+            {
+                //RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
+                //SetState(State.Dismount);
+
+                Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
+                PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
+
+                SetState(State.Dismount);
+            }
         }
 
         void HandleDropDownState(ref MotionSynthesizer synthesizer)

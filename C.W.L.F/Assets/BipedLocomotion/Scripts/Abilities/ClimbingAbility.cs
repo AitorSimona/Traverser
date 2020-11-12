@@ -378,7 +378,10 @@ namespace CWLF
 
             ClimbingState desiredState = GetDesiredFreeClimbingState();
 
-            if (!IsClimbingState(desiredState))
+            bool bTransitionSucceeded;
+            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+
+            if (!IsClimbingState(desiredState) || bTransitionSucceeded)
             {
                 // --- Handle wall climbing state ---
                 

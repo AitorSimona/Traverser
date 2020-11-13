@@ -211,7 +211,42 @@ namespace CWLF
                         break;
 
                     case State.FreeClimbing:
-                        HandleFreeClimbingState(ref synthesizer, deltaTime);
+                        {
+                            bool bTransitionSucceeded;
+                            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+
+                            if (climbingState == ClimbingState.CornerRight
+                                || climbingState == ClimbingState.CornerLeft
+                                )
+                            {
+                                if (bTransitionSucceeded)
+                                {
+                                    //LedgeObject.LedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, synthesizer.GetTrajectoryDeltaTransform(deltaTime).t.x);
+                                    //ledgeAnchor = desiredLedgeAnchor;
+                                    //wallGeometry.Initialize(, ledgeGeometry.GetTransform(ledgeAnchor));
+                                    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+
+                                    RaycastHit ray_hit;
+
+                                    // --- Check if the ray hits a collider ---
+                                    if (Physics.Raycast(synthesizer.WorldRootTransform.t, synthesizer.WorldRootTransform.Forward, out ray_hit, 2, CollisionLayer.EnvironmentCollisionMask))
+                                    {
+
+                                        //ledgeGeometry.Initialize(ray_hit.collider);
+                                        wallGeometry.Initialize(ray_hit.collider as BoxCollider, synthesizer.WorldRootTransform);
+                                    }
+
+
+                                    SetClimbingState(ClimbingState.None);
+                                    //UpdateClimbing(ref synthesizer, deltaTime);
+                                }
+                            }
+                            else
+                            {
+                                HandleFreeClimbingState(ref synthesizer, deltaTime);
+                            }
+                        }
+
                         break;
 
                     case State.DropDown:
@@ -284,7 +319,7 @@ namespace CWLF
             if (ledgeDistance >= 0.3f)
                 freeClimbing = true;
 
-            Debug.Log(ledgeDistance);
+            //Debug.Log(ledgeDistance);
 
             // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
             Climbing climbingTrait = freeClimbing ? Climbing.Create(Climbing.Type.Wall) : Climbing.Create(Climbing.Type.Ledge);
@@ -549,6 +584,10 @@ namespace CWLF
 
             wallGeometry.DebugDraw();
             wallGeometry.DebugDraw(ref wallAnchor);
+
+
+            ledgeGeometry.DebugDraw();
+            ledgeGeometry.DebugDraw(ref ledgeAnchor);
         }
 
         public Ability OnPostUpdate(float deltaTime)
@@ -689,7 +728,7 @@ namespace CWLF
 
                 else if (stickInput.x > 0.5f)
                 {
-                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t);
+                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor));
                     //Debug.Log(distance);
 
                     if (distance < 0.25f)
@@ -700,8 +739,8 @@ namespace CWLF
 
                 else if (stickInput.x < -0.5f)
                 {
-                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t);
-                    //Debug.Log(distance);
+                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor));
+                    Debug.Log(distance);
 
                     if (distance < 0.25f)
                         return ClimbingState.CornerLeft;
@@ -730,7 +769,7 @@ namespace CWLF
 
             if (math.abs(stickInput.x) >= 0.5f)
             {
-                float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t);
+                float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor));
                 //Debug.Log(distance);
 
                 if (stickInput.x > 0.0f)

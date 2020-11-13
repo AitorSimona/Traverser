@@ -140,18 +140,36 @@ namespace CWLF
                 return vertices[anchor.index] + GetNormalizedEdge(anchor.index) * anchor.distance;
             }
 
-            public float GetDistanceToClosestVertex(float3 position)
+            public float GetDistanceToClosestVertex(float3 position, float3 forward)
             {
-                float minimumDistance = math.abs(math.length(vertices[0] - position));
+                float minimumDistance = math.abs(math.length(vertices[0].x - position.x));
 
-                if (minimumDistance > math.abs(math.length(vertices[1] - position)))
-                    minimumDistance = math.abs(math.length(vertices[1] - position));
+                // --- We use the forward/normal given to determine under which direction should we compute distance --- 
 
-                if (minimumDistance > math.abs(math.length(vertices[2] - position)))
-                    minimumDistance = math.abs(math.length(vertices[2] - position));
+                if (forward.Equals(Missing.forward))
+                {
+                    if (minimumDistance > math.abs(math.length(vertices[1].x - position.x)))
+                        minimumDistance = math.abs(math.length(vertices[1].x - position.x));
 
-                if (minimumDistance > math.abs(math.length(vertices[3] - position)))
-                    minimumDistance = math.abs(math.length(vertices[3] - position));
+                    if (minimumDistance > math.abs(math.length(vertices[2].x - position.x)))
+                        minimumDistance = math.abs(math.length(vertices[2].x - position.x));
+
+                    if (minimumDistance > math.abs(math.length(vertices[3].x - position.x)))
+                        minimumDistance = math.abs(math.length(vertices[3].x - position.x));
+                }
+                else if(forward.Equals(Missing.right))
+                {
+                    minimumDistance = math.abs(math.length(vertices[0].z - position.z));
+
+                    if (minimumDistance > math.abs(math.length(vertices[1].z - position.z)))
+                        minimumDistance = math.abs(math.length(vertices[1].z - position.z));
+                                                                           
+                    if (minimumDistance > math.abs(math.length(vertices[2].z - position.z)))
+                        minimumDistance = math.abs(math.length(vertices[2].z - position.z));
+                                                                           
+                    if (minimumDistance > math.abs(math.length(vertices[3].z - position.z)))
+                        minimumDistance = math.abs(math.length(vertices[3].z - position.z));
+                }
 
                 return minimumDistance;
             }

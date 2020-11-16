@@ -188,15 +188,6 @@ namespace CWLF
                 if (IsState(State.Suspended))
                     return null;
 
-                //if (/*IsState(State.Dismount) ||*/ IsState(State.PullUp) /*|| IsState(State.DropDown)*/)
-                //{
-                //    bool bTransitionSucceeded;
-                //    if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
-                //    {
-                //        SetState(State.Suspended);
-                //    }
-                //}
-
                 KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
 
                 return this;
@@ -242,7 +233,6 @@ namespace CWLF
                 }
 
                 SetClimbingState(ClimbingState.Idle);
-
                 PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
             }
         }
@@ -272,9 +262,6 @@ namespace CWLF
 
             if (desiredState == lastCollidingClimbingState)
                 desiredState = ClimbingState.Idle;
-
-            //bool bTransitionSucceeded;
-            //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             // --- Handle ledge climbing/movement direction ---
             if (!IsClimbingState(desiredState) || bTransitionSucceeded)
@@ -312,6 +299,8 @@ namespace CWLF
             AffineTransform rootTransform = synthesizer.WorldRootTransform;
             wallGeometry.Initialize(rootTransform);
             wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
+            float height = wallGeometry.GetHeight(ref wallAnchor);
+            bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
             // --- React to pull up/dismount ---
             if (InputLayer.capture.pullUpButton && !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule))
@@ -320,13 +309,10 @@ namespace CWLF
                 RequestTransition(ref synthesizer, contactTransform, Ledge.Type.PullUp);
                 SetState(State.PullUp);
             }
-            else if (InputLayer.capture.dismountButton /*&& closeToDrop*/)
+            else if (closeToDrop && InputLayer.capture.dismountButton)
             {
-                //RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
-
                 Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
-
                 SetState(State.Dismount);
             }
         }
@@ -348,9 +334,7 @@ namespace CWLF
 
                     // --- Check if the ray hits a collider ---
                     if (Physics.Raycast(synthesizer.WorldRootTransform.t, synthesizer.WorldRootTransform.Forward, out ray_hit, 2, CollisionLayer.EnvironmentCollisionMask))
-                    {
                         wallGeometry.Initialize(ray_hit.collider as BoxCollider, synthesizer.WorldRootTransform);
-                    }
 
                     SetClimbingState(ClimbingState.None);
                 }
@@ -362,9 +346,6 @@ namespace CWLF
             UpdateFreeClimbing(ref synthesizer, deltaTime);
 
             ClimbingState desiredState = GetDesiredFreeClimbingState();
-
-            //bool bTransitionSucceeded;
-            //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             if (!IsClimbingState(desiredState) || bTransitionSucceeded)
             {
@@ -398,16 +379,15 @@ namespace CWLF
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
             // --- Check if we are close to hanging onto a ledge or almost on the ground ---
-            if (closeToLedge /*&& InputLayer.capture.stickVertical >= 0.9f*/)
+            if (closeToLedge)
             {
                 ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
                 SetState(State.Climbing);
             }
-            if (closeToDrop && InputLayer.capture.dismountButton /*<= -0.9f*/)
+            if (closeToDrop && InputLayer.capture.dismountButton)
             {
                 Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
-
                 SetState(State.Dismount);
             }
         }
@@ -463,7 +443,6 @@ namespace CWLF
                     return;
                 }
 
-                //HandleDropDownState(ref synthesizer);
                 // --- From the top of a wall, drop down onto the ledge ---
                 ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
 
@@ -473,15 +452,6 @@ namespace CWLF
                 Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
                 PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
             }
-
-            //// --- From the top of a wall, drop down onto the ledge ---
-            //ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-
-            //// --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
-            //SetState(State.Climbing);
-            //SetClimbingState(ClimbingState.Idle);
-            //Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
-            //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
         }
 
         bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
@@ -495,10 +465,9 @@ namespace CWLF
             else if (bCollision)
             {
                 float currentMoveDirection = climbingState == ClimbingState.Left ? 1.0f : -1.0f;
+
                 if (currentMoveDirection * desiredMoveOnLedge > 0.0f)
-                {
                     lastCollidingClimbingState = climbingState;
-                }
             }
 
             return bCollision;
@@ -509,29 +478,26 @@ namespace CWLF
             //
             // Smoothly adjust current root transform towards the anchor transform
             //
-
             AffineTransform deltaTransform = synthesizer.GetTrajectoryDeltaTransform(deltaTime);
             AffineTransform rootTransform = synthesizer.WorldRootTransform * deltaTransform;
-
             float linearDisplacement = -deltaTransform.t.x;
 
             LedgeObject.LedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
-
             float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
             float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
 
             // --- Update current anchor if it is still on the ledge ---
             if (!UpdateCollidingClimbingState(linearDisplacement, position, desiredForward))
-            {
                 ledgeAnchor = desiredLedgeAnchor;
-            }
 
             float distance = math.length(rootTransform.t - position);
+
             if (distance >= 0.01f)
             {
                 float3 normal = math.normalize(position - rootTransform.t);
                 rootTransform.t += normal * 0.5f * deltaTime;
             }
+
             rootTransform.t = position;
 
             float angle;
@@ -554,8 +520,8 @@ namespace CWLF
             //
             // Smoothly adjust current root transform towards the anchor transform
             //
-            // --- Update wall climbing ---
 
+            // --- Update wall climbing ---
             AffineTransform deltaTransform = synthesizer.GetTrajectoryDeltaTransform(deltaTime);
             AffineTransform rootTransform = synthesizer.WorldRootTransform * deltaTransform;
 
@@ -571,6 +537,7 @@ namespace CWLF
                 float3 normal = math.normalize(position - rootTransform.t);
                 rootTransform.t += normal * 0.5f * deltaTime;
             }
+
             rootTransform.t = position;
 
             float angle;
@@ -598,7 +565,6 @@ namespace CWLF
 
         public Ability OnPostUpdate(float deltaTime)
         {
-
             return null;
         }
 
@@ -641,7 +607,6 @@ namespace CWLF
                 ret = true;
             }
 
-
             return ret;
         }
 
@@ -653,6 +618,7 @@ namespace CWLF
 
             SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.AboveGround | SegmentCollisionCheck.InsideGeometry;
 
+            // --- Prevent collision checks ---
             if (type == Ledge.Type.DropDown || type == Ledge.Type.Mount)
             {
                 collisionCheck &= ~SegmentCollisionCheck.InsideGeometry;
@@ -712,22 +678,18 @@ namespace CWLF
                 {
                     return ClimbingState.UpRight;
                 }
-
                 else if (stickInput.x < -0.3f && stickInput.y > 0.3f)
                 {
                     return ClimbingState.UpLeft;
                 }
-
                 else if (stickInput.x > 0.3f && stickInput.y < -0.3f)
                 {
                     return ClimbingState.DownRight;
                 }
-
                 else if (stickInput.x < -0.3f && stickInput.y < -0.3f)
                 {
                     return ClimbingState.DownLeft;
                 }
-
                 else if (stickInput.x > 0.5f)
                 {
                     // --- Use ledge definition to determine how close we are to the edges of the wall ---
@@ -738,7 +700,6 @@ namespace CWLF
 
                     return ClimbingState.Right;
                 }
-
                 else if (stickInput.x < -0.5f)
                 {
                     // --- Use ledge definition to determine how close we are to the edges of the wall ---
@@ -749,12 +710,10 @@ namespace CWLF
 
                     return ClimbingState.Left;
                 }
-
                 else if (stickInput.y < -0.5f)
                 {
                     return ClimbingState.Down;
                 }
-
                 else if (stickInput.y > 0.5f)
                 {
                     return ClimbingState.Up;

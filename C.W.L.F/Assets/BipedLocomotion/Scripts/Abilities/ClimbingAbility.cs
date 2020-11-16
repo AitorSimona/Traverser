@@ -302,6 +302,8 @@ namespace CWLF
             float height = wallGeometry.GetHeight(ref wallAnchor);
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
+            float2 stickInput = InputLayer.GetStickInput();
+
             // --- React to pull up/dismount ---
             if (InputLayer.capture.pullUpButton && !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule))
             {
@@ -314,6 +316,10 @@ namespace CWLF
                 Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
                 SetState(State.Dismount);
+            }
+            else if (-stickInput.y < -0.5)
+            {
+                SetState(State.FreeClimbing);
             }
         }
 
@@ -378,8 +384,10 @@ namespace CWLF
             bool closeToLedge = math.abs(totalHeight - height) <= 0.095f;
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
+            float2 stickInput = InputLayer.GetStickInput();
+
             // --- Check if we are close to hanging onto a ledge or almost on the ground ---
-            if (closeToLedge)
+            if (closeToLedge && -stickInput.y > 0.5f)
             {
                 ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
                 SetState(State.Climbing);

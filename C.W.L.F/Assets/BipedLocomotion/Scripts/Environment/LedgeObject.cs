@@ -144,6 +144,9 @@ namespace CWLF
             {
                 float minimumDistance = math.abs(math.length(vertices[0].x - position.x));
 
+                forward.x = Mathf.Abs(forward.x);
+                forward.z = Mathf.Abs(forward.z);
+
                 // --- We use the forward/normal given to determine under which direction we should compute distance --- 
 
                 if (forward.Equals(Missing.forward))

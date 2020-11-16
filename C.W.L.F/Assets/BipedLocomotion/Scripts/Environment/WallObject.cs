@@ -11,7 +11,7 @@ namespace CWLF
         public struct WallAnchor
         {
             // --- Attributes that define an anchor point ---
-            public float x; // note these two values form a 2D position, expressed from 0 to 1, from top left vertex
+            public float x; // note these two values form a 2D position, from top left vertex
             public float y;
 
             // representation of a wall (plane), point p is built by x and y

@@ -15,13 +15,13 @@ namespace CWLF
         {
             // --- Attributes that define an anchor point ---
             public int index; // of the 4 lines/edges that compose a ledge, which one is the anchor on
-            public float distance; // from 0 to 1, where in the given ledge line is the anchor
+            public float distance; // where in the given ledge line is the anchor
 
             // representation of a ledge (top view)
             // - - - - -
             // -       -
             // -       - 
-            // - - - p - p is at 0.75 distance and at the 2nd line (index)
+            // - - - p - p is at 0.75*distance and at the 2nd line (index)
 
             // -------------------------------------------------
 
@@ -144,7 +144,7 @@ namespace CWLF
             {
                 float minimumDistance = math.abs(math.length(vertices[0].x - position.x));
 
-                // --- We use the forward/normal given to determine under which direction should we compute distance --- 
+                // --- We use the forward/normal given to determine under which direction we should compute distance --- 
 
                 if (forward.Equals(Missing.forward))
                 {

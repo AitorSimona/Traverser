@@ -157,146 +157,45 @@ namespace CWLF
                 switch (state)
                 {
                     case State.Mounting:
-                        {
-                            bool TransitionSuccess;
-
-                            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
-                            {
-                                if (!TransitionSuccess)
-                                {
-                                    SetState(State.Suspended);
-                                    return null;
-                                }
-
-                                HandleMountingState(ref synthesizer);
-                            }
-                        }
+                        HandleMountingState(ref synthesizer);
                         break;
 
-                    // TODO: Temporal workaround until anchored transition actually works 
                     case State.Dismount:
-                        {
-                            bool bTransitionSucceeded;
-                            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+                        HandleDismountState(ref synthesizer);
+                        break;
 
-                            if (bTransitionSucceeded)
-                            {
-                                SetState(State.Suspended);
-                                PlayFirstSequence(synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default));
-                                return null;
-                            }
-                        }
+                    case State.PullUp:
+                        HandlePullUpState(ref synthesizer);
                         break;
 
                     case State.Climbing:
-                        {
-                            bool bTransitionSucceeded;
-                            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
-
-                            if (climbingState == ClimbingState.CornerRight
-                                || climbingState == ClimbingState.CornerLeft
-                                )
-                            {
-                                if (bTransitionSucceeded)
-                                {
-                                    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-                                    SetClimbingState(ClimbingState.None);
-                                }
-                            }
-                            else
-                            {
-                                HandleClimbingState(ref synthesizer, deltaTime);
-                            }
-                        }
+                        HandleClimbingState(ref synthesizer, deltaTime);
                         break;
 
                     case State.FreeClimbing:
-                        {
-                            bool bTransitionSucceeded;
-                            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
-
-                            if (climbingState == ClimbingState.CornerRight
-                                || climbingState == ClimbingState.CornerLeft
-                                )
-                            {
-                                if (bTransitionSucceeded)
-                                {
-                                    //LedgeObject.LedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, synthesizer.GetTrajectoryDeltaTransform(deltaTime).t.x);
-                                    //ledgeAnchor = desiredLedgeAnchor;
-                                    //wallGeometry.Initialize(, ledgeGeometry.GetTransform(ledgeAnchor));
-                                    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-
-                                    RaycastHit ray_hit;
-
-                                    // --- Check if the ray hits a collider ---
-                                    if (Physics.Raycast(synthesizer.WorldRootTransform.t, synthesizer.WorldRootTransform.Forward, out ray_hit, 2, CollisionLayer.EnvironmentCollisionMask))
-                                    {
-
-                                        //ledgeGeometry.Initialize(ray_hit.collider);
-                                        wallGeometry.Initialize(ray_hit.collider as BoxCollider, synthesizer.WorldRootTransform);
-                                    }
-
-
-                                    SetClimbingState(ClimbingState.None);
-                                    //UpdateClimbing(ref synthesizer, deltaTime);
-                                }
-                            }
-                            else
-                            {
-                                HandleFreeClimbingState(ref synthesizer, deltaTime);
-                            }
-                        }
-
+                        HandleFreeClimbingState(ref synthesizer, deltaTime);
                         break;
 
                     case State.DropDown:
-                        {
-                            if(!anchoredTransition.isValid && previousState != State.DropDown)
-                            {
-                                BoxCollider collider = controller.current.ground.GetComponent<BoxCollider>();
-
-                                if (collider != null)
-                                {
-                                    if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
-                                    {
-                                        ledgeGeometry.Initialize(collider);
-                                        ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-                                        wallGeometry.Initialize(collider, ledgeGeometry.GetTransform(ledgeAnchor));
-
-                                        // --- Make sure we build the contact transform considering the wall's normal ---
-                                        AffineTransform contactTransform = ledgeGeometry.GetTransformGivenNormal(ledgeAnchor, wallGeometry.GetNormalWorldSpace());
-                                        RequestTransition(ref synthesizer, contactTransform, Ledge.Type.DropDown);                                                
-                                    }
-                                }
-                            }
-
-                            bool TransitionSuccess;
-
-                            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
-                            {
-                                if (!TransitionSuccess)
-                                {
-                                    SetState(State.Suspended);
-                                    return null;
-                                }
-
-                                HandleDropDownState(ref synthesizer);
-                            }
-                        }
+                        HandleDropDownState(ref synthesizer);
                         break;
 
                     default:
                         break;
                 }
 
-                if (/*IsState(State.Dismount) ||*/ IsState(State.PullUp) /*|| IsState(State.DropDown)*/)
-                {
-                    bool bTransitionSucceeded;
-                    if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
-                    {
-                        SetState(State.Suspended);
-                    }
-                }
+                // --- Let other abilities handle the situation ---
+                if (IsState(State.Suspended))
+                    return null;
+
+                //if (/*IsState(State.Dismount) ||*/ IsState(State.PullUp) /*|| IsState(State.DropDown)*/)
+                //{
+                //    bool bTransitionSucceeded;
+                //    if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
+                //    {
+                //        SetState(State.Suspended);
+                //    }
+                //}
 
                 KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
 
@@ -309,38 +208,64 @@ namespace CWLF
         // --- Climbing states wrappers ---
         void HandleMountingState(ref MotionSynthesizer synthesizer)
         {
-            bool freeClimbing = false; // ledgeDistance >= 0.1f;
+            bool TransitionSuccess;
 
-            // --- Get ledge anchor point from root motion transform ---
-            float3 rootPosition = synthesizer.WorldRootTransform.t;
-            ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
-            float ledgeDistance = math.length(rootPosition - ledgeGeometry.GetPosition(ledgeAnchor));
-
-            if (ledgeDistance >= 0.3f)
-                freeClimbing = true;
-
-            //Debug.Log(ledgeDistance);
-
-            // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
-            Climbing climbingTrait = freeClimbing ? Climbing.Create(Climbing.Type.Wall) : Climbing.Create(Climbing.Type.Ledge);
-
-            if (freeClimbing)
+            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
             {
-                wallAnchor = wallGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootposition
-                SetState(State.FreeClimbing);
-            }
-            else
-            {
-                SetState(State.Climbing); // we are hanging onto a ledge 
-            }
+                if (!TransitionSuccess)
+                {
+                    SetState(State.Suspended);
+                    return;
+                }
 
-            SetClimbingState(ClimbingState.Idle);
+                bool freeClimbing = false; // ledgeDistance >= 0.1f;
 
-            PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                // --- Get ledge anchor point from root motion transform ---
+                float3 rootPosition = synthesizer.WorldRootTransform.t;
+                ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
+                float ledgeDistance = math.length(rootPosition - ledgeGeometry.GetPosition(ledgeAnchor));
+
+                if (ledgeDistance >= 0.3f)
+                    freeClimbing = true;
+
+                // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
+                Climbing climbingTrait = freeClimbing ? Climbing.Create(Climbing.Type.Wall) : Climbing.Create(Climbing.Type.Ledge);
+
+                if (freeClimbing)
+                {
+                    wallAnchor = wallGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootposition
+                    SetState(State.FreeClimbing);
+                }
+                else
+                {
+                    SetState(State.Climbing); // we are hanging onto a ledge 
+                }
+
+                SetClimbingState(ClimbingState.Idle);
+
+                PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+            }
         }
 
         void HandleClimbingState(ref MotionSynthesizer synthesizer, float deltaTime)
         {
+            bool bTransitionSucceeded;
+            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+
+            // --- Handle special corner transitions ---
+            if (climbingState == ClimbingState.CornerRight
+                || climbingState == ClimbingState.CornerLeft
+                )
+            {
+                if (bTransitionSucceeded)
+                {
+                    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+                    SetClimbingState(ClimbingState.None);
+                }
+
+                return;
+            }
+
             UpdateClimbing(ref synthesizer, deltaTime);
 
             ClimbingState desiredState = GetDesiredClimbingState();
@@ -348,8 +273,8 @@ namespace CWLF
             if (desiredState == lastCollidingClimbingState)
                 desiredState = ClimbingState.Idle;
 
-            bool bTransitionSucceeded;
-            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+            //bool bTransitionSucceeded;
+            //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             // --- Handle ledge climbing/movement direction ---
             if (!IsClimbingState(desiredState) || bTransitionSucceeded)
@@ -408,13 +333,38 @@ namespace CWLF
 
         void HandleFreeClimbingState(ref MotionSynthesizer synthesizer, float deltaTime)
         {
+            bool bTransitionSucceeded;
+            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+
+            // --- Handle special corner transitions ---
+            if (climbingState == ClimbingState.CornerRight
+                || climbingState == ClimbingState.CornerLeft)
+            {
+                if (bTransitionSucceeded)
+                {
+                    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+
+                    RaycastHit ray_hit;
+
+                    // --- Check if the ray hits a collider ---
+                    if (Physics.Raycast(synthesizer.WorldRootTransform.t, synthesizer.WorldRootTransform.Forward, out ray_hit, 2, CollisionLayer.EnvironmentCollisionMask))
+                    {
+                        wallGeometry.Initialize(ray_hit.collider as BoxCollider, synthesizer.WorldRootTransform);
+                    }
+
+                    SetClimbingState(ClimbingState.None);
+                }
+
+                return;
+            }
+
             // --- We are climbing a wall ---
             UpdateFreeClimbing(ref synthesizer, deltaTime);
 
             ClimbingState desiredState = GetDesiredFreeClimbingState();
 
-            bool bTransitionSucceeded;
-            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+            //bool bTransitionSucceeded;
+            //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             if (!IsClimbingState(desiredState) || bTransitionSucceeded)
             {
@@ -455,9 +405,6 @@ namespace CWLF
             }
             if (closeToDrop && InputLayer.capture.dismountButton /*<= -0.9f*/)
             {
-                //RequestTransition(ref synthesizer, synthesizer.WorldRootTransform, Ledge.Type.Dismount);
-                //SetState(State.Dismount);
-
                 Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
 
@@ -465,16 +412,76 @@ namespace CWLF
             }
         }
 
+        void HandleDismountState(ref MotionSynthesizer synthesizer)
+        {
+            bool bTransitionSucceeded;
+            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+
+            if (bTransitionSucceeded)
+            {
+                SetState(State.Suspended);
+                PlayFirstSequence(synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default));
+            }
+        }
+
+        void HandlePullUpState(ref MotionSynthesizer synthesizer)
+        {
+            bool bTransitionSucceeded;
+
+            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
+                SetState(State.Suspended);
+        }
+
         void HandleDropDownState(ref MotionSynthesizer synthesizer)
         {
-            // --- From the top of a wall, drop down onto the ledge ---
-            ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+            if (!anchoredTransition.isValid && previousState != State.DropDown)
+            {
+                BoxCollider collider = controller.current.ground.GetComponent<BoxCollider>();
 
-            // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
-            SetState(State.Climbing);
-            SetClimbingState(ClimbingState.Idle);
-            Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
-            PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                if (collider != null)
+                {
+                    if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+                    {
+                        ledgeGeometry.Initialize(collider);
+                        ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+                        wallGeometry.Initialize(collider, ledgeGeometry.GetTransform(ledgeAnchor));
+
+                        // --- Make sure we build the contact transform considering the wall's normal ---
+                        AffineTransform contactTransform = ledgeGeometry.GetTransformGivenNormal(ledgeAnchor, wallGeometry.GetNormalWorldSpace());
+                        RequestTransition(ref synthesizer, contactTransform, Ledge.Type.DropDown);
+                    }
+                }
+            }
+
+            bool TransitionSuccess;
+
+            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
+            {
+                if(!TransitionSuccess)
+                {
+                    SetState(State.Suspended);
+                    return;
+                }
+
+                //HandleDropDownState(ref synthesizer);
+                // --- From the top of a wall, drop down onto the ledge ---
+                ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+
+                // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
+                SetState(State.Climbing);
+                SetClimbingState(ClimbingState.Idle);
+                Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
+                PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+            }
+
+            //// --- From the top of a wall, drop down onto the ledge ---
+            //ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+
+            //// --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
+            //SetState(State.Climbing);
+            //SetClimbingState(ClimbingState.Idle);
+            //Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
+            //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
         }
 
         bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
@@ -584,7 +591,6 @@ namespace CWLF
 
             wallGeometry.DebugDraw();
             wallGeometry.DebugDraw(ref wallAnchor);
-
 
             ledgeGeometry.DebugDraw();
             ledgeGeometry.DebugDraw(ref ledgeAnchor);
@@ -699,10 +705,6 @@ namespace CWLF
             float2 stickInput = InputLayer.GetStickInput();
             stickInput.y = -stickInput.y; // negate y, so positive y means going up
 
-            if(stickInput.x != 0 && stickInput.y != 0)
-               Debug.Log(stickInput);
-
-
             // --- Depending on stick input, decide climbing direction ---
             if (math.length(stickInput) >= 0.1f)
             {
@@ -728,8 +730,8 @@ namespace CWLF
 
                 else if (stickInput.x > 0.5f)
                 {
+                    // --- Use ledge definition to determine how close we are to the edges of the wall ---
                     float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor));
-                    //Debug.Log(distance);
 
                     if (distance < 0.25f)
                         return ClimbingState.CornerRight;
@@ -739,8 +741,8 @@ namespace CWLF
 
                 else if (stickInput.x < -0.5f)
                 {
+                    // --- Use ledge definition to determine how close we are to the edges of the wall ---
                     float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor));
-                    Debug.Log(distance);
 
                     if (distance < 0.25f)
                         return ClimbingState.CornerLeft;
@@ -769,8 +771,8 @@ namespace CWLF
 
             if (math.abs(stickInput.x) >= 0.5f)
             {
+                // --- Use ledge definition to determine how close we are to the edges of the wall ---
                 float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor));
-                //Debug.Log(distance);
 
                 if (stickInput.x > 0.0f)
                 {

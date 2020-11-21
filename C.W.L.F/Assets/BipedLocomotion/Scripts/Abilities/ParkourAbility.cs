@@ -101,25 +101,27 @@ namespace CWLF
 
                 if (type.IsType(Parkour.Type.Wall) || type.IsType(Parkour.Type.Table))
                 {
-                    //if (TagExtensions.IsAxis(collider, contactTransform, Missing.forward))
-                    //{
-                    ret = RequestTransition(ref synthesizer, contactTransform, type);
-                    //}
+                    if (TagExtensions.IsAxis(collider, contactTransform, Missing.forward) ||
+                        TagExtensions.IsAxis(collider, contactTransform, Missing.right))
+                    {
+                        ret = RequestTransition(ref synthesizer, contactTransform, type);
+                    }
                 }
                 else if (type.IsType(Parkour.Type.Platform))
                 {
-                    //if (TagExtensions.IsAxis(collider, contactTransform, Missing.forward) ||
-                    //    TagExtensions.IsAxis(collider, contactTransform, Missing.right))
-                    //{
-                    ret = RequestTransition(ref synthesizer, contactTransform, type);
-                    //}
+                    if (TagExtensions.IsAxis(collider, contactTransform, Missing.forward) ||
+                        TagExtensions.IsAxis(collider, contactTransform, Missing.right))
+                    {
+                        ret = RequestTransition(ref synthesizer, contactTransform, type);
+                    }
                 }
                 else if (type.IsType(Parkour.Type.Ledge))
                 {
-                    //if (TagExtensions.IsAxis(collider, contactTransform, Missing.right))
-                    //{
-                    ret = RequestTransition(ref synthesizer, contactTransform, type);
-                    //}
+                    if (TagExtensions.IsAxis(collider, contactTransform, Missing.forward) ||
+                        TagExtensions.IsAxis(collider, contactTransform, Missing.right))
+                    {
+                        ret = RequestTransition(ref synthesizer, contactTransform, type);
+                    }
                 }
             }
 
@@ -130,8 +132,17 @@ namespace CWLF
         {
             // --- Require transition animation of the type given ---
             ref Binary binary = ref synthesizer.Binary;
+            SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.AboveGround | SegmentCollisionCheck.InsideGeometry;
+
+            // --- Prevent collision checks ---
+            //if (type.type == Parkour.Type.Ledge)
+            //{
+            //    collisionCheck &= ~SegmentCollisionCheck.InsideGeometry;
+            //    collisionCheck &= ~SegmentCollisionCheck.AboveGround;
+            //}
+
             QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform,
-                    type, contactThreshold);
+                    type, contactThreshold, collisionCheck);
 
             anchoredTransition.Dispose();
             anchoredTransition = AnchoredTransitionTask.Create(ref synthesizer,

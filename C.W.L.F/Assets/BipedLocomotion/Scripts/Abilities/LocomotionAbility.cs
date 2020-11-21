@@ -345,14 +345,18 @@ namespace CWLF
 
                     AffineTransform contactTransform = new AffineTransform(contactPoint, q);
 
+                    //  TODO : Remove temporal debug object
+                    //GameObject.Find("dummy").transform.position = contactTransform.t;
+
+
                     float3 desired_direction = contactTransform.t - tmp.t;
                     float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.x, gameObject.transform.forward.z);
                     float target_orientation = current_orientation + Vector3.SignedAngle(InputLayer.capture.movementDirection, desired_direction, Vector3.up);
                     float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
 
                     Debug.Log(angle);
-                    // --- If we are not close to the desired angle, do not handle contacts ---
-                    if (Mathf.Abs(Mathf.Rad2Deg * angle) > 20 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 3.0f)
+                    // --- If we are not close to the desired angle or contact point, do not handle contacts ---
+                    if (Mathf.Abs(Mathf.Rad2Deg * angle) > 15 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 3.0f)
                     {
                         continue;
                     }

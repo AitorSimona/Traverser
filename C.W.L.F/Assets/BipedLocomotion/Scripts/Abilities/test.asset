@@ -17,7 +17,7 @@ MonoBehaviour:
   timeHorizon: 1
   sampleRate: 30
   m_Data:
-    syncedWithBinary: 1
+    syncedWithBinary: 0
     animationLibrary:
     - m_PreBoundaryClipGuid:
         val0: 805636515
@@ -3579,13 +3579,6 @@ MonoBehaviour:
       tags:
       - startTime: 0
         duration: 3.3
-        payload:
-          serializedData: '{"type":9}'
-          assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        name: 
-      - startTime: 9.13
-        duration: 2.7
         payload:
           serializedData: '{"type":9}'
           assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,

@@ -9,6 +9,7 @@ namespace CWLF
 {
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]
+    [RequireComponent(typeof(LocomotionAbility))]
 
     public class ParkourAbility : SnapshotProvider, Ability
     {
@@ -35,6 +36,8 @@ namespace CWLF
 
         MovementController controller;
 
+        LocomotionAbility locomotion;
+
         // --- Basic Methods ---
 
         public override void OnEnable()
@@ -43,6 +46,7 @@ namespace CWLF
             anchoredTransition = AnchoredTransitionTask.Invalid;
             controller = GetComponent<MovementController>();
             kinematica = GetComponent<Kinematica>();
+            locomotion = GetComponent<LocomotionAbility>();
         }
 
         public override void OnDisable()
@@ -67,10 +71,10 @@ namespace CWLF
             // --- If we are in a transition disable controller ---
             CollisionLayer.ConfigureController(anchoredTransition.isValid, ref controller);
 
-            if (KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))
-                return this;
-            else
-                return null;
+            if(KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))           
+                 return this;
+
+            return null;
         }
 
         public Ability OnPostUpdate(float deltaTime)
@@ -95,9 +99,7 @@ namespace CWLF
                 Assert.IsTrue((layerMask & 0x1F01) != 0);
 
                 Parkour type = Parkour.Create(collider.gameObject.layer);
-
-                // Commented ISAxis queries so character is not limited when interacting with objects
-                // MYTODO: these limits should be user defined
+                Speed speed = GetSpeedTag();
 
                 if (type.IsType(Parkour.Type.Wall) || type.IsType(Parkour.Type.Table))
                 {
@@ -201,6 +203,32 @@ namespace CWLF
             //}
 
             return ret;
+        }
+
+        Speed GetSpeedTag()
+        {
+            float desiredLinearSpeed = InputLayer.capture.run ? locomotion.desiredSpeedFast : locomotion.desiredSpeedSlow;
+
+            Speed speed = Speed.Create(Speed.Type.Normal);
+
+            if (InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedSlow)
+            {
+                // slow speed
+                Speed.Create(Speed.Type.Slow);
+            }
+            else if (InputLayer.capture.moveIntensity * desiredLinearSpeed >= locomotion.desiredSpeedSlow &&
+                InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedFast)
+            {
+                // normal speed
+                //Speed.Create(Speed.Type.Normal);
+            }
+            else
+            {
+                // fast speed
+                Speed.Create(Speed.Type.Fast);
+            }
+
+            return speed;
         }
 
         // -------------------------------------------------

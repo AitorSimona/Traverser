@@ -21,12 +21,7 @@ public struct Speed
     {
         return new Speed
         {
-            type = type,
+            type = type
         };
-    }
-
-    public static Speed Create(int layer)
-    {
-        return Create((Type)layer);
     }
 }

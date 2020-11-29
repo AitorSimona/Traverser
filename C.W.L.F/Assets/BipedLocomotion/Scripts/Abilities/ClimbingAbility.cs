@@ -633,7 +633,8 @@ namespace CWLF
                 collisionCheck &= ~SegmentCollisionCheck.AboveGround;
             }
 
-            QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, trait, contactThreshold, collisionCheck);
+            QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, 
+                trait, trait, contactThreshold, collisionCheck);
             bool rootadjust = trait.type == Ledge.Type.PullUp ? false : true;
 
             anchoredTransition.Dispose();

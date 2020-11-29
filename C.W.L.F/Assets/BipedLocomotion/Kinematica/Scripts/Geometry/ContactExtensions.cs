@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity;
 using Unity.Collections;
 using Unity.Kinematica;
@@ -39,32 +40,77 @@ internal static class TagExtensions
         return new AffineTransform(closestPoint, q);
     }
 
-    public static QueryResult GetPoseSequence<T>(ref Binary binary, AffineTransform contactTransform, T value, float contactThreshold, SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.InsideGeometry | SegmentCollisionCheck.AboveGround) where T : struct
+    public static QueryResult GetPoseSequence<T, T2>(ref Binary binary, AffineTransform contactTransform, T value, T2 value2, float contactThreshold, SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.InsideGeometry | SegmentCollisionCheck.AboveGround) where T : struct where T2 : struct
     {
         var queryResult = QueryResult.Create();
 
         NativeArray<OBB> obbs =
             GetBoundsFromContactPoints(ref binary,
-                contactTransform, value, contactThreshold);
+                contactTransform, value, value2, contactThreshold);
 
-        var tagTraitIndex = binary.GetTraitIndex(value);
+        Binary.TraitIndex tagTraitIndex = binary.GetTraitIndex(value);
+        Binary.TraitIndex tagTraitIndex2 = binary.GetTraitIndex(value2);
+
+        bool doubleTag = !tagTraitIndex.Equals(tagTraitIndex2);
 
         int numIntervals = binary.numIntervals;
 
         for (int i = 0; i < numIntervals; ++i)
         {
-            ref var interval = ref binary.GetInterval(i);
+            ref Binary.Interval interval = ref binary.GetInterval(i);
+            Binary.TagList tag_list = binary.GetTagList(interval.tagListIndex);
 
-            if (binary.Contains(interval.tagListIndex, tagTraitIndex))
+            bool isIntervalValid = false; 
+
+            if(doubleTag)
+            {
+                if (tag_list.numIndices == 2)
+                {
+                    //Binary.TraitIndex t1 = binary.GetTag(binary.GetTagIndex(ref tag_list, 0)).traitIndex;
+                    //Binary.TraitIndex t2 = binary.GetTag(binary.GetTagIndex(ref tag_list, 1)).traitIndex;
+
+                    //if(tagTraitIndex.Equals(t1) || tagTraitIndex.Equals(t2))
+                    //{
+                    //    if(tagTraitIndex2.Equals(t1) || tagTraitIndex2.Equals(t2))
+                    //    {
+                    //        isIntervalValid = true;
+                    //        Debug.Log("Entered!!");
+
+                    //    }
+                    //}
+
+                    isIntervalValid = binary.Contains(ref tag_list, tagTraitIndex);
+
+                    if(isIntervalValid)
+                       isIntervalValid = binary.Contains(ref tag_list, tagTraitIndex2);
+                }
+                //if (tag_list.numIndices == 2 
+                //    && (binary.GetTag(binary.GetTagIndex(ref tag_list, 0)).traitIndex.Equals(tagTraitIndex) 
+                //        || binary.GetTag(binary.GetTagIndex(ref tag_list, 0)).traitIndex.Equals(tagTraitIndex2))                 
+                //    && (binary.GetTag(binary.GetTagIndex(ref tag_list, 1)).traitIndex.Equals(tagTraitIndex))
+                //        || binary.GetTag(binary.GetTagIndex(ref tag_list, 1)).traitIndex.Equals(tagTraitIndex2))
+                //{
+                //    isIntervalValid = true;
+                //    Debug.Log("Entered!!");
+                //}
+            }
+            else
+            {
+                isIntervalValid = binary.Contains(ref tag_list, tagTraitIndex);
+                Debug.Log("Entered!!");
+            }
+
+            //if (binary.Contains( && binary.Contains(interval.tagListIndex, tagTraitIndex)
+            //    && binary.Contains(interval.tagListIndex, tagTraitIndex2))
+            if (isIntervalValid)
             {
                 ref var segment = ref binary.GetSegment(interval.segmentIndex);
 
                 if (IsSegmentEndValidPosition(ref binary, interval.segmentIndex, contactTransform, contactThreshold, collisionCheck))
                 {
-                    queryResult.Add(i,
-                        interval.firstFrame,
-                            interval.numFrames);
+                    queryResult.Add(i, interval.firstFrame, interval.numFrames);
                 }
+
             }
         }
 
@@ -73,11 +119,11 @@ internal static class TagExtensions
         return queryResult;
     }
 
-    public static NativeArray<OBB> GetBoundsFromContactPoints<T>(ref Binary binary, AffineTransform contactTransform, T value, float contactThreshold) where T : struct
+    public static NativeArray<OBB> GetBoundsFromContactPoints<T, T2>(ref Binary binary, AffineTransform contactTransform, T value, T2 value2, float contactThreshold) where T : struct where T2 : struct
     {
         Bounds bounds =
             GetBoundsForContactPoints(
-                ref binary, value);
+                ref binary, value, value2);
 
         float3 extents =
             Missing.Convert(bounds.extents) +
@@ -123,10 +169,10 @@ internal static class TagExtensions
         return result;
     }
 
-    public static Bounds GetBoundsForContactPoints<T>(ref Binary binary, T value) where T : struct
+    public static Bounds GetBoundsForContactPoints<T, T2>(ref Binary binary, T value, T2 value2) where T : struct where T2 : struct
     {
         NativeArray<float3> contactPoints =
-            GetContactPoints(ref binary, value);
+            GetContactPoints(ref binary, value, value2);
 
         Bounds bounds = new Bounds();
 
@@ -163,11 +209,12 @@ internal static class TagExtensions
         return Binary.MarkerIndex.Invalid;
     }
 
-    public static NativeArray<float3> GetContactPoints<T>(ref Binary binary, T value) where T : struct
+    public static NativeArray<float3> GetContactPoints<T, T2>(ref Binary binary, T value, T2 value2) where T : struct where T2 : struct
     {
         int numContacts = 0;
 
-        var tagTraitIndex = binary.GetTraitIndex(value);
+        Binary.TraitIndex tagTraitIndex = binary.GetTraitIndex(value);
+        Binary.TraitIndex tagTraitIndex2 = binary.GetTraitIndex(value2);
 
         var contactTypeIndex = binary.GetTypeIndex<Contact>();
 
@@ -177,7 +224,8 @@ internal static class TagExtensions
         {
             ref var tag = ref binary.GetTag(i);
 
-            if (tag.traitIndex == tagTraitIndex)
+            if (tag.traitIndex == tagTraitIndex
+                || tag.traitIndex == tagTraitIndex2)
             {
                 var segmentIndex = tag.segmentIndex;
 
@@ -205,7 +253,8 @@ internal static class TagExtensions
         {
             ref var tag = ref binary.GetTag(i);
 
-            if (tag.traitIndex == tagTraitIndex)
+            if (tag.traitIndex == tagTraitIndex
+                || tag.traitIndex == tagTraitIndex2)
             {
                 var segmentIndex = tag.segmentIndex;
 

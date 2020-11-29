@@ -1,4 +1,5 @@
-﻿using Unity.Collections;
+﻿using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Kinematica;
 using Unity.Mathematics;
 using Unity.SnapshotDebugger;
@@ -137,14 +138,14 @@ namespace CWLF
             SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.AboveGround | SegmentCollisionCheck.InsideGeometry;
 
             // --- Prevent collision checks ---
-            //if (type.type == Parkour.Type.Ledge)
+            //if (type.type == Parkour.Type.Wall)
             //{
             //    collisionCheck &= ~SegmentCollisionCheck.InsideGeometry;
             //    collisionCheck &= ~SegmentCollisionCheck.AboveGround;
             //}
 
             QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform,
-                    type, contactThreshold, collisionCheck);
+                    type, GetSpeedTag(), contactThreshold, collisionCheck);
 
             anchoredTransition.Dispose();
             anchoredTransition = AnchoredTransitionTask.Create(ref synthesizer,
@@ -214,18 +215,22 @@ namespace CWLF
             if (InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedSlow)
             {
                 // slow speed
-                Speed.Create(Speed.Type.Slow);
+                speed = Speed.Create(Speed.Type.Slow);
+                Debug.Log("Slow");
             }
             else if (InputLayer.capture.moveIntensity * desiredLinearSpeed >= locomotion.desiredSpeedSlow &&
-                InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedFast)
+                InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedFast - 0.5)
             {
                 // normal speed
                 //Speed.Create(Speed.Type.Normal);
+                Debug.Log("Normal");
             }
             else
             {
                 // fast speed
-                Speed.Create(Speed.Type.Fast);
+                speed = Speed.Create(Speed.Type.Fast);
+                Debug.Log("Fast");
+
             }
 
             return speed;

@@ -222,7 +222,6 @@ namespace CWLF
                 InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedFast - 0.5)
             {
                 // normal speed
-                //Speed.Create(Speed.Type.Normal);
                 Debug.Log("Normal");
             }
             else

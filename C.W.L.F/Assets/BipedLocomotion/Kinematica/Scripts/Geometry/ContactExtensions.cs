@@ -66,42 +66,17 @@ internal static class TagExtensions
             {
                 if (tag_list.numIndices == 2)
                 {
-                    //Binary.TraitIndex t1 = binary.GetTag(binary.GetTagIndex(ref tag_list, 0)).traitIndex;
-                    //Binary.TraitIndex t2 = binary.GetTag(binary.GetTagIndex(ref tag_list, 1)).traitIndex;
-
-                    //if(tagTraitIndex.Equals(t1) || tagTraitIndex.Equals(t2))
-                    //{
-                    //    if(tagTraitIndex2.Equals(t1) || tagTraitIndex2.Equals(t2))
-                    //    {
-                    //        isIntervalValid = true;
-                    //        Debug.Log("Entered!!");
-
-                    //    }
-                    //}
-
                     isIntervalValid = binary.Contains(ref tag_list, tagTraitIndex);
 
                     if(isIntervalValid)
                        isIntervalValid = binary.Contains(ref tag_list, tagTraitIndex2);
                 }
-                //if (tag_list.numIndices == 2 
-                //    && (binary.GetTag(binary.GetTagIndex(ref tag_list, 0)).traitIndex.Equals(tagTraitIndex) 
-                //        || binary.GetTag(binary.GetTagIndex(ref tag_list, 0)).traitIndex.Equals(tagTraitIndex2))                 
-                //    && (binary.GetTag(binary.GetTagIndex(ref tag_list, 1)).traitIndex.Equals(tagTraitIndex))
-                //        || binary.GetTag(binary.GetTagIndex(ref tag_list, 1)).traitIndex.Equals(tagTraitIndex2))
-                //{
-                //    isIntervalValid = true;
-                //    Debug.Log("Entered!!");
-                //}
             }
             else
             {
                 isIntervalValid = binary.Contains(ref tag_list, tagTraitIndex);
-                Debug.Log("Entered!!");
             }
 
-            //if (binary.Contains( && binary.Contains(interval.tagListIndex, tagTraitIndex)
-            //    && binary.Contains(interval.tagListIndex, tagTraitIndex2))
             if (isIntervalValid)
             {
                 ref var segment = ref binary.GetSegment(interval.segmentIndex);

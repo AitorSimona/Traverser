@@ -14,11 +14,11 @@ namespace CWLF
             // --- Attributes ---
             public float3 movementDirection;
             public float moveIntensity;
-            public bool run; 
-
+            public bool run;
+            public bool dropDownButton;
             // --------------------------------
 
-            public bool jumpButton;
+            public bool parkourButton;
 
             // --------------------------------
 
@@ -34,12 +34,14 @@ namespace CWLF
             public void UpdateLocomotion()
             {
                 Utility.GetInputMove(ref movementDirection, ref moveIntensity);
-                run = Input.GetButton("A Button");
+                run = Input.GetButton("Left Analog Button");
+                mountButton = Input.GetButton("B Button") || Input.GetKey("b");
+                dropDownButton = Input.GetButton("A Button") || Input.GetKey("a");
             }
 
             public void UpdateParkour()
             {
-                jumpButton = Input.GetButton("A Button");
+                parkourButton = Input.GetButton("A Button");
             }
 
             public void UpdateClimbing()
@@ -49,7 +51,6 @@ namespace CWLF
 
                 //Debug.Log(stickVertical);
 
-                mountButton = Input.GetButton("B Button") || Input.GetKey("b");
                 dismountButton = Input.GetButton("B Button") || Input.GetKey("b");
                 pullUpButton = Input.GetButton("A Button") || Input.GetKey("a");
             }

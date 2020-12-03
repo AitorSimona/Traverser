@@ -609,7 +609,8 @@ namespace CWLF
         {
             bool ret = false;
 
-            if (InputLayer.capture.mountButton && !IsState(State.DropDown))
+
+            if (InputLayer.capture.dropDownButton && !IsState(State.DropDown))
             {
                 SetState(State.DropDown);
                 ret = true;

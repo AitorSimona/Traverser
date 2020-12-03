@@ -88,7 +88,7 @@ namespace CWLF
         {
             bool ret = false;
 
-            if (InputLayer.capture.mountButton)
+            if (InputLayer.capture.parkourButton)
             {
                 // --- Identify collider's object layer ---
                 ref MovementController.Closure closure = ref controller.current;

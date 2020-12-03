@@ -189,7 +189,7 @@ internal static class TagExtensions
         int numContacts = 0;
 
         Binary.TraitIndex tagTraitIndex = binary.GetTraitIndex(value);
-        Binary.TraitIndex tagTraitIndex2 = binary.GetTraitIndex(value2);
+        //Binary.TraitIndex tagTraitIndex2 = binary.GetTraitIndex(value2);
 
         var contactTypeIndex = binary.GetTypeIndex<Contact>();
 
@@ -199,8 +199,7 @@ internal static class TagExtensions
         {
             ref var tag = ref binary.GetTag(i);
 
-            if (tag.traitIndex == tagTraitIndex
-                || tag.traitIndex == tagTraitIndex2)
+            if (tag.traitIndex == tagTraitIndex)
             {
                 var segmentIndex = tag.segmentIndex;
 
@@ -228,8 +227,7 @@ internal static class TagExtensions
         {
             ref var tag = ref binary.GetTag(i);
 
-            if (tag.traitIndex == tagTraitIndex
-                || tag.traitIndex == tagTraitIndex2)
+            if (tag.traitIndex == tagTraitIndex)
             {
                 var segmentIndex = tag.segmentIndex;
 

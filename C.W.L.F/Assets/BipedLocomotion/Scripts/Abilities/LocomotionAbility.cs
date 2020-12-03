@@ -356,7 +356,7 @@ namespace CWLF
 
                     //Debug.Log(angle);
                     // --- If we are not close to the desired angle or contact point, do not handle contacts ---
-                    if (Mathf.Abs(Mathf.Rad2Deg * angle) > 15 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 3.0f)
+                    if (Mathf.Abs(Mathf.Rad2Deg * angle) > 20 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 3.0f)
                     {
                         continue;
                     }

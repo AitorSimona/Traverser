@@ -88,7 +88,7 @@ namespace CWLF
         {
             bool ret = false;
 
-            if (InputLayer.capture.jumpButton)
+            if (InputLayer.capture.mountButton)
             {
                 // --- Identify collider's object layer ---
                 ref MovementController.Closure closure = ref controller.current;
@@ -212,6 +212,8 @@ namespace CWLF
 
             Speed speed = Speed.Create(Speed.Type.Normal);
 
+            Debug.Log(desiredLinearSpeed * InputLayer.capture.moveIntensity);
+
             if (InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedSlow)
             {
                 // slow speed
@@ -219,7 +221,7 @@ namespace CWLF
                 Debug.Log("Slow");
             }
             else if (InputLayer.capture.moveIntensity * desiredLinearSpeed >= locomotion.desiredSpeedSlow &&
-                InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedFast - 0.5)
+                InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedFast*0.75)
             {
                 // normal speed
                 Debug.Log("Normal");

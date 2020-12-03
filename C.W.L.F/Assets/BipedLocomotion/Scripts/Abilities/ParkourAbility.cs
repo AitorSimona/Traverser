@@ -100,7 +100,7 @@ namespace CWLF
                 Assert.IsTrue((layerMask & 0x1F01) != 0);
 
                 Parkour type = Parkour.Create(collider.gameObject.layer);
-                Speed speed = GetSpeedTag();
+                //Speed speed = GetSpeedTag();
 
                 if (type.IsType(Parkour.Type.Wall) || type.IsType(Parkour.Type.Table))
                 {

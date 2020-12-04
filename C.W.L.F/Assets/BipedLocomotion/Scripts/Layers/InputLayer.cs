@@ -19,6 +19,7 @@ namespace CWLF
             // --------------------------------
 
             public bool parkourButton;
+            public bool parkourDropDownButton;
 
             // --------------------------------
 
@@ -31,17 +32,20 @@ namespace CWLF
             // --------------------------------
 
             // --- Basic methods ---
+
+            // NOTE: Careful with overlapping input!! Another action may be activated due to sharing
+            // the same input, and you won't notice it.
+
             public void UpdateLocomotion()
             {
                 Utility.GetInputMove(ref movementDirection, ref moveIntensity);
                 run = Input.GetButton("Left Analog Button");
-                mountButton = Input.GetButton("B Button") || Input.GetKey("b");
-                dropDownButton = Input.GetButton("A Button") || Input.GetKey("a");
             }
 
             public void UpdateParkour()
             {
-                parkourButton = Input.GetButton("A Button");
+                parkourButton = Input.GetButton("A Button") || Input.GetKey("a");
+                parkourDropDownButton = Input.GetButton("B Button") || Input.GetKey("b");
             }
 
             public void UpdateClimbing()
@@ -50,7 +54,8 @@ namespace CWLF
                 stickVertical = Input.GetAxis("Left Analog Vertical");
 
                 //Debug.Log(stickVertical);
-
+                mountButton = Input.GetButton("B Button") || Input.GetKey("b");
+                dropDownButton = Input.GetButton("A Button") || Input.GetKey("a");
                 dismountButton = Input.GetButton("B Button") || Input.GetKey("b");
                 pullUpButton = Input.GetButton("A Button") || Input.GetKey("a");
             }

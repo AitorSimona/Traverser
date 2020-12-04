@@ -2255,8 +2255,8 @@ MonoBehaviour:
           assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 19.4
-        duration: 4.1333
+      - startTime: 18.833334
+        duration: 4.6999645
         payload:
           serializedData: '{"type":11}'
           assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,
@@ -2283,8 +2283,8 @@ MonoBehaviour:
           assemblyQualifiedTypeName: SpeedTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 19.366667
-        duration: 4.200001
+      - startTime: 18.833334
+        duration: 4.699999
         payload:
           serializedData: '{"type":0}'
           assemblyQualifiedTypeName: SpeedTag, Assembly-CSharp-Editor, Version=0.0.0.0,
@@ -2417,13 +2417,6 @@ MonoBehaviour:
           assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         name: 
-      - startTime: 19.4
-        duration: 4.1333
-        payload:
-          serializedData: '{"type":11}'
-          assemblyQualifiedTypeName: ParkourTag, Assembly-CSharp-Editor, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        name: 
       - startTime: 25.4666
         duration: 3.5
         payload:
@@ -2440,13 +2433,6 @@ MonoBehaviour:
         name: 
       - startTime: 10.7
         duration: 3.3000002
-        payload:
-          serializedData: '{"type":0}'
-          assemblyQualifiedTypeName: SpeedTag, Assembly-CSharp-Editor, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        name: 
-      - startTime: 19.4
-        duration: 4.133333
         payload:
           serializedData: '{"type":0}'
           assemblyQualifiedTypeName: SpeedTag, Assembly-CSharp-Editor, Version=0.0.0.0,

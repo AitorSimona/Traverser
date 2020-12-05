@@ -41,6 +41,7 @@ namespace CWLF
         {
             // --- Attributes ---
             public NativeArray<float3> vertices; // Attribute that defines a ledge object
+            private TagExtensions.OBB obb;
 
             // --- Basic Methods ---
             public static LedgeGeometry Create()
@@ -67,6 +68,8 @@ namespace CWLF
                 vertices[1] = transform.TransformPoint(center + new Vector3(size.x, size.y, size.z) * 0.5f);
                 vertices[2] = transform.TransformPoint(center + new Vector3(size.x, size.y, -size.z) * 0.5f);
                 vertices[3] = transform.TransformPoint(center + new Vector3(-size.x, size.y, -size.z) * 0.5f);
+
+                obb = TagExtensions.OBBFromBoxCollider(collider);
             }
 
             // -------------------------------------------------
@@ -88,15 +91,50 @@ namespace CWLF
 
             public void LimitTransform(ref Vector3 position, float offset)
             {
-                if (position.x < vertices[0].x + offset)
-                    position.x = vertices[0].x + offset;
-                if (position.z > vertices[0].z - offset)
-                    position.z = vertices[0].z - offset;
+                //TagExtensions.OBB obb = TagExtensions.OBBFromBoxCollider(collider);
 
-                if (position.x > vertices[2].x - offset)
-                    position.x = vertices[2].x - offset;
-                if (position.z < vertices[2].z + offset)
-                    position.z = vertices[2].z + offset;
+                bool contains = true;
+
+                float3 p = obb.transform.inverseTransform(position);
+                float3 halfSize = (obb.size * 0.5f);
+
+                if (p.x < -halfSize.x) contains =  false;
+                if (p.x > halfSize.x)  contains =  false;
+                if (p.z < -halfSize.z) contains =  false;
+                if (p.z > halfSize.z)  contains =  false;
+
+
+                if (!contains /*!obb.Contains(position, 0)*/)
+                {
+                    float3 final = ClosestPoint.FromPosition(position, vertices[0], vertices[1]);
+                    float3 tmp = ClosestPoint.FromPosition(position, vertices[1], vertices[2]);
+
+                    if (math.distance(position, tmp) < math.distance(position, final))
+                        final = tmp;
+
+                    tmp = ClosestPoint.FromPosition(position, vertices[2], vertices[3]);
+
+                    if (math.distance(position, tmp) < math.distance(position, final))
+                        final = tmp;
+
+                    tmp = ClosestPoint.FromPosition(position, vertices[3], vertices[0]);
+
+                    if (math.distance(position, tmp) < math.distance(position, final))
+                        final = tmp;
+
+                    position = final;
+                }
+
+
+                //if (position.x < vertices[0].x + offset)
+                //    position.x = vertices[0].x + offset;
+                //if (position.z > vertices[0].z - offset)
+                //    position.z = vertices[0].z - offset;
+
+                //if (position.x > vertices[2].x - offset)
+                //    position.x = vertices[2].x - offset;
+                //if (position.z < vertices[2].z + offset)
+                //    position.z = vertices[2].z + offset;
 
                 //position.y = vertices[0].y;
             }
@@ -301,12 +339,19 @@ namespace CWLF
             // --- Debug ---
             public void DebugDraw()
             {
+                TagExtensions.DebugDraw(obb, Color.magenta);
+
                 for (int i = 0; i < 4; ++i)
                 {
                     float3 v0 = vertices[i];
                     float3 v1 = vertices[GetNextEdgeIndex(i)];
                     float3 c = (v0 + v1) * 0.5f;
-                    Debug.DrawLine(v0, v1, Color.green);
+
+                    if(i == 0)
+                        Debug.DrawLine(v0, v1, Color.blue);
+                    else
+                        Debug.DrawLine(v0, v1, Color.green);
+
                     float3 edge = GetNormalizedEdge(i);
                     float3 n = -math.cross(edge, Missing.up);
                     Debug.DrawLine(c, c + n * 0.3f, Color.cyan);

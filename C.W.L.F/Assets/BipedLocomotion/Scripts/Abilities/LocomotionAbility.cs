@@ -237,8 +237,6 @@ namespace CWLF
                 {
                     BoxCollider collider = controller.current.ground.gameObject.GetComponent<BoxCollider>() as BoxCollider;
 
-                    //Debug.Log(controller.current.ground.gameObject.name);
-
                     if (collider != null)
                     {
                         // TODO: Expose this
@@ -353,19 +351,19 @@ namespace CWLF
                     //  TODO : Remove temporal debug object
                     //GameObject.Find("dummy").transform.position = contactTransform.t;
 
-
                     float3 desired_direction = contactTransform.t - tmp.t;
                     float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
                     float target_orientation = current_orientation + Vector3.SignedAngle(InputLayer.capture.movementDirection, desired_direction, Vector3.up);
                     float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
 
-                    //Debug.Log(angle);
+                    // TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
+                    Debug.Log(angle);
                     // --- If we are not close to the desired angle or contact point, do not handle contacts ---
-                    if (Mathf.Abs(angle) < 20 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 3.0f)
+                    if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 4.0f)
                     {
                         continue;
                     }
-       
+
                     if (contactAbility == null)
                     {
                         foreach (Ability ability in GetComponents(typeof(Ability)))
@@ -408,8 +406,10 @@ namespace CWLF
                         break;
                     }
                 }
-                //else
-                //    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
+                else
+                {
+                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
+                }
 
                 transform.t = worldRootTransform.inverseTransform(controller.Position);
                 prediction.Transform = transform;

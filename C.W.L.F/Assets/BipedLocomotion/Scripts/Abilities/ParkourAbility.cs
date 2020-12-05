@@ -147,6 +147,12 @@ namespace CWLF
             QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform,
                     type, GetSpeedTag(), contactThreshold, collisionCheck);
 
+            if (sequence.length == 0)
+            {
+                Debug.Log("No sequences in parkour");
+                return false;
+            }
+
             anchoredTransition.Dispose();
             anchoredTransition = AnchoredTransitionTask.Create(ref synthesizer,
                     sequence, contactTransform, maximumLinearError,

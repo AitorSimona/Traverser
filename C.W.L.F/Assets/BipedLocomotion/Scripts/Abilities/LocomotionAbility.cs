@@ -241,9 +241,12 @@ namespace CWLF
 
                     if (collider != null)
                     {
+                        // TODO: Expose this
                         if (collider.gameObject.layer == LayerMask.NameToLayer("Wall")
-                            || collider.gameObject.layer == LayerMask.NameToLayer("Default"))
+                            || collider.gameObject.layer == LayerMask.NameToLayer("Default")
+                            || collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
                         {
+                            // TODO: Prevent this from happening all the time
                             ledgeGeometry.Initialize(collider);
                         }
                     }
@@ -338,6 +341,8 @@ namespace CWLF
                 // --- If a collision occurs, call each ability's onContact callback ---
                 if (closure.isColliding && attemptTransition)
                 {
+                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
+
                     float3 contactPoint = closure.colliderContactPoint;
                     contactPoint.y = controller.Position.y;
                     float3 contactNormal = closure.colliderContactNormal;
@@ -350,13 +355,13 @@ namespace CWLF
 
 
                     float3 desired_direction = contactTransform.t - tmp.t;
-                    float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.x, gameObject.transform.forward.z);
+                    float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
                     float target_orientation = current_orientation + Vector3.SignedAngle(InputLayer.capture.movementDirection, desired_direction, Vector3.up);
                     float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
 
                     //Debug.Log(angle);
                     // --- If we are not close to the desired angle or contact point, do not handle contacts ---
-                    if (Mathf.Abs(Mathf.Rad2Deg * angle) > 20 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 3.0f)
+                    if (Mathf.Abs(angle) < 20 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 3.0f)
                     {
                         continue;
                     }
@@ -403,8 +408,8 @@ namespace CWLF
                         break;
                     }
                 }
-                else
-                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
+                //else
+                //    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
 
                 transform.t = worldRootTransform.inverseTransform(controller.Position);
                 prediction.Transform = transform;

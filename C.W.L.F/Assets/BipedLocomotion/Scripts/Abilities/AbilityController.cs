@@ -41,6 +41,11 @@ namespace CWLF
                 // --- Iterate all abilities and update each one until one takes control ---
                 foreach (Ability ability in GetComponents(typeof(Ability)))
                 {
+                    SnapshotProvider component = ability as SnapshotProvider;
+
+                    if (!component.enabled)
+                        continue;
+
                     // An ability can either return "null" or a reference to an ability.
                     // A "null" result signals that this ability doesn't require control.
                     // Otherwise the returned ability (which might be different from the
@@ -64,11 +69,13 @@ namespace CWLF
             // --- After all animations are evaluated, perform movement ---
 
             ref MotionSynthesizer synthesizer = ref Synthesizer.Ref;
+            SnapshotProvider component = currentAbility as SnapshotProvider;
 
             // --- Let abilities modify motion ---
             if (currentAbility is AbilityAnimatorMove abilityAnimatorMove)
             {
-                abilityAnimatorMove.OnAbilityAnimatorMove();
+                if (component.enabled)
+                    abilityAnimatorMove.OnAbilityAnimatorMove();
             }
 
             Assert.IsTrue(controller != null);
@@ -86,7 +93,8 @@ namespace CWLF
             transform.rotation = worldRootTransform.q;
 
             // --- Let abilities apply final changes to motion, if needed ---
-            currentAbility.OnPostUpdate(_deltaTime);
+            if(currentAbility != null && component.enabled)
+                currentAbility.OnPostUpdate(_deltaTime);
         }
 
         // --------------------------------

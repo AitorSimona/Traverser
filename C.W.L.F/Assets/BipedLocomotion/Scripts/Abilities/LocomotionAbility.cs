@@ -368,8 +368,10 @@ namespace CWLF
                     {
                         foreach (Ability ability in GetComponents(typeof(Ability)))
                         {
+                            SnapshotProvider component = ability as SnapshotProvider;
+
                             // --- If any ability reacts to the collision, break ---
-                            if (ability.OnContact(ref synthesizer, contactTransform, deltaTime))
+                            if (component.enabled && ability.OnContact(ref synthesizer, contactTransform, deltaTime))
                             {
                                 contactAbility = ability;
                                 break;
@@ -386,8 +388,10 @@ namespace CWLF
                     {
                         foreach (Ability ability in GetComponents(typeof(Ability)))
                         {
+                            SnapshotProvider component = ability as SnapshotProvider;
+
                             // --- If any ability reacts to the drop, break ---
-                            if (ability.OnDrop(ref synthesizer, deltaTime))
+                            if (component.enabled && ability.OnDrop(ref synthesizer, deltaTime))
                             {
                                 contactAbility = ability;
                                 break;

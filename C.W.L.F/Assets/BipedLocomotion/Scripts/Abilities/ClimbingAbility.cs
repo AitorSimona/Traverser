@@ -585,7 +585,9 @@ namespace CWLF
                 {
                     BoxCollider collider = controller.current.collider as BoxCollider;
 
-                    if (collider != null)
+                    // --- Ensure we are not falling ---
+
+                    if (collider != null && controller.IsGrounded)
                     {
                         if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
                         {

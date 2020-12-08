@@ -649,6 +649,13 @@ namespace CWLF
 
             QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, 
                 trait, trait, contactThreshold, collisionCheck);
+
+            if (sequence.length == 0)
+            {
+                Debug.Log("No sequences in climbing");
+                return;
+            }
+
             bool rootadjust = trait.type == Ledge.Type.PullUp ? false : true;
 
             anchoredTransition.Dispose();

@@ -317,7 +317,7 @@ namespace CWLF
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
                 SetState(State.Dismount);
             }
-            else if (-stickInput.y < -0.5)
+            else if (!closeToDrop && -stickInput.y < -0.5)
             {
                 SetState(State.FreeClimbing);
             }

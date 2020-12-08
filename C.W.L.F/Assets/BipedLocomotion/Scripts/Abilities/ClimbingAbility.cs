@@ -85,6 +85,8 @@ namespace CWLF
         [Snapshot]
         LedgeObject.LedgeGeometry ledgeGeometry;
 
+        LedgeObject.LedgeGeometry auxledgeGeometry;
+
         [Snapshot]
         WallObject.WallGeometry wallGeometry;
 
@@ -116,6 +118,7 @@ namespace CWLF
             lastCollidingClimbingState = ClimbingState.None;
 
             ledgeGeometry = LedgeObject.LedgeGeometry.Create();
+            auxledgeGeometry = LedgeObject.LedgeGeometry.Create();
             wallGeometry = WallObject.WallGeometry.Create();
 
             ledgeAnchor = LedgeObject.LedgeAnchor.Create();
@@ -129,6 +132,7 @@ namespace CWLF
             base.OnDisable();
 
             ledgeGeometry.Dispose();
+            auxledgeGeometry.Dispose();
             anchoredTransition.Dispose();
         }
 
@@ -591,14 +595,21 @@ namespace CWLF
                     {
                         if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
                         {
-                            ledgeGeometry.Initialize(collider);
-                            wallGeometry.Initialize(collider, contactTransform);
+                            auxledgeGeometry.Initialize(collider);
+                            LedgeObject.LedgeAnchor auxAnchor = auxledgeGeometry.GetAnchor(contactTransform.t);
+                            bool left = false;
+                            float distance = auxledgeGeometry.GetDistanceToClosestVertex(contactTransform.t, auxledgeGeometry.GetNormal(auxAnchor), ref left);
 
-                            RequestTransition(ref synthesizer, contactTransform, Ledge.Type.Mount);
-
-                            SetState(State.Mounting);
-
-                            return true;
+                            // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
+                            if (distance > 0.25)
+                            {
+                                ledgeGeometry.Initialize(collider);
+                                wallGeometry.Initialize(collider, contactTransform);
+                          
+                                RequestTransition(ref synthesizer, contactTransform, Ledge.Type.Mount);
+                                SetState(State.Mounting);
+                                return true;
+                            }
                         }
                     }
                 }

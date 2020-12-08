@@ -704,20 +704,24 @@ namespace CWLF
                 }
                 else if (stickInput.x > 0.5f)
                 {
-                    // --- Use ledge definition to determine how close we are to the edges of the wall ---
-                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor));
+                    bool left = false;
 
-                    if (distance < 0.25f)
+                    // --- Use ledge definition to determine how close we are to the edges of the wall ---
+                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
+
+                    if (!left && distance < 0.25f)
                         return ClimbingState.CornerRight;
 
                     return ClimbingState.Right;
                 }
                 else if (stickInput.x < -0.5f)
                 {
-                    // --- Use ledge definition to determine how close we are to the edges of the wall ---
-                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor));
+                    bool left = false;
 
-                    if (distance < 0.25f)
+                    // --- Use ledge definition to determine how close we are to the edges of the wall ---
+                    float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
+
+                    if (left && distance < 0.25f)
                         return ClimbingState.CornerLeft;
 
                     return ClimbingState.Left;
@@ -740,24 +744,26 @@ namespace CWLF
         {
             float2 stickInput = InputLayer.GetStickInput();
 
-            if (math.abs(stickInput.x) >= 0.5f)
+            // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
+            bool left = false;
+            float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
+
+            if (stickInput.x > 0.5f)
             {
-                // --- Use ledge definition to determine how close we are to the edges of the wall ---
-                float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor));
+                if (!left && distance < 0.25f)
+                    return ClimbingState.CornerRight;
 
-                if (stickInput.x > 0.0f)
-                {
-                    if (distance < 0.25f)
-                        return ClimbingState.CornerRight;
+                return ClimbingState.Right;
+            }
 
-                    return ClimbingState.Right;
-                }
-
-                if (distance < 0.25f)
+            else if (stickInput.x < -0.5f)
+            {
+                if (left && distance < 0.25f)
                     return ClimbingState.CornerLeft;
 
                 return ClimbingState.Left;
             }
+            
 
             return ClimbingState.Idle;
         }

@@ -292,19 +292,19 @@ namespace CWLF
 
                     // --- We fake a play and check if at the segment's end there is a collision ---
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-                    ref Binary binary = ref synthesizer.Binary;
-                    bool bValidPosition;
-                    float collisionRadius = 0.1f;
+                    //ref Binary binary = ref synthesizer.Binary;
+                    //bool bValidPosition;
+                    //float collisionRadius = 0.1f;
 
-                    SamplingTime samplingTime = synthesizer.Time;
-                    ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
-                    AffineTransform worldRootTransform = synthesizer.WorldRootTransform * binary.GetTrajectoryTransformBetween(segment.destination.firstFrame, segment.destination.numFrames - 1);
-                    //GameObject.Find("dummy").transform.position = worldRootTransform.t;
+                    //SamplingTime samplingTime = synthesizer.Time;
+                    //ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
+                    //AffineTransform worldRootTransform = synthesizer.WorldRootTransform * binary.GetTrajectoryTransformBetween(segment.destination.firstFrame, segment.destination.numFrames - 1);
+                    ////GameObject.Find("dummy").transform.position = worldRootTransform.t;
 
-                    bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+                    //bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
 
                     // --- If a collision is found play idle ---
-                    if (!bValidPosition)
+                    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
                     {
                         SetClimbingState(ClimbingState.Idle);
                         PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
@@ -318,19 +318,19 @@ namespace CWLF
 
                     // --- We fake a play and check if at the segment's end there is a collision ---
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-                    ref Binary binary = ref synthesizer.Binary;
-                    bool bValidPosition;
-                    float collisionRadius = 0.1f;
+                    //ref Binary binary = ref synthesizer.Binary;
+                    //bool bValidPosition;
+                    //float collisionRadius = 0.1f;
 
-                    SamplingTime samplingTime = synthesizer.Time;
-                    ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
-                    AffineTransform worldRootTransform = synthesizer.WorldRootTransform * binary.GetTrajectoryTransformBetween(segment.destination.firstFrame, segment.destination.numFrames - 1);
-                    //GameObject.Find("dummy").transform.position = worldRootTransform.t;
+                    //SamplingTime samplingTime = synthesizer.Time;
+                    //ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
+                    //AffineTransform worldRootTransform = synthesizer.WorldRootTransform * binary.GetTrajectoryTransformBetween(segment.destination.firstFrame, segment.destination.numFrames - 1);
+                    ////GameObject.Find("dummy").transform.position = worldRootTransform.t;
 
-                    bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+                    //bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
 
                     // --- If a collision is found play idle ---
-                    if (!bValidPosition)
+                    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
                     {                     
                         SetClimbingState(ClimbingState.Idle);
                         PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
@@ -426,6 +426,21 @@ namespace CWLF
                     // Tip: Since Direction and ClimbingState enums follow the same order, we can cast from one to the other, avoiding a switch
                     Direction direction = Direction.Create((Direction.Type)desiredState - 1);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+
+                    //if (desiredState == ClimbingState.CornerRight
+                    //|| desiredState == ClimbingState.CornerLeft)
+                    //{
+                    //    // --- We fake a play and check if at the segment's end there is a collision ---
+
+                    //    // --- If a collision is found play idle ---
+                    //    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
+                    //    {
+                    //        SetClimbingState(ClimbingState.Idle);
+                    //        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                    //        Debug.Log("No sequences for left corner transition in climbing, collision found");
+                    //        return;
+                    //    }
+                    //}
                 }
 
                 SetClimbingState(desiredState);

@@ -86,6 +86,20 @@ namespace CWLF
             return trait.typeIndex;
         }
 
+        public static bool IsCurrentAnimationEndValid(ref MotionSynthesizer synthesizer)
+        {
+            // --- Check if animation end triggers a collision ---
+            ref Binary binary = ref synthesizer.Binary;
+            float collisionRadius = 0.1f;
+
+            SamplingTime samplingTime = synthesizer.Time;
+            ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
+            Unity.Mathematics.AffineTransform worldRootTransform = synthesizer.WorldRootTransform * binary.GetTrajectoryTransformBetween(segment.destination.firstFrame, segment.destination.numFrames - 1);
+            UnityEngine.GameObject.Find("dummy").transform.position = worldRootTransform.t;
+
+            return !UnityEngine.Physics.CheckSphere(worldRootTransform.t + new Unity.Mathematics.float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+        }
+
         // --------------------------------
     }
 }

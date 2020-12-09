@@ -348,6 +348,11 @@ namespace CWLF
             float height = wallGeometry.GetHeight(ref wallAnchor);
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
+            RaycastHit ray_hit;
+            // --- Check if the ray hits a collider, allow dismount if true ---
+            if (Physics.Raycast(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward, Vector3.down, out ray_hit, 2.8f, CollisionLayer.EnvironmentCollisionMask))
+                closeToDrop = true;
+
             float2 stickInput = InputLayer.GetStickInput();
 
             // --- React to pull up/dismount ---

@@ -364,15 +364,34 @@ namespace CWLF
                 || climbingState == ClimbingState.CornerLeft)
             {
 
+                //if (desiredState == ClimbingState.CornerRight
+                //|| desiredState == ClimbingState.CornerLeft)
+                //{
+                //    // --- We fake a play and check if at the segment's end there is a collision ---
+
+                //    // --- If a collision is found play idle ---
+                //    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
+                //    {
+                //        SetClimbingState(ClimbingState.Idle);
+                //        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                //        Debug.Log("No sequences for left corner transition in climbing, collision found");
+                //        return;
+                //    }
+                //}
+
                 if (bTransitionSucceeded)
                 {
                     ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-
+                    //wallAnchor = wallGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
                     RaycastHit ray_hit;
 
                     // --- Check if the ray hits a collider ---
-                    if (Physics.Raycast(synthesizer.WorldRootTransform.t, synthesizer.WorldRootTransform.Forward, out ray_hit, 2, CollisionLayer.EnvironmentCollisionMask))
+                    if (Physics.Raycast(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward*0.5f, synthesizer.WorldRootTransform.Forward, out ray_hit, 2, CollisionLayer.EnvironmentCollisionMask))
+                    {
                         wallGeometry.Initialize(ray_hit.collider as BoxCollider, synthesizer.WorldRootTransform);
+                    }
+
+                    //Debug.DrawRay(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward*0.5f, synthesizer.WorldRootTransform.Forward, Color.red,60);
 
                     SetClimbingState(ClimbingState.None);
                 }
@@ -406,21 +425,6 @@ namespace CWLF
                     // Tip: Since Direction and ClimbingState enums follow the same order, we can cast from one to the other, avoiding a switch
                     Direction direction = Direction.Create((Direction.Type)desiredState - 1);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-
-                    //if (desiredState == ClimbingState.CornerRight
-                    //|| desiredState == ClimbingState.CornerLeft)
-                    //{
-                    //    // --- We fake a play and check if at the segment's end there is a collision ---
-
-                    //    // --- If a collision is found play idle ---
-                    //    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
-                    //    {
-                    //        SetClimbingState(ClimbingState.Idle);
-                    //        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-                    //        Debug.Log("No sequences for left corner transition in climbing, collision found");
-                    //        return;
-                    //    }
-                    //}
                 }
 
                 SetClimbingState(desiredState);

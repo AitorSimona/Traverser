@@ -649,7 +649,7 @@ namespace CWLF
                             float distance = auxledgeGeometry.GetDistanceToClosestVertex(contactTransform.t, auxledgeGeometry.GetNormal(auxAnchor), ref left);
 
                             // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
-                            if (distance > 0.25)
+                            if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
                             {
                                 ledgeGeometry.Initialize(collider);
                                 wallGeometry.Initialize(collider, contactTransform);

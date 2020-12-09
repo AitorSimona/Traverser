@@ -45,7 +45,7 @@ namespace CWLF
             public void UpdateParkour()
             {
                 parkourButton = Input.GetButton("A Button") || Input.GetKey("a");
-                parkourDropDownButton = Input.GetButton("B Button") || Input.GetKey("b");
+                parkourDropDownButton = Input.GetButton("C Button") || Input.GetKey("c");
             }
 
             public void UpdateClimbing()

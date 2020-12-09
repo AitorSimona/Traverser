@@ -289,12 +289,71 @@ namespace CWLF
                 else if (desiredState == ClimbingState.CornerRight)
                 {
                     Direction direction = Direction.Create(Direction.Type.CornerRight);
+
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                    ref Binary binary = ref synthesizer.Binary;
+                    bool bValidPosition = false;
+                    float collisionRadius = 0.1f;
+
+                    SamplingTime samplingTime = synthesizer.Time;
+                    ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
+
+                    //SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.InsideGeometry | SegmentCollisionCheck.AboveGround;
+
+                    //bValidPosition = TagExtensions.IsSegmentEndValidPosition(ref binary, binary.GetInterval(segment.intervalIndex).segmentIndex, synthesizer.WorldRootTransform,
+                    //    contactThreshold, collisionCheck);
+
+                    AffineTransform worldRootTransform = synthesizer.WorldRootTransform * binary.GetTrajectoryTransformBetween(segment.destination.firstFrame, segment.destination.numFrames - 1);
+                    GameObject.Find("dummy").transform.position = worldRootTransform.t;
+
+                    bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+
+                    if (bValidPosition)
+                    {
+                        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                    }
+                    else
+                    {
+                        SetClimbingState(ClimbingState.Idle);
+                        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                        Debug.Log("No sequences for right corner transition in climbing");
+                        return;
+                    }
                 }
                 else if (desiredState == ClimbingState.CornerLeft)
                 {
                     Direction direction = Direction.Create(Direction.Type.CornerLeft);
+
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                    ref Binary binary = ref synthesizer.Binary;
+                    bool bValidPosition = false;
+                    float collisionRadius = 0.1f;
+
+                    SamplingTime samplingTime = synthesizer.Time;
+                    ref Binary.Segment segment = ref binary.GetSegment(samplingTime.timeIndex.segmentIndex);
+
+                    //SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.InsideGeometry | SegmentCollisionCheck.AboveGround;
+
+                    //bValidPosition = TagExtensions.IsSegmentEndValidPosition(ref binary, binary.GetInterval(segment.intervalIndex).segmentIndex, synthesizer.WorldRootTransform,
+                    //    contactThreshold, collisionCheck);
+                    //binary.GetInterval(segment.intervalIndex).segmentIndex
+
+                    AffineTransform worldRootTransform = synthesizer.WorldRootTransform * binary.GetTrajectoryTransformBetween(segment.destination.firstFrame, segment.destination.numFrames - 1);
+                    GameObject.Find("dummy").transform.position = worldRootTransform.t;
+
+                    bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+
+                    if (bValidPosition)
+                    {
+                        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                    }
+                    else
+                    {
+                        SetClimbingState(ClimbingState.Idle);
+                        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                        Debug.Log("No sequences for left corner transition in climbing");
+                        return;
+                    }
                 }
 
                 SetClimbingState(desiredState);
@@ -336,6 +395,7 @@ namespace CWLF
             if (climbingState == ClimbingState.CornerRight
                 || climbingState == ClimbingState.CornerLeft)
             {
+
                 if (bTransitionSucceeded)
                 {
                     ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);

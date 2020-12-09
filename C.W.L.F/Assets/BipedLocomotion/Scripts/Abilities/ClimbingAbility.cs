@@ -303,12 +303,8 @@ namespace CWLF
 
                     bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
 
-                    // --- If no collision is found play the corner transition ---
-                    if (bValidPosition)
-                    {
-                        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-                    }
-                    else
+                    // --- If a collision is found play idle ---
+                    if (!bValidPosition)
                     {
                         SetClimbingState(ClimbingState.Idle);
                         PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
@@ -333,13 +329,9 @@ namespace CWLF
 
                     bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
 
-                    // --- If no collision is found play the corner transition ---
-                    if (bValidPosition)
-                    {
-                        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-                    }
-                    else
-                    {
+                    // --- If a collision is found play idle ---
+                    if (!bValidPosition)
+                    {                     
                         SetClimbingState(ClimbingState.Idle);
                         PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
                         Debug.Log("No sequences for left corner transition in climbing, collision found");

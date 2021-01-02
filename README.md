@@ -13,8 +13,8 @@ Video game characters interact with the objects in the world in many different w
 ## HOW TO USE / CONTROLS
 
 - Connect a gamepad 
-- move with left joystick, aim with right joystick.
-- Run keeping ledt joystick pressed while moving
+- move with left joystick, aim with right joystick
+- Run keeping left joystick pressed while moving
 - Use A to climb to wall, dismount
 - Use X to pull up from a ledge, drop down to ledge
 - Use X to vault and get on top of platforms

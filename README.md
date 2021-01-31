@@ -5,6 +5,7 @@ Video game characters interact with the objects in the world in many different w
 
 Stands for character world linking framework.
 
+![Image](docs/CWLF.gif)
 
 # NOTE: This is an early WIP, so no website or documentation are in place yet. Sorry for the inconvenience. 
 

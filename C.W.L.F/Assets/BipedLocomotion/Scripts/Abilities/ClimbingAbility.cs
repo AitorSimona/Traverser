@@ -364,25 +364,10 @@ namespace CWLF
                 || climbingState == ClimbingState.CornerLeft)
             {
 
-                //if (desiredState == ClimbingState.CornerRight
-                //|| desiredState == ClimbingState.CornerLeft)
-                //{
-                //    // --- We fake a play and check if at the segment's end there is a collision ---
-
-                //    // --- If a collision is found play idle ---
-                //    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
-                //    {
-                //        SetClimbingState(ClimbingState.Idle);
-                //        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-                //        Debug.Log("No sequences for left corner transition in climbing, collision found");
-                //        return;
-                //    }
-                //}
-
                 if (bTransitionSucceeded)
                 {
                     ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-                    //wallAnchor = wallGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
+
                     RaycastHit ray_hit;
 
                     // --- Check if the ray hits a collider ---
@@ -425,6 +410,21 @@ namespace CWLF
                     // Tip: Since Direction and ClimbingState enums follow the same order, we can cast from one to the other, avoiding a switch
                     Direction direction = Direction.Create((Direction.Type)desiredState - 1);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+
+                    if (desiredState == ClimbingState.CornerRight
+                    || desiredState == ClimbingState.CornerLeft)
+                    {
+                        // --- We fake a play and check if at the segment's end there is a collision ---
+
+                        // --- If a collision is found play idle ---
+                        if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
+                        {
+                            SetClimbingState(ClimbingState.Idle);
+                            PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                            Debug.Log("No sequences for corner transition in free climbing, collision found");
+                            return;
+                        }
+                    }
                 }
 
                 SetClimbingState(desiredState);
@@ -774,7 +774,7 @@ namespace CWLF
                     // --- Use ledge definition to determine how close we are to the edges of the wall ---
                     float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
 
-                    if (!left && distance < 0.25f)
+                    if (!left && distance < 0.1f)
                         return ClimbingState.CornerRight;
 
                     return ClimbingState.Right;
@@ -786,7 +786,7 @@ namespace CWLF
                     // --- Use ledge definition to determine how close we are to the edges of the wall ---
                     float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
 
-                    if (left && distance < 0.25f)
+                    if (left && distance < 0.1f)
                         return ClimbingState.CornerLeft;
 
                     return ClimbingState.Left;
@@ -815,7 +815,7 @@ namespace CWLF
 
             if (stickInput.x > 0.5f)
             {
-                if (!left && distance < 0.25f)
+                if (!left && distance < 0.1f)
                     return ClimbingState.CornerRight;
 
                 return ClimbingState.Right;
@@ -823,7 +823,7 @@ namespace CWLF
 
             else if (stickInput.x < -0.5f)
             {
-                if (left && distance < 0.25f)
+                if (left && distance < 0.1f)
                     return ClimbingState.CornerLeft;
 
                 return ClimbingState.Left;

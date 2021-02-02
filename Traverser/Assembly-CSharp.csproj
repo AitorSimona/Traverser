@@ -26,7 +26,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,7 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <NoConfig>true</NoConfig>
@@ -86,9 +86,46 @@
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Shared\Scripts\ActivateCameraWithDistance.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Scenes\Anywhere Door\PlayerMov.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Scrub Bubble support for Nested Timelines (experimental)\CinemachineTimelineEditorExtensions\CinemachineTimelineEditorExtensions.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Environment\WallObject.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\TaskGraph\Tasks\AnchoredTransitionTask.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Layers\CollisionLayer.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\MovementController.Private.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\MovementController.Public.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Abilities\Ability.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Abilities\ParkourAbility.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Biped.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Idle.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Environment\LedgeObject.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Geometry\ContactExtensions.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Geometry\BoundingBox.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Layers\KinematicaLayer.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\MovementController.State.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Markers\Contact.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\CollisionShapes\CapsuleCollisionShape.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Abilities\ClimbingAbility.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\CollisionShapes\CollisionShape.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Ledge.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Speed.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\MovementController.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Geometry\ClosestPoint.FromLineSegment.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Locomotion.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Climbing.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Abilities\AbilityController.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Geometry\Raycast.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Abilities\LocomotionAbility.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Markers\Anchor.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Geometry\Intersection.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Markers\Escape.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Parkour.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Geometry\ClosestPoint.FromPosition.cs" />
+    <Compile Include="Assets\BipedLocomotion\Scripts\Layers\InputLayer.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\CollisionShapes\SphereCollisionShape.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Direction.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\MovementController.Closure.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Samples\High Definition RP\10.2.2\Material Samples\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
+     <None Include="Assets\StreamingAssets\KinematicaBinary_2971f4d82a720284eb4d76fad9026949.debug.xml" />
      <None Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Scenes\Anywhere Door\ScreenCutoutShader.shader" />
      <None Include="Assets\Samples\High Definition RP\10.2.2\Material Samples\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile_Ztest.shader" />
      <None Include="Assets\Samples\High Definition RP\10.2.2\Material Samples\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
@@ -321,6 +358,9 @@
     </Reference>
     <Reference Include="Unity.Burst.Unsafe">
       <HintPath>Library\PackageCache\com.unity.burst@1.3.4\Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>Library\PackageCache\com.unity.collections@0.5.1-preview.11\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.2.2f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
@@ -747,6 +787,30 @@
     </Reference>
     <Reference Include="Unity.Burst.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Collections">
+      <HintPath>Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.SnapshotDebugger">
+      <HintPath>Library\ScriptAssemblies\Unity.SnapshotDebugger.dll</HintPath>
+    </Reference>
+    <Reference Include="AnimationEditorTools.Editor">
+      <HintPath>Library\ScriptAssemblies\AnimationEditorTools.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Jobs">
+      <HintPath>Library\ScriptAssemblies\Unity.Jobs.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.SnapshotDebugger.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.SnapshotDebugger.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Kinematica.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Kinematica.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Jobs.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Jobs.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Kinematica">
+      <HintPath>Library\ScriptAssemblies\Unity.Kinematica.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

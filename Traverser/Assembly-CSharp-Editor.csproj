@@ -26,7 +26,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,7 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <NoConfig>true</NoConfig>
@@ -58,6 +58,18 @@
   <ItemGroup>
     <Compile Include="Assets\HDRP\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
     <Compile Include="Assets\Samples\High Definition RP\10.2.2\Procedural Sky\Editor\ProceduralSky\ProceduralSkyEditor.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Markers\Editor\ContactMarker.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Editor\IdleTag.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Editor\ClimbingTag.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Editor\SpeedTag.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Editor\LocomotionTag.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Editor\DirectionTag.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Markers\Editor\AnchorMarker.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Markers\Editor\EscapeMarker.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\Editor\MovementControllerEditor.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Editor\ParkourTag.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Editor\LedgeTag.cs" />
+    <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\TaskGraph\Editor\Nodes\AnchoredTransitionNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -296,6 +308,9 @@
     </Reference>
     <Reference Include="Unity.Burst.Unsafe">
       <HintPath>Library\PackageCache\com.unity.burst@1.3.4\Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>Library\PackageCache\com.unity.collections@0.5.1-preview.11\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom\nunit.framework.dll</HintPath>
@@ -731,6 +746,30 @@
     </Reference>
     <Reference Include="Unity.Burst.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Collections">
+      <HintPath>Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.SnapshotDebugger">
+      <HintPath>Library\ScriptAssemblies\Unity.SnapshotDebugger.dll</HintPath>
+    </Reference>
+    <Reference Include="AnimationEditorTools.Editor">
+      <HintPath>Library\ScriptAssemblies\AnimationEditorTools.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Jobs">
+      <HintPath>Library\ScriptAssemblies\Unity.Jobs.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.SnapshotDebugger.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.SnapshotDebugger.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Kinematica.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Kinematica.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Jobs.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Jobs.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Kinematica">
+      <HintPath>Library\ScriptAssemblies\Unity.Kinematica.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

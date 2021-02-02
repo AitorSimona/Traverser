@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -15,11 +16,11 @@ TagManager:
   - 
   - PostProcessing
   - Not in Reflection
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Wall
+  - Ledge
+  - Table
+  - Platform
+  - Character
   - 
   - 
   - 

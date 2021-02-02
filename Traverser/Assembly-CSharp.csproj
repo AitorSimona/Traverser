@@ -122,6 +122,8 @@
     <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\CollisionShapes\SphereCollisionShape.cs" />
     <Compile Include="Assets\BipedLocomotion\Kinematica\Tags\Direction.cs" />
     <Compile Include="Assets\BipedLocomotion\Kinematica\Scripts\Controller\MovementController.Closure.cs" />
+    <Compile Include="Assets\Traverser\Scripts\TAbilityController.cs" />
+    <Compile Include="Assets\Traverser\Scripts\TLocomotionAbility.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Samples\High Definition RP\10.2.2\Material Samples\TextMesh Pro\Resources\Shaders\TMPro.cginc" />

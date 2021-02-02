@@ -17,7 +17,7 @@ MonoBehaviour:
   timeHorizon: 1
   sampleRate: 30
   m_Data:
-    syncedWithBinary: 1
+    syncedWithBinary: 0
     animationLibrary:
     - m_PreBoundaryClipGuid:
         val0: 805636515
@@ -37,7 +37,7 @@ MonoBehaviour:
         val1: -164340398
         val2: -1479462599
         val3: 688546540
-      m_CachedClipVersion: 9
+      m_CachedClipVersion: 10
       m_CachedClipName: Idle
       m_CachedClipDuration: 10.033334
       m_CachedSampleRate: 30

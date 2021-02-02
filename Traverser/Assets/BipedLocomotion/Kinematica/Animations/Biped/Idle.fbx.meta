@@ -568,8 +568,8 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -651,6 +651,6 @@ ModelImporter:
   avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 0
   additionalBone: 0
-  userData: ClipVersion=9,
+  userData: ClipVersion=10,
   assetBundleName: 
   assetBundleVariant: 

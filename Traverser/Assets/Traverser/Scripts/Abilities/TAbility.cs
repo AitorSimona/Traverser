@@ -1,8 +1,10 @@
+
+
 using UnityEngine;
 
 namespace Traverser
 {
-    public interface TraverserAbility 
+    public interface TAbility 
     {
         //
         // Called once per frame for each ability to update the synthesizers trajectory.
@@ -10,7 +12,7 @@ namespace Traverser
         // ownership of the policy.
         //
 
-        TraverserAbility OnUpdate(float deltaTime);
+        TAbility OnUpdate(float deltaTime);
 
         //
         // Called from another ability to indicate that a predicted future
@@ -36,13 +38,13 @@ namespace Traverser
         //Called from ablity controller so abilities can apply last moment modifications to motion
         //
 
-        TraverserAbility OnPostUpdate(float deltaTime);
+        TAbility OnPostUpdate(float deltaTime);
     }
 
     // -------------------------------------------------
 
     // --- Abilities may implement this to further modify motion after animations have taken place ---
-    public interface TraverserAbilityAnimatorMove
+    public interface TAbilityAnimatorMove
     {
         void OnAbilityAnimatorMove();
     }

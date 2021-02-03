@@ -5,11 +5,11 @@ using UnityEngine.Assertions;
 namespace Traverser
 {
     //[RequireComponent(typeof(MovementController))]
-    public class TraverserAbilityController : MonoBehaviour
+    public class TAbilityController : MonoBehaviour
     {
         // --- Attributes ---
-        private TraverserAbility currentAbility;
-        private CharacterController controller;
+        TAbility currentAbility;
+        CharacterController controller;
 
         // -------------------------------------------------
 
@@ -39,14 +39,14 @@ namespace Traverser
                 // instead of following the arbitrary order in which they were added as components
 
                 // --- Iterate all abilities and update each one until one takes control ---
-                foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                foreach (TAbility ability in GetComponents(typeof(TAbility)))
                 {
 
                     // An ability can either return "null" or a reference to an ability.
                     // A "null" result signals that this ability doesn't require control.
                     // Otherwise the returned ability (which might be different from the
                     // one that we call "OnUpdate" on) will be the one that gains control.
-                    TraverserAbility result = ability.OnUpdate(Time.deltaTime);
+                    TAbility result = ability.OnUpdate(Time.deltaTime);
 
                     // --- If an ability asks to take control, break ---
                     if (result != null)
@@ -62,19 +62,23 @@ namespace Traverser
         {
             // --- After all animations are evaluated, perform movement ---
 
+            //ref MotionSynthesizer synthesizer = ref Synthesizer.Ref;
+            //SnapshotProvider component = currentAbility as SnapshotProvider;
+
             // --- Let abilities modify motion ---
-            if (currentAbility is TraverserAbilityAnimatorMove abilityAnimatorMove)
+            if (currentAbility is TAbilityAnimatorMove abilityAnimatorMove)
             {
-                abilityAnimatorMove.OnAbilityAnimatorMove();
+                //if (component.enabled)
+                    abilityAnimatorMove.OnAbilityAnimatorMove();
             }
 
-            Assert.IsTrue(controller != null);
+            //Assert.IsTrue(controller != null);
 
             // --- Move and update the controller ---
-            float3 controllerPosition = controller.transform.position;
-            float3 desiredPosition = controller.transform.position + transform.forward * Time.deltaTime;
-            float3 desiredLinearDisplacement = desiredPosition - controllerPosition;
-            controller.Move(desiredLinearDisplacement);
+            //float3 controllerPosition = controller.Position;
+            //float3 desiredLinearDisplacement = synthesizer.WorldRootTransform.t - controllerPosition;
+            //controller.Move(desiredLinearDisplacement);
+            //controller.Tick(Time.deltaTime);
 
             // --- Move the game object ---
             //AffineTransform worldRootTransform = AffineTransform.Create(controller.Position, synthesizer.WorldRootTransform.q);

@@ -4,12 +4,12 @@ using UnityEngine.Assertions;
 
 namespace Traverser
 {
-    //[RequireComponent(typeof(MovementController))]
+    [RequireComponent(typeof(MovementController))]
     public class TAbilityController : MonoBehaviour
     {
         // --- Attributes ---
         TAbility currentAbility;
-        CharacterController controller;
+        MovementController controller;
 
         // -------------------------------------------------
 
@@ -18,7 +18,7 @@ namespace Traverser
         // Start is called before the first frame update
         void Start()
         {
-            controller = GetComponent<CharacterController>();
+            controller = GetComponent<MovementController>();
 
         }
 
@@ -72,13 +72,13 @@ namespace Traverser
                     abilityAnimatorMove.OnAbilityAnimatorMove();
             }
 
-            //Assert.IsTrue(controller != null);
+            Assert.IsTrue(controller != null);
 
             // --- Move and update the controller ---
-            //float3 controllerPosition = controller.Position;
+            float3 controllerPosition = controller.Position;
             //float3 desiredLinearDisplacement = synthesizer.WorldRootTransform.t - controllerPosition;
             //controller.Move(desiredLinearDisplacement);
-            //controller.Tick(Time.deltaTime);
+            controller.Tick(Time.deltaTime);
 
             // --- Move the game object ---
             //AffineTransform worldRootTransform = AffineTransform.Create(controller.Position, synthesizer.WorldRootTransform.q);

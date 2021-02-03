@@ -1,7 +1,5 @@
 
 
-using UnityEngine;
-
 namespace Traverser
 {
     public interface TAbility 
@@ -22,7 +20,7 @@ namespace Traverser
         // gain control over the policy).
         //
 
-        bool OnContact(Transform contactTransform, float deltaTime);
+        bool OnContact(Unity.Mathematics.AffineTransform contactTransform, float deltaTime);
 
         //
         // Called from another ability to indicate that a predicted future

@@ -77,7 +77,8 @@ namespace Traverser
             // --- IO ---
             public void WriteToStream(Buffer buffer)
             {
-                buffer.WriteNativeArray(vertices, Allocator.Persistent);
+                if(vertices.Length > 0)
+                    buffer.WriteNativeArray(vertices, Allocator.Persistent);
             }
 
             public void ReadFromStream(Buffer buffer)

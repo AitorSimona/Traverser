@@ -514,13 +514,13 @@ internal static class TagExtensions
         // check character isn't inside geometry
         if ((collisionCheck & SegmentCollisionCheck.InsideGeometry) > 0)
         {
-            bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, Traverser.CollisionLayer.EnvironmentCollisionMask);
+            bValidPosition = !Physics.CheckSphere(worldRootTransform.t + new float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, Traverser.TraverserCollisionLayer.EnvironmentCollisionMask);
         }
 
         // check character is on the ground
         if ((collisionCheck & SegmentCollisionCheck.AboveGround) > 0)
         {
-            bValidPosition = bValidPosition && Physics.CheckSphere(worldRootTransform.t, collisionRadius, Traverser.CollisionLayer.EnvironmentCollisionMask);
+            bValidPosition = bValidPosition && Physics.CheckSphere(worldRootTransform.t, collisionRadius, Traverser.TraverserCollisionLayer.EnvironmentCollisionMask);
         }
 
         return bValidPosition;

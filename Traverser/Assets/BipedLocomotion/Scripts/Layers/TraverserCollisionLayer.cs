@@ -4,7 +4,7 @@
 
 namespace Traverser
 {
-    public static class CollisionLayer
+    public static class TraverserCollisionLayer
     {
         // --- Attributes ---
         private static int ms_EnvironmentCollisionMask = -1;

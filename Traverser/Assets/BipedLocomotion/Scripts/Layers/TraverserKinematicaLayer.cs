@@ -4,7 +4,7 @@
 
 namespace Traverser
 {
-    public static class KinematicaLayer
+    public static class TraverserKinematicaLayer
     {
 
         // --- Utilities ---
@@ -97,7 +97,7 @@ namespace Traverser
             Unity.Mathematics.AffineTransform worldRootTransform = synthesizer.WorldRootTransform * binary.GetTrajectoryTransformBetween(segment.destination.firstFrame, segment.destination.numFrames - 1);
             UnityEngine.GameObject.Find("dummy").transform.position = worldRootTransform.t;
 
-            return !UnityEngine.Physics.CheckSphere(worldRootTransform.t + new Unity.Mathematics.float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, Traverser.CollisionLayer.EnvironmentCollisionMask);
+            return !UnityEngine.Physics.CheckSphere(worldRootTransform.t + new Unity.Mathematics.float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, Traverser.TraverserCollisionLayer.EnvironmentCollisionMask);
         }
 
         // --------------------------------

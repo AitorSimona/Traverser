@@ -61,7 +61,7 @@ namespace Traverser
             base.OnEarlyUpdate(rewind);
 
             if (!rewind) // if we are not using snapshot debugger to rewind
-                InputLayer.capture.UpdateParkour();
+                TraverserInputLayer.capture.UpdateParkour();
         }
 
         // -------------------------------------------------
@@ -70,9 +70,9 @@ namespace Traverser
         public Ability OnUpdate(float deltaTime)
         {
             // --- If we are in a transition disable controller ---
-            CollisionLayer.ConfigureController(anchoredTransition.isValid, ref controller);
+            TraverserCollisionLayer.ConfigureController(anchoredTransition.isValid, ref controller);
 
-            if(KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))           
+            if(TraverserKinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))           
                  return this;
 
             return null;
@@ -88,7 +88,7 @@ namespace Traverser
         {
             bool ret = false;
 
-            if (InputLayer.capture.parkourButton)
+            if (TraverserInputLayer.capture.parkourButton)
             {
                 // --- Identify collider's object layer ---
                 ref MovementController.Closure closure = ref controller.current;
@@ -165,7 +165,7 @@ namespace Traverser
         {
             bool ret = false;
 
-            if (InputLayer.capture.parkourDropDownButton && controller.previous.isGrounded && controller.previous.ground != null)
+            if (TraverserInputLayer.capture.parkourDropDownButton && controller.previous.isGrounded && controller.previous.ground != null)
             {
                 // --- Get the ground's collider ---
                 Transform ground = controller.previous.ground;
@@ -214,20 +214,20 @@ namespace Traverser
 
         Speed GetSpeedTag()
         {
-            float desiredLinearSpeed = InputLayer.capture.run ? locomotion.desiredSpeedFast : locomotion.desiredSpeedSlow;
+            float desiredLinearSpeed = TraverserInputLayer.capture.run ? locomotion.desiredSpeedFast : locomotion.desiredSpeedSlow;
 
             Speed speed = Speed.Create(Speed.Type.Normal);
 
             //Debug.Log(desiredLinearSpeed * InputLayer.capture.moveIntensity);
 
-            if (InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedSlow)
+            if (TraverserInputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedSlow)
             {
                 // slow speed
                 speed = Speed.Create(Speed.Type.Slow);
                 //Debug.Log("Slow");
             }
-            else if (InputLayer.capture.moveIntensity * desiredLinearSpeed >= locomotion.desiredSpeedSlow &&
-                InputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedFast*0.75)
+            else if (TraverserInputLayer.capture.moveIntensity * desiredLinearSpeed >= locomotion.desiredSpeedSlow &&
+                TraverserInputLayer.capture.moveIntensity * desiredLinearSpeed < locomotion.desiredSpeedFast*0.75)
             {
                 // normal speed
                 //Debug.Log("Normal");

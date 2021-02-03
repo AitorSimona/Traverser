@@ -134,7 +134,7 @@ namespace Traverser
         bool preFreedrop = true;
 
         // TODO: Remove from here
-        float desiredLinearSpeed => InputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
+        float desiredLinearSpeed => TraverserInputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
 
         float distance_to_fall = 3.0f; // initialized to maxFallPredictionDistance
 
@@ -148,8 +148,8 @@ namespace Traverser
             controller = GetComponent<MovementController>();
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
-            InputLayer.capture.movementDirection = Missing.forward;
-            InputLayer.capture.moveIntensity = 0.0f;
+            TraverserInputLayer.capture.movementDirection = Missing.forward;
+            TraverserInputLayer.capture.moveIntensity = 0.0f;
 
             // --- Initialize arrays ---
             idleCandidates = synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default);
@@ -181,9 +181,9 @@ namespace Traverser
             base.OnEarlyUpdate(rewind);
 
             if (!rewind) // if we are not using snapshot debugger to rewind
-                InputLayer.capture.UpdateLocomotion();
+                TraverserInputLayer.capture.UpdateLocomotion();
 
-            if (InputLayer.capture.run)
+            if (TraverserInputLayer.capture.run)
                 freedrop = true;
             else
                 freedrop = preFreedrop;
@@ -270,7 +270,7 @@ namespace Traverser
 
             bool hasReachedEndOfSegment;
             MotionSynthesizer synthesizer = kinematica.Synthesizer.Ref;
-            Binary.TypeIndex type = KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out hasReachedEndOfSegment);
+            Binary.TypeIndex type = TraverserKinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out hasReachedEndOfSegment);
 
             float minTrajectoryDeviation = 0.03f; // default threshold
 
@@ -294,7 +294,7 @@ namespace Traverser
         {
             // --- Create final trajectory from given parameters ---
             TrajectoryPrediction prediction = TrajectoryPrediction.CreateFromDirection(ref kinematica.Synthesizer.Ref,
-               InputLayer.capture.movementDirection,
+               TraverserInputLayer.capture.movementDirection,
                desiredSpeed,
                trajectory,
                velocityPercentage,
@@ -353,7 +353,7 @@ namespace Traverser
 
                     float3 desired_direction = contactTransform.t - tmp.t;
                     float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
-                    float target_orientation = current_orientation + Vector3.SignedAngle(InputLayer.capture.movementDirection, desired_direction, Vector3.up);
+                    float target_orientation = current_orientation + Vector3.SignedAngle(TraverserInputLayer.capture.movementDirection, desired_direction, Vector3.up);
                     float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
 
                     // TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
@@ -454,7 +454,7 @@ namespace Traverser
             float desiredSpeed = 0.0f;
 
             // --- If we are idle ---
-            if (InputLayer.capture.moveIntensity == 0.0f)
+            if (TraverserInputLayer.capture.moveIntensity == 0.0f)
             {
                 if (!isBraking && math.length(synthesizer.CurrentVelocity) < brakingSpeed)
                     isBraking = true;
@@ -462,7 +462,7 @@ namespace Traverser
             else
             {
                 isBraking = false;
-                desiredSpeed = InputLayer.capture.moveIntensity * desiredLinearSpeed;
+                desiredSpeed = TraverserInputLayer.capture.moveIntensity * desiredLinearSpeed;
             }
 
             // --- Manually brake the character when about to fall ---

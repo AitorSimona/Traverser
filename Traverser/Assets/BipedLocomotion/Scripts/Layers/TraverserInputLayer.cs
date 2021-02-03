@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Traverser
 {
-    public static class InputLayer
+    public static class TraverserInputLayer
     {
         public struct FrameCapture
         {

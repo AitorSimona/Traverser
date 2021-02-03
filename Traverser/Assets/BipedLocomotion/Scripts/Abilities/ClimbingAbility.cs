@@ -141,7 +141,7 @@ namespace Traverser
             base.OnEarlyUpdate(rewind);
 
             if (!rewind) // if we are not using snapshot debugger to rewind
-                InputLayer.capture.UpdateClimbing(); // Update climbing input
+                TraverserInputLayer.capture.UpdateClimbing(); // Update climbing input
         }
 
         // --------------------------------
@@ -152,7 +152,7 @@ namespace Traverser
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
             // --- Turn off/on controller ---
-            CollisionLayer.ConfigureController(!IsState(State.Suspended), ref controller);
+            TraverserCollisionLayer.ConfigureController(!IsState(State.Suspended), ref controller);
 
             // --- If character is not falling ---
             if (!IsState(State.Suspended))
@@ -192,7 +192,7 @@ namespace Traverser
                 if (IsState(State.Suspended))
                     return null;
 
-                KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
+                TraverserKinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
 
                 return this;
             }
@@ -205,7 +205,7 @@ namespace Traverser
         {
             bool TransitionSuccess;
 
-            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
+            if (TraverserKinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
             {
                 if (!TransitionSuccess)
                 {
@@ -244,7 +244,7 @@ namespace Traverser
         void HandleClimbingState(ref MotionSynthesizer synthesizer, float deltaTime)
         {
             bool bTransitionSucceeded;
-            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+            TraverserKinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             // --- Handle special corner transitions ---
             if (climbingState == ClimbingState.CornerRight
@@ -294,7 +294,7 @@ namespace Traverser
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
 
                     // --- If a collision is found play idle ---
-                    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
+                    if (!TraverserKinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
                     {
                         SetClimbingState(ClimbingState.Idle);
                         PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
@@ -310,7 +310,7 @@ namespace Traverser
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
 
                     // --- If a collision is found play idle ---
-                    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
+                    if (!TraverserKinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
                     {                     
                         SetClimbingState(ClimbingState.Idle);
                         PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
@@ -330,19 +330,19 @@ namespace Traverser
 
             RaycastHit ray_hit;
             // --- Check if the ray hits a collider, allow dismount if true ---
-            if (Physics.Raycast(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward, Vector3.down, out ray_hit, 2.8f, CollisionLayer.EnvironmentCollisionMask))
+            if (Physics.Raycast(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward, Vector3.down, out ray_hit, 2.8f, TraverserCollisionLayer.EnvironmentCollisionMask))
                 closeToDrop = true;
 
-            float2 stickInput = InputLayer.GetStickInput();
+            float2 stickInput = TraverserInputLayer.GetStickInput();
 
             // --- React to pull up/dismount ---
-            if (InputLayer.capture.pullUpButton && !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule))
+            if (TraverserInputLayer.capture.pullUpButton && !TraverserCollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule))
             {
                 AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
                 RequestTransition(ref synthesizer, contactTransform, Ledge.Type.PullUp);
                 SetState(State.PullUp);
             }
-            else if (closeToDrop && InputLayer.capture.dismountButton)
+            else if (closeToDrop && TraverserInputLayer.capture.dismountButton)
             {
                 Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
@@ -357,7 +357,7 @@ namespace Traverser
         void HandleFreeClimbingState(ref MotionSynthesizer synthesizer, float deltaTime)
         {
             bool bTransitionSucceeded;
-            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+            TraverserKinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             // --- Handle special corner transitions ---
             if (climbingState == ClimbingState.CornerRight
@@ -371,7 +371,7 @@ namespace Traverser
                     RaycastHit ray_hit;
 
                     // --- Check if the ray hits a collider ---
-                    if (Physics.Raycast(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward*0.5f, synthesizer.WorldRootTransform.Forward, out ray_hit, 2, CollisionLayer.EnvironmentCollisionMask))
+                    if (Physics.Raycast(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward*0.5f, synthesizer.WorldRootTransform.Forward, out ray_hit, 2, TraverserCollisionLayer.EnvironmentCollisionMask))
                     {
                         wallGeometry.Initialize(ray_hit.collider as BoxCollider, synthesizer.WorldRootTransform);
                     }
@@ -417,7 +417,7 @@ namespace Traverser
                         // --- We fake a play and check if at the segment's end there is a collision ---
 
                         // --- If a collision is found play idle ---
-                        if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
+                        if (!TraverserKinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
                         {
                             SetClimbingState(ClimbingState.Idle);
                             PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
@@ -435,7 +435,7 @@ namespace Traverser
             bool closeToLedge = math.abs(totalHeight - height) <= 0.095f;
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
-            float2 stickInput = InputLayer.GetStickInput();
+            float2 stickInput = TraverserInputLayer.GetStickInput();
 
             // --- Check if we are close to hanging onto a ledge or almost on the ground ---
             if (closeToLedge && -stickInput.y > 0.5f)
@@ -443,7 +443,7 @@ namespace Traverser
                 ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
                 SetState(State.Climbing);
             }
-            if (closeToDrop && InputLayer.capture.dismountButton)
+            if (closeToDrop && TraverserInputLayer.capture.dismountButton)
             {
                 Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
@@ -454,7 +454,7 @@ namespace Traverser
         void HandleDismountState(ref MotionSynthesizer synthesizer)
         {
             bool bTransitionSucceeded;
-            KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
+            TraverserKinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             if (bTransitionSucceeded)
             {
@@ -467,7 +467,7 @@ namespace Traverser
         {
             bool bTransitionSucceeded;
 
-            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
+            if (TraverserKinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
                 SetState(State.Suspended);
         }
 
@@ -494,7 +494,7 @@ namespace Traverser
 
             bool TransitionSuccess;
 
-            if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
+            if (TraverserKinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
             {
                 if(!TransitionSuccess)
                 {
@@ -515,7 +515,7 @@ namespace Traverser
 
         bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
         {
-            bool bCollision = CollisionLayer.IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f), ref capsule);
+            bool bCollision = TraverserCollisionLayer.IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f), ref capsule);
 
             if (climbingState == ClimbingState.Idle)
             {
@@ -630,7 +630,7 @@ namespace Traverser
         public bool OnContact(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, float deltaTime)
         {
             // --- If we make contact with a climbable surface and player issues climb order, mount ---
-            if (InputLayer.capture.mountButton)
+            if (TraverserInputLayer.capture.mountButton)
             {
                 if (IsState(State.Suspended))
                 {
@@ -670,7 +670,7 @@ namespace Traverser
             bool ret = false;
 
 
-            if (InputLayer.capture.dropDownButton && !IsState(State.DropDown))
+            if (TraverserInputLayer.capture.dropDownButton && !IsState(State.DropDown))
             {
                 SetState(State.DropDown);
                 ret = true;
@@ -745,7 +745,7 @@ namespace Traverser
 
         ClimbingState GetDesiredFreeClimbingState()
         {
-            float2 stickInput = InputLayer.GetStickInput();
+            float2 stickInput = TraverserInputLayer.GetStickInput();
             stickInput.y = -stickInput.y; // negate y, so positive y means going up
 
             // --- Depending on stick input, decide climbing direction ---
@@ -807,7 +807,7 @@ namespace Traverser
 
         ClimbingState GetDesiredClimbingState() 
         {
-            float2 stickInput = InputLayer.GetStickInput();
+            float2 stickInput = TraverserInputLayer.GetStickInput();
 
             // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
             bool left = false;

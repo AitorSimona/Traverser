@@ -1,0 +1,192 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcf7219bab7fe46a1ad266029b2fee19, type: 3}
+  m_Name: Readme
+  m_EditorClassIdentifier: 
+  icon: {fileID: 2800000, guid: a999ebd188c6842119197c7562792a72, type: 3}
+  title: Animation Rigging Samples
+  sections:
+  - heading: Constraint Samples
+    text: "This project contains simple samples of each constraint. The scenes can
+      be found the Project > Unity > ConstraintSamples > Scenes folder. The following
+      sections provide details on each scene. For a detailed explanation of each
+      constraint, refer to the documentation links below, or the help icon on each
+      constraint component. In these scenes, all constraints can be found in the
+      hierarchy under the root > rig GameObject. To see the \u201Csource\u201D animations
+      (without the rig/constraints), simply set the \u201Crig\u201D weight in the
+      Rig Builder component to \u201C0\u201D (zero) and Preview the animation in
+      the Animation window. To see the result of the rig/constraints, make sure the
+      \u201Crig\u201D weight is set to \u201C1\u201D (one), then activate Preview
+      in the Animation window or hit the Editor Play button for a runtime preview."
+    linkText: Documentation
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/index.html
+  - heading: 2BoneIK scene
+    text: "This scene contains an example of a TwoBoneIK constraint setup. The TwoBoneIK
+      constraint is used to animate two bones using IK. The rig in this sample uses
+      two TwoBoneIK constraints with effectors & hints to animate the legs of a character.
+      Hint effectors are optional and can ignored for a simplified setup. In this
+      example, we decided to parent the hint effectors child of the IK effectors,
+      but this is a user choice and can be done differently, depending on the animator\u2019s
+      needs."
+    linkText: twoBoneIK constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/TwoBoneIKConstraint.html
+  - heading: Aim scene
+    text: "This scene contains an example of the Aim constraint. The aim constraint
+      is used to orient one GameObject to look-at or aim another GameObject/target.
+      In this scene, we used two aim constraints; one for the head, and one for the
+      gun. The head of the character always looks at the animated target while the
+      shoulder gun activates itself, then aims the same animated target. The character
+      controller has two layers; \u201CBase Layer\u201D & \u201Cgun\u201D layer.
+      The Base Layer contains the idle & walk clips, while the gun layer contains
+      the gunUp & gunFire clips. Since the animated \u201Ctarget\u201D GameObject
+      has its own Animator, previewing the character animation clip in the Animation
+      Window will have an active aim, but the target will be static. The Animator
+      controller contains multiple clips, so make sure to select the desired clip
+      (ex: gunUp) in the Animation Window pull-down list of clips when previewing.
+      Hit the Editor Play button for a runtime preview of the entire sequence with
+      the animated aim target."
+    linkText: aim constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/MultiAimConstraint.html
+  - heading: Blend scene
+    text: "This scene contains a very simple example of the Blend constraint. The
+      blend constraint can be used in manny ways, but basically blends two transforms
+      based on weights, much like a mixer. In this example, Cube \u201CA\u201D is
+      animated in Position Y. Cube \u201CB\u201D is animated in Rotation Y. Cube
+      \u201CAB\u201D is constrained to 50% of cube A\u2019s position, and 50% of
+      cube B\u2019s rotation. Cube \u201CAB\u201D therefore moves & rotates to half
+      of the two source animations."
+    linkText: blend constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/BlendConstraint.html
+  - heading: ChainIK scene
+    text: "This scene contains an example of the ChainIK constraint. The chainIK
+      constraint is used to animate an IK chain with more than two bones. In this
+      scene, we used the chainIK constraint to animate the scorpion\u2019s tail and
+      attack move. Everything else is animated in FK (scorpion\u2019s arms, legs
+      & target). Since the animated \u201Ctarget\u201D GameObject has its own Animator,
+      previewing the scorpion\u2019s animation clip in the Animation Window will
+      apply the chainIK constraint, but will not play the \u201Ctarget\u201D GameObject\u2019s
+      animation (static target). Hit the Editor Play button for a runtime preview
+      of both animations (scorpion & target GameObject)."
+    linkText: chainIK constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/ChainIKConstraint.html
+  - heading: Damp scene
+    text: "This scene contains an example of the Damp constraint. The damp constraint
+      is used to create a lag or delayed effect of one GameObject\u2019s position
+      and/or rotation transform and apply it to another GameObject. In this scene,
+      there are 8 cubes parented one after the other with a small position offset
+      and size difference. There is one damp constraint for each cube, so 8 damp
+      constraints each damping the next cube in the hierarchy. The \u201CMRoot\u201D
+      GameObject is the only animated GameObject in this scene. All other cubes are
+      animated through the damp constraints."
+    linkText: damp constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/DampedTransform.html
+  - heading: mParent scene
+    text: "This scene contains an example of a Multi-Parent constraint. The mParent
+      constraint simulates a hierarchal parent, without affecting the actually hierarchy.
+      This is often referred to as a virtual parent. A given GameObject can have
+      multiple parents, that can be weighted in or out as desired. In this scene,
+      we used the mParent constraint for a character prop, in this case a sword.
+      We used three sources (potential targets for the sword prop); ground, hand
+      & back of the character. The source weights for the mParent constraint are
+      animated through Animation Events in the animation clip, that call the MParent
+      script on the \u201Croot\u201D GameObject. This means that the mParent constraint
+      sources will not be animated during the Animation Window Preview of a clip.
+      You can optionally change the source weight values manually to see the effect
+      on the sword prop in the Animation Window Preview. You also have multiple clips
+      in the Animator controller to choose from, use the clip pull-down list in the
+      Animation Window to select the desired clip. Hit the Editor Play button for
+      a runtime preview of the animation sequence with the animated mParent constraint."
+    linkText: mParent constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/MultiParentConstraint.html
+  - heading: mPosition scene
+    text: "This scene contains an example of the Multi-Position constraint. The mPosition
+      constraint allows you to constrain the position of one GameObject to another
+      or multiple other GameObjects. In this example, we used this constraint to
+      automatically manage the height of the hips of the character. The feet effectors
+      animate the legs & feet, and the hips (hipsPivot GameObject) of the character
+      is only animated in rotation. The mPosition constraint uses the two feet effectors
+      as sources with a Y position offset for the hips. The result is a movement
+      of the hips based on the feet position, lowering the hips of the character
+      when they are far apart and moving the hips up as the feet get closer together.
+      Note that in the \u201Crig\u201D hierarchy, the mPosition constraint (MPos)
+      is evaluated before the twoBoneIK constraints (ik) in order to obtain the desired
+      result."
+    linkText: mPosition constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/MultiPositionConstraint.html
+  - heading: mRef scene
+    text: "This scene contains an example of the Multi-Referential constraint. The
+      mReferential constraint allows you to create multiple pivots or anchor points
+      for a given GameObject. A foot rig with ankle, heal, toe & toe tip pivots is
+      a good example of this. In this scene, we\u2019ve created a simple example
+      using a prop with multiple pivot points, in this case a sword. The first part
+      of the animation is driven by the handgrip pivot (initial sword swing), the
+      second part by the middle pivot (as the sword hits and rotates around the cylinder),
+      and the last part by the sword tip pivot (as the sword lands and rotates around
+      the sword\u2019s tip). The mReferential constraint changes the driving pivot/GameObject
+      as the animation plays. Note that there is presently a limitation with \u201CPreview\u201D
+      mode where offsets are not updated when changing the Driving GameObject, and
+      will cause the GameObject to move. Offsets are updated as expected (GameObject
+      does not move) when changing the Driving GameObject at runtime."
+    linkText: mReferential constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/MultiReferentialConstraint.html
+  - heading: mRotation scene
+    text: "This scene contains an example of the Multi-Rotation constraint. The mRotation
+      constraint allows you to constrain the rotation of one GameObject to another
+      or multiple other GameObjects. In this scene, we used this constraint to distribute
+      the head rotation to the neck & spine of the character. The Animator controller
+      has two layers; \u201CBase Layer\u201D has an Idle clip, and \u201CLookAround\u201D
+      layer has a LookAround clip. Only the head rotation is animated in the LookAround
+      clip. The 3 mRotation constraints each take a different percentage of the head
+      rotation, and applies it in a distributed manner down the spine of the character,
+      giving him a more natural twist. Make sure to select the \u201CAnim_LookAround\u201D
+      clip in the Animation window in order to preview this animation."
+    linkText: mRotation constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/MultiRotationConstraint.html
+  - heading: Override scene
+    text: "This scene contains an example of the Override constraint. The override
+      constraint is very special and can be used in many different ways. It can set
+      a static local or global offset, as well as additive animation when using the
+      \u201CPivot\u201D mode. Here, we animated a copy of the character\u2019s spine
+      transforms and applied it as an additive offset to the existing walk animation.
+      The controller uses two layers; the Base Layer for the walk animation, and
+      the Offsets layer for the duplicate spine animation. The four override constraints
+      additively mix the animation from the \u201Cwalk\u201D clip with the animation
+      in the \u201CAnim_Offsets\u201D clip. The result is a mix of the walk animation,
+      and the upper body offset animation (Anim_Offsets clip)."
+    linkText: override constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/OverrideTransform.html
+  - heading: TwistChain scene
+    text: "This scene contains an example of the TwistChain constraint. The TwistChain
+      constraint allows you to constrain the rotation of chain of GameObjects using
+      root and tip effectors. This can be used for the spine or neck of a character,
+      and even chained so that the spine tip effector is also the neck root effector.
+      In this simple sample scene, we use the TwistChain to animate a chain of cubes.
+      Only the root and tip effectors are animated. It\u2019s important to note that
+      you can also modify the curvature of the resulting solve by changing the TwistChain\u2019s
+      Curve property (linear by default). To edit this, click on the root > rig >
+      TwistChain GameObject, click the Curve property of the TwistChain constraint,
+      and select another curve preset (ex: ease-in)."
+    linkText: twist chain constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/TwistChainConstraint.html
+  - heading: TwistCorrection scene
+    text: This scene contains a simplified example of the Twist Correction constraint.
+      The twist correction constraint is used to distribute the roll of a rotation
+      from one GameObject onto other GameObjects. This is most often used on bones
+      of the arms & legs of a character to avoid the pinching effect of a deformed
+      mesh when rotating the hands & feet for example. Although this sample scene
+      does not use a deformed mesh, it demonstrates the twist distribution across
+      multiple roll bones. In this scene, only the hand is animated. When the hand
+      rotates, the twist bones roll to a defined percentage of the hand rotation
+      (in this case 0.8 & 0.65).
+    linkText: twist correction constraint
+    url: https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.0?preview=1&subfolder=/manual/constraints/TwistCorrection.html
+  loadedLayout: 1

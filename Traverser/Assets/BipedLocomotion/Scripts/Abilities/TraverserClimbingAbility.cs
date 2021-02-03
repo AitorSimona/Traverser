@@ -8,7 +8,7 @@ namespace Traverser
     [RequireComponent(typeof(TraverserAbilityController))]
     [RequireComponent(typeof(MovementController))]
 
-    public class ClimbingAbility : SnapshotProvider, TraverserAbility
+    public class TraverserClimbingAbility : SnapshotProvider, TraverserAbility
     {
         // --- Attributes ---
         [Header("Transition settings")]
@@ -36,7 +36,7 @@ namespace Traverser
         // --------------------------------
 
         // --- Climbing movement/state ---
-        public enum State
+        public enum TraverserClimbingTriggerState
         {
             Suspended,
             Mounting,
@@ -50,7 +50,7 @@ namespace Traverser
         // --------------------------------
 
         // --- Climbing directions ---
-        public enum ClimbingState
+        public enum TraverserClimbingState
         {
             Idle,
             Up,
@@ -72,12 +72,12 @@ namespace Traverser
         MovementController controller;
         CapsuleCollider capsule;
 
-        State state; // Actual Climbing movement/state
-        State previousState; // Previous Climbing movement/state
+        TraverserClimbingTriggerState state; // Actual Climbing movement/state
+        TraverserClimbingTriggerState previousState; // Previous Climbing movement/state
 
-        ClimbingState climbingState; // Actual Climbing direction
-        ClimbingState previousClimbingState; // Previous Climbing direction
-        ClimbingState lastCollidingClimbingState;
+        TraverserClimbingState climbingState; // Actual Climbing direction
+        TraverserClimbingState previousClimbingState; // Previous Climbing direction
+        TraverserClimbingState lastCollidingClimbingState;
 
         // --------------------------------
 
@@ -110,12 +110,12 @@ namespace Traverser
             controller = GetComponent<MovementController>();
             capsule = GetComponent<CapsuleCollider>();
 
-            state = State.Suspended;
-            previousState = State.Suspended;
+            state = TraverserClimbingTriggerState.Suspended;
+            previousState = TraverserClimbingTriggerState.Suspended;
 
-            climbingState = ClimbingState.Idle;
-            previousClimbingState = ClimbingState.Idle;
-            lastCollidingClimbingState = ClimbingState.None;
+            climbingState = TraverserClimbingState.Idle;
+            previousClimbingState = TraverserClimbingState.Idle;
+            lastCollidingClimbingState = TraverserClimbingState.None;
 
             ledgeGeometry = TraverserLedgeObject.LedgeGeometry.Create();
             auxledgeGeometry = TraverserLedgeObject.LedgeGeometry.Create();
@@ -152,35 +152,35 @@ namespace Traverser
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
             // --- Turn off/on controller ---
-            TraverserCollisionLayer.ConfigureController(!IsState(State.Suspended), ref controller);
+            TraverserCollisionLayer.ConfigureController(!IsState(TraverserClimbingTriggerState.Suspended), ref controller);
 
             // --- If character is not falling ---
-            if (!IsState(State.Suspended))
+            if (!IsState(TraverserClimbingTriggerState.Suspended))
             {
                 // --- Handle current state ---
                 switch (state)
                 {
-                    case State.Mounting:
+                    case TraverserClimbingTriggerState.Mounting:
                         HandleMountingState(ref synthesizer);
                         break;
 
-                    case State.Dismount:
+                    case TraverserClimbingTriggerState.Dismount:
                         HandleDismountState(ref synthesizer);
                         break;
 
-                    case State.PullUp:
+                    case TraverserClimbingTriggerState.PullUp:
                         HandlePullUpState(ref synthesizer);
                         break;
 
-                    case State.Climbing:
+                    case TraverserClimbingTriggerState.Climbing:
                         HandleClimbingState(ref synthesizer, deltaTime);
                         break;
 
-                    case State.FreeClimbing:
+                    case TraverserClimbingTriggerState.FreeClimbing:
                         HandleFreeClimbingState(ref synthesizer, deltaTime);
                         break;
 
-                    case State.DropDown:
+                    case TraverserClimbingTriggerState.DropDown:
                         HandleDropDownState(ref synthesizer);
                         break;
 
@@ -189,7 +189,7 @@ namespace Traverser
                 }
 
                 // --- Let other abilities handle the situation ---
-                if (IsState(State.Suspended))
+                if (IsState(TraverserClimbingTriggerState.Suspended))
                     return null;
 
                 TraverserKinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
@@ -209,7 +209,7 @@ namespace Traverser
             {
                 if (!TransitionSuccess)
                 {
-                    SetState(State.Suspended);
+                    SetState(TraverserClimbingTriggerState.Suspended);
                     return;
                 }
 
@@ -229,14 +229,14 @@ namespace Traverser
                 if (freeClimbing)
                 {
                     wallAnchor = wallGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootposition
-                    SetState(State.FreeClimbing);
+                    SetState(TraverserClimbingTriggerState.FreeClimbing);
                 }
                 else
                 {
-                    SetState(State.Climbing); // we are hanging onto a ledge 
+                    SetState(TraverserClimbingTriggerState.Climbing); // we are hanging onto a ledge 
                 }
 
-                SetClimbingState(ClimbingState.Idle);
+                SetClimbingState(TraverserClimbingState.Idle);
                 PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
             }
         }
@@ -247,14 +247,14 @@ namespace Traverser
             TraverserKinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             // --- Handle special corner transitions ---
-            if (climbingState == ClimbingState.CornerRight
-                || climbingState == ClimbingState.CornerLeft
+            if (climbingState == TraverserClimbingState.CornerRight
+                || climbingState == TraverserClimbingState.CornerLeft
                 )
             {
                 if (bTransitionSucceeded)
                 {
                     ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-                    SetClimbingState(ClimbingState.None);
+                    SetClimbingState(TraverserClimbingState.None);
                 }
 
                 return;
@@ -262,31 +262,31 @@ namespace Traverser
 
             UpdateClimbing(ref synthesizer, deltaTime);
 
-            ClimbingState desiredState = GetDesiredClimbingState();
+            TraverserClimbingState desiredState = GetDesiredClimbingState();
 
             if (desiredState == lastCollidingClimbingState)
-                desiredState = ClimbingState.Idle;
+                desiredState = TraverserClimbingState.Idle;
 
             // --- Handle ledge climbing/movement direction ---
             if (!IsClimbingState(desiredState) || bTransitionSucceeded)
             {
                 Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
 
-                if (desiredState == ClimbingState.Idle)
+                if (desiredState == TraverserClimbingState.Idle)
                 {
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
                 }
-                else if (desiredState == ClimbingState.Right)
+                else if (desiredState == TraverserClimbingState.Right)
                 {
                     Direction direction = Direction.Create(Direction.Type.Right);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
                 }
-                else if (desiredState == ClimbingState.Left)
+                else if (desiredState == TraverserClimbingState.Left)
                 {
                     Direction direction = Direction.Create(Direction.Type.Left);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
                 }
-                else if (desiredState == ClimbingState.CornerRight)
+                else if (desiredState == TraverserClimbingState.CornerRight)
                 {
                     Direction direction = Direction.Create(Direction.Type.CornerRight);
 
@@ -296,13 +296,13 @@ namespace Traverser
                     // --- If a collision is found play idle ---
                     if (!TraverserKinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
                     {
-                        SetClimbingState(ClimbingState.Idle);
+                        SetClimbingState(TraverserClimbingState.Idle);
                         PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
                         Debug.Log("No sequences for right corner transition in climbing, collision found");
                         return;
                     }
                 }
-                else if (desiredState == ClimbingState.CornerLeft)
+                else if (desiredState == TraverserClimbingState.CornerLeft)
                 {
                     Direction direction = Direction.Create(Direction.Type.CornerLeft);
 
@@ -312,7 +312,7 @@ namespace Traverser
                     // --- If a collision is found play idle ---
                     if (!TraverserKinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
                     {                     
-                        SetClimbingState(ClimbingState.Idle);
+                        SetClimbingState(TraverserClimbingState.Idle);
                         PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
                         Debug.Log("No sequences for left corner transition in climbing, collision found");
                         return;
@@ -340,17 +340,17 @@ namespace Traverser
             {
                 AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
                 RequestTransition(ref synthesizer, contactTransform, Ledge.Type.PullUp);
-                SetState(State.PullUp);
+                SetState(TraverserClimbingTriggerState.PullUp);
             }
             else if (closeToDrop && TraverserInputLayer.capture.dismountButton)
             {
                 Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
-                SetState(State.Dismount);
+                SetState(TraverserClimbingTriggerState.Dismount);
             }
             else if (!closeToDrop && -stickInput.y < -0.5)
             {
-                SetState(State.FreeClimbing);
+                SetState(TraverserClimbingTriggerState.FreeClimbing);
             }
         }
 
@@ -360,8 +360,8 @@ namespace Traverser
             TraverserKinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             // --- Handle special corner transitions ---
-            if (climbingState == ClimbingState.CornerRight
-                || climbingState == ClimbingState.CornerLeft)
+            if (climbingState == TraverserClimbingState.CornerRight
+                || climbingState == TraverserClimbingState.CornerLeft)
             {
 
                 if (bTransitionSucceeded)
@@ -378,7 +378,7 @@ namespace Traverser
 
                     //Debug.DrawRay(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward*0.5f, synthesizer.WorldRootTransform.Forward, Color.red,60);
 
-                    SetClimbingState(ClimbingState.None);
+                    SetClimbingState(TraverserClimbingState.None);
                 }
 
                 return;
@@ -387,7 +387,7 @@ namespace Traverser
             // --- We are climbing a wall ---
             UpdateFreeClimbing(ref synthesizer, deltaTime);
 
-            ClimbingState desiredState = GetDesiredFreeClimbingState();
+            TraverserClimbingState desiredState = GetDesiredFreeClimbingState();
 
             if (!IsClimbingState(desiredState) || bTransitionSucceeded)
             {
@@ -395,13 +395,13 @@ namespace Traverser
                 
                 Climbing climbingTrait = Climbing.Create(Climbing.Type.Wall);
 
-                if (desiredState == ClimbingState.Right
-                    || desiredState == ClimbingState.Left
-                    || desiredState == ClimbingState.CornerRight
-                    || desiredState == ClimbingState.CornerLeft)
+                if (desiredState == TraverserClimbingState.Right
+                    || desiredState == TraverserClimbingState.Left
+                    || desiredState == TraverserClimbingState.CornerRight
+                    || desiredState == TraverserClimbingState.CornerLeft)
                     climbingTrait.type = Climbing.Type.Ledge;
 
-                if (desiredState == ClimbingState.Idle)
+                if (desiredState == TraverserClimbingState.Idle)
                 {
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
                 }
@@ -411,15 +411,15 @@ namespace Traverser
                     Direction direction = Direction.Create((Direction.Type)desiredState - 1);
                     PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
 
-                    if (desiredState == ClimbingState.CornerRight
-                    || desiredState == ClimbingState.CornerLeft)
+                    if (desiredState == TraverserClimbingState.CornerRight
+                    || desiredState == TraverserClimbingState.CornerLeft)
                     {
                         // --- We fake a play and check if at the segment's end there is a collision ---
 
                         // --- If a collision is found play idle ---
                         if (!TraverserKinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
                         {
-                            SetClimbingState(ClimbingState.Idle);
+                            SetClimbingState(TraverserClimbingState.Idle);
                             PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
                             Debug.Log("No sequences for corner transition in free climbing, collision found");
                             return;
@@ -441,13 +441,13 @@ namespace Traverser
             if (closeToLedge && -stickInput.y > 0.5f)
             {
                 ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
-                SetState(State.Climbing);
+                SetState(TraverserClimbingTriggerState.Climbing);
             }
             if (closeToDrop && TraverserInputLayer.capture.dismountButton)
             {
                 Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
                 PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
-                SetState(State.Dismount);
+                SetState(TraverserClimbingTriggerState.Dismount);
             }
         }
 
@@ -458,7 +458,7 @@ namespace Traverser
 
             if (bTransitionSucceeded)
             {
-                SetState(State.Suspended);
+                SetState(TraverserClimbingTriggerState.Suspended);
                 PlayFirstSequence(synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default));
             }
         }
@@ -468,12 +468,12 @@ namespace Traverser
             bool bTransitionSucceeded;
 
             if (TraverserKinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
-                SetState(State.Suspended);
+                SetState(TraverserClimbingTriggerState.Suspended);
         }
 
         void HandleDropDownState(ref MotionSynthesizer synthesizer)
         {
-            if (!anchoredTransition.isValid && previousState != State.DropDown)
+            if (!anchoredTransition.isValid && previousState != TraverserClimbingTriggerState.DropDown)
             {
                 BoxCollider collider = controller.current.ground.GetComponent<BoxCollider>();
 
@@ -498,7 +498,7 @@ namespace Traverser
             {
                 if(!TransitionSuccess)
                 {
-                    SetState(State.Suspended);
+                    SetState(TraverserClimbingTriggerState.Suspended);
                     return;
                 }
 
@@ -506,8 +506,8 @@ namespace Traverser
                 ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
 
                 // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
-                SetState(State.Climbing);
-                SetClimbingState(ClimbingState.Idle);
+                SetState(TraverserClimbingTriggerState.Climbing);
+                SetClimbingState(TraverserClimbingState.Idle);
                 Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
                 PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
             }
@@ -517,13 +517,13 @@ namespace Traverser
         {
             bool bCollision = TraverserCollisionLayer.IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f), ref capsule);
 
-            if (climbingState == ClimbingState.Idle)
+            if (climbingState == TraverserClimbingState.Idle)
             {
-                lastCollidingClimbingState = ClimbingState.None;
+                lastCollidingClimbingState = TraverserClimbingState.None;
             }
             else if (bCollision)
             {
-                float currentMoveDirection = climbingState == ClimbingState.Left ? 1.0f : -1.0f;
+                float currentMoveDirection = climbingState == TraverserClimbingState.Left ? 1.0f : -1.0f;
 
                 if (currentMoveDirection * desiredMoveOnLedge > 0.0f)
                     lastCollidingClimbingState = climbingState;
@@ -632,7 +632,7 @@ namespace Traverser
             // --- If we make contact with a climbable surface and player issues climb order, mount ---
             if (TraverserInputLayer.capture.mountButton)
             {
-                if (IsState(State.Suspended))
+                if (IsState(TraverserClimbingTriggerState.Suspended))
                 {
                     BoxCollider collider = controller.current.collider as BoxCollider;
 
@@ -654,7 +654,7 @@ namespace Traverser
                                 wallGeometry.Initialize(collider, contactTransform);
                           
                                 RequestTransition(ref synthesizer, contactTransform, Ledge.Type.Mount);
-                                SetState(State.Mounting);
+                                SetState(TraverserClimbingTriggerState.Mounting);
                                 return true;
                             }
                         }
@@ -670,9 +670,9 @@ namespace Traverser
             bool ret = false;
 
 
-            if (TraverserInputLayer.capture.dropDownButton && !IsState(State.DropDown))
+            if (TraverserInputLayer.capture.dropDownButton && !IsState(TraverserClimbingTriggerState.DropDown))
             {
-                SetState(State.DropDown);
+                SetState(TraverserClimbingTriggerState.DropDown);
                 ret = true;
             }
 
@@ -715,25 +715,25 @@ namespace Traverser
 
         // --- Utilities ---    
 
-        public void SetState(State newState)
+        public void SetState(TraverserClimbingTriggerState newState)
         {
             previousState = state;
             state = newState;
-            lastCollidingClimbingState = ClimbingState.None;
+            lastCollidingClimbingState = TraverserClimbingState.None;
         }
 
-        public bool IsState(State queryState)
+        public bool IsState(TraverserClimbingTriggerState queryState)
         {
             return state == queryState;
         }
 
-        public void SetClimbingState(ClimbingState climbingState)
+        public void SetClimbingState(TraverserClimbingState climbingState)
         {
             previousClimbingState = this.climbingState;
             this.climbingState = climbingState;
         }
 
-        public bool IsClimbingState(ClimbingState climbingState)
+        public bool IsClimbingState(TraverserClimbingState climbingState)
         {
             return this.climbingState == climbingState;
         }
@@ -743,7 +743,7 @@ namespace Traverser
             poses.Dispose();
         }
 
-        ClimbingState GetDesiredFreeClimbingState()
+        TraverserClimbingState GetDesiredFreeClimbingState()
         {
             float2 stickInput = TraverserInputLayer.GetStickInput();
             stickInput.y = -stickInput.y; // negate y, so positive y means going up
@@ -753,19 +753,19 @@ namespace Traverser
             {
                 if (stickInput.x > 0.3f && stickInput.y > 0.3f)
                 {
-                    return ClimbingState.UpRight;
+                    return TraverserClimbingState.UpRight;
                 }
                 else if (stickInput.x < -0.3f && stickInput.y > 0.3f)
                 {
-                    return ClimbingState.UpLeft;
+                    return TraverserClimbingState.UpLeft;
                 }
                 else if (stickInput.x > 0.3f && stickInput.y < -0.3f)
                 {
-                    return ClimbingState.DownRight;
+                    return TraverserClimbingState.DownRight;
                 }
                 else if (stickInput.x < -0.3f && stickInput.y < -0.3f)
                 {
-                    return ClimbingState.DownLeft;
+                    return TraverserClimbingState.DownLeft;
                 }
                 else if (stickInput.x > 0.5f)
                 {
@@ -775,9 +775,9 @@ namespace Traverser
                     float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
 
                     if (!left && distance < 0.1f)
-                        return ClimbingState.CornerRight;
+                        return TraverserClimbingState.CornerRight;
 
-                    return ClimbingState.Right;
+                    return TraverserClimbingState.Right;
                 }
                 else if (stickInput.x < -0.5f)
                 {
@@ -787,25 +787,25 @@ namespace Traverser
                     float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
 
                     if (left && distance < 0.1f)
-                        return ClimbingState.CornerLeft;
+                        return TraverserClimbingState.CornerLeft;
 
-                    return ClimbingState.Left;
+                    return TraverserClimbingState.Left;
                 }
                 else if (stickInput.y < -0.5f)
                 {
-                    return ClimbingState.Down;
+                    return TraverserClimbingState.Down;
                 }
                 else if (stickInput.y > 0.5f)
                 {
-                    return ClimbingState.Up;
+                    return TraverserClimbingState.Up;
                 }
 
             }
 
-            return ClimbingState.Idle;
+            return TraverserClimbingState.Idle;
         }
 
-        ClimbingState GetDesiredClimbingState() 
+        TraverserClimbingState GetDesiredClimbingState() 
         {
             float2 stickInput = TraverserInputLayer.GetStickInput();
 
@@ -816,21 +816,21 @@ namespace Traverser
             if (stickInput.x > 0.5f)
             {
                 if (!left && distance < 0.1f)
-                    return ClimbingState.CornerRight;
+                    return TraverserClimbingState.CornerRight;
 
-                return ClimbingState.Right;
+                return TraverserClimbingState.Right;
             }
 
             else if (stickInput.x < -0.5f)
             {
                 if (left && distance < 0.1f)
-                    return ClimbingState.CornerLeft;
+                    return TraverserClimbingState.CornerLeft;
 
-                return ClimbingState.Left;
+                return TraverserClimbingState.Left;
             }
             
 
-            return ClimbingState.Idle;
+            return TraverserClimbingState.Idle;
         }
 
         // --------------------------------

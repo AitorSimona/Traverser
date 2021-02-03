@@ -240,7 +240,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnabled: 1
   gravityEnabled: 1
-  layerMask: 3841
+  layerMask: 15361
   resolveGroundPenetration: 1
   groundSnap: 1
   collisionEnabled: 1

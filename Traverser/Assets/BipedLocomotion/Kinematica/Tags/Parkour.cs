@@ -3,6 +3,7 @@ using Unity.Kinematica;
 [Trait]
 public struct Parkour
 {
+    // TODO: This values assume that the relevant layers are setup in these specific numbers!!!
     public enum Type
     {
         Wall = 8,
@@ -29,6 +30,7 @@ public struct Parkour
 
     public static Parkour Create(int layer)
     {
-        return Create((Type)layer);
+        // TODO: This values assume that the relevant layers are setup in these specific numbers!!!
+        return Create((Type)(layer - 2));
     }
 }

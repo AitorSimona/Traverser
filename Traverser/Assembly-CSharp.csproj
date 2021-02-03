@@ -89,7 +89,6 @@
     <Compile Include="Assets\Samples\High Definition RP\10.2.2\Procedural Sky\Runtime\ProceduralSky\ProceduralSkyRenderer.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Shared\Scripts\ActivateCameraWithDistance.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Scenes\Anywhere Door\TagChanger.cs" />
-    <Compile Include="Assets\Traverser\Scripts\Layers\InputLayer.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Samples\High Definition RP\10.2.2\Material Samples\TextMesh Pro\Resources\Shaders\TMPro.cginc" />

@@ -10,7 +10,6 @@ namespace Traverser
         // --- Attributes ---
         private TraverserAbility currentAbility;
         private CharacterController controller;
-        private ControllerColliderHit lastHit;
 
         // -------------------------------------------------
 
@@ -57,13 +56,6 @@ namespace Traverser
                     }
                 }
             }
-        }
-
-        private void OnControllerColliderHit(ControllerColliderHit hit)
-        {
-            Debug.Log("Traverser: Character collided with the environment");
-
-            lastHit = hit;
         }
 
         public void OnAnimatorMove()

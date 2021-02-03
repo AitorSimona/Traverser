@@ -56,9 +56,6 @@ namespace Traverser
 
         public TraverserAbility OnUpdate(float deltaTime)
         {
-            
-
-
             return this;
         }
 

@@ -11,7 +11,7 @@ namespace Traverser
     public class AbilityController : Kinematica // Layer to control all of the object's abilities 
     {
         // --- Attributes ---
-        Ability currentAbility;
+        TraverserAbility currentAbility;
         MovementController controller;
         // --------------------------------
 
@@ -39,7 +39,7 @@ namespace Traverser
                 // instead of following the arbitrary order in which they were added as components
 
                 // --- Iterate all abilities and update each one until one takes control ---
-                foreach (Ability ability in GetComponents(typeof(Ability)))
+                foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
                 {
                     SnapshotProvider component = ability as SnapshotProvider;
 
@@ -50,7 +50,7 @@ namespace Traverser
                     // A "null" result signals that this ability doesn't require control.
                     // Otherwise the returned ability (which might be different from the
                     // one that we call "OnUpdate" on) will be the one that gains control.
-                    Ability result = ability.OnUpdate(_deltaTime);
+                    TraverserAbility result = ability.OnUpdate(_deltaTime);
 
                     // --- If an ability asks to take control, break ---
                     if (result != null)
@@ -72,7 +72,7 @@ namespace Traverser
             SnapshotProvider component = currentAbility as SnapshotProvider;
 
             // --- Let abilities modify motion ---
-            if (currentAbility is AbilityAnimatorMove abilityAnimatorMove)
+            if (currentAbility is TraverserAbilityAnimatorMove abilityAnimatorMove)
             {
                 if (component.enabled)
                     abilityAnimatorMove.OnAbilityAnimatorMove();

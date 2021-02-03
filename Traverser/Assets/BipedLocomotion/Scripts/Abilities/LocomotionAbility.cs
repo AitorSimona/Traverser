@@ -49,7 +49,7 @@ namespace Traverser
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]
 
-    public class LocomotionAbility : SnapshotProvider, Ability // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger
+    public class LocomotionAbility : SnapshotProvider, TraverserAbility // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger
     {
         // --- Attributes ---
         [Header("Prediction settings")]
@@ -192,16 +192,16 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Ability class methods ---
-        public Ability OnUpdate(float deltaTime)
+        public TraverserAbility OnUpdate(float deltaTime)
         {
-            Ability ret = this;
+            TraverserAbility ret = this;
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
             // --- Ensure stop animation is properly played, that we do not change to other animations ---
             float minTrajectoryDeviation = HandleBraking();
 
             // --- We perform future movement to check for collisions, then rewind using snapshot debugger's capabilities ---
-            Ability contactAbility = HandleMovementPrediction(ref synthesizer, GetDesiredSpeed(ref synthesizer), deltaTime);
+            TraverserAbility contactAbility = HandleMovementPrediction(ref synthesizer, GetDesiredSpeed(ref synthesizer), deltaTime);
 
             // --- Set up a job so pose prediction runs faster (multithreading) ---
             LocomotionJob job = new LocomotionJob()
@@ -227,7 +227,7 @@ namespace Traverser
             return ret;
         }
 
-        public Ability OnPostUpdate(float deltaTime)
+        public TraverserAbility OnPostUpdate(float deltaTime)
         {
             if (!freedrop)
             {
@@ -290,7 +290,7 @@ namespace Traverser
             return minTrajectoryDeviation;
         }
 
-        Ability HandleMovementPrediction(ref MotionSynthesizer synthesizer, float desiredSpeed, float deltaTime)
+        TraverserAbility HandleMovementPrediction(ref MotionSynthesizer synthesizer, float desiredSpeed, float deltaTime)
         {
             // --- Create final trajectory from given parameters ---
             TrajectoryPrediction prediction = TrajectoryPrediction.CreateFromDirection(ref kinematica.Synthesizer.Ref,
@@ -305,7 +305,7 @@ namespace Traverser
             // --- Start recording (all Snapshot marked values will be recorded) ---
             controller.Snapshot();
 
-            Ability contactAbility = SimulatePrediction(ref synthesizer, ref prediction, ref controller, deltaTime);
+            TraverserAbility contactAbility = SimulatePrediction(ref synthesizer, ref prediction, ref controller, deltaTime);
 
             // --- Go back in time to the snapshot state, all snapshot-marked variables recover their initial value ---
             controller.Rewind();
@@ -313,7 +313,7 @@ namespace Traverser
             return contactAbility;
         }
         
-        Ability SimulatePrediction(ref MotionSynthesizer synthesizer, ref TrajectoryPrediction prediction, ref MovementController controller, float deltaTime)
+        TraverserAbility SimulatePrediction(ref MotionSynthesizer synthesizer, ref TrajectoryPrediction prediction, ref MovementController controller, float deltaTime)
         {
             AffineTransform transform = prediction.Transform;
             AffineTransform worldRootTransform = synthesizer.WorldRootTransform;
@@ -321,7 +321,7 @@ namespace Traverser
             float inverseSampleRate = Missing.recip(synthesizer.Binary.SampleRate); // recip is just the inverse (1/x)
 
             bool attemptTransition = true;
-            Ability contactAbility = null;
+            TraverserAbility contactAbility = null;
 
             AffineTransform tmp = synthesizer.WorldRootTransform;
 
@@ -366,7 +366,7 @@ namespace Traverser
 
                     if (contactAbility == null)
                     {
-                        foreach (Ability ability in GetComponents(typeof(Ability)))
+                        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
                         {
                             SnapshotProvider component = ability as SnapshotProvider;
 
@@ -386,7 +386,7 @@ namespace Traverser
                     // --- Let other abilities take control on drop ---
                     if (contactAbility == null)
                     {
-                        foreach (Ability ability in GetComponents(typeof(Ability)))
+                        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
                         {
                             SnapshotProvider component = ability as SnapshotProvider;
 

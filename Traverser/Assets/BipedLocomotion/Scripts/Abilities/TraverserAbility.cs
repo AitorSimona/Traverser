@@ -5,7 +5,7 @@ using Unity.Mathematics;
 
 namespace Traverser
 {
-    public interface Ability
+    public interface TraverserAbility
     {
         //
         // Called once per frame for each ability to update the synthesizers trajectory.
@@ -13,7 +13,7 @@ namespace Traverser
         // ownership of the policy.
         //
 
-        Ability OnUpdate(float deltaTime);
+        TraverserAbility OnUpdate(float deltaTime);
 
         //
         // Called from another ability to indicate that a predicted future
@@ -39,14 +39,14 @@ namespace Traverser
         //Called from ablity controller so abilities can apply last moment modifications to motion
         //
 
-        Ability OnPostUpdate(float deltaTime);
+        TraverserAbility OnPostUpdate(float deltaTime);
 
     }
 
     // -------------------------------------------------
 
     // --- Abilities may implement this to further modify motion after animations have taken place ---
-    public interface AbilityAnimatorMove
+    public interface TraverserAbilityAnimatorMove
     {
         void OnAbilityAnimatorMove();
     }

@@ -12,7 +12,7 @@ namespace Traverser
     [RequireComponent(typeof(MovementController))]
     [RequireComponent(typeof(LocomotionAbility))]
 
-    public class ParkourAbility : SnapshotProvider, Ability
+    public class ParkourAbility : SnapshotProvider, TraverserAbility
     {
         // --- Attributes ---
         [Header("Transition settings")]
@@ -67,7 +67,7 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Ability class methods ---
-        public Ability OnUpdate(float deltaTime)
+        public TraverserAbility OnUpdate(float deltaTime)
         {
             // --- If we are in a transition disable controller ---
             TraverserCollisionLayer.ConfigureController(anchoredTransition.isValid, ref controller);
@@ -78,7 +78,7 @@ namespace Traverser
             return null;
         }
 
-        public Ability OnPostUpdate(float deltaTime)
+        public TraverserAbility OnPostUpdate(float deltaTime)
         {
 
             return null;

@@ -8,7 +8,7 @@ namespace Traverser
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]
 
-    public class ClimbingAbility : SnapshotProvider, Ability
+    public class ClimbingAbility : SnapshotProvider, TraverserAbility
     {
         // --- Attributes ---
         [Header("Transition settings")]
@@ -147,7 +147,7 @@ namespace Traverser
         // --------------------------------
 
         // --- Ability class methods ---
-        public Ability OnUpdate(float deltaTime)
+        public TraverserAbility OnUpdate(float deltaTime)
         {
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
@@ -622,7 +622,7 @@ namespace Traverser
             ledgeGeometry.DebugDraw(ref ledgeAnchor);
         }
 
-        public Ability OnPostUpdate(float deltaTime)
+        public TraverserAbility OnPostUpdate(float deltaTime)
         {
             return null;
         }

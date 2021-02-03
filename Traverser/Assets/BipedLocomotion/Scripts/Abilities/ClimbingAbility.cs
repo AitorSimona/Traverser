@@ -3,7 +3,7 @@ using Unity.SnapshotDebugger;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace CWLF
+namespace Traverser
 {
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]

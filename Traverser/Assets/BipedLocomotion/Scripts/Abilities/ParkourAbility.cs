@@ -6,7 +6,7 @@ using Unity.SnapshotDebugger;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace CWLF
+namespace Traverser
 {
     [RequireComponent(typeof(AbilityController))]
     [RequireComponent(typeof(MovementController))]

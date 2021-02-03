@@ -3,7 +3,7 @@ using Unity.Mathematics;
 
 // --- All abilities derive from this base interface (class with no implementations) ---
 
-namespace CWLF
+namespace Traverser
 {
     public interface Ability
     {

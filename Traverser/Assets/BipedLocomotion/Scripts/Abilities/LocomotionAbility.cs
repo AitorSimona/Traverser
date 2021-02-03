@@ -7,7 +7,7 @@ using Unity.Collections;
 using Unity.SnapshotDebugger;
 using UnityEngine.Assertions;
 
-namespace CWLF
+namespace Traverser
 {
     // --- Locomotion pose prediction job (MT) ---
     [BurstCompile(CompileSynchronously = true)] //Burst is primarily designed to work efficiently with the Job system.

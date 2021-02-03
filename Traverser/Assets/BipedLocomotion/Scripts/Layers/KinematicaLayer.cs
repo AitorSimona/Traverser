@@ -2,7 +2,7 @@
 
 // --- Wrapper for ability-kinematica interactions ---
 
-namespace CWLF
+namespace Traverser
 {
     public static class KinematicaLayer
     {
@@ -97,7 +97,7 @@ namespace CWLF
             Unity.Mathematics.AffineTransform worldRootTransform = synthesizer.WorldRootTransform * binary.GetTrajectoryTransformBetween(segment.destination.firstFrame, segment.destination.numFrames - 1);
             UnityEngine.GameObject.Find("dummy").transform.position = worldRootTransform.t;
 
-            return !UnityEngine.Physics.CheckSphere(worldRootTransform.t + new Unity.Mathematics.float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, CWLF.CollisionLayer.EnvironmentCollisionMask);
+            return !UnityEngine.Physics.CheckSphere(worldRootTransform.t + new Unity.Mathematics.float3(0.0f, 2.0f * collisionRadius, 0.0f), collisionRadius, Traverser.CollisionLayer.EnvironmentCollisionMask);
         }
 
         // --------------------------------

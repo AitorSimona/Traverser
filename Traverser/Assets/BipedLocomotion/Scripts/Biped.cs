@@ -7,7 +7,7 @@ using Unity.Collections;
 using System;
 using Unity.SnapshotDebugger;
 
-namespace CWLF
+namespace Traverser
 {
     [BurstCompile(CompileSynchronously = true)] //Burst is primarily designed to work efficiently with the Job system.
     public struct KinematicaJob : IJob // multhithreaded code, pose prediction will be executed faster

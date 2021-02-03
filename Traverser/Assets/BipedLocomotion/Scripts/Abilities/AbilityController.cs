@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 using Unity.SnapshotDebugger;
 
 
-namespace CWLF
+namespace Traverser
 {
     [RequireComponent(typeof(MovementController))]
     public class AbilityController : Kinematica // Layer to control all of the object's abilities 

@@ -2,9 +2,8 @@
 
 // --- Wrapper for ability-collisions interactions ---
 
-namespace CWLF
+namespace Traverser
 {
-
     public static class CollisionLayer
     {
         // --- Attributes ---

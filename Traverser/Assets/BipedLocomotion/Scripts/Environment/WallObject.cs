@@ -3,7 +3,7 @@ using Unity.Mathematics;
 
 using UnityEngine;
 
-namespace CWLF
+namespace Traverser
 {
     public class WallObject : SnapshotProvider
     {

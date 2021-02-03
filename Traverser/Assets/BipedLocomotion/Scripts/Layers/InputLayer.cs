@@ -5,7 +5,7 @@ using UnityEngine;
 
 // --- Wrapper for ability-input interactions ---
 
-namespace CWLF
+namespace Traverser
 {
     public static class InputLayer
     {

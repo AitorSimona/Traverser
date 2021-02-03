@@ -6,7 +6,7 @@ using UnityEngine;
 
 using Buffer = Unity.SnapshotDebugger.Buffer;
 
-namespace CWLF
+namespace Traverser
 {
     public class LedgeObject : SnapshotProvider
     {

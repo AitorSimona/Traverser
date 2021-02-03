@@ -10,7 +10,11 @@ namespace Traverser
         public struct FrameCapture
         {
             // --- Attributes ---
-            public float3 movementDirection;
+            public float2 movementDirection
+            {
+                get { return movementDirection; }
+                private set { movementDirection = value; }
+            }
 
             public float moveIntensity;
             public bool run;
@@ -37,8 +41,6 @@ namespace Traverser
 
             public void UpdateLocomotion()
             {
-                stickHorizontal = Input.GetAxis("Left Analog Horizontal");
-                stickVertical = Input.GetAxis("Left Analog Vertical");
                 movementDirection = GetStickInput();
                 run = Input.GetButton("Left Analog Button");
             }
@@ -70,12 +72,11 @@ namespace Traverser
         // --------------------------------
 
         // --- Utilities ---
-        private static float3 GetStickInput()
+        private static float2 GetStickInput()
         {
-            float3 stickInput;
+            float2 stickInput;
             stickInput.x = capture.stickHorizontal;
-            stickInput.y = 0.0f;
-            stickInput.z = capture.stickVertical;
+            stickInput.y = capture.stickVertical;
 
             if (math.length(stickInput) >= 0.1f)
             {
@@ -83,7 +84,7 @@ namespace Traverser
                     stickInput = math.normalize(stickInput);
             }
             else
-                stickInput = float3.zero;
+                stickInput = float2.zero;
 
             return stickInput;
         }

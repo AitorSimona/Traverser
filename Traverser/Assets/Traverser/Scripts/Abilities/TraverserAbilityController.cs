@@ -1,27 +1,16 @@
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Unity.Mathematics;
 
 namespace Traverser
 {
-    [RequireComponent(typeof(CharacterController))]
+    //[RequireComponent(typeof(MovementController))]
     public class TraverserAbilityController : MonoBehaviour
     {
         // --- Attributes ---
         private TraverserAbility currentAbility;
         private CharacterController controller;
         private ControllerColliderHit lastHit;
-
-        [Tooltip("How fast the character can move in m/s")]
-        public float maxMovementSpeed = 1.0f;
-
-        [Tooltip("How fast the character's speed will increase with given input in m/s^2")]
-        public float maxMovementAcceleration = 0.1f;
-
-        [Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
-        public float MovementLinearDrag = 1.0f;
-
-        private float3 currentVelocity = Vector3.zero;
 
         // -------------------------------------------------
 
@@ -68,9 +57,6 @@ namespace Traverser
                     }
                 }
             }
-
-            // --- Apply drag ---
-            currentVelocity -= currentVelocity*MovementLinearDrag*Time.deltaTime;
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -94,35 +80,19 @@ namespace Traverser
 
             // --- Move and update the controller ---
             float3 controllerPosition = controller.transform.position;
-            float3 desiredPosition = controllerPosition + currentVelocity * Time.deltaTime;
+            float3 desiredPosition = controller.transform.position + transform.forward * Time.deltaTime;
             float3 desiredLinearDisplacement = desiredPosition - controllerPosition;
             controller.Move(desiredLinearDisplacement);
+
+            // --- Move the game object ---
+            //AffineTransform worldRootTransform = AffineTransform.Create(controller.Position, synthesizer.WorldRootTransform.q);
+            //synthesizer.SetWorldTransform(worldRootTransform, true);
+            //transform.position = worldRootTransform.t;
+            //transform.rotation = worldRootTransform.q;
 
             // --- Let abilities apply final changes to motion, if needed ---
             if (currentAbility != null /*&& component.enabled*/)
                 currentAbility.OnPostUpdate(Time.deltaTime);
-        }
-
-        // -------------------------------------------------
-
-        // --- Movement ---
-
-        public void SetMovementVelocity(float3 velocity)
-        {
-            currentVelocity = velocity;
-        }
-
-        public void AccelerateMovement(float3 acceleration)
-        {
-            if (math.length(acceleration) > maxMovementAcceleration)
-                acceleration = math.normalize(acceleration) * maxMovementAcceleration;
-
-            currentVelocity += acceleration;
-
-            // --- Cap Velocity ---
-            currentVelocity.x = math.clamp(currentVelocity.x, -maxMovementSpeed, maxMovementSpeed);
-            currentVelocity.z = math.clamp(currentVelocity.z, -maxMovementSpeed, maxMovementSpeed);
-            currentVelocity.y = math.clamp(currentVelocity.y, -maxMovementSpeed, maxMovementSpeed);
         }
 
         // -------------------------------------------------

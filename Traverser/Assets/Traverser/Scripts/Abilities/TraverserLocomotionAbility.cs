@@ -9,7 +9,6 @@ namespace Traverser
     {
         // --- Attributes ---
         private CharacterController controller;
-        private TraverserAbilityController abilityController;
 
         // -------------------------------------------------
 
@@ -27,7 +26,6 @@ namespace Traverser
 
         public void OnEnable()
         {
-            abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<CharacterController>();
             //InputLayer.capture.movementDirection = Missing.forward;
             //InputLayer.capture.moveIntensity = 0.0f;
@@ -58,9 +56,7 @@ namespace Traverser
 
         public TraverserAbility OnUpdate(float deltaTime)
         {
-            TraverserInputLayer.capture.UpdateLocomotion();
-            abilityController.AccelerateMovement(TraverserInputLayer.capture.movementDirection*abilityController.maxMovementAcceleration);
-
+            
 
 
             return this;

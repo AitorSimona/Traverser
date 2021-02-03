@@ -1349,9 +1349,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2124adfc79fb6f34b88bc0aa5472f5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxMovementSpeed: 1
-  maxMovementAcceleration: 0.1
-  MovementLinearDrag: 1
 --- !u!143 &919132147544891141
 CharacterController:
   m_ObjectHideFlags: 0

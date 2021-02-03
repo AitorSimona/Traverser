@@ -10,7 +10,7 @@ namespace Traverser
 {
     [RequireComponent(typeof(TraverserAbilityController))]
     [RequireComponent(typeof(MovementController))]
-    [RequireComponent(typeof(LocomotionAbility))]
+    [RequireComponent(typeof(TraverserLocomotionAbility))]
 
     public class ParkourAbility : SnapshotProvider, TraverserAbility
     {
@@ -37,7 +37,7 @@ namespace Traverser
 
         MovementController controller;
 
-        LocomotionAbility locomotion;
+        TraverserLocomotionAbility locomotion;
 
         // --- Basic Methods ---
 
@@ -47,7 +47,7 @@ namespace Traverser
             anchoredTransition = AnchoredTransitionTask.Invalid;
             controller = GetComponent<MovementController>();
             kinematica = GetComponent<Kinematica>();
-            locomotion = GetComponent<LocomotionAbility>();
+            locomotion = GetComponent<TraverserLocomotionAbility>();
         }
 
         public override void OnDisable()

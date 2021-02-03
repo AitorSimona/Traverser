@@ -11,7 +11,7 @@ namespace Traverser
 {
     // --- Locomotion pose prediction job (MT) ---
     [BurstCompile(CompileSynchronously = true)] //Burst is primarily designed to work efficiently with the Job system.
-    public struct LocomotionJob : IJob // multhithreaded code, pose prediction will be executed faster
+    public struct TraverserLocomotionJob : IJob // multhithreaded code, pose prediction will be executed faster
     {
         // --- Attributes ---
         public MemoryRef<MotionSynthesizer> synthesizer;
@@ -49,7 +49,7 @@ namespace Traverser
     [RequireComponent(typeof(TraverserAbilityController))]
     [RequireComponent(typeof(MovementController))]
 
-    public class LocomotionAbility : SnapshotProvider, TraverserAbility // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger
+    public class TraverserLocomotionAbility : SnapshotProvider, TraverserAbility // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger
     {
         // --- Attributes ---
         [Header("Prediction settings")]
@@ -204,7 +204,7 @@ namespace Traverser
             TraverserAbility contactAbility = HandleMovementPrediction(ref synthesizer, GetDesiredSpeed(ref synthesizer), deltaTime);
 
             // --- Set up a job so pose prediction runs faster (multithreading) ---
-            LocomotionJob job = new LocomotionJob()
+            TraverserLocomotionJob job = new TraverserLocomotionJob()
             {
                 synthesizer = kinematica.Synthesizer,
                 idlePoses = idleCandidates,

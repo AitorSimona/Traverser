@@ -97,7 +97,7 @@ namespace Traverser
                 Collider collider = closure.collider;
 
                 int layerMask = 1 << collider.gameObject.layer;
-                Assert.IsTrue((layerMask & 0x1F01) != 0);
+                //Assert.IsTrue((layerMask & 0x1F01) != 0);
 
                 Parkour type = Parkour.Create(collider.gameObject.layer);
                 //Speed speed = GetSpeedTag();

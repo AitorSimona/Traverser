@@ -5,10 +5,9 @@ using UnityEngine;
 
 namespace Traverser
 {
-    public class TLocomotionAbility : MonoBehaviour, TAbility
+    public class TraverserLocomotionAbility : MonoBehaviour, TraverserAbility
     {
         // --- Attributes ---
-        private TLocomotionAbility copy;
         private CharacterController controller;
 
         // -------------------------------------------------
@@ -16,14 +15,10 @@ namespace Traverser
         // --- World interactable elements ---
         //LedgeObject.LedgeGeometry ledgeGeometry;
 
-        //MovementController controller;
-
-        bool isBraking = false;
-        bool preFreedrop = true;
-
-        // TODO: Remove from here
+        //bool isBraking = false;
+        //bool preFreedrop = true;
         //float desiredLinearSpeed => InputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
-        float distance_to_fall = 3.0f; // initialized to maxFallPredictionDistance
+        //float distance_to_fall = 3.0f; // initialized to maxFallPredictionDistance
 
         // -------------------------------------------------
 
@@ -54,12 +49,12 @@ namespace Traverser
             return this;
         }
 
-        public TAbility OnPostUpdate(float deltaTime)
+        public TraverserAbility OnPostUpdate(float deltaTime)
         {
             return this;
         }
 
-        public TAbility OnUpdate(float deltaTime)
+        public TraverserAbility OnUpdate(float deltaTime)
         {
             return this;
         }

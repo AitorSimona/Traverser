@@ -62,7 +62,7 @@
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Shared\Scripts\InvokeEventFromInspector.cs" />
     <Compile Include="Assets\HDRP\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\HDRP\Scripts\SimpleCameraController.cs" />
-    <Compile Include="Assets\Traverser\Scripts\Abilities\TAbility.cs" />
+    <Compile Include="Assets\Traverser\Scripts\Abilities\TraverserAbility.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Scenes\Anywhere Door\PlayerMov.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Scenes\3rdPersonWithAimMode\ActivateOnKeypress.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Scenes\DualTarget\MoveAimTarget.cs" />
@@ -78,12 +78,12 @@
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Shared\Scripts\PlayerMoveOnSphere.cs" />
     <Compile Include="Assets\Samples\High Definition RP\10.2.2\Procedural Sky\Runtime\ProceduralSky\ProceduralSky.cs" />
     <Compile Include="Assets\Samples\Animation Rigging\ConstraintSamples\Scripts\mParent.cs" />
-    <Compile Include="Assets\Traverser\Scripts\Abilities\TLocomotionAbility.cs" />
+    <Compile Include="Assets\Traverser\Scripts\Abilities\TraverserLocomotionAbility.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Scenes\CameraMagnets\CameraMagnetTargetController.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Scenes\Trigger volumes\GenericTrigger.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Shared\Models\UnityCharacter\Scripts\CharacterMovement.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Shared\Models\UnityCharacter\Scripts\CharacterMovementNoCamera.cs" />
-    <Compile Include="Assets\Traverser\Scripts\Abilities\TAbilityController.cs" />
+    <Compile Include="Assets\Traverser\Scripts\Abilities\TraverserAbilityController.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Shared\Scripts\ActivateCamOnPlay.cs" />
     <Compile Include="Assets\Samples\Cinemachine\2.6.3\Cinemachine Example Scenes\Scenes\DualTarget\PointAtAimTarget.cs" />
     <Compile Include="Assets\Samples\High Definition RP\10.2.2\Procedural Sky\Runtime\ProceduralSky\ProceduralSkyRenderer.cs" />

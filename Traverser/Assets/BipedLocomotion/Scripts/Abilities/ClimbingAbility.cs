@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Traverser
 {
-    [RequireComponent(typeof(AbilityController))]
+    [RequireComponent(typeof(TraverserAbilityController))]
     [RequireComponent(typeof(MovementController))]
 
     public class ClimbingAbility : SnapshotProvider, TraverserAbility

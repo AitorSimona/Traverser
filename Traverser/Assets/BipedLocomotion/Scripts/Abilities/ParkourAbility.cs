@@ -8,7 +8,7 @@ using UnityEngine.Assertions;
 
 namespace Traverser
 {
-    [RequireComponent(typeof(AbilityController))]
+    [RequireComponent(typeof(TraverserAbilityController))]
     [RequireComponent(typeof(MovementController))]
     [RequireComponent(typeof(LocomotionAbility))]
 

@@ -8,7 +8,7 @@ using Unity.SnapshotDebugger;
 namespace Traverser
 {
     [RequireComponent(typeof(MovementController))]
-    public class AbilityController : Kinematica // Layer to control all of the object's abilities 
+    public class TraverserAbilityController : Kinematica // Layer to control all of the object's abilities 
     {
         // --- Attributes ---
         TraverserAbility currentAbility;

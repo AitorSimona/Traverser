@@ -46,7 +46,7 @@ namespace Traverser
 
     // -------------------------------------------------
 
-    [RequireComponent(typeof(AbilityController))]
+    [RequireComponent(typeof(TraverserAbilityController))]
     [RequireComponent(typeof(MovementController))]
 
     public class LocomotionAbility : SnapshotProvider, TraverserAbility // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger

@@ -12,7 +12,7 @@ namespace Traverser
     [RequireComponent(typeof(MovementController))]
     [RequireComponent(typeof(TraverserLocomotionAbility))]
 
-    public class ParkourAbility : SnapshotProvider, TraverserAbility
+    public class TraverserParkourAbility : SnapshotProvider, TraverserAbility
     {
         // --- Attributes ---
         [Header("Transition settings")]

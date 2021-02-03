@@ -8,7 +8,7 @@ using Buffer = Unity.SnapshotDebugger.Buffer;
 
 namespace Traverser
 {
-    public class LedgeObject : SnapshotProvider
+    public class TraverserLedgeObject : SnapshotProvider
     {
         // --- Definition of a ledge's anchor, the point we are attached to --- 
         public struct LedgeAnchor

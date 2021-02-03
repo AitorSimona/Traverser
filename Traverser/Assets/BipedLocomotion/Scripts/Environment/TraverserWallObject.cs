@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Traverser
 {
-    public class WallObject : SnapshotProvider
+    public class TraverserWallObject : SnapshotProvider
     {
         // --- Definition of a wall's anchor, the point we are attached to (relative to the wall plane, note it is a 2D point) --- 
         public struct WallAnchor

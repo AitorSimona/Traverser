@@ -119,7 +119,7 @@ namespace Traverser
 
         // --- World interactable elements ---
         [Snapshot]
-        LedgeObject.LedgeGeometry ledgeGeometry;
+        TraverserLedgeObject.LedgeGeometry ledgeGeometry;
 
         Kinematica kinematica;
         MovementController controller;
@@ -156,7 +156,7 @@ namespace Traverser
             locomotionCandidates = synthesizer.Query.Where("Locomotion", Locomotion.Default).Except(Idle.Default);
             trajectory = synthesizer.CreateTrajectory(Allocator.Persistent);
 
-            ledgeGeometry = LedgeObject.LedgeGeometry.Create();
+            ledgeGeometry = TraverserLedgeObject.LedgeGeometry.Create();
 
             // --- Play default animation ---
             synthesizer.PlayFirstSequence(idleCandidates);

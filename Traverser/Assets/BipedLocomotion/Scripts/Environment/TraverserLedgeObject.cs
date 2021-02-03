@@ -11,7 +11,7 @@ namespace Traverser
     public class TraverserLedgeObject : SnapshotProvider
     {
         // --- Definition of a ledge's anchor, the point we are attached to --- 
-        public struct LedgeAnchor
+        public struct TraverserLedgeAnchor
         {
             // --- Attributes that define an anchor point ---
             public int index; // of the 4 lines/edges that compose a ledge, which one is the anchor on
@@ -26,9 +26,9 @@ namespace Traverser
             // -------------------------------------------------
 
             // --- Construction ---
-            public static LedgeAnchor Create()
+            public static TraverserLedgeAnchor Create()
             {
-                return new LedgeAnchor();
+                return new TraverserLedgeAnchor();
             }
 
             // -------------------------------------------------
@@ -37,16 +37,16 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Definition of ledge geometry, so we can adapt motion when colliding into it ---
-        public struct LedgeGeometry : IDisposable, Serializable
+        public struct TraverserLedgeGeometry : IDisposable, Serializable
         {
             // --- Attributes ---
             public NativeArray<float3> vertices; // Attribute that defines a ledge object
             private TagExtensions.OBB obb;
 
             // --- Basic Methods ---
-            public static LedgeGeometry Create()
+            public static TraverserLedgeGeometry Create()
             {
-                var result = new LedgeGeometry();
+                var result = new TraverserLedgeGeometry();
                 result.vertices = new NativeArray<float3>(4, Allocator.Persistent); // custom alloc vertices
                 return result;
             }
@@ -157,7 +157,7 @@ namespace Traverser
                 return math.normalize(b - a);
             }
 
-            public float3 GetNormal(LedgeAnchor anchor)
+            public float3 GetNormal(TraverserLedgeAnchor anchor)
             {
                 return -math.cross(GetNormalizedEdge(anchor.index), Missing.up);
             }
@@ -172,7 +172,7 @@ namespace Traverser
             }
 
 
-            public float3 GetPosition(LedgeAnchor anchor)
+            public float3 GetPosition(TraverserLedgeAnchor anchor)
             {
                 // --- Get 3D position from given ledge 2D anchor point ---
                 return vertices[anchor.index] + GetNormalizedEdge(anchor.index) * anchor.distance;
@@ -261,7 +261,7 @@ namespace Traverser
                 return minimumDistance;
             }
 
-            public AffineTransform GetTransform(LedgeAnchor anchor)
+            public AffineTransform GetTransform(TraverserLedgeAnchor anchor)
             {
                 // --- Get transform out of a 2D ledge anchor --- 
                 float3 p = GetPosition(anchor);
@@ -272,7 +272,7 @@ namespace Traverser
                 return new AffineTransform(p, math.quaternion(math.float3x3(edge, up, n)));
             }
 
-            public AffineTransform GetTransformGivenNormal(LedgeAnchor anchor, float3 normal)
+            public AffineTransform GetTransformGivenNormal(TraverserLedgeAnchor anchor, float3 normal)
             {
                 // --- Get transform out of a 2D ledge anchor --- 
                 float3 p = GetPosition(anchor);
@@ -285,10 +285,10 @@ namespace Traverser
             // -------------------------------------------------
 
             // --- Anchor ---
-            public LedgeAnchor GetAnchor(float3 position)
+            public TraverserLedgeAnchor GetAnchor(float3 position)
             {
                 // --- Given a 3d position/ root motion transform, return the closer anchor point ---
-                LedgeAnchor result = new LedgeAnchor();
+                TraverserLedgeAnchor result = new TraverserLedgeAnchor();
 
                 float3 closestPoint = ClosestPoint.FromPosition(position, vertices[0], vertices[1]);
                 float minimumDistance = math.length(closestPoint - position);
@@ -315,14 +315,14 @@ namespace Traverser
                 return result;
             }
 
-            public LedgeAnchor UpdateAnchor(LedgeAnchor anchor, float3 position)
+            public TraverserLedgeAnchor UpdateAnchor(TraverserLedgeAnchor anchor, float3 position)
             {
                 int a = anchor.index;
                 int b = GetNextEdgeIndex(anchor.index);
 
                 float3 closestPoint = ClosestPoint.FromPosition(position, vertices[a], vertices[b]);
 
-                LedgeAnchor result;
+                TraverserLedgeAnchor result;
 
                 float length = math.length(vertices[b] - vertices[a]);
                 float distance = math.length(closestPoint - vertices[a]);
@@ -348,10 +348,10 @@ namespace Traverser
                 return result;
             }
 
-            public LedgeAnchor UpdateAnchor(LedgeAnchor anchor, float displacement)
+            public TraverserLedgeAnchor UpdateAnchor(TraverserLedgeAnchor anchor, float displacement)
             {
                 // --- Displace ledge anchor point by given displacement ---
-                LedgeAnchor result;
+                TraverserLedgeAnchor result;
 
                 int a = anchor.index;
                 int b = GetNextEdgeIndex(anchor.index);
@@ -404,7 +404,7 @@ namespace Traverser
                 }
             }
 
-            public void DebugDraw(ref LedgeAnchor state)
+            public void DebugDraw(ref TraverserLedgeAnchor state)
             {
                 float3 position = GetPosition(state);
                 float3 normal = GetNormal(state);

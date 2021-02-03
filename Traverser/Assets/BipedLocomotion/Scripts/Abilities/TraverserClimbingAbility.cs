@@ -83,18 +83,18 @@ namespace Traverser
 
         // --- World interactable elements ---
         [Snapshot]
-        TraverserLedgeObject.LedgeGeometry ledgeGeometry;
+        TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
 
-        TraverserLedgeObject.LedgeGeometry auxledgeGeometry;
-
-        [Snapshot]
-        TraverserWallObject.WallGeometry wallGeometry;
+        TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
 
         [Snapshot]
-        TraverserLedgeObject.LedgeAnchor ledgeAnchor;
+        TraverserWallObject.TraverserWallGeometry wallGeometry;
 
         [Snapshot]
-        TraverserWallObject.WallAnchor wallAnchor;
+        TraverserLedgeObject.TraverserLedgeAnchor ledgeAnchor;
+
+        [Snapshot]
+        TraverserWallObject.TraverserWallAnchor wallAnchor;
 
         [Snapshot]
         AnchoredTransitionTask anchoredTransition;
@@ -117,12 +117,12 @@ namespace Traverser
             previousClimbingState = TraverserClimbingState.Idle;
             lastCollidingClimbingState = TraverserClimbingState.None;
 
-            ledgeGeometry = TraverserLedgeObject.LedgeGeometry.Create();
-            auxledgeGeometry = TraverserLedgeObject.LedgeGeometry.Create();
-            wallGeometry = TraverserWallObject.WallGeometry.Create();
+            ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
+            auxledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
+            wallGeometry = TraverserWallObject.TraverserWallGeometry.Create();
 
-            ledgeAnchor = TraverserLedgeObject.LedgeAnchor.Create();
-            wallAnchor = TraverserWallObject.WallAnchor.Create();
+            ledgeAnchor = TraverserLedgeObject.TraverserLedgeAnchor.Create();
+            wallAnchor = TraverserWallObject.TraverserWallAnchor.Create();
 
             anchoredTransition = AnchoredTransitionTask.Invalid;
         }
@@ -541,7 +541,7 @@ namespace Traverser
             AffineTransform rootTransform = synthesizer.WorldRootTransform * deltaTransform;
             float linearDisplacement = -deltaTransform.t.x;
 
-            TraverserLedgeObject.LedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
+            TraverserLedgeObject.TraverserLedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
             float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
             float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
 
@@ -643,7 +643,7 @@ namespace Traverser
                         if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
                         {
                             auxledgeGeometry.Initialize(collider);
-                            TraverserLedgeObject.LedgeAnchor auxAnchor = auxledgeGeometry.GetAnchor(contactTransform.t);
+                            TraverserLedgeObject.TraverserLedgeAnchor auxAnchor = auxledgeGeometry.GetAnchor(contactTransform.t);
                             bool left = false;
                             float distance = auxledgeGeometry.GetDistanceToClosestVertex(contactTransform.t, auxledgeGeometry.GetNormal(auxAnchor), ref left);
 

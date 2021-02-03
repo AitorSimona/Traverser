@@ -8,7 +8,7 @@ namespace Traverser
     public class TraverserWallObject : SnapshotProvider
     {
         // --- Definition of a wall's anchor, the point we are attached to (relative to the wall plane, note it is a 2D point) --- 
-        public struct WallAnchor
+        public struct TraverserWallAnchor
         {
             // --- Attributes that define an anchor point ---
             public float x; // note these two values form a 2D position, from top left vertex
@@ -23,9 +23,9 @@ namespace Traverser
             // -------------------------------------------------
 
             // --- Construction ---
-            public static WallAnchor Create()
+            public static TraverserWallAnchor Create()
             {
-                return new WallAnchor();
+                return new TraverserWallAnchor();
             }
 
             // -------------------------------------------------
@@ -34,7 +34,7 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Definition of wall geometry, so we can adapt motion when colliding into it ---
-        public struct WallGeometry
+        public struct TraverserWallGeometry
         {
             // --- Attributes that define a wall object ---
             public AffineTransform transform; // Ensure we remain on the same space
@@ -47,9 +47,9 @@ namespace Traverser
             // -------------------------------------------------
 
             // --- Basic Methods ---
-            public static WallGeometry Create()
+            public static TraverserWallGeometry Create()
             {
-                return new WallGeometry();
+                return new TraverserWallGeometry();
             }
 
             public void Initialize(BoxCollider collider, AffineTransform contactTransform)
@@ -201,12 +201,12 @@ namespace Traverser
                 return size.y * scale.y;
             }
 
-            public float GetHeight(ref WallAnchor anchor)
+            public float GetHeight(ref TraverserWallAnchor anchor)
             {
                 return GetHeight() * (1.0f - anchor.y);
             }
 
-            public float3 GetPosition(WallAnchor anchor)
+            public float3 GetPosition(TraverserWallAnchor anchor)
             {
                 // --- Find the 3d position of our 2D anchor point ---
 
@@ -225,7 +225,7 @@ namespace Traverser
             // -------------------------------------------------
 
             // --- Anchor ---
-            public WallAnchor GetAnchor(float3 position)
+            public TraverserWallAnchor GetAnchor(float3 position)
             {
                 // --- Given a 3d position/ root motion transform, return the closer anchor point ---
                 float3 localPosition = WorldToLocal(position);
@@ -234,7 +234,7 @@ namespace Traverser
 
                 localPosition -= normal * distance;
 
-                WallAnchor result;
+                TraverserWallAnchor result;
 
                 result.x = 1.0f - math.saturate(((math.dot(GetOrthogonalLocalSpace(), localPosition) + 1.0f) * 0.5f));
                 result.y = 1.0f - math.saturate((localPosition.y + 1.0f) * 0.5f);
@@ -243,9 +243,9 @@ namespace Traverser
             }
 
             // MYTODO: Check if this function is used in newer version, else eliminate it
-            public WallAnchor UpdateAnchor(WallAnchor anchor, float2 xy)
+            public TraverserWallAnchor UpdateAnchor(TraverserWallAnchor anchor, float2 xy)
             {
-                WallAnchor result;
+                TraverserWallAnchor result;
 
                 result.x = math.saturate(anchor.x - xy.x / GetWidth()); // saturate = clamp (0.0f-1.0f)
                 result.y = math.saturate(anchor.y - xy.y / GetHeight());
@@ -273,7 +273,7 @@ namespace Traverser
                 }
             }
 
-            public void DebugDraw(ref WallAnchor state)
+            public void DebugDraw(ref TraverserWallAnchor state)
             {
                 float3 position = GetPosition(state);
                 float3 normal = GetNormalWorldSpace();

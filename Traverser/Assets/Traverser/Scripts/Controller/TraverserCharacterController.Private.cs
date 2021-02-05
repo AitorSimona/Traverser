@@ -50,6 +50,7 @@ namespace Traverser
         {
             public TraverserCollision previousCollision;
             public TraverserCollision currentCollision;
+            public Transform transform;
 
             internal static TraverserState Create()
             {
@@ -64,14 +65,15 @@ namespace Traverser
             {
                 previousCollision.CopyFrom(ref copyState.previousCollision);
                 currentCollision.CopyFrom(ref copyState.currentCollision);
+                transform = copyState.transform;
             }
         }
 
         [HideInInspector]
-        public CharacterController characterController;
+        private CharacterController characterController;
 
-        public TraverserState state;
-        public TraverserState snapshotState;
+        private TraverserState state;
+        private TraverserState snapshotState;
 
         // Start is called before the first frame update
         void Start()

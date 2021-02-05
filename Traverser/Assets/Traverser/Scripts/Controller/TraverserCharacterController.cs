@@ -19,5 +19,13 @@ namespace Traverser
         {
             state.CopyFrom(ref snapshotState);
         }
+
+        public CollisionFlags Move(Vector3 motion)
+        {
+            CollisionFlags flags = characterController.Move(motion);
+            state.transform = characterController.transform;
+
+            return flags;
+        }
     }
 }

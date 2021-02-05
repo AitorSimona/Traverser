@@ -83,7 +83,7 @@ namespace Traverser
             // --- Move and update the controller ---
             float3 controllerPosition = controller.transform.position;
             float3 desiredLinearDisplacement = synthesizer.WorldRootTransform.t - controllerPosition;
-            controller.characterController.Move(desiredLinearDisplacement * Time.deltaTime);
+            controller.Move(desiredLinearDisplacement * Time.deltaTime);
             //controller.Tick(Debugger.instance.deltaTime);
 
             // --- Move the game object ---

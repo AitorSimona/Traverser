@@ -7,12 +7,12 @@ using Unity.SnapshotDebugger;
 
 namespace Traverser
 {
-    [RequireComponent(typeof(MovementController))]
+    [RequireComponent(typeof(TraverserCharacterController))]
     public class TraverserAbilityController : Kinematica // Layer to control all of the object's abilities 
     {
         // --- Attributes ---
         TraverserAbility currentAbility;
-        MovementController controller;
+        TraverserCharacterController controller;
         // --------------------------------
 
         // --- Basic methods ---
@@ -20,7 +20,7 @@ namespace Traverser
         {
             base.OnEnable();
 
-            controller = GetComponent<MovementController>();
+            controller = GetComponent<TraverserCharacterController>();
         }
 
         public virtual new void Update()
@@ -81,13 +81,13 @@ namespace Traverser
             Assert.IsTrue(controller != null);
 
             // --- Move and update the controller ---
-            float3 controllerPosition = controller.Position;
+            float3 controllerPosition = controller.transform.position;
             float3 desiredLinearDisplacement = synthesizer.WorldRootTransform.t - controllerPosition;
-            controller.Move(desiredLinearDisplacement);
-            controller.Tick(Debugger.instance.deltaTime);
+            controller.characterController.Move(desiredLinearDisplacement * Time.deltaTime);
+            //controller.Tick(Debugger.instance.deltaTime);
 
             // --- Move the game object ---
-            AffineTransform worldRootTransform = AffineTransform.Create(controller.Position, synthesizer.WorldRootTransform.q);
+            AffineTransform worldRootTransform = AffineTransform.Create(controller.transform.position, synthesizer.WorldRootTransform.q);
             synthesizer.SetWorldTransform(worldRootTransform, true);
             transform.position = worldRootTransform.t;
             transform.rotation = worldRootTransform.q;

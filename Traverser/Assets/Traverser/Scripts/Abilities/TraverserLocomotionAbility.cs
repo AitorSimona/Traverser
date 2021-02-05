@@ -47,7 +47,7 @@ namespace Traverser
     // -------------------------------------------------
 
     [RequireComponent(typeof(TraverserAbilityController))]
-    [RequireComponent(typeof(MovementController))]
+    [RequireComponent(typeof(TraverserCharacterController))]
 
     public class TraverserLocomotionAbility : SnapshotProvider, TraverserAbility // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger
     {
@@ -122,7 +122,7 @@ namespace Traverser
         TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
 
         Kinematica kinematica;
-        MovementController controller;
+        TraverserCharacterController controller;
 
         PoseSet idleCandidates;
         PoseSet locomotionCandidates;
@@ -145,7 +145,7 @@ namespace Traverser
         {
             base.OnEnable();
             kinematica = GetComponent<Kinematica>();
-            controller = GetComponent<MovementController>();
+            controller = GetComponent<TraverserCharacterController>();
             ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
 
             TraverserInputLayer.capture.movementDirection = Missing.forward;
@@ -229,32 +229,32 @@ namespace Traverser
 
         public TraverserAbility OnPostUpdate(float deltaTime)
         {
-            if (!freedrop)
-            {
-                // --- Prevent character from falling from its current ground ---
-                // --- TODO: Clean this, temporal placement ---
-                if (!freedrop && controller.current.ground)
-                {
-                    BoxCollider collider = controller.current.ground.gameObject.GetComponent<BoxCollider>() as BoxCollider;
+            //if (!freedrop)
+            //{
+            //    // --- Prevent character from falling from its current ground ---
+            //    // --- TODO: Clean this, temporal placement ---
+            //    if (!freedrop && controller.current.ground)
+            //    {
+            //        BoxCollider collider = controller.current.ground.gameObject.GetComponent<BoxCollider>() as BoxCollider;
 
-                    if (collider != null)
-                    {
-                        // TODO: Expose this
-                        if (collider.gameObject.layer == LayerMask.NameToLayer("Wall")
-                            || collider.gameObject.layer == LayerMask.NameToLayer("Default")
-                            || collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
-                        {
-                            // TODO: Prevent this from happening all the time
-                            ledgeGeometry.Initialize(collider);
-                        }
-                    }
+            //        if (collider != null)
+            //        {
+            //            // TODO: Expose this
+            //            if (collider.gameObject.layer == LayerMask.NameToLayer("Wall")
+            //                || collider.gameObject.layer == LayerMask.NameToLayer("Default")
+            //                || collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
+            //            {
+            //                // TODO: Prevent this from happening all the time
+            //                ledgeGeometry.Initialize(collider);
+            //            }
+            //        }
 
 
-                    ledgeGeometry.DebugDraw(); // TODO: Temporal
-                }
+            //        ledgeGeometry.DebugDraw(); // TODO: Temporal
+            //    }
 
-                LimitTransform();
-            }
+            //    LimitTransform();
+            //}
 
             return null;
         }
@@ -303,17 +303,17 @@ namespace Traverser
             Assert.IsTrue(controller != null); // just in case :)
 
             // --- Start recording (all Snapshot marked values will be recorded) ---
-            controller.Snapshot();
+            //TODO controller.Snapshot();
 
             TraverserAbility contactAbility = SimulatePrediction(ref synthesizer, ref prediction, ref controller, deltaTime);
 
             // --- Go back in time to the snapshot state, all snapshot-marked variables recover their initial value ---
-            controller.Rewind();
+            //TODO controller.Rewind();
 
             return contactAbility;
         }
         
-        TraverserAbility SimulatePrediction(ref MotionSynthesizer synthesizer, ref TrajectoryPrediction prediction, ref MovementController controller, float deltaTime)
+        TraverserAbility SimulatePrediction(ref MotionSynthesizer synthesizer, ref TrajectoryPrediction prediction, ref TraverserCharacterController controller, float deltaTime)
         {
             AffineTransform transform = prediction.Transform;
             AffineTransform worldRootTransform = synthesizer.WorldRootTransform;
@@ -331,91 +331,94 @@ namespace Traverser
                 // --- Get new transform and perform future movement ---
                 transform = prediction.Advance;
 
-                controller.MoveTo(worldRootTransform.transform(transform.t)); // apply movement
-                controller.Tick(inverseSampleRate); // update controller
+                //TODO controller.MoveTo(worldRootTransform.transform(transform.t)); // apply movement
+                //TODO controller.Tick(inverseSampleRate); // update controller
 
-                ref MovementController.Closure closure = ref controller.current; // current state of the controller (after a tick is issued)
+                //TODO ref MovementController.Closure closure = ref controller.current; // current state of the controller (after a tick is issued)
 
                 // --- If a collision occurs, call each ability's onContact callback ---
-                if (closure.isColliding && attemptTransition)
-                {
-                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
 
-                    float3 contactPoint = closure.colliderContactPoint;
-                    contactPoint.y = controller.Position.y;
-                    float3 contactNormal = closure.colliderContactNormal;
-                    quaternion q = math.mul(transform.q, Missing.forRotation(Missing.zaxis(transform.q), contactNormal));
+                //TODO
 
-                    AffineTransform contactTransform = new AffineTransform(contactPoint, q);
+                //if (closure.isColliding && attemptTransition)
+                //{
+                //    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
 
-                    //  TODO : Remove temporal debug object
-                    //GameObject.Find("dummy").transform.position = contactTransform.t;
+                //    float3 contactPoint = closure.colliderContactPoint;
+                //    contactPoint.y = controller.Position.y;
+                //    float3 contactNormal = closure.colliderContactNormal;
+                //    quaternion q = math.mul(transform.q, Missing.forRotation(Missing.zaxis(transform.q), contactNormal));
 
-                    float3 desired_direction = contactTransform.t - tmp.t;
-                    float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
-                    float target_orientation = current_orientation + Vector3.SignedAngle(TraverserInputLayer.capture.movementDirection, desired_direction, Vector3.up);
-                    float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
+                //    AffineTransform contactTransform = new AffineTransform(contactPoint, q);
 
-                    // TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
-                    //Debug.Log(angle);
-                    // --- If we are not close to the desired angle or contact point, do not handle contacts ---
-                    if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 4.0f)
-                    {
-                        continue;
-                    }
+                //    //  TODO : Remove temporal debug object
+                //    //GameObject.Find("dummy").transform.position = contactTransform.t;
 
-                    if (contactAbility == null)
-                    {
-                        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
-                        {
-                            SnapshotProvider component = ability as SnapshotProvider;
+                //    float3 desired_direction = contactTransform.t - tmp.t;
+                //    float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
+                //    float target_orientation = current_orientation + Vector3.SignedAngle(TraverserInputLayer.capture.movementDirection, desired_direction, Vector3.up);
+                //    float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
 
-                            // --- If any ability reacts to the collision, break ---
-                            if (component.enabled && ability.OnContact(ref synthesizer, contactTransform, deltaTime))
-                            {
-                                contactAbility = ability;
-                                break;
-                            }
-                        }
-                    }
+                //    // TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
+                //    //Debug.Log(angle);
+                //    // --- If we are not close to the desired angle or contact point, do not handle contacts ---
+                //    if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 4.0f)
+                //    {
+                //        continue;
+                //    }
 
-                    attemptTransition = false; // make sure we do not react to another collision
-                }
-                else if (!closure.isGrounded) // we are dropping/falling down
-                {
-                    // --- Let other abilities take control on drop ---
-                    if (contactAbility == null)
-                    {
-                        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
-                        {
-                            SnapshotProvider component = ability as SnapshotProvider;
+                //    if (contactAbility == null)
+                //    {
+                //        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                //        {
+                //            SnapshotProvider component = ability as SnapshotProvider;
 
-                            // --- If any ability reacts to the drop, break ---
-                            if (component.enabled && ability.OnDrop(ref synthesizer, deltaTime))
-                            {
-                                contactAbility = ability;
-                                break;
-                            }
-                        }
-                    }
+                //            // --- If any ability reacts to the collision, break ---
+                //            if (component.enabled && ability.OnContact(ref synthesizer, contactTransform, deltaTime))
+                //            {
+                //                contactAbility = ability;
+                //                break;
+                //            }
+                //        }
+                //    }
 
-                    if (!freedrop)
-                    {
-                        // --- Compute distance to fall point ---
-                        Vector3 futurepos;
-                        futurepos.x = controller.current.position.x;
-                        futurepos.y = controller.current.position.y;
-                        futurepos.z = controller.current.position.z;
-                        distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
-                        break;
-                    }
-                }
-                else
-                {
-                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
-                }
+                //    attemptTransition = false; // make sure we do not react to another collision
+                //}
+                //else if (!closure.isGrounded) // we are dropping/falling down
+                //{
+                //    // --- Let other abilities take control on drop ---
+                //    if (contactAbility == null)
+                //    {
+                //        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                //        {
+                //            SnapshotProvider component = ability as SnapshotProvider;
 
-                transform.t = worldRootTransform.inverseTransform(controller.Position);
+                //            // --- If any ability reacts to the drop, break ---
+                //            if (component.enabled && ability.OnDrop(ref synthesizer, deltaTime))
+                //            {
+                //                contactAbility = ability;
+                //                break;
+                //            }
+                //        }
+                //    }
+
+                //    if (!freedrop)
+                //    {
+                //        // --- Compute distance to fall point ---
+                //        //TODO Vector3 futurepos;
+                //        //TODO futurepos.x = controller.current.position.x;
+                //        //TODO futurepos.y = controller.current.position.y;
+                //        //TODO futurepos.z = controller.current.position.z;
+                //        //TODO distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
+                //        break;
+                //    }
+                //}
+                //else
+                //{
+                //    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
+                //}
+
+                //TODO transform.t = worldRootTransform.inverseTransform(controller.Position);
                 prediction.Transform = transform;
             }
 

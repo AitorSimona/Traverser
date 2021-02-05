@@ -30,8 +30,16 @@ namespace Traverser
 
         public CollisionFlags Move(Vector3 motion)
         {
+            // Update previous collision
             state.previousCollision.CopyFrom(ref state.currentCollision);
+
+            // Apply gravity
+            motion.y += Physics.gravity.y * Time.deltaTime;
+
+            // Move
             CollisionFlags flags = characterController.Move(motion);
+
+            // Update state
             state.transform = characterController.transform;
 
             return flags;

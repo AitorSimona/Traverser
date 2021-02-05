@@ -38,6 +38,7 @@ public partial class TraverserCharacterController : MonoBehaviour
     public TraverserCollision previousCollision;
     public TraverserCollision currentCollision;
 
+    [HideInInspector]
     public CharacterController characterController;
 
     // Start is called before the first frame update

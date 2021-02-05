@@ -81,20 +81,20 @@ namespace Traverser
             Assert.IsTrue(controller != null);
 
             // --- Move and update the controller ---
-            float3 controllerPosition = controller.transform.position;
+            float3 controllerPosition = controller.Position;
             float3 desiredLinearDisplacement = synthesizer.WorldRootTransform.t - controllerPosition;
             controller.Move(desiredLinearDisplacement * Time.deltaTime);
             //controller.Tick(Debugger.instance.deltaTime);
 
             // --- Move the game object ---
-            AffineTransform worldRootTransform = AffineTransform.Create(controller.transform.position, synthesizer.WorldRootTransform.q);
+            AffineTransform worldRootTransform = AffineTransform.Create(controller.Position, synthesizer.WorldRootTransform.q);
             synthesizer.SetWorldTransform(worldRootTransform, true);
             transform.position = worldRootTransform.t;
             transform.rotation = worldRootTransform.q;
 
             // --- Let abilities apply final changes to motion, if needed ---
             if(currentAbility != null && component.enabled)
-                currentAbility.OnPostUpdate(_deltaTime);
+                currentAbility.OnPostUpdate(Time.deltaTime);
         }
 
         // --------------------------------

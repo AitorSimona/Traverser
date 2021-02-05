@@ -81,6 +81,8 @@ namespace Traverser
             state = TraverserState.Create();
             snapshotState = TraverserState.Create();
             characterController = GetComponent<CharacterController>();
+            state.transform = characterController.transform;
+            snapshotState.transform = characterController.transform;
         }
 
         // Update is called once per frame

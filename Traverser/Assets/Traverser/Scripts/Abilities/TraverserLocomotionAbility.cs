@@ -331,7 +331,7 @@ namespace Traverser
                 // --- Get new transform and perform future movement ---
                 transform = prediction.Advance;
 
-                //TODO controller.MoveTo(worldRootTransform.transform(transform.t)); // apply movement
+                controller.Move((worldRootTransform.transform(transform.t) - controller.Position) * inverseSampleRate); // apply movement
                 //TODO controller.Tick(inverseSampleRate); // update controller
 
                 //TODO ref MovementController.Closure closure = ref controller.current; // current state of the controller (after a tick is issued)
@@ -418,7 +418,7 @@ namespace Traverser
                 //    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
                 //}
 
-                //TODO transform.t = worldRootTransform.inverseTransform(controller.Position);
+                transform.t = worldRootTransform.inverseTransform(controller.Position);
                 prediction.Transform = transform;
             }
 

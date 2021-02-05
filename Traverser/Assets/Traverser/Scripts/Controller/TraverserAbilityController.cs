@@ -89,11 +89,13 @@ namespace Traverser
             // --- Move the game object ---
             AffineTransform worldRootTransform = AffineTransform.Create(controller.Position, synthesizer.WorldRootTransform.q);
             synthesizer.SetWorldTransform(worldRootTransform, true);
-            transform.position = worldRootTransform.t;
+            //transform.position = worldRootTransform.t;
+            controller.ForceMove(worldRootTransform.t);
             transform.rotation = worldRootTransform.q;
 
+
             // --- Let abilities apply final changes to motion, if needed ---
-            if(currentAbility != null && component.enabled)
+            if (currentAbility != null && component.enabled)
                 currentAbility.OnPostUpdate(_deltaTime);
         }
 

@@ -84,14 +84,16 @@ namespace Traverser
 
         void UpdateMovement(float deltaTime)
         {
+            float3 gravity = Physics.gravity;
+            state.accumulatedVelocity += gravity * deltaTime;
+            state.desiredDisplacement += state.accumulatedVelocity * deltaTime;
+
             float3 finalDisplacement = state.desiredVelocity * deltaTime + state.desiredDisplacement;
             state.desiredDisplacement = Vector3.zero;
 
            // if (gravityEnabled)
             //{
-                //float3 gravity = Physics.gravity;
-                //state.accumulatedVelocity += gravity * deltaTime;
-                //state.desiredDisplacement = state.accumulatedVelocity * deltaTime;
+   
             //}
 
 
@@ -107,7 +109,20 @@ namespace Traverser
                 state.accumulatedVelocity -= verticalAccumulatedVelocity;
             //}
 
+            characterController.Move(finalDisplacement * Time.deltaTime);
+
             //characterController.m
+        }
+
+        public void ForceMove(Vector3 position)
+        {
+            characterController.Move(position - transform.position);
+        }
+
+        public void ResetCharacterController()
+        {
+            characterController.transform.position = state.transform.position;
+            characterController.transform.rotation = state.transform.rotation;
         }
     }
 }

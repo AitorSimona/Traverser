@@ -69,12 +69,12 @@ namespace Traverser
         void UpdateVelocity(float deltaTime)
         {
 
-           var verticalAccumulatedVelocity =
+            float3 verticalAccumulatedVelocity =
                Missing.project(state.accumulatedVelocity, math.up());
 
            if (math.dot(math.normalize(verticalAccumulatedVelocity), math.up()) <= 0.0f)
            {
-               var lateralAccumulatedVelocity =
+                float3 lateralAccumulatedVelocity =
                    state.accumulatedVelocity - verticalAccumulatedVelocity;
 
                state.accumulatedVelocity = lateralAccumulatedVelocity;
@@ -84,7 +84,7 @@ namespace Traverser
 
         void UpdateMovement(float deltaTime)
         {
-            var finalDisplacement = state.desiredVelocity * deltaTime + state.desiredDisplacement;
+            float3 finalDisplacement = state.desiredVelocity * deltaTime + state.desiredDisplacement;
             state.desiredDisplacement = Vector3.zero;
 
            // if (gravityEnabled)
@@ -95,13 +95,13 @@ namespace Traverser
             //}
 
 
-            var finalPosition = Position + finalDisplacement;
+            float3 finalPosition = Position + finalDisplacement;
             state.currentCollision.position = finalPosition;
             state.currentCollision.velocity = (finalPosition - state.previousCollision.position) / deltaTime;
 
             //if (state.currentCollision.isGrounded)
             //{
-                var verticalAccumulatedVelocity =
+            float3 verticalAccumulatedVelocity =
                     Missing.project(state.accumulatedVelocity, math.up());
 
                 state.accumulatedVelocity -= verticalAccumulatedVelocity;

@@ -83,8 +83,8 @@ namespace Traverser
             // --- Move and update the controller ---
             float3 controllerPosition = controller.Position;
             float3 desiredLinearDisplacement = synthesizer.WorldRootTransform.t - controllerPosition;
-            controller.Move(desiredLinearDisplacement * Time.deltaTime);
-            //controller.Tick(Debugger.instance.deltaTime);
+            controller.Move(desiredLinearDisplacement);
+            controller.Tick(Debugger.instance.deltaTime);
 
             // --- Move the game object ---
             AffineTransform worldRootTransform = AffineTransform.Create(controller.Position, synthesizer.WorldRootTransform.q);
@@ -94,7 +94,7 @@ namespace Traverser
 
             // --- Let abilities apply final changes to motion, if needed ---
             if(currentAbility != null && component.enabled)
-                currentAbility.OnPostUpdate(Time.deltaTime);
+                currentAbility.OnPostUpdate(_deltaTime);
         }
 
         // --------------------------------

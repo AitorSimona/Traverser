@@ -331,8 +331,12 @@ namespace Traverser
                 // --- Get new transform and perform future movement ---
                 transform = prediction.Advance;
 
-                controller.Move((worldRootTransform.transform(transform.t) - controller.Position) * inverseSampleRate); // apply movement
+                //controller.Move((worldRootTransform.transform(transform.t) - controller.Position) * inverseSampleRate); // apply movement
                 //TODO controller.Tick(inverseSampleRate); // update controller
+
+                controller.MoveTo(worldRootTransform.transform(transform.t)); // apply movement
+                controller.Tick(inverseSampleRate); // update controller
+
 
                 //TODO ref MovementController.Closure closure = ref controller.current; // current state of the controller (after a tick is issued)
 

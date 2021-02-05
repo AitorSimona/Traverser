@@ -22,6 +22,7 @@ namespace Traverser
 
         public CollisionFlags Move(Vector3 motion)
         {
+            state.previousCollision.CopyFrom(ref state.currentCollision);
             CollisionFlags flags = characterController.Move(motion);
             state.transform = characterController.transform;
 

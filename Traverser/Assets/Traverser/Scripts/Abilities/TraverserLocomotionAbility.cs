@@ -303,12 +303,12 @@ namespace Traverser
             Assert.IsTrue(controller != null); // just in case :)
 
             // --- Start recording (all Snapshot marked values will be recorded) ---
-            //TODO controller.Snapshot();
+            controller.Snapshot();
 
             TraverserAbility contactAbility = SimulatePrediction(ref synthesizer, ref prediction, ref controller, deltaTime);
 
             // --- Go back in time to the snapshot state, all snapshot-marked variables recover their initial value ---
-            //TODO controller.Rewind();
+            controller.Rewind();
 
             return contactAbility;
         }

@@ -15,6 +15,20 @@ namespace Traverser
             get => state.currentCollision.position;
             set => state.currentCollision.position = value;
         }
+        public bool isGrounded
+        {
+            get => characterController.isGrounded;
+        }
+
+        public ref TraverserCollision previous
+        {
+            get => ref state.previousCollision;
+        }
+
+        public ref TraverserCollision current
+        {
+            get => ref state.currentCollision;
+        }
 
         public void Snapshot()
         {
@@ -119,10 +133,19 @@ namespace Traverser
             characterController.Move(position - transform.position);
         }
 
-        public void ResetCharacterController()
+        private void OnControllerColliderHit(ControllerColliderHit hit)
         {
-            characterController.transform.position = state.transform.position;
-            characterController.transform.rotation = state.transform.rotation;
+            if (hit.gameObject.name != "Ground")
+            {
+                Debug.Log("Collided with:");
+                Debug.Log(hit.gameObject.name);
+            }
+            state.previousCollision.CopyFrom(ref state.currentCollision);
+            state.currentCollision.colliderContactPoint = hit.point;
+            state.currentCollision.colliderContactNormal = hit.normal;
+            state.currentCollision.collider = hit.collider;
+            state.currentCollision.isColliding = true;
+            //state.currentCollision
         }
     }
 }

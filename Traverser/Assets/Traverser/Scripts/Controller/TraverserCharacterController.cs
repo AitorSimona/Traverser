@@ -3,9 +3,21 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
 
-public partial class TraverserCharacterController : MonoBehaviour
+namespace Traverser
 {
+    [RequireComponent(typeof(CharacterController))]
 
+    public partial class TraverserCharacterController : MonoBehaviour
+    {
+        public void Snapshot()
+        {
+
+        }
+
+        public void Rewind()
+        {
+
+        }
+    }
 }

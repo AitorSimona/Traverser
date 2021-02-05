@@ -35,21 +35,49 @@ namespace Traverser
                     ground = null
                 };
             }
+
+            internal void CopyFrom(ref TraverserCollision copyCollision)
+            {
+                collider = copyCollision.collider;
+                isColliding = copyCollision.isColliding;
+                colliderContactPoint = copyCollision.colliderContactPoint;
+                colliderContactNormal = copyCollision.colliderContactNormal;
+                ground = copyCollision.ground;
+            }
         }
 
-        //public struct TraverserState
+        public struct TraverserState
+        {
+            public TraverserCollision previousCollision;
+            public TraverserCollision currentCollision;
 
-        public TraverserCollision previousCollision;
-        public TraverserCollision currentCollision;
+            internal static TraverserState Create()
+            {
+                return new TraverserState()
+                {
+                    previousCollision = TraverserCollision.Create(),
+                    currentCollision = TraverserCollision.Create()
+                };
+            }
+
+            internal void CopyFrom(ref TraverserState copyState)
+            {
+                previousCollision.CopyFrom(ref copyState.previousCollision);
+                currentCollision.CopyFrom(ref copyState.currentCollision);
+            }
+        }
 
         [HideInInspector]
         public CharacterController characterController;
 
+        public TraverserState state;
+        public TraverserState snapshotState;
+
         // Start is called before the first frame update
         void Start()
         {
-            previousCollision = TraverserCollision.Create();
-            currentCollision = TraverserCollision.Create();
+            state = TraverserState.Create();
+            snapshotState = TraverserState.Create();
             characterController = GetComponent<CharacterController>();
         }
 

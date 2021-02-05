@@ -12,12 +12,12 @@ namespace Traverser
     {
         public void Snapshot()
         {
-
+            snapshotState.CopyFrom(ref state);
         }
 
         public void Rewind()
         {
-
+            state.CopyFrom(ref snapshotState);
         }
     }
 }

@@ -133,7 +133,7 @@ namespace Traverser
 
                 state.accumulatedVelocity -= verticalAccumulatedVelocity;
             //}
-
+            //Debug.Log(Position);
             //characterController.Move(finalDisplacement * Time.deltaTime);
             //characterController.m
         }
@@ -144,8 +144,8 @@ namespace Traverser
 
         bool CastCollisions(float3 position, ref float3 displacement)
         {
-            startPosition = Missing.Convert(characterController.center) + Missing.up * (characterController.height * 0.5f - characterController.radius);
-            endPosition = Missing.Convert(characterController.center) + Missing.up * (characterController.height * 0.5f - characterController.radius);
+            startPosition = position + Missing.Convert(characterController.center) - Missing.up * (characterController.height * 0.5f - characterController.radius);
+            endPosition = position + Missing.Convert(characterController.center) + Missing.up * (characterController.height * 0.5f - characterController.radius);
 
             float3 normalizedDisplacement = math.normalizesafe(displacement);
 
@@ -153,10 +153,57 @@ namespace Traverser
             int numContacts = TraverserCollisionLayer.CastCapsuleCollisions(startPosition, endPosition, characterController.radius,
                 normalizedDisplacement, ref raycastHits, math.length(displacement), TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
 
-            foreach (RaycastHit hit in raycastHits)
+            if (numContacts > 0)
             {
-                //if()
+                ref RaycastHit result = ref raycastHits[0];
+
+                for (int i = 0; i < numContacts; i++)
+                {
+                    float epsilon = 0.0001f;
+
+                    if (math.dot(normalizedDisplacement, raycastHits[i].normal) > -epsilon)
+                    {
+                        continue;
+                    }
+
+                    if (raycastHits[i].distance < result.distance)
+                    {
+                        result = raycastHits[i];
+                    }
+                }
+
+                state.currentCollision.collider = result.collider;
+                state.currentCollision.colliderContactPoint = result.point;
+                state.currentCollision.colliderContactNormal = result.normal;
+
+                float3 adjustedDisplacement = float3.zero;
+                float extraSpacing = 0.001f;
+
+                if (result.distance > extraSpacing)
+                {
+                    adjustedDisplacement =
+                        math.normalizesafe(displacement) *
+                            math.min(result.distance -
+                                extraSpacing, math.length(displacement));
+                }
+                //else if (result.distance < extraSpacing)
+                //{
+                //    adjustedDisplacement =
+                //        math.normalizesafe(result.point - result.contactOrigin) *
+                //            (result.distance - extraSpacing);
+                //}
+
+                displacement -= adjustedDisplacement;
+
+                if (result.collider.gameObject.name != "Ground")
+                {
+                    Debug.Log("Collided with:");
+                    Debug.Log(result.collider.gameObject.name);
+                }
+
+                return true;
             }
+
 
             return false;
         }
@@ -168,11 +215,11 @@ namespace Traverser
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
-            if (hit.gameObject.name != "Ground")
-            {
-                Debug.Log("Collided with:");
-                Debug.Log(hit.gameObject.name);
-            }
+            //if (hit.gameObject.name != "Ground")
+            //{
+            //    Debug.Log("Collided with:");
+            //    Debug.Log(hit.gameObject.name);
+            //}
             state.previousCollision.CopyFrom(ref state.currentCollision);
             state.currentCollision.colliderContactPoint = hit.point;
             state.currentCollision.colliderContactNormal = hit.normal;

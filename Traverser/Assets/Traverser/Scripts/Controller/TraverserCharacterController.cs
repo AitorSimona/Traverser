@@ -98,6 +98,7 @@ namespace Traverser
 
         void UpdateMovement(float deltaTime)
         {
+            // --- Compute initial displacement ---
             float3 gravity = Physics.gravity;
             state.accumulatedVelocity += gravity * deltaTime;
             state.desiredDisplacement += state.accumulatedVelocity * deltaTime;
@@ -105,12 +106,22 @@ namespace Traverser
             float3 finalDisplacement = state.desiredVelocity * deltaTime + state.desiredDisplacement;
             state.desiredDisplacement = Vector3.zero;
 
-           // if (gravityEnabled)
+            // if (gravityEnabled)
             //{
-   
+
             //}
 
+            // --- React to collisions ---
 
+            if (characterController.detectCollisions)
+            {
+                if(CastCollisions(Position, ref finalDisplacement))
+                {
+                    state.currentCollision.isColliding = true;
+                }
+            }
+
+            // --- Update position and velocity ---
             float3 finalPosition = Position + finalDisplacement;
             state.currentCollision.position = finalPosition;
             state.currentCollision.velocity = (finalPosition - state.previousCollision.position) / deltaTime;
@@ -124,8 +135,30 @@ namespace Traverser
             //}
 
             //characterController.Move(finalDisplacement * Time.deltaTime);
-
             //characterController.m
+        }
+
+        RaycastHit[] raycastHits = new RaycastHit[15];
+        float3 startPosition;
+        float3 endPosition;
+
+        bool CastCollisions(float3 position, ref float3 displacement)
+        {
+            startPosition = Missing.Convert(characterController.center) + Missing.up * (characterController.height * 0.5f - characterController.radius);
+            endPosition = Missing.Convert(characterController.center) + Missing.up * (characterController.height * 0.5f - characterController.radius);
+
+            float3 normalizedDisplacement = math.normalizesafe(displacement);
+
+            // Note we do not care about triggers
+            int numContacts = TraverserCollisionLayer.CastCapsuleCollisions(startPosition, endPosition, characterController.radius,
+                normalizedDisplacement, ref raycastHits, math.length(displacement), TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+
+            foreach (RaycastHit hit in raycastHits)
+            {
+                //if()
+            }
+
+            return false;
         }
 
         public void ForceMove(Vector3 position)

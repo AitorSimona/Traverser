@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Mathematics;
+using UnityEngine;
 
 // --- Wrapper for ability-collisions interactions ---
 
@@ -35,6 +36,12 @@ namespace Traverser
             Vector3 capsuleOffset = Vector3.up * (capsule.height * 0.5f - capsule.radius);
 
             return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, capsule.radius - 0.1f, EnvironmentCollisionMask);
+        }
+
+        public static int CastCapsuleCollisions(float3 startPosition, float3 endPosition, float radius, float3 normalizedDisplacement, ref RaycastHit[] raycastHits, float maxDistance, int layerMask, QueryTriggerInteraction queryTriggerInteraction)
+        {
+            return Physics.CapsuleCastNonAlloc(startPosition, endPosition, radius, normalizedDisplacement, raycastHits, 
+                maxDistance, layerMask, QueryTriggerInteraction.Ignore);
         }
 
         // --- Turn off controller ---

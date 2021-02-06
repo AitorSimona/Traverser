@@ -123,7 +123,7 @@ namespace Traverser
                 state.accumulatedVelocity -= verticalAccumulatedVelocity;
             //}
 
-            characterController.Move(finalDisplacement * Time.deltaTime);
+            //characterController.Move(finalDisplacement * Time.deltaTime);
 
             //characterController.m
         }

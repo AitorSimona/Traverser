@@ -140,9 +140,10 @@ namespace Traverser
             //state.currentCollision.position.y = transform.position.y;
             //Debug.Log(Position);
             //characterController.m
-            float3 finalPosition = Position + desiredDisplacement;
-            state.currentCollision.position = finalPosition;
 
+            float3 finalPosition = Position + desiredDisplacement;
+            ForceMove(finalPosition);
+            state.currentCollision.position = finalPosition;
             state.currentCollision.velocity = (finalPosition - state.previousCollision.position) / deltaTime;
 
 
@@ -245,11 +246,11 @@ namespace Traverser
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
-            //if (hit.gameObject.name != "Ground")
-            //{
-            //    Debug.Log("Collided with:");
-            //    Debug.Log(hit.gameObject.name);
-            //}
+            if (hit.gameObject.name != "Ground")
+            {
+                Debug.Log("Collided with:");
+                Debug.Log(hit.gameObject.name);
+            }
             state.previousCollision.CopyFrom(ref state.currentCollision);
             state.currentCollision.colliderContactPoint = hit.point;
             state.currentCollision.colliderContactNormal = hit.normal;

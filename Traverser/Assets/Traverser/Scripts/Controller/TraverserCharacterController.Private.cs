@@ -28,6 +28,13 @@ namespace Traverser
 
             public float3 velocity;
 
+            public bool isGrounded;
+
+            public float3 kinematicDisplacement;
+            public float3 dynamicsDisplacement;
+            public float3 penetrationDisplacement;
+            public float3 collisionDisplacement;
+
             internal static TraverserCollision Create()
             {
                 return new TraverserCollision()
@@ -38,7 +45,12 @@ namespace Traverser
                     isColliding = false,
                     colliderContactNormal = float3.zero,
                     colliderContactPoint = float3.zero,
-                    ground = null
+                    ground = null,
+                    isGrounded = false,
+                    kinematicDisplacement = Vector3.zero,
+                    dynamicsDisplacement = Vector3.zero,
+                    penetrationDisplacement = Vector3.zero,
+                    collisionDisplacement = Vector3.zero,
                 };
             }
 
@@ -51,6 +63,11 @@ namespace Traverser
                 colliderContactNormal = float3.zero;
                 colliderContactPoint = float3.zero;
                 ground = null;
+                isGrounded = false;
+                kinematicDisplacement = float3.zero;
+                dynamicsDisplacement = float3.zero;
+                penetrationDisplacement = Vector3.zero;
+                collisionDisplacement = Vector3.zero;
             }
 
             internal void CopyFrom(ref TraverserCollision copyCollision)
@@ -62,6 +79,11 @@ namespace Traverser
                 ground = copyCollision.ground;
                 position = copyCollision.position;
                 velocity = copyCollision.velocity;
+                isGrounded = copyCollision.isGrounded;
+                kinematicDisplacement = copyCollision.kinematicDisplacement;
+                dynamicsDisplacement = copyCollision.dynamicsDisplacement;
+                penetrationDisplacement = copyCollision.penetrationDisplacement;
+                collisionDisplacement = copyCollision.collisionDisplacement;
             }
         }
 
@@ -71,9 +93,9 @@ namespace Traverser
             public TraverserCollision currentCollision;
 
             public float3 desiredDisplacement;
+
             public float3 desiredVelocity;
             public float3 accumulatedVelocity;
-
 
             public Transform transform;
 
@@ -83,7 +105,7 @@ namespace Traverser
                 {
                     previousCollision = TraverserCollision.Create(),
                     currentCollision = TraverserCollision.Create(),
-                    desiredDisplacement = Vector3.zero,
+                    desiredDisplacement = float3.zero,
                     desiredVelocity = Vector3.zero,
                     accumulatedVelocity = Vector3.zero
                 };
@@ -94,9 +116,9 @@ namespace Traverser
                 previousCollision.CopyFrom(ref copyState.previousCollision);
                 currentCollision.CopyFrom(ref copyState.currentCollision);
                 transform = copyState.transform;
-                desiredDisplacement = copyState.desiredDisplacement;
                 desiredVelocity = copyState.desiredVelocity;
                 accumulatedVelocity = copyState.accumulatedVelocity;
+                desiredDisplacement = copyState.desiredDisplacement;
             }
         }
 

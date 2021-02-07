@@ -20,6 +20,8 @@ namespace Traverser
             get => characterController.isGrounded;
         }
 
+        public bool gravityEnabled = true;
+
         public ref TraverserCollision previous
         {
             get => ref state.previousCollision;
@@ -98,44 +100,60 @@ namespace Traverser
 
         void UpdateMovement(float deltaTime)
         {
-            // --- Compute initial displacement ---
-            float3 gravity = Physics.gravity;
-            state.accumulatedVelocity += gravity * deltaTime;
-            state.desiredDisplacement += state.accumulatedVelocity * deltaTime;
-
-            float3 finalDisplacement = state.desiredVelocity * deltaTime + state.desiredDisplacement;
+            state.currentCollision.kinematicDisplacement = state.desiredVelocity * deltaTime + state.desiredDisplacement;
             state.desiredDisplacement = Vector3.zero;
 
-            // if (gravityEnabled)
+            //if (gravityEnabled)
             //{
-
+            //    float3 gravity = Physics.gravity;
+            //    state.accumulatedVelocity += gravity * deltaTime;
+            //    state.currentCollision.dynamicsDisplacement = state.accumulatedVelocity * deltaTime;
             //}
 
-            // --- React to collisions ---
+            //if(characterController.isGrounded)
+            //    state.kinematicDisplacement.y += transform.position.y - state.currentCollision.position.y;
 
-            if (characterController.detectCollisions)
-            {
-                if(CastCollisions(Position, ref finalDisplacement))
-                {
-                    state.currentCollision.isColliding = true;
-                }
-            }
+            //float3 verticalDisplacement = Missing.project(state.currentCollision.dynamicsDisplacement, math.up());
+            //float verticalDisplacementDot = math.dot(verticalDisplacement, math.up());
+
+            //if (state.previousCollision.isGrounded && verticalDisplacementDot < 0.0f)
+            //{
+            //    state.currentCollision.dynamicsDisplacement -= verticalDisplacement;
+            //    verticalDisplacement = float3.zero;
+            //}
+
+            //Debug.Log(state.currentCollision.dynamicsDisplacement);
+
+            float3 desiredDisplacement = state.currentCollision.kinematicDisplacement + state.currentCollision.dynamicsDisplacement;
+
+            //---React to collisions ---
+
+            //if (characterController.detectCollisions)
+            //{
+            //    if (CastCollisions(Position, ref desiredDisplacement))
+            //    {
+            //        state.currentCollision.isColliding = true;
+            //    }
+            //}
 
             // --- Update position and velocity ---
-            float3 finalPosition = Position + finalDisplacement;
+            //state.currentCollision.position.y = transform.position.y;
+            //Debug.Log(Position);
+            //characterController.m
+            float3 finalPosition = Position + desiredDisplacement;
             state.currentCollision.position = finalPosition;
+
             state.currentCollision.velocity = (finalPosition - state.previousCollision.position) / deltaTime;
+
 
             //if (state.currentCollision.isGrounded)
             //{
-            float3 verticalAccumulatedVelocity =
-                    Missing.project(state.accumulatedVelocity, math.up());
+            //    float3 verticalAccumulatedVelocity =
+            //        Missing.project(state.accumulatedVelocity, math.up());
 
-                state.accumulatedVelocity -= verticalAccumulatedVelocity;
+            //    state.accumulatedVelocity -= verticalAccumulatedVelocity;
             //}
-            //Debug.Log(Position);
-            //characterController.Move(finalDisplacement * Time.deltaTime);
-            //characterController.m
+
         }
 
         RaycastHit[] raycastHits = new RaycastHit[15];
@@ -152,6 +170,9 @@ namespace Traverser
             // Note we do not care about triggers
             int numContacts = TraverserCollisionLayer.CastCapsuleCollisions(startPosition, endPosition, characterController.radius,
                 normalizedDisplacement, ref raycastHits, math.length(displacement), TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+
+            GameObject.Find("Capsule").transform.position = position;
+
 
             if (numContacts > 0)
             {
@@ -181,11 +202,19 @@ namespace Traverser
 
                 if (result.distance > extraSpacing)
                 {
-                    adjustedDisplacement =
-                        math.normalizesafe(displacement) *
-                            math.min(result.distance -
-                                extraSpacing, math.length(displacement));
+                  
                 }
+
+                adjustedDisplacement =
+                      math.normalizesafe(displacement) *
+                          math.min(result.distance -
+                              extraSpacing, math.length(displacement));
+                //else if (result.distance < extraSpacing)
+                //{
+                //    adjustedDisplacement =
+                //        math.normalizesafe(result.point - result.contactOrigin) *
+                //            (result.distance - extraSpacing);
+                //}
                 //else if (result.distance < extraSpacing)
                 //{
                 //    adjustedDisplacement =
@@ -193,13 +222,13 @@ namespace Traverser
                 //            (result.distance - extraSpacing);
                 //}
 
-                displacement -= adjustedDisplacement;
+                displacement = adjustedDisplacement;
 
-                if (result.collider.gameObject.name != "Ground")
-                {
-                    Debug.Log("Collided with:");
-                    Debug.Log(result.collider.gameObject.name);
-                }
+                //if (result.collider.gameObject.name != "Ground")
+                //{
+                //    Debug.Log("Collided with:");
+                //    Debug.Log(result.collider.gameObject.name);
+                //}
 
                 return true;
             }
@@ -210,6 +239,7 @@ namespace Traverser
 
         public void ForceMove(Vector3 position)
         {
+
             characterController.Move(position - transform.position);
         }
 

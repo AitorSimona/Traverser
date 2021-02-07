@@ -11,7 +11,7 @@ namespace Traverser
         {
             // --- Attributes ---
             public float3 movementDirection;
-            public float moveIntensity;
+            //public float moveIntensity;
             public bool run;
             public bool dropDownButton;
             // --------------------------------
@@ -36,7 +36,13 @@ namespace Traverser
 
             public void UpdateLocomotion()
             {
-                //Utility.GetInputMove(ref movementDirection, ref moveIntensity);
+                stickHorizontal = Input.GetAxis("Horizontal");
+                stickVertical = Input.GetAxis("Vertical");
+                movementDirection.x = stickHorizontal;
+                movementDirection.y = stickVertical;
+
+                //Debug.Log(stickHorizontal);
+
                 run = Input.GetButton("Left Analog Button");
             }
 
@@ -67,21 +73,10 @@ namespace Traverser
         // --------------------------------
 
         // --- Utilities ---
-        public static float2 GetStickInput()
+
+        public static float GetMoveIntensity()
         {
-            float2 stickInput;
-            stickInput.x = capture.stickHorizontal;
-            stickInput.y = capture.stickVertical;
-
-            if (math.length(stickInput) >= 0.1f)
-            {
-                if (math.length(stickInput) > 1.0f)
-                    stickInput = math.normalize(stickInput);
-            }
-            else
-                stickInput = float2.zero;
-
-            return stickInput;
+            return math.abs((capture.stickHorizontal + capture.stickVertical)/2);
         }
 
         // --------------------------------

@@ -99,7 +99,7 @@ namespace Traverser
             controller = GetComponent<TraverserCharacterController>();
 
             TraverserInputLayer.capture.movementDirection = Vector3.forward;
-            TraverserInputLayer.capture.moveIntensity = 0.0f;
+            //TraverserInputLayer.capture.moveIntensity = 0.0f;
 
             // --- Initialize arrays ---
             //ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
@@ -120,8 +120,7 @@ namespace Traverser
         // --- Ability class methods ---
         public TraverserAbility OnUpdate(float deltaTime)
         {
-            //if (!rewind) // if we are not using snapshot debugger to rewind
-            //    TraverserInputLayer.capture.UpdateLocomotion();
+            TraverserInputLayer.capture.UpdateLocomotion();
 
             //if (TraverserInputLayer.capture.run)
             //    freedrop = true;
@@ -325,8 +324,10 @@ namespace Traverser
         {
             float desiredSpeed = 0.0f;
 
+            float moveIntensity = TraverserInputLayer.GetMoveIntensity();
+
             // --- If we are idle ---
-            if (TraverserInputLayer.capture.moveIntensity == 0.0f)
+            if (Mathf.Approximately(moveIntensity, 0.0f))
             {
                 if (!isBraking/* && math.length(synthesizer.CurrentVelocity) < brakingSpeed*/)
                     isBraking = true;
@@ -334,7 +335,7 @@ namespace Traverser
             else
             {
                 isBraking = false;
-                desiredSpeed = TraverserInputLayer.capture.moveIntensity * desiredLinearSpeed;
+                desiredSpeed = moveIntensity * desiredLinearSpeed;
             }
 
             // --- Manually brake the character when about to fall ---

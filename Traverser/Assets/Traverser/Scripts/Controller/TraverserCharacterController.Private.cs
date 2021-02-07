@@ -32,8 +32,6 @@ namespace Traverser
 
             public float3 kinematicDisplacement;
             public float3 dynamicsDisplacement;
-            public float3 penetrationDisplacement;
-            public float3 collisionDisplacement;
 
             internal static TraverserCollision Create()
             {
@@ -49,8 +47,6 @@ namespace Traverser
                     isGrounded = false,
                     kinematicDisplacement = Vector3.zero,
                     dynamicsDisplacement = Vector3.zero,
-                    penetrationDisplacement = Vector3.zero,
-                    collisionDisplacement = Vector3.zero,
                 };
             }
 
@@ -66,8 +62,6 @@ namespace Traverser
                 isGrounded = false;
                 kinematicDisplacement = float3.zero;
                 dynamicsDisplacement = float3.zero;
-                penetrationDisplacement = Vector3.zero;
-                collisionDisplacement = Vector3.zero;
             }
 
             internal void CopyFrom(ref TraverserCollision copyCollision)
@@ -82,8 +76,6 @@ namespace Traverser
                 isGrounded = copyCollision.isGrounded;
                 kinematicDisplacement = copyCollision.kinematicDisplacement;
                 dynamicsDisplacement = copyCollision.dynamicsDisplacement;
-                penetrationDisplacement = copyCollision.penetrationDisplacement;
-                collisionDisplacement = copyCollision.collisionDisplacement;
             }
         }
 
@@ -93,7 +85,6 @@ namespace Traverser
             public TraverserCollision currentCollision;
 
             public float3 desiredDisplacement;
-
             public float3 desiredVelocity;
             public float3 accumulatedVelocity;
 
@@ -136,6 +127,7 @@ namespace Traverser
             characterController = GetComponent<CharacterController>();
             state.transform = characterController.transform;
             snapshotState.transform = characterController.transform;
+            //current.position = transform.position;
         }
 
         //// Update is called once per frame

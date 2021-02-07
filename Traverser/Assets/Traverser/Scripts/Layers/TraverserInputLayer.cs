@@ -76,7 +76,7 @@ namespace Traverser
 
         public static float GetMoveIntensity()
         {
-            return math.abs((capture.stickHorizontal + capture.stickVertical)/2);
+            return math.abs((math.abs(capture.stickHorizontal) + math.abs(capture.stickVertical))/2);
         }
 
         // --------------------------------

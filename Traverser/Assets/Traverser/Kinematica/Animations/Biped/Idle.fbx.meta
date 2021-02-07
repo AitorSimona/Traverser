@@ -640,11 +640,11 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: Hips
+    rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 74cebad771d996c4cb5b49a97f4a567a, type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 5eb2735f99ce0aa408a0df27a982dc90, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1

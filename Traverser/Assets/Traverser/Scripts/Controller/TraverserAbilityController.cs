@@ -11,13 +11,17 @@ namespace Traverser
         // --- Attributes ---
         TraverserAbility currentAbility;
         TraverserCharacterController controller;
+        public Transform skeleton;
+        public Transform skeletonRef;
+        Animator animator;
+
         // --------------------------------
 
         // --- Basic methods ---
         public void OnEnable()
         {
             //base.OnEnable();
-
+            animator = GetComponent<Animator>();
             controller = GetComponent<TraverserCharacterController>();
         }
 
@@ -95,6 +99,13 @@ namespace Traverser
             // --- Let abilities apply final changes to motion, if needed ---
             if (currentAbility != null /*&& component.enabled*/)
                 currentAbility.OnPostUpdate(Time.deltaTime);
+        }
+
+        private void LateUpdate()
+        {
+            // --- Move all the skeleton to the character's position ---
+            skeleton.position = skeletonRef.position;
+
         }
 
         // --------------------------------

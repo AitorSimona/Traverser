@@ -99,6 +99,7 @@ namespace Traverser
             controller = GetComponent<TraverserCharacterController>();
 
             TraverserInputLayer.capture.movementDirection = Vector3.forward;
+            //controller.Position = transform.position;
             //TraverserInputLayer.capture.moveIntensity = 0.0f;
 
             // --- Initialize arrays ---
@@ -130,7 +131,7 @@ namespace Traverser
             TraverserAbility ret = this;
 
             // --- We perform future movement to check for collisions, then rewind using snapshot debugger's capabilities ---
-            TraverserAbility contactAbility = HandleMovementPrediction(GetDesiredSpeed(), deltaTime);
+            TraverserAbility contactAbility = HandleMovementPrediction(deltaTime);
 
             // --- Another ability has been triggered ---
             if (contactAbility != null)
@@ -172,17 +173,17 @@ namespace Traverser
             return null;
         }
 
-        TraverserAbility HandleMovementPrediction(float desiredSpeed, float deltaTime)
+        TraverserAbility HandleMovementPrediction(float deltaTime)
         {
             Assert.IsTrue(controller != null); // just in case :)
 
             // --- Start recording (all Snapshot marked values will be recorded) ---
-            controller.Snapshot();
+            //controller.Snapshot();
 
             TraverserAbility contactAbility = SimulatePrediction(ref controller, deltaTime);
 
             // --- Go back in time to the snapshot state, all snapshot-marked variables recover their initial value ---
-            controller.Rewind();
+            //controller.Rewind();
 
             return contactAbility;
         }
@@ -197,6 +198,18 @@ namespace Traverser
             //bool attemptTransition = true;
             TraverserAbility contactAbility = null;
 
+            Vector3 inputDirection;
+            inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
+            inputDirection.y = 0.0f;
+            inputDirection.z = TraverserInputLayer.capture.stickVertical;
+
+            Vector3 finalPosition = transform.position + inputDirection * GetDesiredSpeed()*deltaTime;
+
+            controller.ForceMove(finalPosition);
+
+            //controller.MoveTo(finalPosition); // apply movement
+            //controller.Tick(deltaTime); // update controller
+
             //AffineTransform tmp = synthesizer.WorldRootTransform;
 
             //// --- We keep pushing new transforms until trajectory prediction limit or collision ---
@@ -208,8 +221,7 @@ namespace Traverser
             //    //controller.Move((worldRootTransform.transform(transform.t) - controller.Position) * inverseSampleRate); // apply movement
             //    //TODO controller.Tick(inverseSampleRate); // update controller
 
-            //    controller.MoveTo(worldRootTransform.transform(transform.t)); // apply movement
-            //    controller.Tick(inverseSampleRate); // update controller
+
 
 
             //    ref TraverserCharacterController.TraverserCollision collision = ref controller.current; // current state of the controller (after a tick is issued)

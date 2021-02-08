@@ -29,6 +29,8 @@ namespace Traverser
         [Header("Simulation settings")]
         [Tooltip("How many movement iterations per frame will the controller perform. More iterations are more expensive but provide greater predictive collision detection reach.")]
         public int iterations = 3;
+        [Tooltip("How much will the controller displace the 2nd and following iterations respect the first one (speed increase). Increases predictive collision detection reach at the cost of precision (void space).")]
+        public float stepping = 10.0f;
 
         [Header("Fall limitation")]
         [Tooltip("Disable to prevent character from falling off obstacles")]
@@ -177,12 +179,12 @@ namespace Traverser
                 inputDirection.y = 0.0f;
                 inputDirection.z = TraverserInputLayer.capture.stickVertical;
 
-                //float stepping = 1.0f;
-
-                //if (i != 0)
-                //    stepping = 1.0f;
-
                 Vector3 finalPosition = inputDirection.normalized * GetDesiredSpeed() * deltaTime;
+
+                if (i == 0)
+                    controller.stepping = 1.0f;
+                else
+                    controller.stepping = stepping;
 
                 controller.Move(finalPosition);
                 controller.Tick(deltaTime);
@@ -206,8 +208,6 @@ namespace Traverser
 
             //    //controller.Move((worldRootTransform.transform(transform.t) - controller.Position) * inverseSampleRate); // apply movement
             //    //TODO controller.Tick(inverseSampleRate); // update controller
-
-
 
 
             //    ref TraverserCharacterController.TraverserCollision collision = ref controller.current; // current state of the controller (after a tick is issued)
@@ -323,8 +323,6 @@ namespace Traverser
             float desiredSpeed = 0.0f;
 
             float moveIntensity = TraverserInputLayer.GetMoveIntensity();
-
-            Debug.Log(moveIntensity);
 
             // --- If we are idle ---
             if (Mathf.Approximately(moveIntensity, 0.0f))

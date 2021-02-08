@@ -43,6 +43,9 @@ namespace Traverser
         // --- Whether or not gravity will be applied to the controller ---
         public bool gravityEnabled = true;
 
+        // --- How much will given displacement be increased, bigger stepping increases prediction reach at the cost of precision ---
+        public float stepping = 1.0f;
+
         // --- Character controller's capsule collider height ---
         public float capsuleHeight 
         {
@@ -83,11 +86,6 @@ namespace Traverser
             state.desiredDisplacement += displacement;
         }
 
-        public void MoveTo(float3 desiredPosition)
-        {
-            Move(desiredPosition - position);
-        }
-
         public void ForceMove(Vector3 desiredPosition)
         {
             characterController.Move(desiredPosition - transform.position);
@@ -115,7 +113,7 @@ namespace Traverser
 
         void UpdateMovement(float deltaTime)
         {
-            state.currentCollision.kinematicDisplacement = state.desiredDisplacement;
+            state.currentCollision.kinematicDisplacement = state.desiredDisplacement * stepping;
             state.desiredDisplacement = Vector3.zero;
 
             if (gravityEnabled)
@@ -128,8 +126,7 @@ namespace Traverser
 
             float3 finalPosition = position + desiredDisplacement;
             ForceMove(finalPosition);
-            state.currentCollision.velocity = characterController.velocity;
-            Debug.Log(state.currentCollision.velocity);
+            state.currentCollision.velocity = characterController.velocity / stepping;
         }
 
         // --------------------------------

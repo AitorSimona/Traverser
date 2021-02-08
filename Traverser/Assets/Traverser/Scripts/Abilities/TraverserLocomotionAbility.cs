@@ -13,7 +13,7 @@ namespace Traverser
     public class TraverserLocomotionAbility : MonoBehaviour, TraverserAbility // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger
     {
         // --- Attributes ---
-        [Header("Prediction settings")]
+        [Header("Movement settings")]
         [Tooltip("Desired speed in meters per second for slow movement.")]
         [Range(0.0f, 10.0f)]
         public float desiredSpeedSlow = 3.9f;
@@ -22,42 +22,10 @@ namespace Traverser
         [Range(0.0f, 10.0f)]
         public float desiredSpeedFast = 5.5f;
 
-        [Tooltip("How fast or slow the target velocity is supposed to be reached.")]
-        [Range(0.0f, 1.0f)]
-        public float velocityPercentage = 1.0f;
-
-        [Tooltip("How fast or slow the desired forward direction is supposed to be reached.")]
-        [Range(0.0f, 1.0f)]
-        public float forwardPercentage = 1.0f;
-
-        [Tooltip("Relative weighting for pose and trajectory matching.")]
-        [Range(0.0f, 1.0f)]
-        public float responsiveness = 0.45f;
-
         [Tooltip("Speed in meters per second at which the character is considered to be braking (assuming player release the stick).")]
         [Range(0.0f, 10.0f)]
         public float brakingSpeed = 0.4f;
 
-        [Header("Motion correction")]
-        [Tooltip("How much root motion distance should be corrected to match desired trajectory.")]
-        [Range(0.0f, 1.0f)]
-        public float correctTranslationPercentage = 0.0f;
-
-        [Tooltip("How much root motion rotation should be corrected to match desired trajectory.")]
-        [Range(0.0f, 1.0f)]
-        public float correctRotationPercentage = 1.0f;
-
-        [Tooltip("Minimum character move speed (m/s) before root motion correction is applied.")]
-        [Range(0.0f, 10.0f)]
-        public float correctMotionStartSpeed = 2.0f;
-
-        [Tooltip("Character move speed (m/s) at which root motion correction is fully effective.")]
-        [Range(0.0f, 10.0f)]
-        public float correctMotionEndSpeed = 3.0f;
-
-        [Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
-        [Range(-1.0f, 1.0f)]
-        public float maxPoseDeviation = 0.01f;
 
         [Header("Fall limitation")]
         [Tooltip("Disable to prevent character from falling off obstacles")]
@@ -78,18 +46,14 @@ namespace Traverser
 
         // -------------------------------------------------
 
-        // --- World interactable elements ---
+        // --- Private Variables ---
+
         //TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
-
-        TraverserCharacterController controller;
-
-        bool isBraking = false;
-        bool preFreedrop = true;
-
-        // TODO: Remove from here
-        float desiredLinearSpeed => TraverserInputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
-
-        float distance_to_fall = 3.0f; // initialized to maxFallPredictionDistance
+        private TraverserCharacterController controller;
+        private bool isBraking = false;
+        private bool preFreedrop = true;
+        private float desiredLinearSpeed => TraverserInputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
+        private float distance_to_fall = 3.0f; // initialized to maxFallPredictionDistance
 
         // -------------------------------------------------
 
@@ -97,10 +61,7 @@ namespace Traverser
         public void OnEnable()
         {
             controller = GetComponent<TraverserCharacterController>();
-
             TraverserInputLayer.capture.movementDirection = Vector3.forward;
-            //controller.Position = transform.position;
-            //TraverserInputLayer.capture.moveIntensity = 0.0f;
 
             // --- Initialize arrays ---
             //ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
@@ -108,6 +69,7 @@ namespace Traverser
             // --- Play default animation ---
 
             preFreedrop = freedrop;
+            distance_to_fall = maxFallPredictionDistance;
         }
 
         public void OnDisable()
@@ -130,13 +92,6 @@ namespace Traverser
 
             TraverserAbility ret = this;
 
-            // --- We perform future movement to check for collisions, then rewind using snapshot debugger's capabilities ---
-            //TraverserAbility contactAbility = HandleMovementPrediction(deltaTime);
-
-            // --- Another ability has been triggered ---
-            //if (contactAbility != null)
-              //  ret = contactAbility;
-
 
             return ret;
         }
@@ -151,7 +106,6 @@ namespace Traverser
             // --- Another ability has been triggered ---
             if (contactAbility != null)
                 ret = contactAbility;
-
 
             return ret;
         }
@@ -178,7 +132,6 @@ namespace Traverser
                         }
                     }
 
-
                     //ledgeGeometry.DebugDraw(); // TODO: Temporal
                 }
 
@@ -192,12 +145,12 @@ namespace Traverser
         {
             Assert.IsTrue(controller != null); // just in case :)
 
-            // --- Start recording (all Snapshot marked values will be recorded) ---
+            // --- Start recording (all current state values will be recorded) ---
             controller.Snapshot();
 
             TraverserAbility contactAbility = SimulatePrediction(ref controller, deltaTime);
 
-            // --- Go back in time to the snapshot state, all snapshot-marked variables recover their initial value ---
+            // --- Go back in time to the snapshot state, all current state variables recover their initial value ---
             controller.Rewind();
 
             return contactAbility;
@@ -230,7 +183,6 @@ namespace Traverser
 
                 controller.Move(finalPosition);
                 controller.Tick(deltaTime);
-                //controller.ForceMove(finalPosition);
             }
 
             // --- TEMPORAL DEBUG UTILITY ---

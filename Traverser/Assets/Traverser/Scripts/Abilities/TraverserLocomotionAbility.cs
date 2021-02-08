@@ -131,6 +131,21 @@ namespace Traverser
             TraverserAbility ret = this;
 
             // --- We perform future movement to check for collisions, then rewind using snapshot debugger's capabilities ---
+            //TraverserAbility contactAbility = HandleMovementPrediction(deltaTime);
+
+            // --- Another ability has been triggered ---
+            //if (contactAbility != null)
+              //  ret = contactAbility;
+
+
+            return ret;
+        }
+
+        public TraverserAbility OnFixedUpdate(float deltaTime)
+        {
+            TraverserAbility ret = this;
+
+            // --- We perform future movement to check for collisions, then rewind using snapshot debugger's capabilities ---
             TraverserAbility contactAbility = HandleMovementPrediction(deltaTime);
 
             // --- Another ability has been triggered ---
@@ -210,7 +225,7 @@ namespace Traverser
                 float stepping = 1.0f;
 
                 if (i != 0)
-                    stepping = i * 25;
+                    stepping = 10.0f;
 
                 Vector3 finalPosition = inputDirection * GetDesiredSpeed() * stepping * deltaTime;
 
@@ -218,6 +233,11 @@ namespace Traverser
                 controller.Tick(deltaTime);
                 //controller.ForceMove(finalPosition);
             }
+
+            // --- TEMPORAL DEBUG UTILITY ---
+            float3 dummyPos = controller.Position;
+            //dummyPos.y += characterController.height / 2;
+            GameObject.Find("Capsule").transform.position = dummyPos;
 
             //controller.MoveTo(finalPosition); // apply movement
             //controller.Tick(deltaTime); // update controller

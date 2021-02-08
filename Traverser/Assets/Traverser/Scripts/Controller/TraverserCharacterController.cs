@@ -53,10 +53,10 @@ namespace Traverser
 
         public void Rewind()
         {
-            // --- TEMPORAL DEBUG UTILITY ---
-            float3 dummyPos = Position;
-            dummyPos.y += characterController.height / 2;
-            GameObject.Find("Capsule").transform.position = dummyPos;
+            //// --- TEMPORAL DEBUG UTILITY ---
+            //float3 dummyPos = Position;
+            //dummyPos.y += characterController.height / 2;
+            //GameObject.Find("Capsule").transform.position = dummyPos;
 
             // --- Use snapshotState values to return to pre-simulation situation ---
             state.CopyFrom(ref snapshotState);
@@ -145,11 +145,11 @@ namespace Traverser
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
-            //if (hit.gameObject.name != "Ground")
-            //{
-            //    Debug.Log("Collided with:");
-            //    Debug.Log(hit.gameObject.name);
-            //}
+            if (hit.gameObject.name != "Ground")
+            {
+                Debug.Log("Collided with:");
+                Debug.Log(hit.gameObject.name);
+            }
             state.previousCollision.CopyFrom(ref state.currentCollision);
             state.currentCollision.colliderContactPoint = hit.point;
             state.currentCollision.colliderContactNormal = hit.normal;

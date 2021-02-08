@@ -15,6 +15,8 @@ namespace Traverser
 
         TraverserAbility OnUpdate(float deltaTime);
 
+        TraverserAbility OnFixedUpdate(float deltaTime);
+
         //
         // Called from another ability to indicate that a predicted future
         // root transform makes contact with the environment (subject to the

@@ -63,6 +63,32 @@ namespace Traverser
 
         }
 
+        private void FixedUpdate()
+        {
+            // --- Keep updating our current ability ---
+            if (currentAbility != null)
+            {
+                currentAbility = currentAbility.OnFixedUpdate(Time.fixedDeltaTime);
+            }
+
+            // --- If no ability is in control, look for one ---
+            if (currentAbility == null)
+            {
+                // --- Iterate all abilities and update each one until one takes control ---
+                foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                {
+                    TraverserAbility result = ability.OnFixedUpdate(Time.fixedDeltaTime);
+
+                    // --- If an ability asks to take control, break ---
+                    if (result != null)
+                    {
+                        currentAbility = result;
+                        break;
+                    }
+                }
+            }
+        }
+
         public void OnAnimatorMove()
         {
             // --- After all animations are evaluated, perform movement ---

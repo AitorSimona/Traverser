@@ -76,7 +76,7 @@ namespace Traverser
 
             Assert.IsTrue(controller != null);
 
-            controller.ForceMove(controller.realPosition);
+            controller.ForceMove(controller.targetPosition);
 
             // --- Let abilities apply final changes to motion, if needed ---
             if (currentAbility != null /*&& component.enabled*/)

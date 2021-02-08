@@ -169,7 +169,7 @@ namespace Traverser
             snapshotState = TraverserState.Create();
             characterController = GetComponent<CharacterController>();
             current.position = transform.position;
-            realPosition = transform.position;
+            targetPosition = transform.position;
         }
 
         // --------------------------------

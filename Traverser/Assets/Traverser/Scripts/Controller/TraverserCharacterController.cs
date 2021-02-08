@@ -10,31 +10,39 @@ namespace Traverser
 
     public partial class TraverserCharacterController : MonoBehaviour
     {
-        public float3 realPosition;
+        // --- Attributes ---
 
-        public float3 Position
-        {
-            get => state.currentCollision.position;
-            set => state.currentCollision.position = value;
-        }
-        public bool isGrounded
-        {
-            get => characterController.isGrounded;
-        }
-
-        public bool gravityEnabled = true;
-
+        // --- The current state's previous collision situation ---
         public ref TraverserCollision previous
         {
             get => ref state.previousCollision;
         }
 
+        // --- The current state's actual collision situation ---
         public ref TraverserCollision current
         {
             get => ref state.currentCollision;
         }
 
-        bool firstTick = true;
+        // --- The current state's position (simulation) ---
+        public float3 Position
+        {
+            get => state.currentCollision.position;
+            set => state.currentCollision.position = value;
+        }
+
+        // --- The next position user code should move to ---
+        public float3 targetPosition;
+
+        // --- Whether or not gravity will be applied to the controller ---
+        public bool gravityEnabled = true;
+
+        // --- Utility to store only the first tick's target position ---
+        private bool firstTick = true;
+
+        // --------------------------------
+
+        // --- Simulation methods ---
 
         public void Snapshot()
         {
@@ -59,6 +67,10 @@ namespace Traverser
             characterController.enabled = true;
         }
 
+        // --------------------------------
+
+        // --- Movement methods ---
+
         public void Move(float3 displacement)
         {
             state.desiredDisplacement += displacement;
@@ -67,6 +79,12 @@ namespace Traverser
         public void MoveTo(float3 position)
         {
             Move(position - Position);
+        }
+
+        public void ForceMove(Vector3 position)
+        {
+            characterController.Move(position - transform.position);
+            Position = transform.position;
         }
 
         public void Tick(float deltaTime)
@@ -83,7 +101,7 @@ namespace Traverser
             if (firstTick)
             {
                 // --- This is the target position of the current frame ---
-                realPosition = transform.position;
+                targetPosition = transform.position;
                 firstTick = false;
             }
         }
@@ -121,11 +139,9 @@ namespace Traverser
             state.currentCollision.velocity = (finalPosition - state.previousCollision.position) / deltaTime;
         }
 
-        public void ForceMove(Vector3 position)
-        {
-            characterController.Move(position - transform.position);
-            Position = transform.position;
-        }
+        // --------------------------------
+
+        // --- Events ---
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
@@ -140,5 +156,7 @@ namespace Traverser
             state.currentCollision.collider = hit.collider;
             state.currentCollision.isColliding = true;
         }
+
+        // --------------------------------
     }
 }

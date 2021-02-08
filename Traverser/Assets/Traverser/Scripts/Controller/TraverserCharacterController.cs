@@ -59,11 +59,6 @@ namespace Traverser
 
         public void Rewind()
         {
-            //// --- TEMPORAL DEBUG UTILITY ---
-            //float3 dummyPos = Position;
-            //dummyPos.y += characterController.height / 2;
-            //GameObject.Find("Capsule").transform.position = dummyPos;
-
             // --- Use snapshotState values to return to pre-simulation situation ---
             state.CopyFrom(ref snapshotState);
 
@@ -95,6 +90,8 @@ namespace Traverser
 
         public void Tick(float deltaTime)
         {
+            // --- Update controller's movement with given deltaTime ---
+
             UpdateVelocity(deltaTime);
 
             state.previousCollision.CopyFrom(ref state.currentCollision);
@@ -151,6 +148,7 @@ namespace Traverser
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
+            // --- Update current collision information with hit's information ---
             if (hit.gameObject.name != "Ground")
             {
                 Debug.Log("Collided with:");

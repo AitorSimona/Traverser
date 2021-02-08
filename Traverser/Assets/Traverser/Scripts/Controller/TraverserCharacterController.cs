@@ -44,6 +44,10 @@ namespace Traverser
 
         public void Rewind()
         {
+            float3 dummyPos = Position;
+            dummyPos.y += characterController.height / 2;
+            GameObject.Find("Capsule").transform.position = dummyPos;
+
             state.CopyFrom(ref snapshotState);
             characterController.enabled = false;
             transform.position = Position;
@@ -117,12 +121,12 @@ namespace Traverser
             state.currentCollision.kinematicDisplacement = state.desiredVelocity * deltaTime + state.desiredDisplacement;
             state.desiredDisplacement = Vector3.zero;
 
-            //if (gravityEnabled)
-            //{
-            //    float3 gravity = Physics.gravity;
-            //    state.accumulatedVelocity += gravity * deltaTime;
-            //    state.currentCollision.dynamicsDisplacement = state.accumulatedVelocity * deltaTime;
-            //}
+            if (gravityEnabled)
+            {
+                float3 gravity = Physics.gravity;
+                state.accumulatedVelocity += gravity * deltaTime;
+                state.currentCollision.dynamicsDisplacement = state.accumulatedVelocity;
+            }
 
             //if(characterController.isGrounded)
             //    state.kinematicDisplacement.y += transform.position.y - state.currentCollision.position.y;
@@ -157,99 +161,8 @@ namespace Traverser
 
             float3 finalPosition = Position + desiredDisplacement;
             ForceMove(finalPosition);
-            state.currentCollision.position = characterController.transform.position;
+            //state.currentCollision.position = characterController.transform.position;
             state.currentCollision.velocity = (finalPosition - state.previousCollision.position) / deltaTime;
-
-
-            //if (state.currentCollision.isGrounded)
-            //{
-            //    float3 verticalAccumulatedVelocity =
-            //        Missing.project(state.accumulatedVelocity, math.up());
-
-            //    state.accumulatedVelocity -= verticalAccumulatedVelocity;
-            //}
-
-        }
-
-        RaycastHit[] raycastHits = new RaycastHit[15];
-        float3 startPosition;
-        float3 endPosition;
-
-        bool CastCollisions(float3 position, ref float3 displacement)
-        {
-            //startPosition = position + Missing.Convert(characterController.center) - Missing.up * (characterController.height * 0.5f - characterController.radius);
-            //endPosition = position + Missing.Convert(characterController.center) + Missing.up * (characterController.height * 0.5f - characterController.radius);
-
-            //float3 normalizedDisplacement = math.normalizesafe(displacement);
-
-            //// Note we do not care about triggers
-            //int numContacts = TraverserCollisionLayer.CastCapsuleCollisions(startPosition, endPosition, characterController.radius,
-            //    normalizedDisplacement, ref raycastHits, math.length(displacement), TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
-
-            //GameObject.Find("Capsule").transform.position = position;
-
-
-            //if (numContacts > 0)
-            //{
-            //    ref RaycastHit result = ref raycastHits[0];
-
-            //    for (int i = 0; i < numContacts; i++)
-            //    {
-            //        float epsilon = 0.0001f;
-
-            //        if (math.dot(normalizedDisplacement, raycastHits[i].normal) > -epsilon)
-            //        {
-            //            continue;
-            //        }
-
-            //        if (raycastHits[i].distance < result.distance)
-            //        {
-            //            result = raycastHits[i];
-            //        }
-            //    }
-
-            //    state.currentCollision.collider = result.collider;
-            //    state.currentCollision.colliderContactPoint = result.point;
-            //    state.currentCollision.colliderContactNormal = result.normal;
-
-            //    float3 adjustedDisplacement = float3.zero;
-            //    float extraSpacing = 0.001f;
-
-            //    if (result.distance > extraSpacing)
-            //    {
-                  
-            //    }
-
-            //    adjustedDisplacement =
-            //          math.normalizesafe(displacement) *
-            //              math.min(result.distance -
-            //                  extraSpacing, math.length(displacement));
-            //    //else if (result.distance < extraSpacing)
-            //    //{
-            //    //    adjustedDisplacement =
-            //    //        math.normalizesafe(result.point - result.contactOrigin) *
-            //    //            (result.distance - extraSpacing);
-            //    //}
-            //    //else if (result.distance < extraSpacing)
-            //    //{
-            //    //    adjustedDisplacement =
-            //    //        math.normalizesafe(result.point - result.contactOrigin) *
-            //    //            (result.distance - extraSpacing);
-            //    //}
-
-            //    displacement = adjustedDisplacement;
-
-            //    //if (result.collider.gameObject.name != "Ground")
-            //    //{
-            //    //    Debug.Log("Collided with:");
-            //    //    Debug.Log(result.collider.gameObject.name);
-            //    //}
-
-            //    return true;
-            //}
-
-
-            return false;
         }
 
         public void ForceMove(Vector3 position)
@@ -270,7 +183,6 @@ namespace Traverser
             state.currentCollision.colliderContactNormal = hit.normal;
             state.currentCollision.collider = hit.collider;
             state.currentCollision.isColliding = true;
-            //state.currentCollision
         }
     }
 }

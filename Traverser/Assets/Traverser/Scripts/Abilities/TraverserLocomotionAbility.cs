@@ -219,8 +219,6 @@ namespace Traverser
                 //controller.ForceMove(finalPosition);
             }
 
-            GameObject.Find("Capsule").transform.position = controller.Position;
-
             //controller.MoveTo(finalPosition); // apply movement
             //controller.Tick(deltaTime); // update controller
 

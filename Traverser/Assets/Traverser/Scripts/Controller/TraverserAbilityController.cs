@@ -1,19 +1,18 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
-
 
 namespace Traverser
 {
     [RequireComponent(typeof(TraverserCharacterController))]
-    public class TraverserAbilityController : MonoBehaviour// Layer to control all of the object's abilities 
+    public class TraverserAbilityController : MonoBehaviour // Layer to control all of the object's abilities 
     {
         // --- Attributes ---
         TraverserAbility currentAbility;
         TraverserCharacterController controller;
 
-
+        [Tooltip("Reference to the skeleton's parent. The controller positions the skeleton at the skeletonRef's position. Used to kill animation's root motion.")]
         public Transform skeleton;
+        [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
         public Transform skeletonRef;
 
         // --------------------------------

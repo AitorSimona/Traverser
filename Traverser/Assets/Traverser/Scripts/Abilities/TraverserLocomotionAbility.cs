@@ -212,7 +212,6 @@ namespace Traverser
 
             //bool attemptTransition = true;
 
-
             TraverserAbility contactAbility = null;
 
             for (int i = 0; i < 3; ++i)
@@ -236,7 +235,7 @@ namespace Traverser
 
             // --- TEMPORAL DEBUG UTILITY ---
             float3 dummyPos = controller.Position;
-            //dummyPos.y += characterController.height / 2;
+            dummyPos.y += controller.capsuleHeight / 2;
             GameObject.Find("Capsule").transform.position = dummyPos;
 
             //controller.MoveTo(finalPosition); // apply movement

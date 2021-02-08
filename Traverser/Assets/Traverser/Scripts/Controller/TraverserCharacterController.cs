@@ -37,6 +37,12 @@ namespace Traverser
         // --- Whether or not gravity will be applied to the controller ---
         public bool gravityEnabled = true;
 
+        // --- Character controller's capsule collider height ---
+        public float capsuleHeight 
+        {
+            get => characterController.height;
+        }
+
         // --- Utility to store only the first tick's target position ---
         private bool firstTick = true;
 

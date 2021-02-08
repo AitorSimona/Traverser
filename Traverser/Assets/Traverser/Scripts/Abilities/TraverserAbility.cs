@@ -43,6 +43,7 @@ namespace Traverser
 
         TraverserAbility OnPostUpdate(float deltaTime);
 
+        bool IsAbilityEnabled();
     }
 
     // -------------------------------------------------

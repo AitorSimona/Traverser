@@ -21,26 +21,25 @@ namespace Traverser
         
         public void Update()
         {
+            bool isEnabled = currentAbility == null ? false : currentAbility.IsAbilityEnabled();
+
             // --- Keep updating our current ability ---
-            if (currentAbility != null)
+            if (currentAbility != null && isEnabled)
             {
                 currentAbility = currentAbility.OnUpdate(Time.deltaTime);
             }
 
             // --- If no ability is in control, look for one ---
-            if (currentAbility == null)
+            if (currentAbility == null || !isEnabled)
             {
-
                 // MYTODO: Order of update is important, it would be wise to add a priority to abilities,
                 // instead of following the arbitrary order in which they were added as components
 
                 // --- Iterate all abilities and update each one until one takes control ---
                 foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
                 {
-                    //SnapshotProvider component = ability as SnapshotProvider;
-
-                    //if (!component.enabled)
-                    //    continue;
+                    if (!ability.IsAbilityEnabled())
+                        continue;
 
                     // An ability can either return "null" or a reference to an ability.
                     // A "null" result signals that this ability doesn't require control.
@@ -61,18 +60,23 @@ namespace Traverser
 
         private void FixedUpdate()
         {
+            bool isEnabled = currentAbility == null ? false : currentAbility.IsAbilityEnabled();
+
             // --- Keep updating our current ability ---
-            if (currentAbility != null)
+            if (currentAbility != null && isEnabled)
             {
                 currentAbility = currentAbility.OnFixedUpdate(Time.fixedDeltaTime);
             }
 
             // --- If no ability is in control, look for one ---
-            if (currentAbility == null)
+            if (currentAbility == null || !isEnabled)
             {
                 // --- Iterate all abilities and update each one until one takes control ---
                 foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
                 {
+                    if (!ability.IsAbilityEnabled())
+                        continue;
+
                     TraverserAbility result = ability.OnFixedUpdate(Time.fixedDeltaTime);
 
                     // --- If an ability asks to take control, break ---
@@ -88,12 +92,16 @@ namespace Traverser
         public void OnAnimatorMove()
         {
             // --- After all animations are evaluated, perform movement ---
+            if (currentAbility == null)
+                return;
+
+            bool isEnabled = currentAbility.IsAbilityEnabled();
 
             // --- Let abilities modify motion ---
             if (currentAbility is TraverserAbilityAnimatorMove abilityAnimatorMove)
             {
-                //if (component.enabled)
-                abilityAnimatorMove.OnAbilityAnimatorMove();
+                if (isEnabled)
+                    abilityAnimatorMove.OnAbilityAnimatorMove();
             }
 
             Assert.IsTrue(controller != null);
@@ -101,7 +109,7 @@ namespace Traverser
             controller.ForceMove(controller.targetPosition);
 
             // --- Let abilities apply final changes to motion, if needed ---
-            if (currentAbility != null /*&& component.enabled*/)
+            if (isEnabled)
                 currentAbility.OnPostUpdate(Time.deltaTime);
         }
 

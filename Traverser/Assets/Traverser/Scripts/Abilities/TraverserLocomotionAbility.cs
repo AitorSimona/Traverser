@@ -316,6 +316,11 @@ namespace Traverser
 
         }
 
+        public bool IsAbilityEnabled()
+        {
+            return isActiveAndEnabled;
+        }
+
         // -------------------------------------------------
 
         // --- Utilities ---

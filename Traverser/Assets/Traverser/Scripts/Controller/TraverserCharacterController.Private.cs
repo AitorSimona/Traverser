@@ -88,8 +88,6 @@ namespace Traverser
             public float3 desiredVelocity;
             public float3 accumulatedVelocity;
 
-            public Transform transform;
-
             internal static TraverserState Create()
             {
                 return new TraverserState()
@@ -106,7 +104,6 @@ namespace Traverser
             {
                 previousCollision.CopyFrom(ref copyState.previousCollision);
                 currentCollision.CopyFrom(ref copyState.currentCollision);
-                transform = copyState.transform;
                 desiredVelocity = copyState.desiredVelocity;
                 accumulatedVelocity = copyState.accumulatedVelocity;
                 desiredDisplacement = copyState.desiredDisplacement;
@@ -125,9 +122,10 @@ namespace Traverser
             state = TraverserState.Create();
             snapshotState = TraverserState.Create();
             characterController = GetComponent<CharacterController>();
-            state.transform = characterController.transform;
-            snapshotState.transform = characterController.transform;
-            //current.position = transform.position;
+            //state.transform = characterController.transform;
+            //snapshotState.transform = characterController.transform;
+            current.position = transform.position;
+            realPosition = transform.position;
         }
 
         //// Update is called once per frame

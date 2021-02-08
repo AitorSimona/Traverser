@@ -10,6 +10,8 @@ namespace Traverser
 
     public partial class TraverserCharacterController : MonoBehaviour
     {
+        public float3 realPosition;
+
         public float3 Position
         {
             get => state.currentCollision.position;
@@ -32,16 +34,21 @@ namespace Traverser
             get => ref state.currentCollision;
         }
 
+        bool firstTick = true;
+
         public void Snapshot()
         {
             snapshotState.CopyFrom(ref state);
+            firstTick = true;
         }
 
         public void Rewind()
         {
             state.CopyFrom(ref snapshotState);
-            characterController.transform.position = state.transform.position;
-            characterController.transform.rotation = state.transform.rotation;
+            characterController.enabled = false;
+            transform.position = Position;
+            //transform.rotation = state.transform.rotation;
+            characterController.enabled = true;
         }
 
         public void Move(float3 displacement)
@@ -80,6 +87,13 @@ namespace Traverser
             state.currentCollision.position = state.previousCollision.position;
 
             UpdateMovement(deltaTime);
+
+            if (firstTick)
+            {
+                //Debug.Log(realPosition);
+                realPosition = transform.position;
+                firstTick = false;
+            }
         }
 
         void UpdateVelocity(float deltaTime)
@@ -143,7 +157,7 @@ namespace Traverser
 
             float3 finalPosition = Position + desiredDisplacement;
             ForceMove(finalPosition);
-            state.currentCollision.position = finalPosition;
+            state.currentCollision.position = characterController.transform.position;
             state.currentCollision.velocity = (finalPosition - state.previousCollision.position) / deltaTime;
 
 
@@ -240,17 +254,17 @@ namespace Traverser
 
         public void ForceMove(Vector3 position)
         {
-
             characterController.Move(position - transform.position);
+            Position = transform.position;
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
-            if (hit.gameObject.name != "Ground")
-            {
-                Debug.Log("Collided with:");
-                Debug.Log(hit.gameObject.name);
-            }
+            //if (hit.gameObject.name != "Ground")
+            //{
+            //    Debug.Log("Collided with:");
+            //    Debug.Log(hit.gameObject.name);
+            //}
             state.previousCollision.CopyFrom(ref state.currentCollision);
             state.currentCollision.colliderContactPoint = hit.point;
             state.currentCollision.colliderContactNormal = hit.normal;

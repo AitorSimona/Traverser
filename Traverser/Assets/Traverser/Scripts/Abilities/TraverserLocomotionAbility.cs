@@ -196,16 +196,30 @@ namespace Traverser
             //float inverseSampleRate = Missing.recip(synthesizer.Binary.SampleRate); // recip is just the inverse (1/x)
 
             //bool attemptTransition = true;
+
+
             TraverserAbility contactAbility = null;
 
-            Vector3 inputDirection;
-            inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
-            inputDirection.y = 0.0f;
-            inputDirection.z = TraverserInputLayer.capture.stickVertical;
+            for (int i = 0; i < 3; ++i)
+            {
+                Vector3 inputDirection;
+                inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
+                inputDirection.y = 0.0f;
+                inputDirection.z = TraverserInputLayer.capture.stickVertical;
 
-            Vector3 finalPosition = transform.position + inputDirection * GetDesiredSpeed()*deltaTime;
+                float stepping = 1.0f;
 
-            controller.ForceMove(finalPosition);
+                if (i != 0)
+                    stepping = i * 25;
+
+                Vector3 finalPosition = inputDirection * GetDesiredSpeed() * stepping * deltaTime;
+
+                controller.Move(finalPosition);
+                controller.Tick(deltaTime);
+                //controller.ForceMove(finalPosition);
+            }
+
+            GameObject.Find("Capsule").transform.position = controller.Position;
 
             //controller.MoveTo(finalPosition); // apply movement
             //controller.Tick(deltaTime); // update controller

@@ -1,4 +1,4 @@
-﻿//using Unity.Mathematics;
+﻿using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -94,6 +94,12 @@ namespace Traverser
             ////transform.position = worldRootTransform.t;
             //controller.ForceMove(worldRootTransform.t);
             //transform.rotation = worldRootTransform.q;
+
+            //Debug.Log(controller.Position);
+
+            controller.ForceMove(controller.realPosition);
+
+            //Debug.Log(controller.Position);
 
 
             // --- Let abilities apply final changes to motion, if needed ---

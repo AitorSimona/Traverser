@@ -179,7 +179,7 @@ namespace Traverser
                 if (i != 0)
                     stepping = 10.0f;
 
-                Vector3 finalPosition = inputDirection * GetDesiredSpeed() * stepping * deltaTime;
+                Vector3 finalPosition = inputDirection.normalized * GetDesiredSpeed() * stepping * deltaTime;
 
                 controller.Move(finalPosition);
                 controller.Tick(deltaTime);

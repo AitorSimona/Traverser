@@ -26,6 +26,9 @@ namespace Traverser
         [Range(0.0f, 10.0f)]
         public float brakingSpeed = 0.4f;
 
+        [Header("Simulation settings")]
+        [Tooltip("How many movement iterations per frame will the controller perform. More iterations are more expensive but provide greater predictive collision detection reach.")]
+        public int iterations = 3;
 
         [Header("Fall limitation")]
         [Tooltip("Disable to prevent character from falling off obstacles")]
@@ -167,19 +170,19 @@ namespace Traverser
 
             TraverserAbility contactAbility = null;
 
-            for (int i = 0; i < 3; ++i)
+            for (int i = 0; i < iterations; ++i)
             {
                 Vector3 inputDirection;
                 inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
                 inputDirection.y = 0.0f;
                 inputDirection.z = TraverserInputLayer.capture.stickVertical;
 
-                float stepping = 1.0f;
+                //float stepping = 1.0f;
 
-                if (i != 0)
-                    stepping = 10.0f;
+                //if (i != 0)
+                //    stepping = 1.0f;
 
-                Vector3 finalPosition = inputDirection.normalized * GetDesiredSpeed() * stepping * deltaTime;
+                Vector3 finalPosition = inputDirection.normalized * GetDesiredSpeed() * deltaTime;
 
                 controller.Move(finalPosition);
                 controller.Tick(deltaTime);
@@ -326,7 +329,7 @@ namespace Traverser
             // --- If we are idle ---
             if (Mathf.Approximately(moveIntensity, 0.0f))
             {
-                if (!isBraking/* && math.length(synthesizer.CurrentVelocity) < brakingSpeed*/)
+                if (!isBraking && math.length(controller.velocity) < brakingSpeed)
                     isBraking = true;
             }
             else

@@ -128,8 +128,8 @@ namespace Traverser
 
             float3 finalPosition = position + desiredDisplacement;
             ForceMove(finalPosition);
-
-            //Debug.Log(state.desiredVelocity);
+            state.currentCollision.velocity = characterController.velocity;
+            Debug.Log(state.currentCollision.velocity);
         }
 
         // --------------------------------

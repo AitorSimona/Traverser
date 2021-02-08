@@ -32,7 +32,6 @@ namespace Traverser
             // --- The controller's position (simulation) ---
             public float3 position;
 
-
             // --- The controller's velocity (simulation) ---
             public float3 velocity;
 

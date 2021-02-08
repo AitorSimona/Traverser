@@ -38,43 +38,30 @@ namespace Traverser
 
         public void Snapshot()
         {
+            // --- Copy current state to snapshot so we can rewind time ---
             snapshotState.CopyFrom(ref state);
             firstTick = true;
         }
 
         public void Rewind()
         {
+            // --- TEMPORAL DEBUG UTILITY ---
             float3 dummyPos = Position;
             dummyPos.y += characterController.height / 2;
             GameObject.Find("Capsule").transform.position = dummyPos;
 
+            // --- Use snapshotState values to return to pre-simulation situation ---
             state.CopyFrom(ref snapshotState);
+
+            // --- Place character controller at the pre-simulation position ---
             characterController.enabled = false;
             transform.position = Position;
-            //transform.rotation = state.transform.rotation;
             characterController.enabled = true;
         }
 
         public void Move(float3 displacement)
         {
-
             state.desiredDisplacement += displacement;
-
-
-
-            //// Update previous collision
-            //state.previousCollision.CopyFrom(ref state.currentCollision);
-
-            //// Apply gravity
-            //motion.y += Physics.gravity.y * Time.deltaTime;
-
-            //// Move
-            //CollisionFlags flags = characterController.Move(Vector3.zero);
-            //characterController.SimpleMove(motion);
-            //// Update state
-            //state.transform = characterController.transform;
-
-            //return flags;
         }
 
         public void MoveTo(float3 position)
@@ -92,9 +79,10 @@ namespace Traverser
 
             UpdateMovement(deltaTime);
 
+            // --- If on simulation's first tick, store position ---
             if (firstTick)
             {
-                //Debug.Log(realPosition);
+                // --- This is the target position of the current frame ---
                 realPosition = transform.position;
                 firstTick = false;
             }
@@ -102,7 +90,6 @@ namespace Traverser
 
         void UpdateVelocity(float deltaTime)
         {
-
            // float3 verticalAccumulatedVelocity =
            //    Missing.project(state.accumulatedVelocity, math.up());
 
@@ -112,8 +99,7 @@ namespace Traverser
            //        state.accumulatedVelocity - verticalAccumulatedVelocity;
 
            //    state.accumulatedVelocity = lateralAccumulatedVelocity;
-           //}
-            
+           //}         
         }
 
         void UpdateMovement(float deltaTime)
@@ -128,40 +114,10 @@ namespace Traverser
                 state.currentCollision.dynamicsDisplacement = state.accumulatedVelocity;
             }
 
-            //if(characterController.isGrounded)
-            //    state.kinematicDisplacement.y += transform.position.y - state.currentCollision.position.y;
-
-            //float3 verticalDisplacement = Missing.project(state.currentCollision.dynamicsDisplacement, math.up());
-            //float verticalDisplacementDot = math.dot(verticalDisplacement, math.up());
-
-            //if (state.previousCollision.isGrounded && verticalDisplacementDot < 0.0f)
-            //{
-            //    state.currentCollision.dynamicsDisplacement -= verticalDisplacement;
-            //    verticalDisplacement = float3.zero;
-            //}
-
-            //Debug.Log(state.currentCollision.dynamicsDisplacement);
-
             float3 desiredDisplacement = state.currentCollision.kinematicDisplacement + state.currentCollision.dynamicsDisplacement;
-
-            //---React to collisions ---
-
-            //if (characterController.detectCollisions)
-            //{
-            //    if (CastCollisions(Position, ref desiredDisplacement))
-            //    {
-            //        state.currentCollision.isColliding = true;
-            //    }
-            //}
-
-            // --- Update position and velocity ---
-            //state.currentCollision.position.y = transform.position.y;
-            //Debug.Log(Position);
-            //characterController.m
 
             float3 finalPosition = Position + desiredDisplacement;
             ForceMove(finalPosition);
-            //state.currentCollision.position = characterController.transform.position;
             state.currentCollision.velocity = (finalPosition - state.previousCollision.position) / deltaTime;
         }
 

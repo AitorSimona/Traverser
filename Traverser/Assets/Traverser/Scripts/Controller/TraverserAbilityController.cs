@@ -11,20 +11,18 @@ namespace Traverser
         // --- Attributes ---
         TraverserAbility currentAbility;
         TraverserCharacterController controller;
+
+
         public Transform skeleton;
         public Transform skeletonRef;
-        Animator animator;
 
         // --------------------------------
 
         // --- Basic methods ---
         public void OnEnable()
         {
-            //base.OnEnable();
-            animator = GetComponent<Animator>();
             controller = GetComponent<TraverserCharacterController>();
         }
-
         
         public void Update()
         {
@@ -70,9 +68,6 @@ namespace Traverser
         {
             // --- After all animations are evaluated, perform movement ---
 
-            //ref MotionSynthesizer synthesizer = ref Synthesizer.Ref;
-            //SnapshotProvider component = currentAbility as SnapshotProvider;
-
             // --- Let abilities modify motion ---
             if (currentAbility is TraverserAbilityAnimatorMove abilityAnimatorMove)
             {
@@ -82,25 +77,7 @@ namespace Traverser
 
             Assert.IsTrue(controller != null);
 
-            // --- Move and update the controller ---
-            //float3 controllerPosition = controller.Position;
-            //float3 desiredLinearDisplacement = synthesizer.WorldRootTransform.t - controllerPosition;
-            //controller.Move(desiredLinearDisplacement);
-            //controller.Tick(Debugger.instance.deltaTime);
-
-            // --- Move the game object ---
-            //AffineTransform worldRootTransform = AffineTransform.Create(controller.Position, synthesizer.WorldRootTransform.q);
-            //synthesizer.SetWorldTransform(worldRootTransform, true);
-            ////transform.position = worldRootTransform.t;
-            //controller.ForceMove(worldRootTransform.t);
-            //transform.rotation = worldRootTransform.q;
-
-            //Debug.Log(controller.Position);
-
             controller.ForceMove(controller.realPosition);
-
-            //Debug.Log(controller.Position);
-
 
             // --- Let abilities apply final changes to motion, if needed ---
             if (currentAbility != null /*&& component.enabled*/)
@@ -111,7 +88,6 @@ namespace Traverser
         {
             // --- Move all the skeleton to the character's position ---
             skeleton.position = skeletonRef.position;
-
         }
 
         // --------------------------------

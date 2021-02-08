@@ -186,7 +186,7 @@ namespace Traverser
             }
 
             // --- TEMPORAL DEBUG UTILITY ---
-            float3 dummyPos = controller.Position;
+            float3 dummyPos = controller.position;
             dummyPos.y += controller.capsuleHeight / 2;
             GameObject.Find("Capsule").transform.position = dummyPos;
 
@@ -320,6 +320,8 @@ namespace Traverser
             float desiredSpeed = 0.0f;
 
             float moveIntensity = TraverserInputLayer.GetMoveIntensity();
+
+            Debug.Log(moveIntensity);
 
             // --- If we are idle ---
             if (Mathf.Approximately(moveIntensity, 0.0f))

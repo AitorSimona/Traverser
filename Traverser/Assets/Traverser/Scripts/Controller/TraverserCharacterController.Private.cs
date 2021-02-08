@@ -25,15 +25,18 @@ namespace Traverser
             // --- The current collider's normal direction ---
             public float3 colliderContactNormal;
 
+            // TODO: UNUSED
             // --- Transform of the current ground, the object below the character ---
             public Transform ground;
 
             // --- The controller's position (simulation) ---
             public float3 position;
 
+
             // --- The controller's velocity (simulation) ---
             public float3 velocity;
 
+            // TODO: UNUSED
             // --- States if the controller is grounded ---
             public bool isGrounded;
 
@@ -109,12 +112,6 @@ namespace Traverser
             // --- The state's desired absolute displacement ---
             public float3 desiredDisplacement;
 
-            // --- The state's desired absolute velocity ---
-            public float3 desiredVelocity;
-
-            // --- The state's progressively accumulated velocity
-            public float3 accumulatedVelocity;
-
             // --------------------------------
 
             // --- Basic methods ---
@@ -126,8 +123,6 @@ namespace Traverser
                     previousCollision = TraverserCollision.Create(),
                     currentCollision = TraverserCollision.Create(),
                     desiredDisplacement = float3.zero,
-                    desiredVelocity = Vector3.zero,
-                    accumulatedVelocity = Vector3.zero
                 };
             }
 
@@ -135,8 +130,6 @@ namespace Traverser
             {
                 previousCollision.CopyFrom(ref copyState.previousCollision);
                 currentCollision.CopyFrom(ref copyState.currentCollision);
-                desiredVelocity = copyState.desiredVelocity;
-                accumulatedVelocity = copyState.accumulatedVelocity;
                 desiredDisplacement = copyState.desiredDisplacement;
             }
 

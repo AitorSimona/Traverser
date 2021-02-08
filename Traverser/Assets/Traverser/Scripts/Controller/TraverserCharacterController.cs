@@ -25,10 +25,16 @@ namespace Traverser
         }
 
         // --- The current state's position (simulation) ---
-        public float3 Position
+        public float3 position
         {
             get => state.currentCollision.position;
             set => state.currentCollision.position = value;
+        }
+
+        // --- The current state's velocity (simulation) ---
+        public float3 velocity
+        {
+            get => state.currentCollision.velocity;
         }
 
         // --- The next position user code should move to ---
@@ -64,7 +70,7 @@ namespace Traverser
 
             // --- Place character controller at the pre-simulation position ---
             characterController.enabled = false;
-            transform.position = Position;
+            transform.position = position;
             characterController.enabled = true;
         }
 
@@ -77,22 +83,20 @@ namespace Traverser
             state.desiredDisplacement += displacement;
         }
 
-        public void MoveTo(float3 position)
+        public void MoveTo(float3 desiredPosition)
         {
-            Move(position - Position);
+            Move(desiredPosition - position);
         }
 
-        public void ForceMove(Vector3 position)
+        public void ForceMove(Vector3 desiredPosition)
         {
-            characterController.Move(position - transform.position);
-            Position = transform.position;
+            characterController.Move(desiredPosition - transform.position);
+            position = transform.position;
         }
 
         public void Tick(float deltaTime)
         {
             // --- Update controller's movement with given deltaTime ---
-
-            UpdateVelocity(deltaTime);
 
             state.previousCollision.CopyFrom(ref state.currentCollision);
             state.currentCollision.Reset();
@@ -109,37 +113,23 @@ namespace Traverser
             }
         }
 
-        void UpdateVelocity(float deltaTime)
-        {
-           // float3 verticalAccumulatedVelocity =
-           //    Missing.project(state.accumulatedVelocity, math.up());
-
-           //if (math.dot(math.normalize(verticalAccumulatedVelocity), math.up()) <= 0.0f)
-           //{
-           //     float3 lateralAccumulatedVelocity =
-           //        state.accumulatedVelocity - verticalAccumulatedVelocity;
-
-           //    state.accumulatedVelocity = lateralAccumulatedVelocity;
-           //}         
-        }
-
         void UpdateMovement(float deltaTime)
         {
-            state.currentCollision.kinematicDisplacement = state.desiredVelocity * deltaTime + state.desiredDisplacement;
+            state.currentCollision.kinematicDisplacement = state.desiredDisplacement;
             state.desiredDisplacement = Vector3.zero;
 
             if (gravityEnabled)
             {
                 float3 gravity = Physics.gravity;
-                state.accumulatedVelocity += gravity * deltaTime;
-                state.currentCollision.dynamicsDisplacement = state.accumulatedVelocity;
+                state.currentCollision.dynamicsDisplacement = gravity * deltaTime;
             }
 
             float3 desiredDisplacement = state.currentCollision.kinematicDisplacement + state.currentCollision.dynamicsDisplacement;
 
-            float3 finalPosition = Position + desiredDisplacement;
+            float3 finalPosition = position + desiredDisplacement;
             ForceMove(finalPosition);
-            state.currentCollision.velocity = (finalPosition - state.previousCollision.position) / deltaTime;
+
+            //Debug.Log(state.desiredVelocity);
         }
 
         // --------------------------------

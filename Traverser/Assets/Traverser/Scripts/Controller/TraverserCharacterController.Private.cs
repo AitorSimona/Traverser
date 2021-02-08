@@ -7,31 +7,45 @@ namespace Traverser
 {
     public partial class TraverserCharacterController : MonoBehaviour
     {
+
+        // --- Wrapper to define a controller's state collision situation and movement information ---
         public struct TraverserCollision
         {
-            // The collider we just made contact with
+            // --- Attributes ---
+
+            // --- The collider we just made contact with ---
             public Collider collider;
 
-            // Sattes if we are currently colliding
+            // --- States if we are currently colliding ---
             public bool isColliding;
 
-            // The point at which we collided with the current collider
+            // --- The point at which we collided with the current collider ---
             public float3 colliderContactPoint;
 
-            // The current collider's normal direction 
+            // --- The current collider's normal direction ---
             public float3 colliderContactNormal;
 
-            // Transform of the current ground, the object below the character
+            // --- Transform of the current ground, the object below the character ---
             public Transform ground;
 
+            // --- The controller's position (simulation) ---
             public float3 position;
 
+            // --- The controller's velocity (simulation) ---
             public float3 velocity;
 
+            // --- States if the controller is grounded ---
             public bool isGrounded;
 
+            // --- The controller's current kinematic based displacement ---
             public float3 kinematicDisplacement;
+
+            // --- The controller's current dynamics based displacement ---
             public float3 dynamicsDisplacement;
+
+            // --------------------------------
+
+            // --- Basic methods ---
 
             internal static TraverserCollision Create()
             {
@@ -77,16 +91,33 @@ namespace Traverser
                 kinematicDisplacement = copyCollision.kinematicDisplacement;
                 dynamicsDisplacement = copyCollision.dynamicsDisplacement;
             }
+
+            // --------------------------------
         }
 
+        // --- Wrapper to define a controller's state, including previous and current collision situations ---
         public struct TraverserState
         {
+            // --- Attributes ---
+
+            // --- The state's previous collision situation --- 
             public TraverserCollision previousCollision;
+
+            // --- The state's actual collision situation ---
             public TraverserCollision currentCollision;
 
+            // --- The state's desired absolute displacement ---
             public float3 desiredDisplacement;
+
+            // --- The state's desired absolute velocity ---
             public float3 desiredVelocity;
+
+            // --- The state's progressively accumulated velocity
             public float3 accumulatedVelocity;
+
+            // --------------------------------
+
+            // --- Basic methods ---
 
             internal static TraverserState Create()
             {
@@ -108,31 +139,39 @@ namespace Traverser
                 accumulatedVelocity = copyState.accumulatedVelocity;
                 desiredDisplacement = copyState.desiredDisplacement;
             }
+
+            // --------------------------------
         }
 
+        // --------------------------------
+
+        // --- Attributes ---
+
+        // --- Unity's character controller ---
         [HideInInspector]
         private CharacterController characterController;
 
+        // --- Actual controller state ---
         private TraverserState state;
+
+        // --- State snapshot to save current state before movement simulation ---
         private TraverserState snapshotState;
+
+        // --------------------------------
+
+        // --- Basic methods ---
 
         // Start is called before the first frame update
         void Start()
         {
+            // --- Initialize controller ---
             state = TraverserState.Create();
             snapshotState = TraverserState.Create();
             characterController = GetComponent<CharacterController>();
-            //state.transform = characterController.transform;
-            //snapshotState.transform = characterController.transform;
             current.position = transform.position;
             realPosition = transform.position;
         }
 
-        //// Update is called once per frame
-        //void Update()
-        //{
-
-        //}
+        // --------------------------------
     }
-
 }

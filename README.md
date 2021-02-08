@@ -31,7 +31,7 @@ Video game characters interact with the objects in the world in many different w
 
 ## CWLF Project
 
-Stands for character world linking framework (old name, renamed to Traverser). It made use of Unity's new animation system Kinematica, but due to it being stopped for the whole 2021 in a non production-ready state, I decided to move on without it, giving place to the new Traverser project. 
+Stands for character world linking framework (old name, renamed to Traverser). It made use of Unity's new animation system Kinematica, but due to different reasons including it being stopped for the whole 2021 in a non production-ready state and lack of hackability, I decided to get by without it, giving place to the new Traverser project. 
 
 
 

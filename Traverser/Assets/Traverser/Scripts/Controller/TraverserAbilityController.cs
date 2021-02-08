@@ -21,6 +21,9 @@ namespace Traverser
         
         public void Update()
         {
+            if (!controller.isActiveAndEnabled)
+                return;
+
             bool isEnabled = currentAbility == null ? false : currentAbility.IsAbilityEnabled();
 
             // --- Keep updating our current ability ---
@@ -60,6 +63,9 @@ namespace Traverser
 
         private void FixedUpdate()
         {
+            if (!controller.isActiveAndEnabled)
+                return;
+
             bool isEnabled = currentAbility == null ? false : currentAbility.IsAbilityEnabled();
 
             // --- Keep updating our current ability ---
@@ -91,6 +97,9 @@ namespace Traverser
 
         public void OnAnimatorMove()
         {
+            if (!controller.isActiveAndEnabled)
+                return;
+
             // --- After all animations are evaluated, perform movement ---
             if (currentAbility == null)
                 return;

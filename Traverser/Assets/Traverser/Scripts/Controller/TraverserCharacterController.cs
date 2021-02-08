@@ -19,12 +19,6 @@ namespace Traverser
         [Range(1.0f, 10.0f)]
         public float stepping = 1.0f;
 
-        [Header("Animation")]
-        [Tooltip("Reference to the skeleton's parent. The controller positions the skeleton at the skeletonRef's position. Used to kill animation's root motion.")]
-        public Transform skeleton;
-        [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
-        public Transform skeletonRef;
-
         // --- The current state's position (simulation) ---
         public float3 position { get => state.currentCollision.position; set => state.currentCollision.position = value; }
 
@@ -50,16 +44,6 @@ namespace Traverser
 
         // --- Utility to store only the first tick's target position ---
         private bool firstTick = true;
-
-        // --------------------------------
-
-        // --- Basic Methods ---
-
-        private void LateUpdate()
-        {
-            // --- Move all the skeleton to the character's position ---
-            skeleton.position = skeletonRef.position;
-        }
 
         // --------------------------------
 

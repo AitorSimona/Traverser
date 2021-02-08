@@ -76,8 +76,7 @@ namespace Traverser
 
         public static float GetMoveIntensity()
         {
-            Vector3 intensity = capture.movementDirection;
-            return intensity.magnitude;
+            return Mathf.Max(Mathf.Abs(capture.stickHorizontal), Mathf.Abs(capture.stickVertical));
         }
 
         // --------------------------------

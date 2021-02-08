@@ -28,8 +28,10 @@ namespace Traverser
 
         [Header("Simulation settings")]
         [Tooltip("How many movement iterations per frame will the controller perform. More iterations are more expensive but provide greater predictive collision detection reach.")]
+        [Range(0, 10)]
         public int iterations = 3;
-        [Tooltip("How much will the controller displace the 2nd and following iterations respect the first one (speed increase). Increases predictive collision detection reach at the cost of precision (void space).")]
+        [Tooltip("How much will the controller displace the 2nd and following iterations respect the first one (speed increase). Increases prediction reach at the cost of precision (void space).")]
+        [Range(1.0f, 10.0f)]
         public float stepping = 10.0f;
 
         [Header("Fall limitation")]

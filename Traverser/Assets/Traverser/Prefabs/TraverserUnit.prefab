@@ -5435,7 +5435,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2550943690891041020}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.7113276, y: 1.221784, z: -10.643742}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5496,6 +5496,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityEnabled: 1
+  stepping: 1
+  skeleton: {fileID: 2906498260884358479}
+  skeletonRef: {fileID: 110178984468934778}
+  targetPosition:
+    x: 0
+    y: 0
+    z: 0
 --- !u!114 &2550943690891041023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5508,8 +5515,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0a5e42cf4f102b41b7e8e376e12d0cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeleton: {fileID: 2906498260884358479}
-  skeletonRef: {fileID: 110178984468934778}
 --- !u!114 &2550943690891041022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5524,15 +5529,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   desiredSpeedSlow: 3.9
   desiredSpeedFast: 5.5
-  velocityPercentage: 1
-  forwardPercentage: 1
-  responsiveness: 0.45
   brakingSpeed: 0.4
-  correctTranslationPercentage: 0
-  correctRotationPercentage: 1
-  correctMotionStartSpeed: 2
-  correctMotionEndSpeed: 3
-  maxPoseDeviation: 0.01
+  iterations: 3
+  stepping: 10
   freedrop: 1
   brakeDistance: 0.5
   maxFallPredictionDistance: 3

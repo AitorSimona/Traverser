@@ -140,7 +140,6 @@ namespace Traverser
         // --- Attributes ---
 
         // --- Unity's character controller ---
-        [HideInInspector]
         private CharacterController characterController;
 
         // --- Actual controller state ---

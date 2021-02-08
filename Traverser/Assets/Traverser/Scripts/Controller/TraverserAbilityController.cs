@@ -7,13 +7,9 @@ namespace Traverser
     public class TraverserAbilityController : MonoBehaviour // Layer to control all of the object's abilities 
     {
         // --- Attributes ---
+
         TraverserAbility currentAbility;
         TraverserCharacterController controller;
-
-        [Tooltip("Reference to the skeleton's parent. The controller positions the skeleton at the skeletonRef's position. Used to kill animation's root motion.")]
-        public Transform skeleton;
-        [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
-        public Transform skeletonRef;
 
         // --------------------------------
 
@@ -107,12 +103,6 @@ namespace Traverser
             // --- Let abilities apply final changes to motion, if needed ---
             if (currentAbility != null /*&& component.enabled*/)
                 currentAbility.OnPostUpdate(Time.deltaTime);
-        }
-
-        private void LateUpdate()
-        {
-            // --- Move all the skeleton to the character's position ---
-            skeleton.position = skeletonRef.position;
         }
 
         // --------------------------------

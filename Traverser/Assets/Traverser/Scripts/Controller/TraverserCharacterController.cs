@@ -12,48 +12,54 @@ namespace Traverser
     {
         // --- Attributes ---
 
-        // --- The current state's previous collision situation ---
-        public ref TraverserCollision previous
-        {
-            get => ref state.previousCollision;
-        }
-
-        // --- The current state's actual collision situation ---
-        public ref TraverserCollision current
-        {
-            get => ref state.currentCollision;
-        }
-
-        // --- The current state's position (simulation) ---
-        public float3 position
-        {
-            get => state.currentCollision.position;
-            set => state.currentCollision.position = value;
-        }
-
-        // --- The current state's velocity (simulation) ---
-        public float3 velocity
-        {
-            get => state.currentCollision.velocity;
-        }
-
-        // --- The next position user code should move to ---
-        public float3 targetPosition;
-
-        // --- Whether or not gravity will be applied to the controller ---
+        [Header("Controller")]
+        [Tooltip("Whether or not gravity will be applied to the controller.")]
         public bool gravityEnabled = true;
-
-        // --- How much will given displacement be increased, bigger stepping increases prediction reach at the cost of precision ---
+        [Tooltip("How much will given displacement be increased, bigger stepping increases prediction reach at the cost of precision (void space). Can be overwriten by abilities.")]
+        [Range(1.0f, 10.0f)]
         public float stepping = 1.0f;
 
+        [Header("Animation")]
+        [Tooltip("Reference to the skeleton's parent. The controller positions the skeleton at the skeletonRef's position. Used to kill animation's root motion.")]
+        public Transform skeleton;
+        [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
+        public Transform skeletonRef;
+
+        // --- The current state's position (simulation) ---
+        public float3 position { get => state.currentCollision.position; set => state.currentCollision.position = value; }
+
+        // --- The next position user code should move to ---
+        [HideInInspector]
+        public float3 targetPosition;
+
+        // --- The current state's velocity (simulation) ---
+        public float3 velocity { get => state.currentCollision.velocity; }
+
+        // --- The current state's previous collision situation ---
+        public ref TraverserCollision previous { get => ref state.previousCollision; }
+
+        // --- The current state's actual collision situation ---
+        public ref TraverserCollision current { get => ref state.currentCollision; }
+
         // --- Character controller's capsule collider height ---
-        public float capsuleHeight 
-        {
-            get => characterController.height;
-        }
+        public float capsuleHeight { get => characterController.height; }
+
+        // --------------------------------
+
+        // --- Private Variables ---
 
         // --- Utility to store only the first tick's target position ---
         private bool firstTick = true;
+
+        // --------------------------------
+
+        // --- Basic Methods ---
+
+        private void LateUpdate()
+        {
+            // --- Move all the skeleton to the character's position ---
+            skeleton.position = skeletonRef.position;
+        }
 
         // --------------------------------
 

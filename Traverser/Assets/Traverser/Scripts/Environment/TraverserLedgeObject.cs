@@ -5,27 +5,6 @@ using UnityEngine;
 
 namespace Traverser
 {
-    public struct AffineTransform
-    {
-        public float3 t;
-        public quaternion q;
-
-        public AffineTransform(float3 t_, quaternion q_)
-        {
-            t = t_;
-            q = q_;
-        }
-
-        public static AffineTransform Create(float3 t_, quaternion q_)
-        {
-            AffineTransform affineTransform;
-            affineTransform.t = t_;
-            affineTransform.q = q_;
-            return affineTransform;
-        }
-    }
-
-
     public class TraverserLedgeObject
     {
         // --- Definition of a ledge's anchor, the point we are attached to --- 
@@ -279,7 +258,7 @@ namespace Traverser
                 return minimumDistance;
             }
 
-            public AffineTransform GetTransform(TraverserLedgeAnchor anchor)
+            public TraverserAffineTransform GetTransform(TraverserLedgeAnchor anchor)
             {
                 // --- Get transform out of a 2D ledge anchor --- 
                 float3 p = GetPosition(anchor);
@@ -287,17 +266,17 @@ namespace Traverser
                 float3 up = Vector3.up;
                 float3 n = GetNormal(anchor);
 
-                return new AffineTransform(p, math.quaternion(math.float3x3(edge, up, n)));
+                return new TraverserAffineTransform(p, math.quaternion(math.float3x3(edge, up, n)));
             }
 
-            public AffineTransform GetTransformGivenNormal(TraverserLedgeAnchor anchor, float3 normal)
+            public TraverserAffineTransform GetTransformGivenNormal(TraverserLedgeAnchor anchor, float3 normal)
             {
                 // --- Get transform out of a 2D ledge anchor --- 
                 float3 p = GetPosition(anchor);
                 float3 edge = GetNormalizedEdge(anchor.index);
                 float3 up = Vector3.up;
 
-                return new AffineTransform(p, math.quaternion(math.float3x3(edge, up, normal)));
+                return new TraverserAffineTransform(p, math.quaternion(math.float3x3(edge, up, normal)));
             }
             // -------------------------------------------------
 

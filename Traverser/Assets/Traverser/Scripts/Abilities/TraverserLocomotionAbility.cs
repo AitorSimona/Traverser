@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
 using Unity.Mathematics;
-using Unity.Burst;
-using Unity.Jobs;
-using Unity.Collections;
 using UnityEngine.Assertions;
 
 namespace Traverser
@@ -168,7 +165,7 @@ namespace Traverser
             bool attemptTransition = true;
             TraverserAbility contactAbility = null;
 
-            AffineTransform tmp = AffineTransform.Create(transform.position, transform.rotation);
+            TraverserAffineTransform tmp = TraverserAffineTransform.Create(transform.position, transform.rotation);
 
             for (int i = 0; i < iterations; ++i)
             {
@@ -207,7 +204,7 @@ namespace Traverser
                     Qaxis.y = 0.0f;
                     quaternion q = math.mul(transform.rotation, Quaternion.FromToRotation(Qaxis, contactNormal));
 
-                    AffineTransform contactTransform = AffineTransform.Create(contactPoint, q);
+                    TraverserAffineTransform contactTransform = TraverserAffineTransform.Create(contactPoint, q);
 
                     //  TODO : Remove temporal debug object
                     //GameObject.Find("dummy").transform.position = contactTransform.t;
@@ -281,7 +278,7 @@ namespace Traverser
             return contactAbility;
         }
 
-        public bool OnContact(AffineTransform contactTransform, float deltaTime)
+        public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
         {
             return false;
         }

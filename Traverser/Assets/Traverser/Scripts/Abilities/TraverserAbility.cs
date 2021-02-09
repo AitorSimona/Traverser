@@ -24,7 +24,7 @@ namespace Traverser
         // gain control over the policy).
         //
 
-        bool OnContact(AffineTransform contactTransform, float deltaTime);
+        bool OnContact(TraverserAffineTransform contactTransform, float deltaTime);
 
         //
         // Called from another ability to indicate that a predicted future

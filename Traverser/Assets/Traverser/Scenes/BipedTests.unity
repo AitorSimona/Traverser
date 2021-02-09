@@ -1389,6 +1389,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: TraverserUnit
       objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041020, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041021, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: m_MinMoveDistance
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041023, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: skeleton
       value: 
@@ -1407,7 +1415,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2894993679995748934, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.221784
+      value: 5.55
       objectReference: {fileID: 0}
     - target: {fileID: 2894993679995748934, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_LocalPosition.z

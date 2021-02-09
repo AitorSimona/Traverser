@@ -170,21 +170,19 @@ namespace Traverser
         void CheckGroundCollision()
         {
             // --- Ground collision check ---
-            float radius = 0.25f;
             float3 colliderPosition;
-            int numColliders = Physics.OverlapSphereNonAlloc(position, radius, hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+            int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
 
             if (numColliders > 0)
             {
-                float minDistance = radius * 2.0f;
-                float yPos = hitColliders[0].transform.position.y + 0.1f;
+                float minDistance = groundProbeRadius * 2.0f;
                 int chosenGround = -1;
 
                 for (int i = 0; i < numColliders; ++i)
                 {
                     colliderPosition = hitColliders[i].transform.position;
 
-                    if (math.length(colliderPosition - position) < minDistance && yPos > colliderPosition.y)
+                    if (math.distance(colliderPosition.y, position.y) < minDistance)
                         chosenGround = i;
                 }
 
@@ -205,9 +203,12 @@ namespace Traverser
 
         void OnDrawGizmosSelected()
         {
+            if (!showDebug)
+                return;
+
             // Draw a yellow sphere at the transform's position
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(transform.position, 0.25f);
+            Gizmos.DrawSphere(transform.position, groundProbeRadius);
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

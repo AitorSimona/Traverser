@@ -10,11 +10,16 @@ namespace Traverser
         // --- Attributes ---
 
         [Header("Controller")]
+        [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show geometry.")]
+        public bool showDebug = false;
         [Tooltip("Whether or not gravity will be applied to the controller.")]
         public bool gravityEnabled = true;
         [Tooltip("How much will given displacement be increased, bigger stepping increases prediction reach at the cost of precision (void space). Can be overwriten by abilities.")]
         [Range(1.0f, 10.0f)]
         public float stepping = 1.0f;
+        [Tooltip("Radius of the ground collision check sphere.")]
+        [Range(0.25f, 0.5f)]
+        public float groundProbeRadius = 0.25f;
 
         // --- The current state's position (simulation) ---
         public float3 position { get => state.currentCollision.position; set => state.currentCollision.position = value; }

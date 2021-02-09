@@ -206,8 +206,8 @@ namespace Traverser
         void OnDrawGizmosSelected()
         {
             // Draw a yellow sphere at the transform's position
-            //Gizmos.color = Color.yellow;
-            //Gizmos.DrawSphere(transform.position, 0.25f);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(transform.position, 0.25f);
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

@@ -23,19 +23,17 @@ namespace Traverser
             // --- The current collider's normal direction ---
             public float3 colliderContactNormal;
 
-            // TODO: UNUSED
             // --- Transform of the current ground, the object below the character ---
-            public Transform ground;
+            public Collider ground;
+
+            // --- States if the controller is grounded ---
+            public bool isGrounded;
 
             // --- The controller's position (simulation) ---
             public float3 position;
 
             // --- The controller's velocity (simulation) ---
             public float3 velocity;
-
-            // TODO: UNUSED
-            // --- States if the controller is grounded ---
-            public bool isGrounded;
 
             // --- The controller's current kinematic based displacement ---
             public float3 kinematicDisplacement;
@@ -159,6 +157,72 @@ namespace Traverser
             characterController = GetComponent<CharacterController>();
             current.position = transform.position;
             targetPosition = transform.position;
+        }
+
+        // --------------------------------
+
+        // --- Collisions ---
+
+        // TODO: Move to collision layer 
+
+        Collider[] hitColliders = new Collider[3];
+
+        void CheckGroundCollision()
+        {
+            // --- Ground collision check ---
+            float radius = 0.25f;
+            float3 colliderPosition;
+            int numColliders = Physics.OverlapSphereNonAlloc(position, radius, hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+
+            if (numColliders > 0)
+            {
+                float minDistance = radius * 2.0f;
+                float yPos = hitColliders[0].transform.position.y + 0.1f;
+                int chosenGround = -1;
+
+                for (int i = 0; i < numColliders; ++i)
+                {
+                    colliderPosition = hitColliders[i].transform.position;
+
+                    if (math.length(colliderPosition - position) < minDistance && yPos > colliderPosition.y)
+                        chosenGround = i;
+                }
+
+                if (chosenGround != -1)
+                {
+                    current.ground = hitColliders[chosenGround];
+                    current.isGrounded = true;
+
+                    Debug.Log("Ground is:");
+                    Debug.Log(current.ground.gameObject.name);
+                }
+            }
+        }
+
+        // --------------------------------
+
+        // --- Events ---
+
+        void OnDrawGizmosSelected()
+        {
+            // Draw a yellow sphere at the transform's position
+            //Gizmos.color = Color.yellow;
+            //Gizmos.DrawSphere(transform.position, 0.25f);
+        }
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            // --- Update current collision information with hit's information ---
+            if (hit.gameObject.name != "Ground")
+            {
+                Debug.Log("Collided with:");
+                Debug.Log(hit.gameObject.name);
+            }
+            state.previousCollision.CopyFrom(ref state.currentCollision);
+            state.currentCollision.colliderContactPoint = hit.point;
+            state.currentCollision.colliderContactNormal = hit.normal;
+            state.currentCollision.collider = hit.collider;
+            state.currentCollision.isColliding = true;
         }
 
         // --------------------------------

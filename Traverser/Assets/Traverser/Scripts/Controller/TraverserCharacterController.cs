@@ -36,7 +36,7 @@ namespace Traverser
         public float capsuleHeight { get => characterController.height; }
 
         // --- Whether or not the character controller's capsule collider is grounded ---
-        public bool isGrounded { get => characterController.isGrounded;  }
+        public bool isGrounded { get => current.isGrounded; }
 
         // --------------------------------
 
@@ -101,6 +101,7 @@ namespace Traverser
             }
         }
 
+
         void UpdateMovement(float deltaTime)
         {
             state.currentCollision.kinematicDisplacement = state.desiredDisplacement * stepping;
@@ -117,25 +118,9 @@ namespace Traverser
             float3 finalPosition = position + desiredDisplacement;
             ForceMove(finalPosition);
             state.currentCollision.velocity = characterController.velocity / stepping;
-        }
 
-        // --------------------------------
-
-        // --- Events ---
-
-        private void OnControllerColliderHit(ControllerColliderHit hit)
-        {
-            // --- Update current collision information with hit's information ---
-            if (hit.gameObject.name != "Ground")
-            {
-                Debug.Log("Collided with:");
-                Debug.Log(hit.gameObject.name);
-            }
-            state.previousCollision.CopyFrom(ref state.currentCollision);
-            state.currentCollision.colliderContactPoint = hit.point;
-            state.currentCollision.colliderContactNormal = hit.normal;
-            state.currentCollision.collider = hit.collider;
-            state.currentCollision.isColliding = true;
+            if(characterController.detectCollisions)
+                CheckGroundCollision();
         }
 
         // --------------------------------

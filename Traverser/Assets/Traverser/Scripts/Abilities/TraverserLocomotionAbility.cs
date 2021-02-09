@@ -167,7 +167,8 @@ namespace Traverser
         {
             bool attemptTransition = true;
             TraverserAbility contactAbility = null;
-            float3 tmp = transform.position;
+
+            AffineTransform tmp = AffineTransform.Create(transform.position, transform.rotation);
 
             for (int i = 0; i < iterations; ++i)
             {
@@ -196,15 +197,22 @@ namespace Traverser
 
                     float3 contactPoint = collision.colliderContactPoint;
                     contactPoint.y = controller.position.y;
-                    //float3 contactNormal = collision.colliderContactNormal;
-                    //quaternion q = math.mul(transform.q, Missing.forRotation(Missing.zaxis(transform.q), contactNormal));
+                    float3 contactNormal = collision.colliderContactNormal;
 
-                    float3 contactTransform = contactPoint;
+                    // TODO: Check if works properly
+                    float Qangle;
+                    Vector3 Qaxis;
+                    transform.rotation.ToAngleAxis(out Qangle, out Qaxis);
+                    Qaxis.x = 0.0f;
+                    Qaxis.y = 0.0f;
+                    quaternion q = math.mul(transform.rotation, Quaternion.FromToRotation(Qaxis, contactNormal));
+
+                    AffineTransform contactTransform = AffineTransform.Create(contactPoint, q);
 
                     //  TODO : Remove temporal debug object
                     //GameObject.Find("dummy").transform.position = contactTransform.t;
 
-                    float3 desired_direction = contactTransform - tmp;
+                    float3 desired_direction = contactTransform.t - tmp.t;
                     float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
                     float target_orientation = current_orientation + Vector3.SignedAngle(TraverserInputLayer.capture.movementDirection, desired_direction, Vector3.up);
                     float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
@@ -212,7 +220,7 @@ namespace Traverser
                     // TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
                     //Debug.Log(angle);
                     // --- If we are not close to the desired angle or contact point, do not handle contacts ---
-                    if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform, tmp)) > 4.0f)
+                    if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 4.0f)
                     {
                         continue;
                     }
@@ -273,7 +281,7 @@ namespace Traverser
             return contactAbility;
         }
 
-        public bool OnContact(float3 contactTransform, float deltaTime)
+        public bool OnContact(AffineTransform contactTransform, float deltaTime)
         {
             return false;
         }

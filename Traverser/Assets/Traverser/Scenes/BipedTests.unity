@@ -443,11 +443,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &401798148 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 110178984468934778, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-  m_PrefabInstance: {fileID: 110178984365418542}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &583383702
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,7 +461,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!135 &583383703
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -560,7 +555,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &624913323
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1307,11 +1302,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &2033929999 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2906498260884358479, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-  m_PrefabInstance: {fileID: 110178984365418542}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2133811405
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1385,46 +1375,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-      propertyPath: showDebug
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-      propertyPath: capsuleDebugMesh
-      value: 
-      objectReference: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
-    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-      propertyPath: capsuleDebugMeshScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-      propertyPath: capsuleDebugMeshScale.y
-      value: 0.85
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-      propertyPath: capsuleDebugMeshScale.z
-      value: 0.75
-      objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041020, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_Name
       value: TraverserUnit
       objectReference: {fileID: 0}
-    - target: {fileID: 2550943690891041020, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550943690891041021, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-      propertyPath: m_MinMoveDistance
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550943690891041023, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-      propertyPath: skeleton
-      value: 
-      objectReference: {fileID: 2033929999}
-    - target: {fileID: 2550943690891041023, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
-      propertyPath: skeletonRef
-      value: 
-      objectReference: {fileID: 401798148}
     - target: {fileID: 2894993679995748934, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_RootOrder
       value: 1

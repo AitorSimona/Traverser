@@ -8,18 +8,22 @@ namespace Traverser
     public partial class TraverserCharacterController : MonoBehaviour
     {
         // --- Attributes ---
-
-        [Header("Controller")]
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show geometry.")]
         public bool showDebug = false;
+
+        [Header("Controller")]
         [Tooltip("Whether or not gravity will be applied to the controller.")]
         public bool gravityEnabled = true;
         [Tooltip("How much will given displacement be increased, bigger stepping increases prediction reach at the cost of precision (void space). Can be overwriten by abilities.")]
         [Range(1.0f, 10.0f)]
         public float stepping = 1.0f;
+
+        [Header("Collision")]
         [Tooltip("Radius of the ground collision check sphere.")]
         [Range(0.25f, 0.5f)]
         public float groundProbeRadius = 0.25f;
+
+        [Header("Debug")]
         [Tooltip("Reference to capsule mesh for debugging purposes.")]
         public Mesh capsuleDebugMesh;
         [Tooltip("The debug mesh's scale.")]

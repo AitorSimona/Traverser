@@ -5422,7 +5422,7 @@ GameObject:
   - component: {fileID: 2550943690891041016}
   - component: {fileID: 2550943690891041023}
   - component: {fileID: 2550943690891041022}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TraverserUnit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5496,7 +5496,7 @@ CharacterController:
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
+  m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.85, z: 0}
 --- !u!114 &2550943690891041016
 MonoBehaviour:
@@ -5510,8 +5510,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16cebefab27c50e4e9360de1a2ba827d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showDebug: 1
   gravityEnabled: 1
   stepping: 1
+  groundProbeRadius: 0.25
+  capsuleDebugMesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  capsuleDebugMeshScale:
+    x: 0.75
+    y: 0.85
+    z: 0.75
   targetPosition:
     x: 0
     y: 0

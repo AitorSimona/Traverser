@@ -150,6 +150,9 @@ namespace Traverser
         // --- To store simulation's last known position ---
         private float3 lastPosition;
 
+        // --- Array of colliders for ground probing ---
+        private Collider[] hitColliders = new Collider[3];
+
         // --------------------------------
 
         // --- Basic methods ---
@@ -169,37 +172,17 @@ namespace Traverser
 
         // --- Collisions ---
 
-        // TODO: Move to collision layer 
-
-        Collider[] hitColliders = new Collider[3];
 
         void CheckGroundCollision()
         {
-            // --- Ground collision check ---
-            float3 colliderPosition;
-            int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+            int colliderIndex = TraverserCollisionLayer.CastGroundProbe(position, groundProbeRadius, ref hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask);
 
-            if (numColliders > 0)
+            if(colliderIndex != -1)
             {
-                float minDistance = groundProbeRadius * 2.0f;
-                int chosenGround = -1;
-
-                for (int i = 0; i < numColliders; ++i)
-                {
-                    colliderPosition = hitColliders[i].transform.position;
-
-                    if (math.distance(colliderPosition.y, position.y) < minDistance)
-                        chosenGround = i;
-                }
-
-                if (chosenGround != -1)
-                {
-                    current.ground = hitColliders[chosenGround];
-                    current.isGrounded = true;
-
-                    //Debug.Log("Ground is:");
-                    //Debug.Log(current.ground.gameObject.name);
-                }
+                current.ground = hitColliders[colliderIndex];
+                current.isGrounded = true;
+                //Debug.Log("Ground is:");
+                //Debug.Log(current.ground.gameObject.name);
             }
         }
 

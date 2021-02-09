@@ -38,10 +38,28 @@ namespace Traverser
             return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, capsule.radius - 0.1f, EnvironmentCollisionMask);
         }
 
-        public static int CastCapsuleCollisions(float3 startPosition, float3 endPosition, float radius, float3 normalizedDisplacement, ref RaycastHit[] raycastHits, float maxDistance, int layerMask, QueryTriggerInteraction queryTriggerInteraction)
+        // --- Return the collider we are grounded to (index of hitColliders), -1 if no ground found --
+        public static int CastGroundProbe(float3 position, float groundProbeRadius, ref Collider[] hitColliders, int layerMask)
         {
-            return Physics.CapsuleCastNonAlloc(startPosition, endPosition, radius, normalizedDisplacement, raycastHits, 
-                maxDistance, layerMask, QueryTriggerInteraction.Ignore);
+            // --- Ground collision check ---
+            int chosenGround = -1;
+            float3 colliderPosition;
+            int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+
+            if (numColliders > 0)
+            {
+                float minDistance = groundProbeRadius * 2.0f;
+
+                for (int i = 0; i < numColliders; ++i)
+                {
+                    colliderPosition = hitColliders[i].transform.position;
+
+                    if (math.distance(colliderPosition.y, position.y) < minDistance)
+                        chosenGround = i;
+                }
+            }
+
+            return chosenGround;
         }
 
         // --- Turn off controller ---

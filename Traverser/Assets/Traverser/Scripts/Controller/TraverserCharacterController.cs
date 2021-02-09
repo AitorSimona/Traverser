@@ -64,6 +64,7 @@ namespace Traverser
 
         public void Rewind()
         {
+            // --- Store simulation's last position ---
             lastPosition = position;
 
             // --- Use snapshotState values to return to pre-simulation situation ---

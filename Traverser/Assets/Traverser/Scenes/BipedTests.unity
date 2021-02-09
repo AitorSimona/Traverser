@@ -1385,6 +1385,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: showDebug
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: capsuleDebugMesh
+      value: 
+      objectReference: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: capsuleDebugMeshScale.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: capsuleDebugMeshScale.y
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: capsuleDebugMeshScale.z
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041020, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_Name
       value: TraverserUnit

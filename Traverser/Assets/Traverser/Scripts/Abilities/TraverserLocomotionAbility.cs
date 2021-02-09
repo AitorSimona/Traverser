@@ -267,12 +267,7 @@ namespace Traverser
                 {
                     distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
                 }
-            }
-
-            // --- TEMPORAL DEBUG UTILITY ---
-            float3 dummyPos = controller.position;
-            dummyPos.y += controller.capsuleHeight / 2;
-            GameObject.Find("Capsule").transform.position = dummyPos;       
+            }  
 
             return contactAbility;
         }

@@ -20,6 +20,10 @@ namespace Traverser
         [Tooltip("Radius of the ground collision check sphere.")]
         [Range(0.25f, 0.5f)]
         public float groundProbeRadius = 0.25f;
+        [Tooltip("Reference to capsule mesh for debugging purposes.")]
+        public Mesh capsuleDebugMesh;
+        [Tooltip("The debug mesh's scale.")]
+        public float3 capsuleDebugMeshScale = Vector3.one;
 
         // --- The current state's position (simulation) ---
         public float3 position { get => state.currentCollision.position; set => state.currentCollision.position = value; }
@@ -45,13 +49,6 @@ namespace Traverser
 
         // --------------------------------
 
-        // --- Private Variables ---
-
-        // --- Utility to store only the first tick's target position ---
-        private bool firstTick = true;
-
-        // --------------------------------
-
         // --- Simulation methods ---
 
         public void Snapshot()
@@ -63,6 +60,8 @@ namespace Traverser
 
         public void Rewind()
         {
+            lastPosition = position;
+
             // --- Use snapshotState values to return to pre-simulation situation ---
             state.CopyFrom(ref snapshotState);
 

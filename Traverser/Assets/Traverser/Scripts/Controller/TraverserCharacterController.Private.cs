@@ -133,7 +133,7 @@ namespace Traverser
 
         // --------------------------------
 
-        // --- Attributes ---
+        // --- Private Variables ---
 
         // --- Unity's character controller ---
         private CharacterController characterController;
@@ -143,6 +143,12 @@ namespace Traverser
 
         // --- State snapshot to save current state before movement simulation ---
         private TraverserState snapshotState;
+
+        // --- Utility to store only the first tick's target position ---
+        private bool firstTick = true;
+
+        // --- To store simulation's last known position ---
+        private float3 lastPosition;
 
         // --------------------------------
 
@@ -191,8 +197,8 @@ namespace Traverser
                     current.ground = hitColliders[chosenGround];
                     current.isGrounded = true;
 
-                    Debug.Log("Ground is:");
-                    Debug.Log(current.ground.gameObject.name);
+                    //Debug.Log("Ground is:");
+                    //Debug.Log(current.ground.gameObject.name);
                 }
             }
         }
@@ -206,9 +212,18 @@ namespace Traverser
             if (!showDebug)
                 return;
 
-            // Draw a yellow sphere at the transform's position
+            // --- Draw sphere at current ground probe position ---
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(transform.position, groundProbeRadius);
+
+            // --- Draw capsule at last simulation position ---      
+            if (capsuleDebugMesh != null && characterController != null)
+            {
+                Gizmos.color = Color.red;
+                float3 pos = lastPosition;
+                pos.y += characterController.height / 2.0f;
+                Gizmos.DrawMesh(capsuleDebugMesh, 0, pos, Quaternion.identity, capsuleDebugMeshScale);
+            }
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

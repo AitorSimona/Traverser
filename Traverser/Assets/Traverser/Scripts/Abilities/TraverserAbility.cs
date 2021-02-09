@@ -1,5 +1,4 @@
-﻿//using Unity.Mathematics;
-using UnityEngine;
+﻿using Unity.Mathematics;
 
 // --- All abilities derive from this base interface (class with no implementations) ---
 
@@ -25,7 +24,7 @@ namespace Traverser
         // gain control over the policy).
         //
 
-        bool OnContact(Transform contactTransform, float deltaTime);
+        bool OnContact(float3 contactTransform, float deltaTime);
 
         //
         // Called from another ability to indicate that a predicted future

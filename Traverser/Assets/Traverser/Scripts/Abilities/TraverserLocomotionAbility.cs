@@ -92,10 +92,10 @@ namespace Traverser
         {
             TraverserInputLayer.capture.UpdateLocomotion();
 
-            //if (TraverserInputLayer.capture.run)
-            //    freedrop = true;
-            //else
-            //    freedrop = preFreedrop;
+            if (TraverserInputLayer.capture.run)
+                freedrop = true;
+            else
+                freedrop = preFreedrop;
 
             TraverserAbility ret = this;
 
@@ -165,14 +165,9 @@ namespace Traverser
         
         TraverserAbility SimulatePrediction(ref TraverserCharacterController controller, float deltaTime)
         {
-            //AffineTransform transform = prediction.Transform;
-            //AffineTransform worldRootTransform = synthesizer.WorldRootTransform;
-
-            //float inverseSampleRate = Missing.recip(synthesizer.Binary.SampleRate); // recip is just the inverse (1/x)
-
-            //bool attemptTransition = true;
-
+            bool attemptTransition = true;
             TraverserAbility contactAbility = null;
+            float3 tmp = transform.position;
 
             for (int i = 0; i < iterations; ++i)
             {
@@ -190,118 +185,95 @@ namespace Traverser
 
                 controller.Move(finalPosition);
                 controller.Tick(deltaTime);
+
+                ref TraverserCharacterController.TraverserCollision collision = ref controller.current; // current state of the controller (after a tick is issued)
+
+                // --- If a collision occurs, call each ability's onContact callback ---
+
+                if (collision.isColliding && attemptTransition)
+                {
+                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
+
+                    float3 contactPoint = collision.colliderContactPoint;
+                    contactPoint.y = controller.position.y;
+                    //float3 contactNormal = collision.colliderContactNormal;
+                    //quaternion q = math.mul(transform.q, Missing.forRotation(Missing.zaxis(transform.q), contactNormal));
+
+                    float3 contactTransform = contactPoint;
+
+                    //  TODO : Remove temporal debug object
+                    //GameObject.Find("dummy").transform.position = contactTransform.t;
+
+                    float3 desired_direction = contactTransform - tmp;
+                    float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
+                    float target_orientation = current_orientation + Vector3.SignedAngle(TraverserInputLayer.capture.movementDirection, desired_direction, Vector3.up);
+                    float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
+
+                    // TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
+                    //Debug.Log(angle);
+                    // --- If we are not close to the desired angle or contact point, do not handle contacts ---
+                    if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform, tmp)) > 4.0f)
+                    {
+                        continue;
+                    }
+
+                    if (contactAbility == null)
+                    {
+                        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                        {
+                            // --- If any ability reacts to the collision, break ---
+                            if (ability.IsAbilityEnabled() && ability.OnContact(contactTransform, deltaTime))
+                            {
+                                contactAbility = ability;
+                                break;
+                            }
+                        }
+                    }
+
+                    attemptTransition = false; // make sure we do not react to another collision
+                }
+                else if (!controller.isGrounded) // we are dropping/falling down
+                {
+                    // --- Let other abilities take control on drop ---
+                    if (contactAbility == null)
+                    {
+                        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                        {
+                            // --- If any ability reacts to the drop, break ---
+                            if (ability.IsAbilityEnabled() && ability.OnDrop(deltaTime))
+                            {
+                                contactAbility = ability;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!freedrop)
+                    {
+                        // --- Compute distance to fall point ---
+                        Vector3 futurepos;
+                        futurepos.x = controller.current.position.x;
+                        futurepos.y = controller.current.position.y;
+                        futurepos.z = controller.current.position.z;
+                        distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
+                        break;
+                    }
+                }
+                else
+                {
+                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
+                }
             }
 
             // --- TEMPORAL DEBUG UTILITY ---
             float3 dummyPos = controller.position;
             dummyPos.y += controller.capsuleHeight / 2;
-            GameObject.Find("Capsule").transform.position = dummyPos;
-
-            //controller.MoveTo(finalPosition); // apply movement
-            //controller.Tick(deltaTime); // update controller
-
-            //AffineTransform tmp = synthesizer.WorldRootTransform;
-
-            //// --- We keep pushing new transforms until trajectory prediction limit or collision ---
-            //while (prediction.Push(transform))
-            //{
-            //    // --- Get new transform and perform future movement ---
-            //    transform = prediction.Advance;
-
-            //    //controller.Move((worldRootTransform.transform(transform.t) - controller.Position) * inverseSampleRate); // apply movement
-            //    //TODO controller.Tick(inverseSampleRate); // update controller
-
-
-            //    ref TraverserCharacterController.TraverserCollision collision = ref controller.current; // current state of the controller (after a tick is issued)
-
-            //    // --- If a collision occurs, call each ability's onContact callback ---
-
-            //    if (collision.isColliding && attemptTransition)
-            //    {
-            //        distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
-
-            //        float3 contactPoint = collision.colliderContactPoint;
-            //        contactPoint.y = controller.Position.y;
-            //        float3 contactNormal = collision.colliderContactNormal;
-            //        quaternion q = math.mul(transform.q, Missing.forRotation(Missing.zaxis(transform.q), contactNormal));
-
-            //        AffineTransform contactTransform = new AffineTransform(contactPoint, q);
-
-            //        //  TODO : Remove temporal debug object
-            //        //GameObject.Find("dummy").transform.position = contactTransform.t;
-
-            //        float3 desired_direction = contactTransform.t - tmp.t;
-            //        float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
-            //        float target_orientation = current_orientation + Vector3.SignedAngle(TraverserInputLayer.capture.movementDirection, desired_direction, Vector3.up);
-            //        float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
-
-            //        // TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
-            //        //Debug.Log(angle);
-            //        // --- If we are not close to the desired angle or contact point, do not handle contacts ---
-            //        if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 4.0f)
-            //        {
-            //            continue;
-            //        }
-
-            //        if (contactAbility == null)
-            //        {
-            //            foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
-            //            {
-            //                SnapshotProvider component = ability as SnapshotProvider;
-
-            //                // --- If any ability reacts to the collision, break ---
-            //                if (component.enabled && ability.OnContact(ref synthesizer, contactTransform, deltaTime))
-            //                {
-            //                    contactAbility = ability;
-            //                    break;
-            //                }
-            //            }
-            //        }
-
-            //        attemptTransition = false; // make sure we do not react to another collision
-            //    }
-            //    else if (!controller.isGrounded) // we are dropping/falling down
-            //    {
-            //        // --- Let other abilities take control on drop ---
-            //        if (contactAbility == null)
-            //        {
-            //            foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
-            //            {
-            //                SnapshotProvider component = ability as SnapshotProvider;
-
-            //                // --- If any ability reacts to the drop, break ---
-            //                if (component.enabled && ability.OnDrop(ref synthesizer, deltaTime))
-            //                {
-            //                    contactAbility = ability;
-            //                    break;
-            //                }
-            //            }
-            //        }
-
-            //        if (!freedrop)
-            //        {
-            //            // --- Compute distance to fall point ---
-            //            Vector3 futurepos;
-            //            futurepos.x = controller.current.position.x;
-            //            futurepos.y = controller.current.position.y;
-            //            futurepos.z = controller.current.position.z;
-            //            distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
-            //            break;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
-            //    }
-
-            //    transform.t = worldRootTransform.inverseTransform(controller.Position);
-            //    prediction.Transform = transform;
-            //}
+            GameObject.Find("Capsule").transform.position = dummyPos;       
 
             return contactAbility;
         }
 
-        public bool OnContact(Transform contactTransform, float deltaTime)
+        public bool OnContact(float3 contactTransform, float deltaTime)
         {
             return false;
         }

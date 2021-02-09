@@ -38,6 +38,9 @@ namespace Traverser
         // --- Character controller's capsule collider height ---
         public float capsuleHeight { get => characterController.height; }
 
+        // --- Whether or not the character controller's capsule collider is grounded ---
+        public bool isGrounded { get => characterController.isGrounded;  }
+
         // --------------------------------
 
         // --- Private Variables ---

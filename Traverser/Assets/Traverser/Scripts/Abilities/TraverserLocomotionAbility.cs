@@ -52,7 +52,7 @@ namespace Traverser
 
         // --- Private Variables ---
 
-        //TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
+        TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
         private TraverserCharacterController controller;
         private bool isBraking = false;
         private bool preFreedrop = true;
@@ -67,8 +67,8 @@ namespace Traverser
             controller = GetComponent<TraverserCharacterController>();
             TraverserInputLayer.capture.movementDirection = Vector3.forward;
 
-            // --- Initialize arrays ---
-            //ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
+            // --- Initialize ---
+            ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
 
             // --- Play default animation ---
 
@@ -79,7 +79,7 @@ namespace Traverser
         public void OnDisable()
         {
             // --- Delete arrays ---
-            //ledgeGeometry.Dispose();
+            ledgeGeometry.Dispose();
         }
 
         // -------------------------------------------------
@@ -95,7 +95,6 @@ namespace Traverser
                 freedrop = preFreedrop;
 
             TraverserAbility ret = this;
-
 
             return ret;
         }
@@ -132,11 +131,11 @@ namespace Traverser
                             || collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
                         {
                             // TODO: Prevent this from happening all the time
-                            //ledgeGeometry.Initialize(collider);
+                            ledgeGeometry.Initialize(collider);
                         }
                     }
 
-                    //ledgeGeometry.DebugDraw(); // TODO: Temporal
+                    ledgeGeometry.DebugDraw(); // TODO: Temporal
                 }
 
                 LimitTransform();
@@ -336,14 +335,12 @@ namespace Traverser
 
         public void LimitTransform()
         {
-            //if (ledgeGeometry.vertices[0].Equals(float3.zero) || freedrop)
-            //    return;
+            if (ledgeGeometry.vertices[0].Equals(float3.zero) || freedrop)
+                return;
 
-            //Vector3 pos = gameObject.transform.position;
-            //ledgeGeometry.LimitTransform(ref pos, 0.1f);
-            //gameObject.transform.position = pos;
-            //AffineTransform worldRootTransform = AffineTransform.Create(pos, kinematica.Synthesizer.Ref.WorldRootTransform.q);
-            //kinematica.Synthesizer.Ref.SetWorldTransform(worldRootTransform, true);
+            Vector3 pos = gameObject.transform.position;
+            ledgeGeometry.LimitTransform(ref pos, 0.1f);
+            gameObject.transform.position = pos;
         }
 
         // -------------------------------------------------

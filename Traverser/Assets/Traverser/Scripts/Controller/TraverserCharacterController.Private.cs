@@ -223,7 +223,7 @@ namespace Traverser
             for (int i = 0; i < probePositions.Count; ++i)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawSphere(probePositions[i], groundProbeRadius);
+                Gizmos.DrawWireSphere(probePositions[i], groundProbeRadius);
             }
          
             // --- Draw ground collision height limit (if below limit this ground won't be detected in regular collisions) ---
@@ -234,7 +234,7 @@ namespace Traverser
 
             for (int i = 0; i < planePositions.Count; ++i)
             {
-                Gizmos.DrawCube(planePositions[i], Vector3.one * planeScale);
+                Gizmos.DrawWireCube(planePositions[i], Vector3.one * planeScale);
             }
 
             // --- Draw capsule at last simulation position ---      
@@ -244,7 +244,7 @@ namespace Traverser
 
                 for (int i = 0; i < capsulePositions.Count; ++i)
                 {
-                    Gizmos.DrawMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, capsuleDebugMeshScale);
+                    Gizmos.DrawWireMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, capsuleDebugMeshScale);
                 }
             }
         }

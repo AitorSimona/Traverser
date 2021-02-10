@@ -132,19 +132,19 @@ namespace Traverser
 
         void UpdateMovement(float deltaTime)
         {
+            // --- Compute kinematic displacement (from player input) ---
             state.currentCollision.kinematicDisplacement = state.desiredDisplacement * stepping;
             state.desiredDisplacement = Vector3.zero;
 
+            // --- Apply gravity ---
             if (gravityEnabled)
             {
                 float3 gravity = Physics.gravity;
-                state.currentCollision.dynamicsDisplacement = gravity * deltaTime;
+                state.currentCollision.dynamicsDisplacement = gravity * deltaTime * stepping;
             }
 
-            Debug.Log(state.currentCollision.dynamicsDisplacement);
-
+            // --- Compute final displacement/position and move character controller ---
             float3 desiredDisplacement = state.currentCollision.kinematicDisplacement + state.currentCollision.dynamicsDisplacement;
-
             float3 finalPosition = position + desiredDisplacement;
             ForceMove(finalPosition);
             state.currentCollision.velocity = characterController.velocity / stepping;

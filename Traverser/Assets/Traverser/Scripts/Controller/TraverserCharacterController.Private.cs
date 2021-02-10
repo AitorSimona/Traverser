@@ -151,7 +151,7 @@ namespace Traverser
         // --- Array of colliders for ground probing ---
         private Collider[] hitColliders = new Collider[3];
 
-        // --- Arrasy of positions for geometry debugging ---
+        // --- Arrays of positions for geometry debugging ---
         private List<float3> probePositions;
         private List<float3> capsulePositions;
         private List<float3> planePositions;
@@ -176,6 +176,7 @@ namespace Traverser
             // --- Initialize debug lists (consider commenting in build, with debugDraw set to false) ---
             probePositions = new List<float3>(3);
             planePositions = new List<float3>(3);
+            capsulePositions = new List<float3>(3);
         }
 
         // --------------------------------
@@ -229,9 +230,10 @@ namespace Traverser
             float3 planeScale = Vector3.one;
             planeScale.y = 0.05f;
 
+            Gizmos.color = Color.yellow;
+
             for (int i = 0; i < planePositions.Count; ++i)
             {
-                Gizmos.color = Color.yellow;
                 Gizmos.DrawCube(planePositions[i], Vector3.one * planeScale);
             }
 
@@ -239,12 +241,12 @@ namespace Traverser
             if (capsuleDebugMesh != null)
             {
                 Gizmos.color = Color.red;
-                float3 pos = lastPosition;
-                pos.y += characterController.height / 2.0f;
-                Gizmos.DrawMesh(capsuleDebugMesh, 0, pos, Quaternion.identity, capsuleDebugMeshScale);
+
+                for (int i = 0; i < capsulePositions.Count; ++i)
+                {
+                    Gizmos.DrawMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, capsuleDebugMeshScale);
+                }
             }
-
-
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

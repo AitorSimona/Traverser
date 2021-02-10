@@ -72,15 +72,17 @@ namespace Traverser
             // --- Store simulation's last position ---
             lastPosition = position;
 
-            // --- Shrink list if iteration number decreased ---
+            // --- Shrink geomtry debug lists if iteration number decreased ---
             if (debugDraw)
             {
                 if(probePositions.Count > simulationCounter)
                     probePositions.RemoveRange(simulationCounter, probePositions.Count - simulationCounter);
                 if (planePositions.Count > simulationCounter)
                     planePositions.RemoveRange(simulationCounter, planePositions.Count - simulationCounter);
-
+                if (capsulePositions.Count > simulationCounter)
+                    capsulePositions.RemoveRange(simulationCounter, capsulePositions.Count - simulationCounter);
             }
+
             // --- Reset counter ---
             simulationCounter = 0;          
 
@@ -139,14 +141,26 @@ namespace Traverser
                 state.currentCollision.dynamicsDisplacement = gravity * deltaTime;
             }
 
+            Debug.Log(state.currentCollision.dynamicsDisplacement);
+
             float3 desiredDisplacement = state.currentCollision.kinematicDisplacement + state.currentCollision.dynamicsDisplacement;
 
             float3 finalPosition = position + desiredDisplacement;
             ForceMove(finalPosition);
             state.currentCollision.velocity = characterController.velocity / stepping;
 
+            // --- Cast ground probe (ground collision detection) ---
             if (characterController.detectCollisions)
                 CheckGroundCollision();
+
+            // --- Add capsule positions to geometry debug list ---
+            if(debugDraw)
+            {
+                if (capsulePositions.Count == simulationCounter)
+                    capsulePositions.Add(characterController.transform.position + Vector3.up*characterController.height/2.0f);
+                else
+                    capsulePositions[simulationCounter] = characterController.transform.position + Vector3.up * characterController.height / 2.0f;
+            }
         }
 
         // --------------------------------

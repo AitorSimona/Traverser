@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -144,14 +145,18 @@ namespace Traverser
         // --- State snapshot to save current state before movement simulation ---
         private TraverserState snapshotState;
 
-        // --- Utility to store only the first tick's target position ---
-        private bool firstTick = true;
-
         // --- To store simulation's last known position ---
         private float3 lastPosition;
 
         // --- Array of colliders for ground probing ---
         private Collider[] hitColliders = new Collider[3];
+
+        // --- Arrasy of positions for geometry debugging ---
+        private List<float3> probePositions;
+
+
+        // --- Simulation counter (keep track of current iteration) ---
+        private int simulationCounter = 0;
 
         // --------------------------------
 
@@ -166,6 +171,9 @@ namespace Traverser
             characterController = GetComponent<CharacterController>();
             current.position = transform.position;
             targetPosition = transform.position;
+
+            // --- Initialize debug lists (consider commenting in build, with debugDraw set to false) ---
+            probePositions = new List<float3>(3);
         }
 
         // --------------------------------
@@ -177,8 +185,16 @@ namespace Traverser
         {
             int colliderIndex = TraverserCollisionLayer.CastGroundProbe(position, groundProbeRadius, ref hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask);
 
-            if(colliderIndex != -1)
+            if (debugDraw)
             {
+                if (probePositions.Count == simulationCounter)
+                    probePositions.Add(position);
+                else
+                    probePositions[simulationCounter] = position;
+            }
+
+            if (colliderIndex != -1)
+            {       
                 current.ground = hitColliders[colliderIndex];
                 current.isGrounded = true;
                 //Debug.Log("Ground is:");
@@ -195,9 +211,19 @@ namespace Traverser
             if (!debugDraw || characterController == null)
                 return;
 
-            // --- Draw sphere at current ground probe position ---
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(transform.position, groundProbeRadius);
+            //if (probePositions.Count > 0 && !probePositions[0].Equals(float3.zero))
+            //{
+                // --- Draw sphere at current ground probe position ---
+                for (int i = 0; i < probePositions.Count; ++i)
+                {
+                    //if (probePositions[i].Equals(float3.zero))
+                    //    continue;
+
+                    Gizmos.color = Color.yellow;
+                    Gizmos.DrawSphere(probePositions[i], groundProbeRadius);
+                    //probePositions[i] = float3.zero;
+                }
+            //}
 
             // --- Draw ground collision height limit (if below limit this ground won't be detected in regular collisions) ---
             float3 planePos = characterController.bounds.min + Vector3.forward * characterController.radius

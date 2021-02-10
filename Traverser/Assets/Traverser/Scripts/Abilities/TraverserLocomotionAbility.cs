@@ -255,12 +255,12 @@ namespace Traverser
                     //if (!freedrop)
                     //{
                     //    // --- Compute distance to fall point ---
-                    //    Vector3 futurepos;
+                    //    float3 futurepos;
                     //    futurepos.x = controller.current.position.x;
                     //    futurepos.y = controller.current.position.y;
                     //    futurepos.z = controller.current.position.z;
-                    //    distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
-                    //    break;
+                    //    distance_to_fall = Mathf.Abs(math.length(futurepos - tmp.t)) - brakeDistance;
+                    //    //break;
                     //}
                 }
                 else

@@ -65,13 +65,19 @@ namespace Traverser
 
             // --- Copy current state to snapshot so we can rewind time ---
             snapshotState.CopyFrom(ref state);
-            firstTick = true;
         }
 
         public void Rewind()
         {
             // --- Store simulation's last position ---
             lastPosition = position;
+
+            // --- Shrink list if iteration number decreased ---
+            if (debugDraw && probePositions.Count > simulationCounter)
+                probePositions.RemoveRange(simulationCounter, probePositions.Count - simulationCounter);
+
+            // --- Reset counter ---
+            simulationCounter = 0;          
 
             // --- Use snapshotState values to return to pre-simulation situation ---
             state.CopyFrom(ref snapshotState);
@@ -100,7 +106,6 @@ namespace Traverser
         public void Tick(float deltaTime)
         {
             // --- Update controller's movement with given deltaTime ---
-
             state.previousCollision.CopyFrom(ref state.currentCollision);
             state.currentCollision.Reset();
             state.currentCollision.position = state.previousCollision.position;
@@ -108,12 +113,13 @@ namespace Traverser
             UpdateMovement(deltaTime);
 
             // --- If on simulation's first tick, store position ---
-            if (firstTick)
+            if (simulationCounter == 0)
             {
                 // --- This is the target position of the current frame ---
                 targetPosition = transform.position;
-                firstTick = false;
             }
+
+            simulationCounter++;
         }
 
 

@@ -192,36 +192,50 @@ namespace Traverser
 
         void OnDrawGizmosSelected()
         {
-            if (!debugDraw)
+            if (!debugDraw || characterController == null)
                 return;
 
             // --- Draw sphere at current ground probe position ---
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(transform.position, groundProbeRadius);
 
+            // --- Draw ground collision height limit (if below limit this ground won't be detected in regular collisions) ---
+            float3 planePos = characterController.bounds.min + Vector3.forward * characterController.radius
+                + Vector3.right * characterController.radius;
+            float3 planeScale = Vector3.one;
+            planeScale.y = 0.05f;
+            planePos.y += groundProbeRadius;
+            Gizmos.DrawCube(planePos, Vector3.one * planeScale);
+
             // --- Draw capsule at last simulation position ---      
-            if (capsuleDebugMesh != null && characterController != null)
+            if (capsuleDebugMesh != null)
             {
                 Gizmos.color = Color.red;
                 float3 pos = lastPosition;
                 pos.y += characterController.height / 2.0f;
                 Gizmos.DrawMesh(capsuleDebugMesh, 0, pos, Quaternion.identity, capsuleDebugMeshScale);
             }
+
+
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             // --- Update current collision information with hit's information ---
-            if (hit.gameObject.name != "Ground")
+
+            // --- If below ground probe limit, consider it only as ground, not regular collision ---
+            float heightLimit = characterController.bounds.min.y + groundProbeRadius;
+
+            if (hit.point.y > heightLimit)
             {
                 Debug.Log("Collided with:");
                 Debug.Log(hit.gameObject.name);
+                state.previousCollision.CopyFrom(ref state.currentCollision);
+                state.currentCollision.colliderContactPoint = hit.point;
+                state.currentCollision.colliderContactNormal = hit.normal;
+                state.currentCollision.collider = hit.collider;
+                state.currentCollision.isColliding = true;
             }
-            state.previousCollision.CopyFrom(ref state.currentCollision);
-            state.currentCollision.colliderContactPoint = hit.point;
-            state.currentCollision.colliderContactNormal = hit.normal;
-            state.currentCollision.collider = hit.collider;
-            state.currentCollision.isColliding = true;
         }
 
         // --------------------------------

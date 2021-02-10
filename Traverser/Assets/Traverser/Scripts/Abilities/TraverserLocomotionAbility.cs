@@ -135,8 +135,6 @@ namespace Traverser
                         }
                     }
 
-
-
                     ledgeGeometry.DebugDraw(); // TODO: Temporal
                 }
 

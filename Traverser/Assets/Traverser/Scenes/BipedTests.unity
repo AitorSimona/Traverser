@@ -1375,6 +1375,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: debugDraw
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041020, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_Name
       value: TraverserUnit
@@ -1393,7 +1397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2894993679995748934, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.12
+      value: 1.238
       objectReference: {fileID: 0}
     - target: {fileID: 2894993679995748934, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_LocalPosition.z

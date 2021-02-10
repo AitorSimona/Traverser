@@ -52,7 +52,7 @@ namespace Traverser
 
                 for (int i = 0; i < numColliders; ++i)
                 {
-                    colliderPosition = hitColliders[i].transform.position;
+                    colliderPosition = hitColliders[i].ClosestPoint(position);
 
                     if (math.distance(colliderPosition.y, position.y) < minDistance)
                         chosenGround = i;

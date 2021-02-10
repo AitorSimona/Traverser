@@ -192,7 +192,7 @@ namespace Traverser
 
         void OnDrawGizmosSelected()
         {
-            if (!showDebug)
+            if (!debugDraw)
                 return;
 
             // --- Draw sphere at current ground probe position ---

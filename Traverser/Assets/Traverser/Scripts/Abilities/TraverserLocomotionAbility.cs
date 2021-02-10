@@ -135,6 +135,8 @@ namespace Traverser
                         }
                     }
 
+
+
                     ledgeGeometry.DebugDraw(); // TODO: Temporal
                 }
 
@@ -252,16 +254,16 @@ namespace Traverser
                         }
                     }
 
-                    if (!freedrop)
-                    {
-                        // --- Compute distance to fall point ---
-                        Vector3 futurepos;
-                        futurepos.x = controller.current.position.x;
-                        futurepos.y = controller.current.position.y;
-                        futurepos.z = controller.current.position.z;
-                        distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
-                        break;
-                    }
+                    //if (!freedrop)
+                    //{
+                    //    // --- Compute distance to fall point ---
+                    //    Vector3 futurepos;
+                    //    futurepos.x = controller.current.position.x;
+                    //    futurepos.y = controller.current.position.y;
+                    //    futurepos.z = controller.current.position.z;
+                    //    distance_to_fall = Mathf.Abs((futurepos - gameObject.transform.position).magnitude) - brakeDistance;
+                    //    break;
+                    //}
                 }
                 else
                 {
@@ -330,12 +332,12 @@ namespace Traverser
 
         public void LimitTransform()
         {
-            if (ledgeGeometry.vertices[0].Equals(float3.zero) || freedrop)
-                return;
+            //if (ledgeGeometry.vertices[0].Equals(float3.zero) || freedrop)
+            //    return;
 
-            Vector3 pos = gameObject.transform.position;
-            ledgeGeometry.LimitTransform(ref pos, 0.1f);
-            gameObject.transform.position = pos;
+            //Vector3 pos = gameObject.transform.position;
+            //ledgeGeometry.LimitTransform(ref pos, 0.1f);
+            //gameObject.transform.position = pos;
         }
 
         // -------------------------------------------------

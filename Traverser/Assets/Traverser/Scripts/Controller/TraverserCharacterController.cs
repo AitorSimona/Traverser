@@ -9,7 +9,7 @@ namespace Traverser
     {
         // --- Attributes ---
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show geometry.")]
-        public bool showDebug = false;
+        public bool debugDraw = false;
 
         [Header("Controller")]
         [Tooltip("Whether or not gravity will be applied to the controller.")]
@@ -55,8 +55,14 @@ namespace Traverser
 
         // --- Simulation methods ---
 
-        public void Snapshot()
+        public void Snapshot()  
         {
+            // --- Check current state before simulation start --- 
+            state.currentCollision.velocity = characterController.velocity / stepping;
+
+            if (characterController.detectCollisions)
+                CheckGroundCollision();
+
             // --- Copy current state to snapshot so we can rewind time ---
             snapshotState.CopyFrom(ref state);
             firstTick = true;
@@ -128,7 +134,7 @@ namespace Traverser
             ForceMove(finalPosition);
             state.currentCollision.velocity = characterController.velocity / stepping;
 
-            if(characterController.detectCollisions)
+            if (characterController.detectCollisions)
                 CheckGroundCollision();
         }
 

@@ -73,9 +73,14 @@ namespace Traverser
             lastPosition = position;
 
             // --- Shrink list if iteration number decreased ---
-            if (debugDraw && probePositions.Count > simulationCounter)
-                probePositions.RemoveRange(simulationCounter, probePositions.Count - simulationCounter);
+            if (debugDraw)
+            {
+                if(probePositions.Count > simulationCounter)
+                    probePositions.RemoveRange(simulationCounter, probePositions.Count - simulationCounter);
+                if (planePositions.Count > simulationCounter)
+                    planePositions.RemoveRange(simulationCounter, planePositions.Count - simulationCounter);
 
+            }
             // --- Reset counter ---
             simulationCounter = 0;          
 

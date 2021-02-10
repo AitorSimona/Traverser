@@ -153,7 +153,8 @@ namespace Traverser
 
         // --- Arrasy of positions for geometry debugging ---
         private List<float3> probePositions;
-
+        private List<float3> capsulePositions;
+        private List<float3> planePositions;
 
         // --- Simulation counter (keep track of current iteration) ---
         private int simulationCounter = 0;
@@ -174,6 +175,7 @@ namespace Traverser
 
             // --- Initialize debug lists (consider commenting in build, with debugDraw set to false) ---
             probePositions = new List<float3>(3);
+            planePositions = new List<float3>(3);
         }
 
         // --------------------------------
@@ -191,6 +193,11 @@ namespace Traverser
                     probePositions.Add(position);
                 else
                     probePositions[simulationCounter] = position;
+
+                if (planePositions.Count == simulationCounter)
+                    planePositions.Add(characterController.bounds.min + Vector3.forward * characterController.radius + Vector3.right * characterController.radius + Vector3.up * groundProbeRadius);
+                else
+                    planePositions[simulationCounter] = characterController.bounds.min + Vector3.forward * characterController.radius + Vector3.right * characterController.radius + Vector3.up * groundProbeRadius;
             }
 
             if (colliderIndex != -1)
@@ -211,27 +218,22 @@ namespace Traverser
             if (!debugDraw || characterController == null)
                 return;
 
-            //if (probePositions.Count > 0 && !probePositions[0].Equals(float3.zero))
-            //{
-                // --- Draw sphere at current ground probe position ---
-                for (int i = 0; i < probePositions.Count; ++i)
-                {
-                    //if (probePositions[i].Equals(float3.zero))
-                    //    continue;
-
-                    Gizmos.color = Color.yellow;
-                    Gizmos.DrawSphere(probePositions[i], groundProbeRadius);
-                    //probePositions[i] = float3.zero;
-                }
-            //}
-
+            // --- Draw sphere at current ground probe position ---
+            for (int i = 0; i < probePositions.Count; ++i)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere(probePositions[i], groundProbeRadius);
+            }
+         
             // --- Draw ground collision height limit (if below limit this ground won't be detected in regular collisions) ---
-            float3 planePos = characterController.bounds.min + Vector3.forward * characterController.radius
-                + Vector3.right * characterController.radius;
             float3 planeScale = Vector3.one;
             planeScale.y = 0.05f;
-            planePos.y += groundProbeRadius;
-            Gizmos.DrawCube(planePos, Vector3.one * planeScale);
+
+            for (int i = 0; i < planePositions.Count; ++i)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawCube(planePositions[i], Vector3.one * planeScale);
+            }
 
             // --- Draw capsule at last simulation position ---      
             if (capsuleDebugMesh != null)

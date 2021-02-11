@@ -21,11 +21,11 @@ namespace Traverser
         {
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
-            animatorParameters.Move = false;
-            animatorParameters.Speed = 0.0f;
-            animatorParameters.Heading = 0.0f;
+
+            // --- Set animator parameters --- 
+            animationController.InitializeAnimatorParameters(ref animatorParameters);
         }
-        
+
         public void Update()
         {
             if (!controller.isActiveAndEnabled)
@@ -73,7 +73,7 @@ namespace Traverser
                 animatorParameters.Speed = math.length(controller.targetVelocity);
                 animatorParameters.Heading = transform.rotation.y;
 
-                Debug.Log(animatorParameters.Speed);
+                //Debug.Log(animatorParameters.Heading);
                 animationController.UpdateAnimator(ref animatorParameters);
             }
 

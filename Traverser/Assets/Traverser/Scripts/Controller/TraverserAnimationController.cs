@@ -9,6 +9,10 @@ public class TraverserAnimationController : MonoBehaviour
         public bool Move;
         public float Speed;
         public float Heading;
+
+        public int MoveID;
+        public int SpeedID;
+        public int HeadingID;
     }
 
     [Header("Animation")]
@@ -17,15 +21,14 @@ public class TraverserAnimationController : MonoBehaviour
     [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
     public Transform skeletonRef;
 
+    private Animator animator;
+
     // --------------------------------
 
     // --- Basic Methods ---
-
-    public void UpdateAnimator(ref AnimatorParameters parameters)
+    private void Start()
     {
-        // --- Update animator with the given parameter's values ---
-
-
+        animator = GetComponent<Animator>();
     }
 
     private void LateUpdate()
@@ -35,4 +38,27 @@ public class TraverserAnimationController : MonoBehaviour
     }
 
     // --------------------------------
+
+    // --- Utility Methods ---
+
+    public void InitializeAnimatorParameters(ref AnimatorParameters parameters)
+    {
+        parameters.Move = false;
+        parameters.Speed = 0.0f;
+        parameters.Heading = 0.0f;
+        parameters.MoveID = Animator.StringToHash("Move");
+        parameters.SpeedID = Animator.StringToHash("Speed");
+        parameters.HeadingID = Animator.StringToHash("Heading");
+    }
+
+    public void UpdateAnimator(ref AnimatorParameters parameters)
+    {
+        // --- Update animator with the given parameter's values ---
+        animator.SetBool(parameters.MoveID, parameters.Move);
+        animator.SetFloat(parameters.SpeedID, parameters.Speed);
+        animator.SetFloat(parameters.HeadingID, parameters.Heading);
+    }
+
+    // --------------------------------
+
 }

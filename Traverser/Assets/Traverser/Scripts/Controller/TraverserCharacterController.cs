@@ -129,6 +129,7 @@ namespace Traverser
 
             UpdateMovement(deltaTime);
 
+            // --- If speed value drops to nearly zero, but not 0, force it to zero ---
             if (math.length(state.currentCollision.velocity) < Vector3.one.magnitude/10.0f)
                 state.currentCollision.velocity = float3.zero;
 
@@ -139,8 +140,6 @@ namespace Traverser
                 targetPosition = transform.position;
                 targetVelocity = state.currentCollision.velocity;
             }
-
-         
 
             simulationCounter++;
         }

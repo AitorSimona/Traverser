@@ -10,6 +10,8 @@ namespace Traverser
 
         TraverserAbility currentAbility;
         TraverserCharacterController controller;
+        TraverserAnimationController animationController;
+        TraverserAnimationController.AnimatorParameters animatorParameters;
 
         // --------------------------------
 
@@ -17,6 +19,10 @@ namespace Traverser
         public void OnEnable()
         {
             controller = GetComponent<TraverserCharacterController>();
+            animationController = GetComponent<TraverserAnimationController>();
+            animatorParameters.Move = false;
+            animatorParameters.Speed = 0.0f;
+            animatorParameters.Heading = 0.0f;
         }
         
         public void Update()
@@ -58,6 +64,10 @@ namespace Traverser
                     }
                 }
             }
+
+            // --- Send updated animator parameters to animation controller ---
+            if (animationController.isActiveAndEnabled)
+                animationController.UpdateAnimator(ref animatorParameters);
 
         }
 

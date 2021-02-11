@@ -21,7 +21,9 @@ public class TraverserAnimationController : MonoBehaviour
     [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
     public Transform skeletonRef;
 
+
     private Animator animator;
+    private Quaternion initialRotation;
 
     // --------------------------------
 
@@ -29,12 +31,14 @@ public class TraverserAnimationController : MonoBehaviour
     private void Start()
     {
         animator = GetComponent<Animator>();
+        initialRotation = skeleton.rotation;
     }
 
     private void LateUpdate()
     {
         // --- Move all the skeleton to the character's position ---
         skeleton.position = skeletonRef.position;
+        skeleton.rotation = transform.rotation * initialRotation;
     }
 
     // --------------------------------

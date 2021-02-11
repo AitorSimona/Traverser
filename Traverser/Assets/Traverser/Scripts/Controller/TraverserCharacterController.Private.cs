@@ -256,8 +256,12 @@ namespace Traverser
             // --- If below ground probe limit, consider it only as ground, not regular collision ---
             float heightLimit = characterController.bounds.min.y + groundProbeRadius;
 
-            if (hit.point.y > heightLimit)
+            if (hit.point.y > heightLimit) // if the slope is steep we may activate a collision against current ground
             {
+                // --- Make sure we do not activate a collision against our current ground ---
+                if (state.previousCollision.ground != null && hit.collider.Equals(state.previousCollision.ground))
+                    return;
+
                 Debug.Log("Collided with:");
                 Debug.Log(hit.gameObject.name);
                 state.previousCollision.CopyFrom(ref state.currentCollision);

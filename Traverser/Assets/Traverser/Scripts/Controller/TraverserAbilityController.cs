@@ -71,7 +71,7 @@ namespace Traverser
             {
                 animatorParameters.Move = TraverserInputLayer.GetMoveIntensity() > 0.0f;
                 animatorParameters.Speed = math.length(controller.targetVelocity);
-                animatorParameters.Heading = controller.targetYaw;
+                animatorParameters.Heading = controller.targetHeading;
 
                 //Debug.Log(animatorParameters.Heading);
                 animationController.UpdateAnimator(ref animatorParameters);

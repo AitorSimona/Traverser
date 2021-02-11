@@ -179,7 +179,7 @@ namespace Traverser
             current.position = transform.position;
             targetPosition = transform.position;
             targetVelocity = float3.zero;
-            targetYaw = 0.0f;
+            targetHeading = 0.0f;
 
             // --- Initialize debug lists (consider commenting in build, with debugDraw set to false) ---
             probePositions = new List<float3>(3);

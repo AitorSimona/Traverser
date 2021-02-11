@@ -51,7 +51,7 @@ namespace Traverser
 
         // --- The current state's rotation ---
         [HideInInspector]
-        public float targetYaw;
+        public float targetHeading;
 
         // --- The current state's previous collision situation ---
         public ref TraverserCollision previous { get => ref state.previousCollision; }
@@ -122,7 +122,7 @@ namespace Traverser
         {
             characterController.Move(desiredPosition - transform.position);
             position = transform.position;
-            transform.rotation = transform.rotation * Quaternion.AngleAxis(targetYaw, transform.up);
+            transform.rotation = transform.rotation * Quaternion.AngleAxis(targetHeading, transform.up);
         }
 
         public void Tick(float deltaTime)
@@ -141,16 +141,10 @@ namespace Traverser
             // --- If on simulation's first tick, store position ---
             if (simulationCounter == 0)
             {
-                // --- This is the target position of the current frame ---
+                // --- This are the target position, velocity and yaw rotation (heading) of the current frame ---
                 targetPosition = transform.position;
                 targetVelocity = state.currentCollision.velocity;
-
-                //targetYaw = Quaternion.LookRotation(math.normalizesafe(targetVelocity), transform.up).eulerAngles.y;
-
-                targetYaw = Vector3.SignedAngle(transform.forward, math.normalizesafe(targetVelocity), transform.up) * deltaTime;
-
-                //targetYaw = Quaternion.FromToRotation(transform.forward, math.normalizesafe(targetVelocity)).eulerAngles.y * deltaTime;
-                Debug.Log(targetYaw);
+                targetHeading = Vector3.SignedAngle(transform.forward, math.normalizesafe(targetVelocity), transform.up) * deltaTime;
             }
 
             simulationCounter++;

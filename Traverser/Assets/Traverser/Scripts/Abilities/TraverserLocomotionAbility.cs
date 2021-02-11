@@ -230,7 +230,7 @@ namespace Traverser
             // --- If we are idle ---
             if (Mathf.Approximately(moveIntensity, 0.0f))
             {
-                if (!isBraking && math.length(controller.velocity) < brakingSpeed)
+                if (!isBraking && math.length(controller.targetVelocity) < brakingSpeed)
                     isBraking = true;
             }
             else

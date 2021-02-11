@@ -40,10 +40,11 @@ namespace Traverser
                 stickVertical = Input.GetAxis("Vertical");
                 movementDirection.x = stickHorizontal;
                 movementDirection.y = stickVertical;
+                movementDirection.z = 0.0f;
 
-                //Debug.Log(stickHorizontal);
+               //Debug.Log(stickHorizontal);
 
-                run = Input.GetButton("Left Analog Button");
+               run = Input.GetButton("Left Analog Button");
             }
 
             public void UpdateParkour()

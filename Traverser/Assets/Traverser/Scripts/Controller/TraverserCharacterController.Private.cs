@@ -178,6 +178,7 @@ namespace Traverser
             characterController = GetComponent<CharacterController>();
             current.position = transform.position;
             targetPosition = transform.position;
+            targetVelocity = float3.zero;
 
             // --- Initialize debug lists (consider commenting in build, with debugDraw set to false) ---
             probePositions = new List<float3>(3);

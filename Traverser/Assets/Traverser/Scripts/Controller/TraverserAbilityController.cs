@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Mathematics;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Traverser
@@ -67,7 +68,14 @@ namespace Traverser
 
             // --- Send updated animator parameters to animation controller ---
             if (animationController.isActiveAndEnabled)
+            {
+                animatorParameters.Move = TraverserInputLayer.GetMoveIntensity() > 0.0f;
+                animatorParameters.Speed = math.length(controller.targetVelocity);
+                animatorParameters.Heading = transform.rotation.y;
+
+                Debug.Log(animatorParameters.Speed);
                 animationController.UpdateAnimator(ref animatorParameters);
+            }
 
         }
 

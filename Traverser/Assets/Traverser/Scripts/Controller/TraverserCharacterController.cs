@@ -46,7 +46,8 @@ namespace Traverser
         public float3 targetPosition;
 
         // --- The current state's velocity (simulation) ---
-        public float3 velocity { get => state.currentCollision.velocity; }
+        [HideInInspector]
+        public float3 targetVelocity;
 
         // --- The current state's previous collision situation ---
         public ref TraverserCollision previous { get => ref state.previousCollision; }
@@ -128,12 +129,18 @@ namespace Traverser
 
             UpdateMovement(deltaTime);
 
+            if (math.length(state.currentCollision.velocity) < Vector3.one.magnitude/10.0f)
+                state.currentCollision.velocity = float3.zero;
+
             // --- If on simulation's first tick, store position ---
             if (simulationCounter == 0)
             {
                 // --- This is the target position of the current frame ---
                 targetPosition = transform.position;
+                targetVelocity = state.currentCollision.velocity;
             }
+
+         
 
             simulationCounter++;
         }

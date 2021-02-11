@@ -71,7 +71,7 @@ namespace Traverser
             {
                 animatorParameters.Move = TraverserInputLayer.GetMoveIntensity() > 0.0f;
                 animatorParameters.Speed = math.length(controller.targetVelocity);
-                animatorParameters.Heading = transform.rotation.y;
+                animatorParameters.Heading = controller.targetYaw;
 
                 //Debug.Log(animatorParameters.Heading);
                 animationController.UpdateAnimator(ref animatorParameters);
@@ -134,6 +134,7 @@ namespace Traverser
             Assert.IsTrue(controller != null);
 
             controller.ForceMove(controller.targetPosition);
+            
 
             // --- Let abilities apply final changes to motion, if needed ---
             if (isEnabled)

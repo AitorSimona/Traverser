@@ -31,33 +31,13 @@ namespace Traverser
         [Range(1.0f, 10.0f)]
         public float stepping = 10.0f;
 
-        [Header("Fall limitation")]
-        [Tooltip("Disable to prevent character from falling off obstacles")]
-        public bool freedrop = true;
-
-        [Tooltip("[freedrop disabled only] Offsets distance left until falling down point, bigger values make the character brake sooner")]
-        [Range(0.0f, 1.0f)]
-        public float brakeDistance = 0.5f;
-
-        [Tooltip("[freedrop disabled only] Modifies at what distance from falling point the character begins to break")]
-        [Range(0.0f, 5.0f)]
-        public float maxFallPredictionDistance = 3.0f;   // reset distance once no fall is predicted
-
-        [Tooltip("[freedrop disabled only] Modifies at what distance from falling point the character stops")]
-        [Range(0.0f, 1.0f)]
-        public float minFallPredictionDistance = 0.5f;
-
-
         // -------------------------------------------------
 
         // --- Private Variables ---
 
-        TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
         private TraverserCharacterController controller;
         private bool isBraking = false;
-        private bool preFreedrop = true;
         private float desiredLinearSpeed => TraverserInputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
-        private float distance_to_fall = 3.0f; // initialized to maxFallPredictionDistance
 
         // -------------------------------------------------
 
@@ -66,20 +46,12 @@ namespace Traverser
         {
             controller = GetComponent<TraverserCharacterController>();
             TraverserInputLayer.capture.movementDirection = Vector3.forward;
-
-            // --- Initialize ---
-            ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
-
-            // --- Play default animation ---
-
-            preFreedrop = freedrop;
-            distance_to_fall = maxFallPredictionDistance;
         }
 
         public void OnDisable()
         {
-            // --- Delete arrays ---
-            ledgeGeometry.Dispose();
+
+
         }
 
         // -------------------------------------------------
@@ -88,11 +60,6 @@ namespace Traverser
         public TraverserAbility OnUpdate(float deltaTime)
         {
             TraverserInputLayer.capture.UpdateLocomotion();
-
-            if (TraverserInputLayer.capture.run)
-                freedrop = true;
-            else
-                freedrop = preFreedrop;
 
             TraverserAbility ret = this;
 
@@ -115,31 +82,6 @@ namespace Traverser
 
         public TraverserAbility OnPostUpdate(float deltaTime)
         {
-            if (!freedrop)
-            {
-                // --- Prevent character from falling from its current ground ---
-                // --- TODO: Clean this, temporal placement ---
-                if (!freedrop && controller.current.ground != null)
-                {
-                    BoxCollider collider = controller.current.ground.gameObject.GetComponent<BoxCollider>() as BoxCollider;
-
-                    if (collider != null)
-                    {
-                        // TODO: Expose this
-                        if (collider.gameObject.layer == LayerMask.NameToLayer("Wall")
-                            || collider.gameObject.layer == LayerMask.NameToLayer("Default")
-                            || collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
-                        {
-                            // TODO: Prevent this from happening all the time
-                            ledgeGeometry.Initialize(collider);
-                        }
-                    }
-
-                    ledgeGeometry.DebugDraw(); // TODO: Temporal
-                }
-
-                LimitTransform();
-            }
 
             return null;
         }
@@ -189,8 +131,6 @@ namespace Traverser
 
                 if (collision.isColliding && attemptTransition)
                 {
-                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
-
                     float3 contactPoint = collision.colliderContactPoint;
                     contactPoint.y = controller.position.y;
                     float3 contactNormal = collision.colliderContactNormal;
@@ -251,21 +191,6 @@ namespace Traverser
                             }
                         }
                     }
-
-                    //if (!freedrop)
-                    //{
-                    //    // --- Compute distance to fall point ---
-                    //    float3 futurepos;
-                    //    futurepos.x = controller.current.position.x;
-                    //    futurepos.y = controller.current.position.y;
-                    //    futurepos.z = controller.current.position.z;
-                    //    distance_to_fall = Mathf.Abs(math.length(futurepos - tmp.t)) - brakeDistance;
-                    //    break;
-                    //}
-                }
-                else
-                {
-                    distance_to_fall = maxFallPredictionDistance; // reset distance once no fall is predicted
                 }
             }  
 
@@ -314,28 +239,7 @@ namespace Traverser
                 desiredSpeed = moveIntensity * desiredLinearSpeed;
             }
 
-            // --- Manually brake the character when about to fall ---
-            if (!freedrop)
-            {
-                if (distance_to_fall < minFallPredictionDistance)
-                    desiredSpeed = 0.0f;
-                else if (distance_to_fall < maxFallPredictionDistance)
-                {
-                    desiredSpeed *= distance_to_fall / maxFallPredictionDistance;
-                }
-            }
-
             return desiredSpeed;
-        }
-
-        public void LimitTransform()
-        {
-            //if (ledgeGeometry.vertices[0].Equals(float3.zero) || freedrop)
-            //    return;
-
-            //Vector3 pos = gameObject.transform.position;
-            //ledgeGeometry.LimitTransform(ref pos, 0.1f);
-            //gameObject.transform.position = pos;
         }
 
         // -------------------------------------------------

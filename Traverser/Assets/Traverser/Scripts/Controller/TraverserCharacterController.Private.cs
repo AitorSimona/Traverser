@@ -215,7 +215,7 @@ namespace Traverser
                     planePositions[simulationCounter] = characterController.bounds.min + Vector3.forward * characterController.radius + Vector3.right * characterController.radius + Vector3.up * groundProbeRadius;
             }
 
-            // --- Prevent drop/fall ---
+            // --- Prevent drop/fall, snap to ground ---
 
             if (groundSnap)
             {

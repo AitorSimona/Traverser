@@ -222,9 +222,8 @@ namespace Traverser
                 groundRay.origin = characterController.transform.position;
                 groundRay.direction = -Vector3.up;
 
-                // TODO: If we hit sth, make sure it is our ground or we may fall to another collider
-                if (Physics.RaycastNonAlloc(groundRay, groundRayHits, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask) == 0
-                    && state.previousCollision.ground != null)
+                if (state.previousCollision.ground != null 
+                    && Physics.RaycastNonAlloc(groundRay, groundRayHits, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore) == 0)
                 {
                     //Debug.Log("KEPT ON BOUNDS");
                     characterController.enabled = false;
@@ -232,8 +231,6 @@ namespace Traverser
                     transform.position = correctedPosition;
                     characterController.enabled = true;
                     state.currentCollision.position = transform.position;
-
-                    //ForceMove(state.previousCollision.ground.ClosestPoint(characterController.transform.position));
                     state.currentCollision.velocity = characterController.velocity / stepping;
                 }
 

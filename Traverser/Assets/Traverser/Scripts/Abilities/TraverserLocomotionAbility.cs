@@ -260,7 +260,7 @@ namespace Traverser
                     //    futurepos.y = controller.current.position.y;
                     //    futurepos.z = controller.current.position.z;
                     //    distance_to_fall = Mathf.Abs(math.length(futurepos - tmp.t)) - brakeDistance;
-                    //    //break;
+                    //    break;
                     //}
                 }
                 else

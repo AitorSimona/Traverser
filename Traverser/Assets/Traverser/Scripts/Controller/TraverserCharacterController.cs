@@ -20,7 +20,7 @@ namespace Traverser
 
         [Header("Collision")]
         [Tooltip("Radius of the ground collision check sphere.")]
-        [Range(0.25f, 0.5f)]
+        [Range(0.1f, 1.0f)]
         public float groundProbeRadius = 0.25f;
 
         [Header("Debug")]
@@ -152,9 +152,20 @@ namespace Traverser
             // --- Cast ground probe (ground collision detection) ---
             if (characterController.detectCollisions)
                 CheckGroundCollision();
+          
+            // --- Prevent drop ---
+            if(!Physics.Raycast(characterController.transform.position, -Vector3.up, 0.1f, TraverserCollisionLayer.EnvironmentCollisionMask)
+                && state.previousCollision.ground != null)
+            {
+                Debug.Log("KEPT ON BOUNDS");
+                ForceMove(state.previousCollision.ground.ClosestPoint(characterController.transform.position));
+                state.currentCollision.velocity = characterController.velocity / stepping;
+            }
+
+            Debug.DrawRay(characterController.transform.position, -Vector3.up * 0.1f);
 
             // --- Add capsule positions to geometry debug list ---
-            if(debugDraw)
+            if (debugDraw)
             {
                 if (capsulePositions.Count == simulationCounter)
                     capsulePositions.Add(characterController.transform.position + Vector3.up*characterController.height/2.0f);

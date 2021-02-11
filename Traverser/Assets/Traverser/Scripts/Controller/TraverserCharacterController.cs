@@ -18,14 +18,23 @@ namespace Traverser
         [Range(1.0f, 10.0f)]
         public float stepping = 1.0f;
 
+
         [Header("Collision")]
         [Tooltip("Radius of the ground collision check sphere.")]
         [Range(0.1f, 1.0f)]
         public float groundProbeRadius = 0.25f;
 
+        [Tooltip("If enabled, character will be snapped to current ground, preventing it from falling down.")]
+        public bool groundSnap = false;
+
+        [Tooltip("The max length of the ray used to snap the character to current ground.")]
+        public float groundSnapRayDistance = 0.1f;
+
+
         [Header("Debug")]
         [Tooltip("Reference to capsule mesh for debugging purposes.")]
         public Mesh capsuleDebugMesh;
+
         [Tooltip("The debug mesh's scale.")]
         public float3 capsuleDebugMeshScale = Vector3.one;
 
@@ -151,18 +160,7 @@ namespace Traverser
 
             // --- Cast ground probe (ground collision detection) ---
             if (characterController.detectCollisions)
-                CheckGroundCollision();
-          
-            // --- Prevent drop ---
-            if(!Physics.Raycast(characterController.transform.position, -Vector3.up, 0.1f, TraverserCollisionLayer.EnvironmentCollisionMask)
-                && state.previousCollision.ground != null)
-            {
-                Debug.Log("KEPT ON BOUNDS");
-                ForceMove(state.previousCollision.ground.ClosestPoint(characterController.transform.position));
-                state.currentCollision.velocity = characterController.velocity / stepping;
-            }
-
-            Debug.DrawRay(characterController.transform.position, -Vector3.up * 0.1f);
+                CheckGroundCollision();        
 
             // --- Add capsule positions to geometry debug list ---
             if (debugDraw)

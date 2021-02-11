@@ -1380,6 +1380,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: groundSnap
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041016, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: groundProbeRadius
       value: 0.25
       objectReference: {fileID: 0}

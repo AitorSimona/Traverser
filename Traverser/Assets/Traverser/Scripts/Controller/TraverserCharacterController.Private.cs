@@ -151,6 +151,12 @@ namespace Traverser
         // --- Array of colliders for ground probing ---
         private Collider[] hitColliders = new Collider[3];
 
+        // --- Ray for groundSnap checks ---
+        Ray groundRay = new Ray();
+
+        // --- Array of raycast hits for groundSnap checks ---
+        RaycastHit[] groundRayHits = new RaycastHit[1];
+
         // --- Arrays of positions for geometry debugging ---
         private List<float3> probePositions;
         private List<float3> capsulePositions;
@@ -183,11 +189,19 @@ namespace Traverser
 
         // --- Collisions ---
 
-
         void CheckGroundCollision()
         {
             int colliderIndex = TraverserCollisionLayer.CastGroundProbe(position, groundProbeRadius, ref hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask);
 
+            if (colliderIndex != -1)
+            {       
+                current.ground = hitColliders[colliderIndex];
+                current.isGrounded = true;
+                //Debug.Log("Ground is:");
+                //Debug.Log(current.ground.gameObject.name);
+            }
+
+            // --- Add cast position to debug draw lists ---
             if (debugDraw)
             {
                 if (probePositions.Count == simulationCounter)
@@ -201,12 +215,31 @@ namespace Traverser
                     planePositions[simulationCounter] = characterController.bounds.min + Vector3.forward * characterController.radius + Vector3.right * characterController.radius + Vector3.up * groundProbeRadius;
             }
 
-            if (colliderIndex != -1)
-            {       
-                current.ground = hitColliders[colliderIndex];
-                current.isGrounded = true;
-                //Debug.Log("Ground is:");
-                //Debug.Log(current.ground.gameObject.name);
+            // --- Prevent drop/fall ---
+
+            if (groundSnap)
+            {
+                groundRay.origin = characterController.transform.position;
+                groundRay.direction = -Vector3.up;
+
+                // TODO: If we hit sth, make sure it is our ground or we may fall to another collider
+                if (Physics.RaycastNonAlloc(groundRay, groundRayHits, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask) == 0
+                    && state.previousCollision.ground != null)
+                {
+                    //Debug.Log("KEPT ON BOUNDS");
+                    characterController.enabled = false;
+                    float3 correctedPosition = state.previousCollision.position;
+                    transform.position = correctedPosition;
+                    characterController.enabled = true;
+                    state.currentCollision.position = transform.position;
+
+                    //ForceMove(state.previousCollision.ground.ClosestPoint(characterController.transform.position));
+                    state.currentCollision.velocity = characterController.velocity / stepping;
+                }
+
+                // --- Draw casted ray ---
+                if (debugDraw)
+                    Debug.DrawRay(groundRay.origin, groundRay.direction * groundSnapRayDistance);
             }
         }
 

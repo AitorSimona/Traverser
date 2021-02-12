@@ -34,6 +34,9 @@ namespace Traverser
 
         public float time_to_target = 0.1f;
 
+        public float turnMultiplier = 2.0f;
+
+        public float speedTurnMultiplier = 0.25f;
 
         [Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
         public float MovementLinearDrag = 1.0f;
@@ -147,7 +150,6 @@ namespace Traverser
 
             AccelerateRotation(rot / time_to_target);
 
-
             // --- Cap Velocity ---
             currentVelocity.x = Mathf.Clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
             currentVelocity.z = Mathf.Clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
@@ -156,13 +158,13 @@ namespace Traverser
             // --- Cap Rotation ---
             current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
 
-            float speed = TraverserInputLayer.GetMoveIntensity();
+            float speed = TraverserInputLayer.GetMoveIntensity() * currentVelocity.magnitude;
 
             // --- If desired rotation is equal or bigger than the maximum allowed, increase rotation speed and decrease movement speed (we want to turn around) ---
-            if (Mathf.Abs(rot) == max_rot_speed)
+            if (Mathf.Abs(current_rotation_speed) == max_rot_speed)
             {
-                current_rotation_speed *= 1.5f;
-                speed *= 0.25f;
+                current_rotation_speed *= turnMultiplier;
+                speed *= speedTurnMultiplier;
             }
 
             controller.targetHeading = current_rotation_speed * deltaTime;

@@ -156,11 +156,20 @@ namespace Traverser
             // --- Cap Rotation ---
             current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
 
+            float speed = TraverserInputLayer.GetMoveIntensity();
+
+            // --- If desired rotation is equal or bigger than the maximum allowed, increase rotation speed and decrease movement speed (we want to turn around) ---
+            if (Mathf.Abs(rot) == max_rot_speed)
+            {
+                current_rotation_speed *= 1.5f;
+                speed *= 0.25f;
+            }
+
             controller.targetHeading = current_rotation_speed * deltaTime;
 
             for (int i = 0; i < iterations; ++i)
             {
-                Vector3 finalDisplacement = transform.forward*TraverserInputLayer.GetMoveIntensity()*deltaTime;
+                Vector3 finalDisplacement = transform.forward*speed*deltaTime;
 
                 if (i == 0)
                     controller.stepping = 1.0f;

@@ -26,6 +26,10 @@ namespace Traverser
         [Tooltip("How fast the character's speed will increase with given input in m/s^2")]
         public float maxMovementAcceleration = 0.1f;
 
+        public float max_rot_speed = 10.0f; // in degrees / second
+
+        public float max_rot_acceleration = 0.1f; // in degrees
+
         [Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
         public float MovementLinearDrag = 1.0f;
 
@@ -44,7 +48,8 @@ namespace Traverser
         private TraverserCharacterController controller;
         private bool isBraking = false;
         private float desiredLinearSpeed => TraverserInputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
-        private float3 currentVelocity = Vector3.zero;
+        private Vector3 currentVelocity = Vector3.zero;
+        private float current_rotation_speed = 0.0f; // degrees
 
         // -------------------------------------------------
 
@@ -247,22 +252,38 @@ namespace Traverser
             //    isBraking = false;
             //    desiredSpeed = moveIntensity * desiredLinearSpeed;
             //}
-            float3 acceleration = math.normalizesafe(TraverserInputLayer.capture.movementDirection) * maxMovementAcceleration;
 
-            if (math.length(acceleration) > maxMovementAcceleration)
-                acceleration = math.normalize(acceleration) * maxMovementAcceleration;
 
-            currentVelocity = currentVelocity + acceleration * deltaTime;
-            currentVelocity -= currentVelocity * MovementLinearDrag * deltaTime * (1 - TraverserInputLayer.GetMoveIntensity());
+            //float3 acceleration = math.normalizesafe(TraverserInputLayer.capture.movementDirection) * maxMovementAcceleration;
 
-            // --- Cap Velocity ---
-            currentVelocity.x = math.clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
-            currentVelocity.z = math.clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
-            currentVelocity.y = math.clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
+            //if (math.length(acceleration) > maxMovementAcceleration)
+            //    acceleration = math.normalize(acceleration) * maxMovementAcceleration;
 
-            desiredVelocity = currentVelocity;
+            //currentVelocity = currentVelocity + acceleration * deltaTime;
+            //currentVelocity -= currentVelocity * MovementLinearDrag * deltaTime * (1 - TraverserInputLayer.GetMoveIntensity());
+
+            //// --- Cap Velocity ---
+            //currentVelocity.x = math.clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
+            //currentVelocity.z = math.clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
+            //currentVelocity.y = math.clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
+
+            //desiredVelocity = currentVelocity;
 
             return desiredVelocity * deltaTime;
+        }
+
+        public void AccelerateMovement(Vector3 acceleration)
+        {
+            if (acceleration.magnitude > maxMovementAcceleration)
+                acceleration = acceleration.normalized * maxMovementAcceleration;
+
+            currentVelocity += acceleration;
+        }
+
+        public void AccelerateRotation(float rotation_acceleration)
+        {
+            Mathf.Clamp(rotation_acceleration, -max_rot_acceleration, max_rot_acceleration);
+            current_rotation_speed += rotation_acceleration;
         }
 
         // -------------------------------------------------

@@ -158,18 +158,17 @@ namespace Traverser
             // --- Cap Rotation ---
             current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
 
-            float speed = TraverserInputLayer.GetMoveIntensity() * GetDesiredSpeed(deltaTime);
+            float speed = GetDesiredSpeed(deltaTime);
 
-            if (speed == 0.0f)
-                timetoMaxSpeed = 0.0f;
+            //Debug.Log(speed);
 
-            Debug.Log(speed);
-
-            // --- If desired rotation is equal or bigger than the maximum allowed, increase rotation speed and decrease movement speed (we want to turn around) ---
-            if (Mathf.Abs(current_rotation_speed) == max_rot_speed)
+            // ---If desired rotation is equal or bigger than the maximum allowed, increase rotation speed and decrease movement speed(we want to turn around)-- -
+            if (Mathf.Abs(current_rotation_speed) == max_rot_speed && speed < desiredLinearSpeed * 0.5f)
             {
                 current_rotation_speed *= turnMultiplier;
                 speed *= speedTurnMultiplier;
+                previousSpeed *= speedTurnMultiplier;
+                timetoMaxSpeed = 0.0f;
             }
 
             controller.targetHeading = current_rotation_speed * deltaTime;
@@ -288,6 +287,8 @@ namespace Traverser
         float timetoMaxSpeed = 0.0f;
         float timerSpeed = 0.5f;
 
+        float previousSpeed = 0.0f;
+
         float GetDesiredSpeed(float deltaTime)        
         {
             float desiredSpeed = 0.0f;
@@ -297,7 +298,16 @@ namespace Traverser
             if (timetoMaxSpeed > 1.0f)
                 timetoMaxSpeed = 1.0f;
 
-            desiredSpeed = desiredLinearSpeed * timetoMaxSpeed;
+            desiredSpeed = desiredLinearSpeed * timetoMaxSpeed * TraverserInputLayer.GetMoveIntensity();
+
+            if (desiredSpeed == 0.0f)
+                timetoMaxSpeed = 0.0f;
+            else if (TraverserInputLayer.GetMoveIntensity() < previousSpeed + 0.1f)
+                timetoMaxSpeed = TraverserInputLayer.GetMoveIntensity();
+
+            previousSpeed = TraverserInputLayer.GetMoveIntensity();
+
+            Debug.Log(timetoMaxSpeed);
 
             //float moveIntensity = TraverserInputLayer.GetMoveIntensity();
 

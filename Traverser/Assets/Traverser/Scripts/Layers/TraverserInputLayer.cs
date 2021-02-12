@@ -77,7 +77,7 @@ namespace Traverser
 
         public static float GetMoveIntensity()
         {
-            return Mathf.Max(Mathf.Abs(capture.stickHorizontal), Mathf.Abs(capture.stickVertical));
+            return math.clamp(math.length(capture.movementDirection), 0.0f, 1.0f);
         }
 
         // --------------------------------

@@ -39,8 +39,8 @@ namespace Traverser
                 stickHorizontal = Input.GetAxis("Horizontal");
                 stickVertical = Input.GetAxis("Vertical");
                 movementDirection.x = stickHorizontal;
-                movementDirection.y = stickVertical;
-                movementDirection.z = 0.0f;
+                movementDirection.y = 0.0f;
+                movementDirection.z = stickVertical;
 
                //Debug.Log(stickHorizontal);
 

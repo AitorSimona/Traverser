@@ -23,6 +23,12 @@ namespace Traverser
         [Range(0.0f, 10.0f)]
         public float brakingSpeed = 0.4f;
 
+        [Tooltip("How fast the character's speed will increase with given input in m/s^2")]
+        public float maxMovementAcceleration = 0.1f;
+
+        [Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
+        public float MovementLinearDrag = 1.0f;
+
         [Header("Simulation settings")]
         [Tooltip("How many movement iterations per frame will the controller perform. More iterations are more expensive but provide greater predictive collision detection reach.")]
         [Range(0, 10)]
@@ -38,6 +44,7 @@ namespace Traverser
         private TraverserCharacterController controller;
         private bool isBraking = false;
         private float desiredLinearSpeed => TraverserInputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
+        private float3 currentVelocity = Vector3.zero;
 
         // -------------------------------------------------
 
@@ -115,14 +122,14 @@ namespace Traverser
                 inputDirection.y = 0.0f;
                 inputDirection.z = TraverserInputLayer.capture.stickVertical;
 
-                Vector3 finalPosition = inputDirection.normalized * GetDesiredSpeed() * deltaTime;
+                Vector3 finalDisplacement = GetDesiredVelocity(deltaTime);
 
                 if (i == 0)
                     controller.stepping = 1.0f;
                 else
                     controller.stepping = stepping;
 
-                controller.Move(finalPosition);
+                controller.Move(finalDisplacement);
                 controller.Tick(deltaTime);
 
                 ref TraverserCharacterController.TraverserCollision collision = ref controller.current; // current state of the controller (after a tick is issued)
@@ -139,9 +146,9 @@ namespace Traverser
                     float Qangle;
                     Vector3 Qaxis;
                     transform.rotation.ToAngleAxis(out Qangle, out Qaxis);
-                    Qaxis.x = 0.0f;
-                    Qaxis.y = 0.0f;
-                    quaternion q = math.mul(transform.rotation, Quaternion.FromToRotation(Qaxis, contactNormal));
+                    //Qaxis.x = 0.0f;
+                    //Qaxis.y = 0.0f;
+                    quaternion q = quaternion.identity/*math.mul(transform.rotation, Quaternion.FromToRotation(Qaxis, contactNormal))*/;
 
                     TraverserAffineTransform contactTransform = TraverserAffineTransform.Create(contactPoint, q);
 
@@ -221,25 +228,41 @@ namespace Traverser
 
         // --- Utilities ---
 
-        float GetDesiredSpeed()        
+        float3 GetDesiredVelocity(float deltaTime)        
         {
-            float desiredSpeed = 0.0f;
+            float3 desiredVelocity = 0.0f;
 
-            float moveIntensity = TraverserInputLayer.GetMoveIntensity();
 
-            // --- If we are idle ---
-            if (Mathf.Approximately(moveIntensity, 0.0f))
-            {
-                if (!isBraking && math.length(controller.targetVelocity) < brakingSpeed)
-                    isBraking = true;
-            }
-            else
-            {
-                isBraking = false;
-                desiredSpeed = moveIntensity * desiredLinearSpeed;
-            }
 
-            return desiredSpeed;
+            //float moveIntensity = TraverserInputLayer.GetMoveIntensity();
+
+            //// --- If we are idle ---
+            //if (Mathf.Approximately(moveIntensity, 0.0f))
+            //{
+            //    if (!isBraking && math.length(controller.targetVelocity) < brakingSpeed)
+            //        isBraking = true;
+            //}
+            //else
+            //{
+            //    isBraking = false;
+            //    desiredSpeed = moveIntensity * desiredLinearSpeed;
+            //}
+            float3 acceleration = math.normalizesafe(TraverserInputLayer.capture.movementDirection) * maxMovementAcceleration;
+
+            if (math.length(acceleration) > maxMovementAcceleration)
+                acceleration = math.normalize(acceleration) * maxMovementAcceleration;
+
+            currentVelocity = currentVelocity + acceleration * deltaTime;
+            currentVelocity -= currentVelocity * MovementLinearDrag * deltaTime * (1 - TraverserInputLayer.GetMoveIntensity());
+
+            // --- Cap Velocity ---
+            currentVelocity.x = math.clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
+            currentVelocity.z = math.clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
+            currentVelocity.y = math.clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
+
+            desiredVelocity = currentVelocity;
+
+            return desiredVelocity * deltaTime;
         }
 
         // -------------------------------------------------

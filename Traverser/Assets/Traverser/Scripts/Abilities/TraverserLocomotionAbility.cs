@@ -158,7 +158,12 @@ namespace Traverser
             // --- Cap Rotation ---
             current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
 
-            float speed = TraverserInputLayer.GetMoveIntensity() * currentVelocity.magnitude;
+            float speed = TraverserInputLayer.GetMoveIntensity() * GetDesiredSpeed(deltaTime);
+
+            if (speed == 0.0f)
+                timetoMaxSpeed = 0.0f;
+
+            Debug.Log(speed);
 
             // --- If desired rotation is equal or bigger than the maximum allowed, increase rotation speed and decrease movement speed (we want to turn around) ---
             if (Mathf.Abs(current_rotation_speed) == max_rot_speed)
@@ -280,11 +285,19 @@ namespace Traverser
 
         // --- Utilities ---
 
-        float3 GetDesiredSpeed(float deltaTime)        
+        float timetoMaxSpeed = 0.0f;
+        float timerSpeed = 0.5f;
+
+        float GetDesiredSpeed(float deltaTime)        
         {
-            float3 desiredVelocity = 0.0f;
+            float desiredSpeed = 0.0f;
 
+            timetoMaxSpeed += timerSpeed*deltaTime;
 
+            if (timetoMaxSpeed > 1.0f)
+                timetoMaxSpeed = 1.0f;
+
+            desiredSpeed = desiredLinearSpeed * timetoMaxSpeed;
 
             //float moveIntensity = TraverserInputLayer.GetMoveIntensity();
 
@@ -316,7 +329,7 @@ namespace Traverser
 
             //desiredVelocity = currentVelocity;
 
-            return desiredVelocity * deltaTime;
+            return desiredSpeed;
         }
 
         public void AccelerateMovement(Vector3 acceleration)

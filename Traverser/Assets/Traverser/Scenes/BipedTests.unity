@@ -1526,6 +1526,14 @@ PrefabInstance:
       propertyPath: freedrop
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: MovementLinearDrag
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: maxMovementAcceleration
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 2894993679995748934, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_RootOrder
       value: 1

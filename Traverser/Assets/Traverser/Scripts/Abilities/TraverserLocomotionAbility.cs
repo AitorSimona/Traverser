@@ -30,6 +30,11 @@ namespace Traverser
 
         public float max_rot_acceleration = 0.1f; // in degrees
 
+        public float time_to_accel = 0.1f;
+
+        public float time_to_target = 0.1f;
+
+
         [Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
         public float MovementLinearDrag = 1.0f;
 
@@ -120,14 +125,42 @@ namespace Traverser
 
             TraverserAffineTransform tmp = TraverserAffineTransform.Create(transform.position, transform.rotation);
 
+            Vector3 inputDirection;
+            inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
+            inputDirection.y = 0.0f;
+            inputDirection.z = TraverserInputLayer.capture.stickVertical;
+
+            Vector3 acceleration = (inputDirection - currentVelocity) / time_to_accel;
+
+            if(acceleration.magnitude > maxMovementAcceleration)
+            {
+                acceleration.Normalize();
+                acceleration *= maxMovementAcceleration;
+            }
+
+            AccelerateMovement(acceleration);
+
+            float rot = Vector3.SignedAngle(transform.forward, currentVelocity, transform.up);
+
+            if (rot > max_rot_speed)
+                rot = max_rot_speed;
+
+            AccelerateRotation(rot / time_to_target);
+
+
+            // --- Cap Velocity ---
+            currentVelocity.x = Mathf.Clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
+            currentVelocity.z = Mathf.Clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
+            currentVelocity.y = Mathf.Clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
+
+            // --- Cap Rotation ---
+            current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
+
+            controller.targetHeading = current_rotation_speed * deltaTime;
+
             for (int i = 0; i < iterations; ++i)
             {
-                Vector3 inputDirection;
-                inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
-                inputDirection.y = 0.0f;
-                inputDirection.z = TraverserInputLayer.capture.stickVertical;
-
-                Vector3 finalDisplacement = GetDesiredVelocity(deltaTime);
+                Vector3 finalDisplacement = transform.forward*TraverserInputLayer.GetMoveIntensity()*deltaTime;
 
                 if (i == 0)
                     controller.stepping = 1.0f;
@@ -204,7 +237,10 @@ namespace Traverser
                         }
                     }
                 }
-            }  
+            }
+
+
+            ResetVelocityAndRotation();
 
             return contactAbility;
         }
@@ -233,7 +269,7 @@ namespace Traverser
 
         // --- Utilities ---
 
-        float3 GetDesiredVelocity(float deltaTime)        
+        float3 GetDesiredSpeed(float deltaTime)        
         {
             float3 desiredVelocity = 0.0f;
 
@@ -284,6 +320,12 @@ namespace Traverser
         {
             Mathf.Clamp(rotation_acceleration, -max_rot_acceleration, max_rot_acceleration);
             current_rotation_speed += rotation_acceleration;
+        }
+
+        public void ResetVelocityAndRotation()
+        {
+            currentVelocity = Vector3.zero;
+            current_rotation_speed = 0.0f;
         }
 
         // -------------------------------------------------

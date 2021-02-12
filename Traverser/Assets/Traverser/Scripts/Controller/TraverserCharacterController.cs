@@ -144,7 +144,7 @@ namespace Traverser
                 // --- This are the target position, velocity and yaw rotation (heading) of the current frame ---
                 targetPosition = transform.position;
                 targetVelocity = state.currentCollision.velocity;
-                targetHeading = Vector3.SignedAngle(transform.forward, math.normalizesafe(targetVelocity), transform.up) * deltaTime;
+                //targetHeading = Vector3.SignedAngle(transform.forward, math.normalizesafe(targetVelocity), transform.up) * deltaTime;
             }
 
             simulationCounter++;

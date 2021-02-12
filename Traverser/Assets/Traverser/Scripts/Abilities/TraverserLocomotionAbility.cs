@@ -146,7 +146,7 @@ namespace Traverser
                     TraverserAffineTransform contactTransform = TraverserAffineTransform.Create(contactPoint, q);
 
                     //  TODO : Remove temporal debug object
-                    //GameObject.Find("dummy").transform.position = contactTransform.t;
+                    GameObject.Find("dummy").transform.position = contactTransform.t;
 
                     float3 desired_direction = contactTransform.t - tmp.t;
                     float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);

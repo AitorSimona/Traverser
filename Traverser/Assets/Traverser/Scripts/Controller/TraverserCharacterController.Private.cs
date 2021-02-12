@@ -279,6 +279,8 @@ namespace Traverser
                     Gizmos.DrawWireMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, capsuleDebugMeshScale);
                 }
             }
+
+            //Gizmos.DrawSphere(current.colliderContactPoint, 0.5f);
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

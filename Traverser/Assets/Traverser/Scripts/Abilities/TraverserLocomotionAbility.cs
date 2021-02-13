@@ -13,30 +13,32 @@ namespace Traverser
         [Header("Movement settings")]
         [Tooltip("Desired speed in meters per second for slow movement.")]
         [Range(0.0f, 10.0f)]
-        public float desiredSpeedSlow = 3.9f;
+        public float movementSpeedSlow = 3.9f;
 
         [Tooltip("Desired speed in meters per second for fast movement.")]
         [Range(0.0f, 10.0f)]
-        public float desiredSpeedFast = 5.5f;
+        public float movementSpeedFast = 5.5f;
 
-        //[Tooltip("Speed in meters per second at which the character is considered to be braking (assuming player release the stick).")]
-        //[Range(0.0f, 10.0f)]
-        //public float brakingSpeed = 0.4f;
+        [Tooltip("How fast the character's speed will increase with given input in m/s^2.")]
+        public float movementAcceleration = 50.0f;
 
-        [Tooltip("How fast the character's speed will increase with given input in m/s^2")]
-        public float maxMovementAcceleration = 0.1f;
+        [Tooltip("How fast the character achieves movementAcceleration. Smaller values make the character reach target movementAcceleration faster.")]
+        public float movementAccelerationTime = 0.1f;
 
-        public float max_rot_speed = 10.0f; // in degrees / second
+        [Tooltip("How fast the character reaches its desired movement speed in seconds. Smaller values make character reach movementSpeed slower")]
+        public float movementSpeedTime = 0.75f;
 
-        public float max_rot_acceleration = 0.1f; // in degrees
 
-        public float time_to_accel = 0.1f;
+        [Header("Rotation settings")]
+        [Tooltip("How fast the character rotates in degrees/s.")]
+        public float rotationSpeed = 180.0f; // in degrees / second
 
-        public float time_to_target = 0.1f;
+        [Tooltip("How fast the character's rotation speed will increase with given input in degrees/s^2.")]
+        public float rotationAcceleration = 15.0f; // in degrees
 
-        public float timerSpeed = 0.5f;
+        [Tooltip("How fast the character achieves rotationAcceleration. Smaller values make the character reach target rotationAcceleration faster.")]
+        public float rotationAccelerationTime = 0.1f;
 
-        //[Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
 
         [Header("Simulation settings")]
         [Tooltip("How many movement iterations per frame will the controller perform. More iterations are more expensive but provide greater predictive collision detection reach.")]
@@ -46,15 +48,32 @@ namespace Traverser
         [Range(1.0f, 10.0f)]
         public float stepping = 10.0f;
 
+
+        //[Tooltip("Speed in meters per second at which the character is considered to be braking (assuming player release the stick).")]
+        //[Range(0.0f, 10.0f)]
+        //public float brakingSpeed = 0.4f;
+        //[Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
+
         // -------------------------------------------------
 
         // --- Private Variables ---
 
         private TraverserCharacterController controller;
-        private float desiredLinearSpeed => TraverserInputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
+
+        // --- Character's target speed for jog/run ---
+        private float desiredLinearSpeed => TraverserInputLayer.capture.run ? movementSpeedFast : movementSpeedSlow;
+        
+        // --- Stores current velocity in m/s ---
         private Vector3 currentVelocity = Vector3.zero;
-        private float current_rotation_speed = 0.0f; // degrees
-        private float timetoMaxSpeed = 0.0f;
+
+        // --- Stores current rotation speed in degrees ---
+        private float currentRotationSpeed = 0.0f; 
+
+        // --- Stores the current time to reach max movement speed ---
+        private float movementSpeedTimer = 0.0f;
+
+        // --- The maximum value of movementSpeedTimer ---
+        private float movementSpeedMaxTime = 1.0f;
 
         // -------------------------------------------------
 
@@ -137,7 +156,7 @@ namespace Traverser
             Vector3 finalDisplacement = transform.forward * speed * deltaTime;
 
             // --- Rotate controller ---
-            controller.ForceRotate(current_rotation_speed * deltaTime);
+            controller.ForceRotate(currentRotationSpeed * deltaTime);
 
             for (int i = 0; i < iterations; ++i)
             {
@@ -255,55 +274,61 @@ namespace Traverser
             float desiredSpeed = 0.0f;
             float moveIntensity = TraverserInputLayer.GetMoveIntensity();
 
-            timetoMaxSpeed += timerSpeed*deltaTime;
+            // --- Increase timer ---
+            movementSpeedTimer += movementSpeedTime*deltaTime;
 
-            if (timetoMaxSpeed > 1.0f)
-                timetoMaxSpeed = 1.0f;
+            // --- Cap timer ---
+            if (movementSpeedTimer > movementSpeedMaxTime)
+                movementSpeedTimer = movementSpeedMaxTime;
 
-            desiredSpeed = desiredLinearSpeed * timetoMaxSpeed * moveIntensity;
+            // --- Compute desired speed given input intensity and timer ---
+            desiredSpeed = desiredLinearSpeed * movementSpeedTimer * moveIntensity;
 
+            // --- Reset/Decrease timer if input intensity changes ---
             if (desiredSpeed == 0.0f)
-                timetoMaxSpeed = 0.0f;
-            else if (moveIntensity < timetoMaxSpeed)
-                timetoMaxSpeed = moveIntensity;
+                movementSpeedTimer = 0.0f;
+            else if (moveIntensity < movementSpeedTimer)
+                movementSpeedTimer = moveIntensity;
 
             return desiredSpeed;
         }
 
         public void AccelerateMovement(Vector3 acceleration)
         {
-            if (acceleration.magnitude > maxMovementAcceleration)
-                acceleration = acceleration.normalized * maxMovementAcceleration;
+            if (acceleration.magnitude > movementAcceleration)
+                acceleration = acceleration.normalized * movementAcceleration;
 
             currentVelocity += acceleration;
         }
 
         public void AccelerateRotation(float rotation_acceleration)
         {
-            Mathf.Clamp(rotation_acceleration, -max_rot_acceleration, max_rot_acceleration);
-            current_rotation_speed += rotation_acceleration;
+            Mathf.Clamp(rotation_acceleration, -rotationAcceleration, rotationAcceleration);
+            currentRotationSpeed += rotation_acceleration;
         }
 
         public void ResetVelocityAndRotation()
         {
             currentVelocity = Vector3.zero;
-            current_rotation_speed = 0.0f;
+            currentRotationSpeed = 0.0f;
         }
 
         public void UpdateMovement()
         {
+            // --- Gather current input in Vector3 format ---
             Vector3 inputDirection;
             inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
             inputDirection.y = 0.0f;
             inputDirection.z = TraverserInputLayer.capture.stickVertical;
 
-            Vector3 acceleration = (inputDirection - currentVelocity) / time_to_accel;
+            // --- Compute desired acceleration given input, current velocity, and time to accelerate ---
+            Vector3 acceleration = (inputDirection*desiredLinearSpeed - currentVelocity) / movementAccelerationTime;
 
             // --- Cap acceleration ---
-            if (acceleration.magnitude > maxMovementAcceleration)
+            if (acceleration.magnitude > movementAcceleration)
             {
                 acceleration.Normalize();
-                acceleration *= maxMovementAcceleration;
+                acceleration *= movementAcceleration;
             }
 
             // --- Update velocity ---
@@ -317,16 +342,17 @@ namespace Traverser
 
         public void UpdateRotation()
         {
+            // --- Compute desired yaw rotation from forward to currentVelocity ---
             float rot = Vector3.SignedAngle(transform.forward, currentVelocity, Vector3.up);
 
-            if (rot > max_rot_speed)
-                rot = max_rot_speed;
+            if (rot > rotationSpeed)
+                rot = rotationSpeed;
 
             // --- Update rotation speed ---
-            AccelerateRotation(rot / time_to_target);
+            AccelerateRotation(rot / rotationAccelerationTime);
 
             // --- Cap Rotation ---
-            current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
+            currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, -rotationSpeed, rotationSpeed);
         }
 
         // -------------------------------------------------

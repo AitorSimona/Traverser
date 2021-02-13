@@ -1527,24 +1527,44 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: timerSpeed
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: max_rot_speed
-      value: 20
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: time_to_target
-      value: 0.5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: turnMultiplier
-      value: 3
+      value: 7.14
       objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: MovementLinearDrag
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: desiredRotationSpeed
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: max_rot_acceleration
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: maxMovementAcceleration
-      value: 1
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: desiredMovementAcceleration
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550943690891041022, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
+      propertyPath: desiredRotationAcceleration
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2894993679995748934, guid: 212db3b75e65401418cfd7cf004930a3, type: 3}
       propertyPath: m_RootOrder

@@ -34,6 +34,8 @@ namespace Traverser
 
         public float time_to_target = 0.1f;
 
+        public float timerSpeed = 0.5f;
+
         //[Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
 
         [Header("Simulation settings")]
@@ -52,6 +54,7 @@ namespace Traverser
         private float desiredLinearSpeed => TraverserInputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
         private Vector3 currentVelocity = Vector3.zero;
         private float current_rotation_speed = 0.0f; // degrees
+        private float timetoMaxSpeed = 0.0f;
 
         // -------------------------------------------------
 
@@ -246,9 +249,6 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Movement ---
-
-        float timetoMaxSpeed = 0.0f;
-        float timerSpeed = 0.5f;
 
         float GetDesiredSpeed(float deltaTime)        
         {

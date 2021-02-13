@@ -137,17 +137,17 @@ namespace Traverser
 
             AccelerateMovement(acceleration);
 
+            // --- Cap Velocity ---
+            currentVelocity.x = Mathf.Clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
+            currentVelocity.z = Mathf.Clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
+            currentVelocity.y = Mathf.Clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
+
             float rot = Vector3.SignedAngle(transform.forward, currentVelocity, Vector3.up);
 
             if (rot > max_rot_speed)
                 rot = max_rot_speed;
 
             AccelerateRotation(rot / time_to_target);
-
-            // --- Cap Velocity ---
-            currentVelocity.x = Mathf.Clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
-            currentVelocity.z = Mathf.Clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
-            currentVelocity.y = Mathf.Clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
 
             // --- Cap Rotation ---
             current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);

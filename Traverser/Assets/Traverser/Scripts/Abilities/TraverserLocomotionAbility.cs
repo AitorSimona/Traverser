@@ -143,7 +143,7 @@ namespace Traverser
 
             AccelerateMovement(acceleration);
 
-            float rot = Vector3.SignedAngle(transform.forward, currentVelocity, transform.up);
+            float rot = Vector3.SignedAngle(transform.forward, currentVelocity, Vector3.up);
 
             if (rot > max_rot_speed)
                 rot = max_rot_speed;
@@ -171,7 +171,7 @@ namespace Traverser
             //    timetoMaxSpeed = 0.0f;
             //}
 
-            controller.targetHeading = current_rotation_speed * deltaTime;
+            controller.Rotate(current_rotation_speed * deltaTime);
 
             for (int i = 0; i < iterations; ++i)
             {

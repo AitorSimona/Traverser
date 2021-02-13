@@ -118,11 +118,16 @@ namespace Traverser
             state.desiredDisplacement += displacement;
         }
 
+        public void Rotate(float newHeading)
+        {
+            targetHeading = newHeading;
+            transform.rotation = transform.rotation * Quaternion.AngleAxis(targetHeading, Vector3.up);
+        }
+
         public void ForceMove(Vector3 desiredPosition)
         {
             characterController.Move(desiredPosition - transform.position);
             position = transform.position;
-            transform.rotation = transform.rotation * Quaternion.AngleAxis(targetHeading, transform.up);
         }
 
         public void Tick(float deltaTime)

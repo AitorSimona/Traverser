@@ -25,6 +25,9 @@ namespace Traverser
         [Tooltip("How fast the character achieves movementAcceleration. Smaller values make the character reach target movementAcceleration faster.")]
         public float movementAccelerationTime = 0.1f;
 
+        [Tooltip("How fast the character decreases movementSpeed. Smaller values make the character reach target movementSpeed slower.")]
+        public float movementDecelerationTime = 0.75f;
+
         [Tooltip("How fast the character reaches its desired movement speed in seconds. Smaller values make character reach movementSpeed slower")]
         public float movementSpeedTime = 0.75f;
 
@@ -70,10 +73,19 @@ namespace Traverser
         private float currentRotationSpeed = 0.0f; 
 
         // --- Stores the current time to reach max movement speed ---
-        private float movementSpeedTimer = 0.0f;
+        private float movementAccelerationTimer = 0.0f;
 
-        // --- The maximum value of movementSpeedTimer ---
-        private float movementSpeedMaxTime = 1.0f;
+        // --- Sotes movementSpeedTimer's maximum value, has to be 1.0f ---
+        private float movementAccelerationMaxTime = 1.0f;
+        
+        // --- Stores the current time to reach desired velocity (decelerating) ---
+        private float movementDecelerationTimer = 1.0f;
+
+        // --- Stores movementDecelerationTimer's maximum value, has to be 1.0f ---
+        private float movementDecelerationMaxTime = 1.0f;
+
+        // --- Stores previous inpu intensity to decelerate character ---
+        private float previousMovementIntensity = 0.0f;
 
         // -------------------------------------------------
 
@@ -81,7 +93,7 @@ namespace Traverser
         public void OnEnable()
         {
             controller = GetComponent<TraverserCharacterController>();
-            TraverserInputLayer.capture.movementDirection = Vector3.forward;
+            TraverserInputLayer.capture.movementDirection = Vector3.zero;
         }
 
         public void OnDisable()
@@ -272,25 +284,50 @@ namespace Traverser
         float GetDesiredSpeed(float deltaTime)        
         {
             float desiredSpeed = 0.0f;
-            float moveIntensity = TraverserInputLayer.GetMoveIntensity();
+            float moveIntensity = GetDesiredMovementIntensity(deltaTime);
 
             // --- Increase timer ---
-            movementSpeedTimer += movementSpeedTime*deltaTime;
+            movementAccelerationTimer += movementSpeedTime*deltaTime;
 
             // --- Cap timer ---
-            if (movementSpeedTimer > movementSpeedMaxTime)
-                movementSpeedTimer = movementSpeedMaxTime;
+            if (movementAccelerationTimer > movementAccelerationMaxTime)
+                movementAccelerationTimer = movementAccelerationMaxTime;
 
             // --- Compute desired speed given input intensity and timer ---
-            desiredSpeed = desiredLinearSpeed * movementSpeedTimer * moveIntensity;
+            desiredSpeed = desiredLinearSpeed * movementAccelerationTimer * moveIntensity;
 
             // --- Reset/Decrease timer if input intensity changes ---
             if (desiredSpeed == 0.0f)
-                movementSpeedTimer = 0.0f;
-            else if (moveIntensity < movementSpeedTimer)
-                movementSpeedTimer = moveIntensity;
+                movementAccelerationTimer = 0.0f;
+            else if (moveIntensity < movementAccelerationTimer)
+                movementAccelerationTimer = moveIntensity;
 
             return desiredSpeed;
+        }
+
+        float GetDesiredMovementIntensity(float deltaTime)
+        {
+            // --- Compute desired movement intensity given input and timer ---
+            float moveIntensity = TraverserInputLayer.GetMoveIntensity();
+
+            // --- Cap timer ---
+            if (movementDecelerationTimer < 0.0f)
+                movementDecelerationTimer = 0.0f;
+
+            // --- Decrease timer if asked to decelerate ---
+            if (moveIntensity < previousMovementIntensity)
+            {
+                moveIntensity = movementDecelerationTimer;
+                movementDecelerationTimer -= movementDecelerationTime * deltaTime;
+            }
+            // --- Update timer if accelerating/constant acceleration ---
+            else
+            {
+                movementDecelerationTimer = moveIntensity;
+                previousMovementIntensity = moveIntensity;
+            }
+
+            return moveIntensity;
         }
 
         public void AccelerateMovement(Vector3 acceleration)

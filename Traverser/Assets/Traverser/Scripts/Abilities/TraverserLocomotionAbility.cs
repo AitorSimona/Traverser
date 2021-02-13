@@ -120,62 +120,31 @@ namespace Traverser
             bool attemptTransition = true;
             TraverserAbility contactAbility = null;
 
+            // --- Preserve pre-simulation transform ---
             TraverserAffineTransform tmp = TraverserAffineTransform.Create(transform.position, transform.rotation);
 
-            Vector3 inputDirection;
-            inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
-            inputDirection.y = 0.0f;
-            inputDirection.z = TraverserInputLayer.capture.stickVertical;
+            // --- Update current velocity and rotation ---
+            UpdateMovement();
+            UpdateRotation();
 
-            Vector3 acceleration = (inputDirection - currentVelocity) / time_to_accel;
-
-            if(acceleration.magnitude > maxMovementAcceleration)
-            {
-                acceleration.Normalize();
-                acceleration *= maxMovementAcceleration;
-            }
-
-            AccelerateMovement(acceleration);
-
-            // --- Cap Velocity ---
-            currentVelocity.x = Mathf.Clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
-            currentVelocity.z = Mathf.Clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
-            currentVelocity.y = Mathf.Clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
-
-            float rot = Vector3.SignedAngle(transform.forward, currentVelocity, Vector3.up);
-
-            if (rot > max_rot_speed)
-                rot = max_rot_speed;
-
-            AccelerateRotation(rot / time_to_target);
-
-            // --- Cap Rotation ---
-            current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
-
+            // --- Compute desired speed ---
             float speed = GetDesiredSpeed(deltaTime);
 
-            //Debug.Log(speed);
+            // --- Compute desired displacement ---
+            Vector3 finalDisplacement = transform.forward * speed * deltaTime;
 
-            // ---If desired rotation is equal or bigger than the maximum allowed, increase rotation speed and decrease movement speed(we want to turn around)-- -
-            //if (Mathf.Abs(current_rotation_speed) == max_rot_speed && speed < desiredLinearSpeed * 0.5f)
-            //{
-            //    current_rotation_speed *= turnMultiplier;
-            //    speed *= speedTurnMultiplier;
-            //    //previousSpeed *= speedTurnMultiplier;
-            //    timetoMaxSpeed = 0.0f;
-            //}
-
+            // --- Rotate controller ---
             controller.ForceRotate(current_rotation_speed * deltaTime);
 
             for (int i = 0; i < iterations; ++i)
             {
-                Vector3 finalDisplacement = transform.forward*speed*deltaTime;
-
+                // --- Step simulation if above first tick ---
                 if (i == 0)
                     controller.stepping = 1.0f;
                 else
                     controller.stepping = stepping;
 
+                // --- Simulate movement ---
                 controller.Move(finalDisplacement);
                 controller.Tick(deltaTime);
 
@@ -281,8 +250,6 @@ namespace Traverser
         float timetoMaxSpeed = 0.0f;
         float timerSpeed = 0.5f;
 
-        //float previousSpeed = 0.0f;
-
         float GetDesiredSpeed(float deltaTime)        
         {
             float desiredSpeed = 0.0f;
@@ -321,6 +288,45 @@ namespace Traverser
         {
             currentVelocity = Vector3.zero;
             current_rotation_speed = 0.0f;
+        }
+
+        public void UpdateMovement()
+        {
+            Vector3 inputDirection;
+            inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
+            inputDirection.y = 0.0f;
+            inputDirection.z = TraverserInputLayer.capture.stickVertical;
+
+            Vector3 acceleration = (inputDirection - currentVelocity) / time_to_accel;
+
+            // --- Cap acceleration ---
+            if (acceleration.magnitude > maxMovementAcceleration)
+            {
+                acceleration.Normalize();
+                acceleration *= maxMovementAcceleration;
+            }
+
+            // --- Update velocity ---
+            AccelerateMovement(acceleration);
+
+            // --- Cap Velocity ---
+            currentVelocity.x = Mathf.Clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
+            currentVelocity.z = Mathf.Clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
+            currentVelocity.y = Mathf.Clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
+        }
+
+        public void UpdateRotation()
+        {
+            float rot = Vector3.SignedAngle(transform.forward, currentVelocity, Vector3.up);
+
+            if (rot > max_rot_speed)
+                rot = max_rot_speed;
+
+            // --- Update rotation speed ---
+            AccelerateRotation(rot / time_to_target);
+
+            // --- Cap Rotation ---
+            current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
         }
 
         // -------------------------------------------------

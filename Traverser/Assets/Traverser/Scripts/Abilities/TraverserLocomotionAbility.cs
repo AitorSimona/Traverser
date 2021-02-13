@@ -81,9 +81,6 @@ namespace Traverser
         // --- Stores the current time to reach desired velocity (decelerating) ---
         private float movementDecelerationTimer = 1.0f;
 
-        // --- Stores movementDecelerationTimer's maximum value, has to be 1.0f ---
-        private float movementDecelerationMaxTime = 1.0f;
-
         // --- Stores previous inpu intensity to decelerate character ---
         private float previousMovementIntensity = 0.0f;
 

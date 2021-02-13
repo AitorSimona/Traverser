@@ -118,7 +118,7 @@ namespace Traverser
             state.desiredDisplacement += displacement;
         }
 
-        public void Rotate(float newHeading)
+        public void ForceRotate(float newHeading)
         {
             targetHeading = newHeading;
             transform.rotation = transform.rotation * Quaternion.AngleAxis(targetHeading, Vector3.up);

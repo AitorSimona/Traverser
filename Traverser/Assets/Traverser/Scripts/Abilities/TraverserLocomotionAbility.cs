@@ -171,7 +171,7 @@ namespace Traverser
             //    timetoMaxSpeed = 0.0f;
             //}
 
-            controller.Rotate(current_rotation_speed * deltaTime);
+            controller.ForceRotate(current_rotation_speed * deltaTime);
 
             for (int i = 0; i < iterations; ++i)
             {

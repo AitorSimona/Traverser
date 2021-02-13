@@ -19,9 +19,9 @@ namespace Traverser
         [Range(0.0f, 10.0f)]
         public float desiredSpeedFast = 5.5f;
 
-        [Tooltip("Speed in meters per second at which the character is considered to be braking (assuming player release the stick).")]
-        [Range(0.0f, 10.0f)]
-        public float brakingSpeed = 0.4f;
+        //[Tooltip("Speed in meters per second at which the character is considered to be braking (assuming player release the stick).")]
+        //[Range(0.0f, 10.0f)]
+        //public float brakingSpeed = 0.4f;
 
         [Tooltip("How fast the character's speed will increase with given input in m/s^2")]
         public float maxMovementAcceleration = 0.1f;
@@ -34,12 +34,7 @@ namespace Traverser
 
         public float time_to_target = 0.1f;
 
-        public float turnMultiplier = 2.0f;
-
-        public float speedTurnMultiplier = 0.25f;
-
-        [Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
-        public float MovementLinearDrag = 1.0f;
+        //[Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
 
         [Header("Simulation settings")]
         [Tooltip("How many movement iterations per frame will the controller perform. More iterations are more expensive but provide greater predictive collision detection reach.")]
@@ -54,7 +49,6 @@ namespace Traverser
         // --- Private Variables ---
 
         private TraverserCharacterController controller;
-        private bool isBraking = false;
         private float desiredLinearSpeed => TraverserInputLayer.capture.run ? desiredSpeedFast : desiredSpeedSlow;
         private Vector3 currentVelocity = Vector3.zero;
         private float current_rotation_speed = 0.0f; // degrees
@@ -282,7 +276,7 @@ namespace Traverser
 
         // -------------------------------------------------
 
-        // --- Utilities ---
+        // --- Movement ---
 
         float timetoMaxSpeed = 0.0f;
         float timerSpeed = 0.5f;
@@ -292,52 +286,19 @@ namespace Traverser
         float GetDesiredSpeed(float deltaTime)        
         {
             float desiredSpeed = 0.0f;
+            float moveIntensity = TraverserInputLayer.GetMoveIntensity();
 
             timetoMaxSpeed += timerSpeed*deltaTime;
 
             if (timetoMaxSpeed > 1.0f)
                 timetoMaxSpeed = 1.0f;
 
-            desiredSpeed = desiredLinearSpeed * timetoMaxSpeed * TraverserInputLayer.GetMoveIntensity();
+            desiredSpeed = desiredLinearSpeed * timetoMaxSpeed * moveIntensity;
 
             if (desiredSpeed == 0.0f)
                 timetoMaxSpeed = 0.0f;
-            else if (TraverserInputLayer.GetMoveIntensity() < timetoMaxSpeed)
-                timetoMaxSpeed = TraverserInputLayer.GetMoveIntensity();
-
-            //previousSpeed = TraverserInputLayer.GetMoveIntensity();
-
-            Debug.Log(timetoMaxSpeed);
-
-            //float moveIntensity = TraverserInputLayer.GetMoveIntensity();
-
-            //// --- If we are idle ---
-            //if (Mathf.Approximately(moveIntensity, 0.0f))
-            //{
-            //    if (!isBraking && math.length(controller.targetVelocity) < brakingSpeed)
-            //        isBraking = true;
-            //}
-            //else
-            //{
-            //    isBraking = false;
-            //    desiredSpeed = moveIntensity * desiredLinearSpeed;
-            //}
-
-
-            //float3 acceleration = math.normalizesafe(TraverserInputLayer.capture.movementDirection) * maxMovementAcceleration;
-
-            //if (math.length(acceleration) > maxMovementAcceleration)
-            //    acceleration = math.normalize(acceleration) * maxMovementAcceleration;
-
-            //currentVelocity = currentVelocity + acceleration * deltaTime;
-            //currentVelocity -= currentVelocity * MovementLinearDrag * deltaTime * (1 - TraverserInputLayer.GetMoveIntensity());
-
-            //// --- Cap Velocity ---
-            //currentVelocity.x = math.clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
-            //currentVelocity.z = math.clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
-            //currentVelocity.y = math.clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
-
-            //desiredVelocity = currentVelocity;
+            else if (moveIntensity < timetoMaxSpeed)
+                timetoMaxSpeed = moveIntensity;
 
             return desiredSpeed;
         }

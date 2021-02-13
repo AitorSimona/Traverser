@@ -310,14 +310,18 @@ namespace Traverser
             // --- Compute desired movement intensity given input and timer ---
             float moveIntensity = TraverserInputLayer.GetMoveIntensity();
 
-            // --- Cap timer ---
+            // --- Cap timer, reset previous movment intensity ---
             if (movementDecelerationTimer < 0.0f)
+            {
                 movementDecelerationTimer = 0.0f;
+                previousMovementIntensity = 0.0f;
+            }
 
-            // --- Decrease timer if asked to decelerate ---
+            // --- Decrease timer if asked to decelerate, update previous movement intensity ---
             if (moveIntensity < previousMovementIntensity)
             {
                 moveIntensity = movementDecelerationTimer;
+                previousMovementIntensity = moveIntensity + 0.01f; 
                 movementDecelerationTimer -= movementDecelerationTime * deltaTime;
             }
             // --- Update timer if accelerating/constant acceleration ---

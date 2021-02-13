@@ -38,7 +38,12 @@ public class TraverserAnimationController : MonoBehaviour
     {
         // --- Move all the skeleton to the character's position ---
         skeleton.position = skeletonRef.position;
-        skeleton.rotation = transform.rotation * initialRotation;
+        skeleton.rotation =  
+            transform.rotation * Quaternion.AngleAxis(90, Vector3.up)
+            * Quaternion.AngleAxis(skeleton.rotation.eulerAngles.x, Vector3.right)
+            * Quaternion.AngleAxis(skeleton.rotation.eulerAngles.z, Vector3.forward)
+            ;
+        //skeleton.rotation = transform.rotation * initialRotation;
     }
 
     // --------------------------------

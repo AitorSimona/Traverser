@@ -607,7 +607,7 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 0
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -636,7 +636,7 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 0
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -656,8 +656,8 @@ ModelImporter:
       name: Run
       takeName: Take 001
       internalID: 0
-      firstFrame: 373
-      lastFrame: 408
+      firstFrame: 382
+      lastFrame: 400
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

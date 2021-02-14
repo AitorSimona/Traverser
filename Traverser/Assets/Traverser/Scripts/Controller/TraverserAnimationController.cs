@@ -66,7 +66,8 @@ public class TraverserAnimationController : MonoBehaviour
         // --- Update animator with the given parameter's values ---
         animator.SetBool(parameters.MoveID, parameters.Move);
         animator.SetFloat(parameters.SpeedID, parameters.Speed);
-        animator.SetFloat(parameters.HeadingID, parameters.Heading);
+        animator.SetFloat(parameters.HeadingID, Mathf.Abs(parameters.Heading));
+
     }
 
     // --------------------------------

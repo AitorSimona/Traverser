@@ -32,8 +32,11 @@ namespace Traverser
         [Tooltip("How fast the character decreases movementSpeed. Smaller values make the character reach target movementSpeed slower.")]
         public float movementDecelerationTime = 0.75f;
 
-        [Tooltip("How fast the character reaches its desired movement speed in seconds. Smaller values make character reach movementSpeed slower")]
-        public float movementSpeedTime = 0.75f;
+        [Tooltip("How fast the character reaches its desired slow movement speed in seconds. Smaller values make character reach movementSpeedSlow slower")]
+        public float movementSpeedSlowTime = 0.75f;
+
+        [Tooltip("How fast the character reaches its desired fast speed (and decelerates to slow) in seconds. Smaller values make character reach movementSpeedFast and decelerate to movementSpeedSlow slower.")]
+        public float movementSpeedFastTime = 1.5f;
 
 
         [Header("Rotation settings")]
@@ -45,6 +48,18 @@ namespace Traverser
 
         [Tooltip("How fast the character achieves rotationAcceleration. Smaller values make the character reach target rotationAcceleration faster.")]
         public float rotationAccelerationTime = 0.1f;
+
+        [Tooltip("Speed will be multiplied by this value when turning around (heading above rotationSpeedToTurn and movement speed below movementSpeedNoTurn). Used for keeping character in place when turning around")]
+        [Range(0.0f, 10.0f)]
+        public float movementSpeedDampingOnTurn = 0.1f;
+
+        [Tooltip("Character must be below this movement speed to trigger movementSpeedDampingOnTurn.")]
+        [Range(0.0f, 10.0f)]
+        public float movementSpeedNoTurn = 1.0f;
+
+        [Tooltip("Character will trigger movementSpeedDampingOnTurn when its rotation is above this value.")]
+        [Range(0.0f, 10.0f)]
+        public float rotationSpeedToTurn = 1.0f;
 
 
         [Header("Simulation settings")]
@@ -68,7 +83,7 @@ namespace Traverser
         private TraverserCharacterController controller;
 
         // --- Character's target speed for jog/run ---
-        private float desiredLinearSpeed => TraverserInputLayer.capture.run ? movementSpeedFast : movementSpeedSlow;
+        private float desiredLinearSpeed = /*=> TraverserInputLayer.capture.run ? movementSpeedFast :*/ 0.0f;
         
         // --- Stores current velocity in m/s ---
         private Vector3 currentVelocity = Vector3.zero;
@@ -93,6 +108,7 @@ namespace Traverser
         // --- Basic Methods ---
         public void OnEnable()
         {
+            desiredLinearSpeed = movementSpeedSlow;
             controller = GetComponent<TraverserCharacterController>();
             TraverserInputLayer.capture.movementDirection = Vector3.zero;
         }
@@ -169,11 +185,15 @@ namespace Traverser
             if (speed < movementSpeedMin)
                 speed = 0.0f;
 
-            // --- Compute desired displacement ---
-            Vector3 finalDisplacement = transform.forward * speed * deltaTime;
-
             // --- Rotate controller ---
             controller.ForceRotate(currentRotationSpeed * deltaTime);
+
+            // --- Speed damping, reduce speed when turning around ---
+            if (currentRotationSpeed > rotationSpeedToTurn && speed < movementSpeedNoTurn)
+                speed *= movementSpeedDampingOnTurn; 
+
+            // --- Compute desired displacement ---
+            Vector3 finalDisplacement = transform.forward * speed * deltaTime;
 
             for (int i = 0; i < iterations; ++i)
             {
@@ -291,8 +311,14 @@ namespace Traverser
             float desiredSpeed = 0.0f;
             float moveIntensity = GetDesiredMovementIntensity(deltaTime);
 
+            // --- Accelerate/Decelerate to movementSpeedFast or movementSpeedSlow ---
+            if (TraverserInputLayer.capture.run && desiredLinearSpeed < movementSpeedFast)
+                desiredLinearSpeed += (movementSpeedFast - movementSpeedSlow) * deltaTime * movementSpeedFastTime;
+            else if (desiredLinearSpeed > movementSpeedSlow)
+                desiredLinearSpeed += (movementSpeedSlow - movementSpeedFast) * deltaTime * movementSpeedFastTime;
+
             // --- Increase timer ---
-            movementAccelerationTimer += movementSpeedTime*deltaTime;
+            movementAccelerationTimer += movementSpeedSlowTime*deltaTime;
 
             // --- Cap timer ---
             if (movementAccelerationTimer > movementAccelerationMaxTime)

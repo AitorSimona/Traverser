@@ -73,20 +73,14 @@ namespace Traverser
         [Range(1.0f, 10.0f)]
         public float stepping = 10.0f;
 
-
-        //[Tooltip("Speed in meters per second at which the character is considered to be braking (assuming player release the stick).")]
-        //[Range(0.0f, 10.0f)]
-        //public float brakingSpeed = 0.4f;
-        //[Tooltip("How likely are we to deviate from current pose to idle, higher values make faster transitions to idle")]
-
         // -------------------------------------------------
 
         // --- Private Variables ---
 
         private TraverserCharacterController controller;
 
-        // --- Character's target speed for jog/run ---
-        private float desiredLinearSpeed = /*=> TraverserInputLayer.capture.run ? movementSpeedFast :*/ 0.0f;
+        // --- Character's target movement speed ---
+        private float desiredLinearSpeed = 0.0f;
         
         // --- Stores current velocity in m/s ---
         private Vector3 currentVelocity = Vector3.zero;
@@ -114,12 +108,6 @@ namespace Traverser
             desiredLinearSpeed = movementSpeedSlow;
             controller = GetComponent<TraverserCharacterController>();
             TraverserInputLayer.capture.movementDirection = Vector3.zero;
-        }
-
-        public void OnDisable()
-        {
-
-
         }
 
         // -------------------------------------------------
@@ -280,7 +268,6 @@ namespace Traverser
                 }
             }
 
-
             ResetVelocityAndRotation();
 
             return contactAbility;
@@ -345,7 +332,7 @@ namespace Traverser
             // --- Compute desired movement intensity given input and timer ---
             float moveIntensity = TraverserInputLayer.GetMoveIntensity();
 
-            // --- Cap timer, reset previous movment intensity ---
+            // --- Cap timer, reset previous movement intensity ---
             if (movementDecelerationTimer < 0.0f)
             {
                 movementDecelerationTimer = 0.0f;

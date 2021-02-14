@@ -19,6 +19,10 @@ namespace Traverser
         [Range(0.0f, 10.0f)]
         public float movementSpeedFast = 5.5f;
 
+        [Tooltip("Character won't move if below this speed.")]
+        [Range(0.0f, 10.0f)]
+        public float movementSpeedMin = 0.1f;
+
         [Tooltip("How fast the character's speed will increase with given input in m/s^2.")]
         public float movementAcceleration = 50.0f;
 
@@ -160,6 +164,10 @@ namespace Traverser
 
             // --- Compute desired speed ---
             float speed = GetDesiredSpeed(deltaTime);
+
+            // --- Don't move if below minimum speed ---
+            if (speed < movementSpeedMin)
+                speed = 0.0f;
 
             // --- Compute desired displacement ---
             Vector3 finalDisplacement = transform.forward * speed * deltaTime;

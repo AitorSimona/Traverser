@@ -32,6 +32,9 @@ namespace Traverser
         [Tooltip("How fast the character decreases movementSpeed. Smaller values make the character reach target movementSpeed slower.")]
         public float movementDecelerationTime = 0.75f;
 
+        [Tooltip("How much current speed impacts deceleration. Smaller values will make a running character decelerate slower.")]
+        public float movementDecelerationRatio = 0.5f;
+
         [Tooltip("How fast the character reaches its desired slow movement speed in seconds. Smaller values make character reach movementSpeedSlow slower")]
         public float movementSpeedSlowTime = 0.75f;
 
@@ -237,6 +240,7 @@ namespace Traverser
 
                     // TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
                     //Debug.Log(angle);
+                    // TODO: Expose this
                     // --- If we are not close to the desired angle or contact point, do not handle contacts ---
                     if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 4.0f)
                     {
@@ -311,10 +315,10 @@ namespace Traverser
             float desiredSpeed = 0.0f;
             float moveIntensity = GetDesiredMovementIntensity(deltaTime);
 
-            // --- Accelerate/Decelerate to movementSpeedFast or movementSpeedSlow ---
+            // --- Sprinting, Accelerate/Decelerate to movementSpeedFast or movementSpeedSlow ---
             if (TraverserInputLayer.capture.run && desiredLinearSpeed < movementSpeedFast)
                 desiredLinearSpeed += (movementSpeedFast - movementSpeedSlow) * deltaTime * movementSpeedFastTime;
-            else if (desiredLinearSpeed > movementSpeedSlow)
+            else if (desiredLinearSpeed > movementSpeedSlow && TraverserInputLayer.GetMoveIntensity() > 0.0f)
                 desiredLinearSpeed += (movementSpeedSlow - movementSpeedFast) * deltaTime * movementSpeedFastTime;
 
             // --- Increase timer ---
@@ -353,7 +357,8 @@ namespace Traverser
             {
                 moveIntensity = movementDecelerationTimer;
                 previousMovementIntensity = moveIntensity + 0.01f; 
-                movementDecelerationTimer -= movementDecelerationTime * deltaTime;
+                // --- We use movementDecelerationTime and our previous speed to decelerate, bigger previous speed makes decelerating a longer task ---
+                movementDecelerationTimer -= (movementDecelerationTime - previousMovementIntensity*movementDecelerationRatio) * deltaTime;
             }
             // --- Update timer if accelerating/constant acceleration ---
             else

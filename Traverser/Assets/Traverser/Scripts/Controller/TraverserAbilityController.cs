@@ -13,6 +13,7 @@ namespace Traverser
         TraverserCharacterController controller;
         TraverserAnimationController animationController;
         TraverserAnimationController.AnimatorParameters animatorParameters;
+        TraverserAbility[] abilities;
 
         // --------------------------------
 
@@ -24,6 +25,8 @@ namespace Traverser
 
             // --- Set animator parameters --- 
             animationController.InitializeAnimatorParameters(ref animatorParameters);
+
+            abilities = GetComponents<TraverserAbility>();
         }
 
         public void Update()
@@ -46,7 +49,7 @@ namespace Traverser
                 // instead of following the arbitrary order in which they were added as components
 
                 // --- Iterate all abilities and update each one until one takes control ---
-                foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                foreach (TraverserAbility ability in abilities)
                 {
                     if (!ability.IsAbilityEnabled())
                         continue;
@@ -96,7 +99,7 @@ namespace Traverser
             if (currentAbility == null || !isEnabled)
             {
                 // --- Iterate all abilities and update each one until one takes control ---
-                foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                foreach (TraverserAbility ability in abilities)
                 {
                     if (!ability.IsAbilityEnabled())
                         continue;

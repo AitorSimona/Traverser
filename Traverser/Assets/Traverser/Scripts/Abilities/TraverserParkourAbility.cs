@@ -63,6 +63,11 @@ namespace Traverser
             return null;
         }
 
+        public TraverserAbility OnFixedUpdate(float deltaTime)
+        {
+            return null;
+        }
+
         public TraverserAbility OnPostUpdate(float deltaTime)
         {
 
@@ -195,11 +200,6 @@ namespace Traverser
             }
 
             return ret;
-        }
-
-        public TraverserAbility OnFixedUpdate(float deltaTime)
-        {
-            return null;
         }
 
         public bool IsAbilityEnabled()

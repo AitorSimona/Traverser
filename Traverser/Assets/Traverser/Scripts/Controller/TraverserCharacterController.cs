@@ -65,6 +65,9 @@ namespace Traverser
         // --- Whether or not the character controller's capsule collider is grounded ---
         public bool isGrounded { get => current.isGrounded; }
 
+        // --- Whether or not the character controller reacts to collisions ---
+        public bool collisionEnabled { get => characterController.detectCollisions; set => characterController.detectCollisions = value; }
+
         // --------------------------------
 
         // --- Simulation methods ---

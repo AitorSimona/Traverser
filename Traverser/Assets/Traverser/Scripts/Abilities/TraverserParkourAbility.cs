@@ -31,7 +31,11 @@ namespace Traverser
         //AnchoredTransitionTask anchoredTransition; // Kinematica animation transition handler
 
         TraverserCharacterController controller;
+        TraverserAnimationController animationController;
         TraverserLocomotionAbility locomotion;
+
+        bool isTransitionON = false;
+        MatchTargetWeightMask weightMask;
 
         // --- Basic Methods ---
 
@@ -39,7 +43,10 @@ namespace Traverser
         {
             //anchoredTransition = AnchoredTransitionTask.Invalid;
             controller = GetComponent<TraverserCharacterController>();
+            animationController = GetComponent<TraverserAnimationController>();
             locomotion = GetComponent<TraverserLocomotionAbility>();
+
+            weightMask = new MatchTargetWeightMask(Vector3.one, 1.0f);
         }
 
         public void OnDisable()
@@ -55,10 +62,13 @@ namespace Traverser
             TraverserInputLayer.capture.UpdateParkour();
 
             // --- If we are in a transition disable controller ---
-            //TraverserCollisionLayer.ConfigureController(anchoredTransition.isValid, ref controller);
+            TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
 
             //if(TraverserKinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))           
             //     return this;
+
+            if(isTransitionON)
+                isTransitionON = animationController.MatchTarget(controller.current.colliderContactPoint, Quaternion.identity, AvatarTarget.Root, weightMask, 0.0f, 1.0f);
 
             return null;
         }

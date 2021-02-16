@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public class TraverserAnimationController : MonoBehaviour
@@ -22,27 +23,44 @@ public class TraverserAnimationController : MonoBehaviour
     public Transform skeletonRef;
 
 
-    private Animator animator;
+    public Animator animator;
     //private Quaternion initialRotation;
-
+    //float3 initialPosition = float3.zero;
+    //float3 currentPosition = float3.zero;
     // --------------------------------
 
     // --- Basic Methods ---
     private void Start()
     {
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
         //initialRotation = skeleton.rotation;
     }
 
     private void LateUpdate()
     {
         // --- Move all the skeleton to the character's position ---
-        skeleton.position = skeletonRef.position;
-        skeleton.rotation =  
-            transform.rotation * Quaternion.AngleAxis(90, Vector3.up)
-            * Quaternion.AngleAxis(skeleton.localRotation.eulerAngles.x, Vector3.right)
-            * Quaternion.AngleAxis(skeleton.localRotation.eulerAngles.z, Vector3.forward)
-            ;
+        //animator.SetTarget(AvatarTarget.Root, 0.0f);
+        //animator.Update(0);
+        //initialPosition = animator.targetPosition;
+        //animator.SetTarget(AvatarTarget.Root, animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        //animator.Update(0);
+        //currentPosition = animator.targetPosition;
+
+        //Debug.Log(currentPosition - initialPosition);
+
+
+        //skeleton.transform.position = skeletonRef.transform.position;
+        //skeleton.parent.transform.position = skeletonRef.transform.position;
+        //skeleton.parent.localPosition = Vector3.zero;
+        //skeleton.localPosition = skeletonRef.transform.localPosition;
+
+        
+
+        //skeleton.rotation =  
+        //    transform.rotation * Quaternion.AngleAxis(90, Vector3.up)
+        //    * Quaternion.AngleAxis(skeleton.localRotation.eulerAngles.x, Vector3.right)
+        //    * Quaternion.AngleAxis(skeleton.localRotation.eulerAngles.z, Vector3.forward)
+        //    ;
             
         //skeleton.rotation = transform.rotation * initialRotation;
     }
@@ -86,6 +104,11 @@ public class TraverserAnimationController : MonoBehaviour
         }
 
         return ret;
+    }
+
+    public void SetRootMotion(bool rootMotion)
+    {
+        animator.applyRootMotion = rootMotion;
     }
 
     // --------------------------------

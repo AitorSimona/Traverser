@@ -14,6 +14,7 @@ namespace Traverser
         TraverserAnimationController animationController;
         TraverserAnimationController.AnimatorParameters animatorParameters;
         TraverserAbility[] abilities;
+        public Animator animator;
 
         // --------------------------------
 
@@ -26,11 +27,13 @@ namespace Traverser
             // --- Set animator parameters --- 
             animationController.InitializeAnimatorParameters(ref animatorParameters);
 
+
             abilities = GetComponents<TraverserAbility>();
         }
 
         public void Update()
         {
+
             if (!controller.isActiveAndEnabled)
                 return;
 
@@ -114,18 +117,15 @@ namespace Traverser
                     }
                 }
             }
-        }
 
-        public void OnAnimatorMove()
-        {
-            if (!controller.isActiveAndEnabled)
-                return;
+            //if (!controller.isActiveAndEnabled)
+            //    return;
 
             // --- After all animations are evaluated, perform movement ---
             if (currentAbility == null)
                 return;
 
-            bool isEnabled = currentAbility.IsAbilityEnabled();
+            //bool isEnabled = currentAbility.IsAbilityEnabled();
 
             // --- Let abilities modify motion ---
             if (currentAbility is TraverserAbilityAnimatorMove abilityAnimatorMove)
@@ -136,13 +136,43 @@ namespace Traverser
 
             Assert.IsTrue(controller != null);
 
-            controller.ForceMove(controller.targetPosition);
-            
+            if (!animator.isMatchingTarget)
+                controller.ForceMove(controller.targetPosition);
+
 
             // --- Let abilities apply final changes to motion, if needed ---
             if (isEnabled)
                 currentAbility.OnPostUpdate(Time.deltaTime);
         }
+
+        //public void OnAnimatorMove()
+        //{
+        //    //if (!controller.isActiveAndEnabled)
+        //    //    return;
+
+        //    //// --- After all animations are evaluated, perform movement ---
+        //    //if (currentAbility == null)
+        //    //    return;
+
+        //    //bool isEnabled = currentAbility.IsAbilityEnabled();
+
+        //    //// --- Let abilities modify motion ---
+        //    //if (currentAbility is TraverserAbilityAnimatorMove abilityAnimatorMove)
+        //    //{
+        //    //    if (isEnabled)
+        //    //        abilityAnimatorMove.OnAbilityAnimatorMove();
+        //    //}
+
+        //    //Assert.IsTrue(controller != null);
+
+        //    //if(!animator.isMatchingTarget)
+        //    //    controller.ForceMove(controller.targetPosition);
+            
+
+        //    //// --- Let abilities apply final changes to motion, if needed ---
+        //    //if (isEnabled)
+        //    //    currentAbility.OnPostUpdate(Time.deltaTime);
+        //}
 
         // --------------------------------
     }

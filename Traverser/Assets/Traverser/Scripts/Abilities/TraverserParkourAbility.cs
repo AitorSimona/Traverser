@@ -67,14 +67,28 @@ namespace Traverser
             //if(TraverserKinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))           
             //     return this;
 
-            if(isTransitionON)
-                isTransitionON = animationController.MatchTarget(controller.current.colliderContactPoint, Quaternion.identity, AvatarTarget.Root, weightMask, 0.0f, 1.0f);
+            if (isTransitionON)
+            {
+
+                Debug.Log(isTransitionON);
+                GameObject.Find("dummy").transform.position = controller.lastContactPoint;
+
+                isTransitionON = animationController.MatchTarget(controller.lastContactPoint, Quaternion.identity, AvatarTarget.RightHand, weightMask, 0.0f, 1.0f);
+                return this;
+            }
+            else
+                animationController.SetRootMotion(false);
 
             return null;
         }
 
         public TraverserAbility OnFixedUpdate(float deltaTime)
         {
+            if (isTransitionON)
+            {
+                return this;
+            }
+
             return null;
         }
 
@@ -88,8 +102,16 @@ namespace Traverser
         {
             bool ret = false;
 
-            if (TraverserInputLayer.capture.parkourButton)
+            TraverserInputLayer.capture.UpdateParkour();
+
+            if (TraverserInputLayer.capture.parkourButton && !isTransitionON)
             {
+                isTransitionON = true;
+                animationController.SetRootMotion(true);
+
+                ret = true;
+
+                Debug.Log("Transitioning");
                 //// --- Identify collider's object layer ---
                 //ref MovementController.Closure closure = ref controller.current;
                 //Assert.IsTrue(closure.isColliding);

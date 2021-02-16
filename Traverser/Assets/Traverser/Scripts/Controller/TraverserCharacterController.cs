@@ -68,6 +68,8 @@ namespace Traverser
         // --- Whether or not the character controller reacts to collisions ---
         public bool collisionEnabled { get => characterController.detectCollisions; set => characterController.detectCollisions = value; }
 
+        public float3 lastContactPoint = float3.zero;
+
         // --------------------------------
 
         // --- Simulation methods ---

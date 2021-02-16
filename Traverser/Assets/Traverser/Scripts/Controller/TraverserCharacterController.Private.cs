@@ -296,10 +296,11 @@ namespace Traverser
                 if (state.previousCollision.ground != null && hit.collider.Equals(state.previousCollision.ground))
                     return;
 
-                Debug.Log("Collided with:");
-                Debug.Log(hit.gameObject.name);
+                //Debug.Log("Collided with:");
+                //Debug.Log(hit.gameObject.name);
                 state.previousCollision.CopyFrom(ref state.currentCollision);
                 state.currentCollision.colliderContactPoint = hit.point;
+                lastContactPoint = hit.point;
                 state.currentCollision.colliderContactNormal = hit.normal;
                 state.currentCollision.collider = hit.collider;
                 state.currentCollision.isColliding = true;

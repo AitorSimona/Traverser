@@ -9,7 +9,7 @@ Video game characters interact with the objects in the world in many different w
 
 ## SPECIAL THANKS / REFERENCES
 [Unity](https://unity.com/)
-
+[Guerrilla Games](https://www.youtube.com/watch?v=LrLHsbTK5bM&ab_channel=GDC)
 [Kinematica](https://docs.unity3d.com/Packages/com.unity.kinematica@0.8/manual/index.html)
 
 ## HOW TO USE / CONTROLS
@@ -26,13 +26,14 @@ Video game characters interact with the objects in the world in many different w
 ## TOOLS USED
 
 - Microsoft Visual Studio 2019
-- Unity 2020.1.4f1+
-- Unity's Kinematica 0.8
+- Unity 2020.2.2f1
+- Kinematica's 0.8 demo assets
+- Autodesk Maya 2019
 
 ## CWLF Project
 
 Stands for character world linking framework (old name, renamed to Traverser). It made use of Unity's new animation system Kinematica, but due to different reasons including it being stopped for the whole 2021 in a non production-ready state and lack of hackability, I decided to get by without it, giving place to the new Traverser project. 
 
-
-
+- Unity's Kinematica 0.8 (CWLF project)
+- Unity 2020.1.4f1
 

@@ -54,15 +54,16 @@ public class TraverserAnimationController : MonoBehaviour
         //skeleton.parent.localPosition = Vector3.zero;
         //skeleton.localPosition = skeletonRef.transform.localPosition;
 
-        
+
 
         //skeleton.rotation =  
         //    transform.rotation * Quaternion.AngleAxis(90, Vector3.up)
         //    * Quaternion.AngleAxis(skeleton.localRotation.eulerAngles.x, Vector3.right)
         //    * Quaternion.AngleAxis(skeleton.localRotation.eulerAngles.z, Vector3.forward)
         //    ;
-            
+
         //skeleton.rotation = transform.rotation * initialRotation;
+
     }
 
     // --------------------------------
@@ -84,7 +85,7 @@ public class TraverserAnimationController : MonoBehaviour
         // --- Update animator with the given parameter's values ---
         animator.SetBool(parameters.MoveID, parameters.Move);
         animator.SetFloat(parameters.SpeedID, parameters.Speed);
-        animator.SetFloat(parameters.HeadingID, Mathf.Abs(parameters.Heading));
+        animator.SetFloat(parameters.HeadingID, parameters.Heading);
 
     }
 

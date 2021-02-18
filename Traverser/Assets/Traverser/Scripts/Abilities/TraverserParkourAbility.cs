@@ -77,7 +77,11 @@ namespace Traverser
                 return this;
             }
             else
+            {
                 animationController.SetRootMotion(false);
+                controller.ForceMove(GameObject.Find("dummy").transform.position);
+                transform.GetChild(0).localPosition = Vector3.zero;
+            }
 
             return null;
         }

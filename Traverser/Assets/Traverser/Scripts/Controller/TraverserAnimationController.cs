@@ -92,19 +92,25 @@ public class TraverserAnimationController : MonoBehaviour
     public bool MatchTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float normalisedStartTime, float normalisedEndTime)
     {
         // --- Adjusts game object's position and rotation to match givern position and rotation in the given time with current animation ---
-        bool ret = false;
+        bool ret = true;
 
-        //if (!animator.isMatchingTarget)
-        //{
-        //float normalizeTime = Mathf.Repeat(animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1.0f);
+        if (!animator.isMatchingTarget)
+        {
+            //float normalizeTime = Mathf.Repeat(animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1.0f);
 
-        //if (normalizeTime > normalisedEndTime)
-        //    ret = false;
-        //else
+            //if (normalizeTime > normalisedEndTime)
+            //    ret = false;
+            //else
             animator.MatchTarget(matchPosition, matchRotation, target, weightMask, normalisedStartTime, normalisedEndTime);
-        //}
+        }
 
-        ret = animator.isMatchingTarget;
+        if (math.distancesq(transform.GetChild(0).position, matchPosition) < 0.1f)
+        {
+            animator.InterruptMatchTarget();
+            ret = false;
+        }
+
+        //ret = animator.isMatchingTarget;
 
         return ret;
     }

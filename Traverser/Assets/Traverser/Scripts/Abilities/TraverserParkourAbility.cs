@@ -71,9 +71,9 @@ namespace Traverser
             {
 
                 Debug.Log(isTransitionON);
-                GameObject.Find("dummy").transform.position = controller.lastContactPoint;
+                //GameObject.Find("dummy").transform.position = controller.lastContactPoint;
 
-                isTransitionON = animationController.MatchTarget(controller.lastContactPoint, Quaternion.identity, AvatarTarget.RightHand, weightMask, 0.0f, 1.0f);
+                isTransitionON = animationController.MatchTarget(GameObject.Find("dummy").transform.position, Quaternion.identity, AvatarTarget.RightHand, weightMask, 0.0f, 1.0f);
                 return this;
             }
             else
@@ -108,6 +108,7 @@ namespace Traverser
             {
                 isTransitionON = true;
                 animationController.SetRootMotion(true);
+                animationController.animator.Play("JogTransition", 0);
 
                 ret = true;
 

@@ -96,12 +96,12 @@ public class TraverserAnimationController : MonoBehaviour
 
         //if (!animator.isMatchingTarget)
         //{
-            //float normalizeTime = Mathf.Repeat(animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1.0f);
+        //float normalizeTime = Mathf.Repeat(animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1.0f);
 
-            //if (normalizeTime > normalisedEndTime)
-            //    ret = false;
-            //else
-                animator.MatchTarget(matchPosition, matchRotation, target, weightMask, normalisedStartTime, normalisedEndTime);
+        //if (normalizeTime > normalisedEndTime)
+        //    ret = false;
+        //else
+            animator.MatchTarget(matchPosition, matchRotation, target, weightMask, normalisedStartTime, normalisedEndTime);
         //}
 
         ret = animator.isMatchingTarget;

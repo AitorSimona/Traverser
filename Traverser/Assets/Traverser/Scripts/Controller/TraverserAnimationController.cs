@@ -104,9 +104,10 @@ public class TraverserAnimationController : MonoBehaviour
             animator.MatchTarget(matchPosition, matchRotation, target, weightMask, normalisedStartTime, normalisedEndTime);
         }
 
-        if (math.distancesq(transform.GetChild(0).position, matchPosition) < 0.1f)
+        if (math.distancesq(transform.position, matchPosition) < 0.1f)
         {
-            animator.InterruptMatchTarget();
+            animator.InterruptMatchTarget(false);
+            //animator.InterruptMatchTarget();
             ret = false;
         }
 

@@ -61,26 +61,43 @@ namespace Traverser
         {
             TraverserInputLayer.capture.UpdateParkour();
 
-            // --- If we are in a transition disable controller ---
-            TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
+
 
             //if(TraverserKinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))           
             //     return this;
 
+            if(animationController.animator.IsInTransition(0))
+                return this;
+
             if (isTransitionON)
             {
 
-                Debug.Log(isTransitionON);
-                //GameObject.Find("dummy").transform.position = controller.lastContactPoint;
+                Debug.Log(animationController.animator.isMatchingTarget);
+                GameObject.Find("dummy2").transform.position = transform.position;
 
-                isTransitionON = animationController.MatchTarget(GameObject.Find("dummy").transform.position, Quaternion.identity, AvatarTarget.RightHand, weightMask, 0.0f, 1.0f);
+                if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JogTransition"))
+                    isTransitionON = animationController.MatchTarget(GameObject.Find("dummy").transform.position, Quaternion.identity, AvatarTarget.Root, weightMask, 0.0f, 1.0f);
+                //else
+                //    Debug.Log("HAAAAA");
+
+
+                if (!isTransitionON)
+                {
+
+                    animationController.SetRootMotion(false);
+                    controller.targetPosition = transform.position;
+                    //controller.ForceMove(GameObject.Find("dummy").transform.position);
+                    //transform.GetChild(0).localPosition = Vector3.zero;
+
+                    // --- If we are in a transition disable controller ---
+                    TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
+
+                    animationController.animator.SetTrigger("Parkour");
+
+                    return this;
+                }
+
                 return this;
-            }
-            else
-            {
-                animationController.SetRootMotion(false);
-                controller.ForceMove(GameObject.Find("dummy").transform.position);
-                transform.GetChild(0).localPosition = Vector3.zero;
             }
 
             return null;
@@ -112,7 +129,13 @@ namespace Traverser
             {
                 isTransitionON = true;
                 animationController.SetRootMotion(true);
-                animationController.animator.Play("JogTransition", 0);
+                //animationController.animator.GetAnimatorTransitionInfo(0).
+                //animationController.animator.
+                animationController.animator.SetTrigger("Parkour");
+                //animationController.animator.Play("JogTransition", 0, 0.0f);
+
+                // --- If we are in a transition disable controller ---
+                TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
 
                 ret = true;
 

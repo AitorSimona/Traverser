@@ -85,8 +85,9 @@ namespace Traverser
                 {
 
                     animationController.SetRootMotion(false);
-                    controller.targetPosition = transform.position;
-                    //controller.ForceMove(GameObject.Find("dummy").transform.position);
+                    //controller.targetPosition = transform.position;
+                    //controller.position = transform.position;
+                    controller.ForceMove(transform.position);
                     //transform.GetChild(0).localPosition = Vector3.zero;
 
                     // --- If we are in a transition disable controller ---

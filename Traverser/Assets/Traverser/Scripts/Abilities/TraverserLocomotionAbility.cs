@@ -221,19 +221,19 @@ namespace Traverser
                     //  TODO : Remove temporal debug object
                     //GameObject.Find("dummy").transform.position = contactTransform.t;
 
-                    float3 desired_direction = contactTransform.t - tmp.t;
-                    float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
-                    float target_orientation = current_orientation + Vector3.SignedAngle(TraverserInputLayer.capture.movementDirection, desired_direction, Vector3.up);
-                    float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
+                    //float3 desired_direction = contactTransform.t - tmp.t;
+                    //float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
+                    //float target_orientation = current_orientation + Vector3.SignedAngle(TraverserInputLayer.capture.movementDirection, desired_direction, Vector3.up);
+                    //float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
 
-                    // TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
-                    //Debug.Log(angle);
-                    // TODO: Expose this
-                    // --- If we are not close to the desired angle or contact point, do not handle contacts ---
-                    if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 4.0f)
-                    {
-                        continue;
-                    }
+                    //// TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
+                    ////Debug.Log(angle);
+                    //// TODO: Expose this
+                    //// --- If we are not close to the desired angle or contact point, do not handle contacts ---
+                    //if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 4.0f)
+                    //{
+                    //    continue;
+                    //}
 
                     if (contactAbility == null)
                     {

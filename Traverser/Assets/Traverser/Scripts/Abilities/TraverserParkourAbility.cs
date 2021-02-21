@@ -35,6 +35,7 @@ namespace Traverser
         TraverserLocomotionAbility locomotion;
 
         bool isTransitionON = false;
+        public bool isAnimationON = false;
         MatchTargetWeightMask weightMask;
 
         // --- Basic Methods ---
@@ -66,34 +67,66 @@ namespace Traverser
             //if(TraverserKinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))           
             //     return this;
 
-            if(animationController.animator.IsInTransition(0))
+            if (animationController.animator.IsInTransition(0))
+            {
+                if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting")
+                    && animationController.animator.GetNextAnimatorStateInfo(0).IsName("LocomotionON"))
+                {
+                    //animationController.SetRootMotion(false);
+                    //animationController.animator.SetTrigger("Vault");
+
+                    controller.characterController.enabled = false;
+
+                    float3 newTransform = animationController.skeleton.transform.position;
+                    newTransform.y = transform.position.y;
+
+                    GameObject.Find("dummy2").transform.position = newTransform;
+                    transform.position = newTransform;
+                    controller.targetPosition = transform.position;
+                    controller.position = transform.position;
+                    //animationController.skeleton.localPosition = Vector3.zero;
+
+                    controller.characterController.enabled = true;
+
+
+                    //controller.ForceMove(transform.position);
+
+                    // --- If we are in a transition disable controller ---
+                    TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
+                    isAnimationON = false;
+                    //return null;
+                }
+
                 return this;
+            }
+
 
             if (isTransitionON)
             {
 
-                Debug.Log(animationController.animator.isMatchingTarget);
-                GameObject.Find("dummy2").transform.position = transform.position;
+                //Debug.Log(animationController.animator.isMatchingTarget);
+                GameObject.Find("dummy2").transform.position = controller.lastContactPoint;
 
                 if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JogTransition"))
-                    isTransitionON = animationController.MatchTarget(GameObject.Find("dummy").transform.position, Quaternion.identity, AvatarTarget.Root, weightMask, 0.0f, 1.0f);
+                    isTransitionON = animationController.MatchTarget(controller.lastContactPoint, Quaternion.identity, AvatarTarget.Root, weightMask, 0.0f, 1.0f);
                 //else
                 //    Debug.Log("HAAAAA");
 
 
                 if (!isTransitionON)
                 {
-
-                    animationController.SetRootMotion(false);
+                    isAnimationON = true;
                     //controller.targetPosition = transform.position;
                     //controller.position = transform.position;
-                    controller.ForceMove(transform.position);
+                    //controller.ForceMove(transform.position);
+
+                    controller.position = transform.position;
                     //transform.GetChild(0).localPosition = Vector3.zero;
 
-                    // --- If we are in a transition disable controller ---
-                    TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
 
-                    animationController.animator.SetTrigger("Parkour");
+
+                    //animationController.animator.SetTrigger("Parkour");
+                    animationController.animator.SetTrigger("Vault");
 
                     return this;
                 }
@@ -101,12 +134,39 @@ namespace Traverser
                 return this;
             }
 
+            isAnimationON = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting");
+
+            Debug.Log(isAnimationON);
+
+            //if (!isAnimationON)
+            //{
+            //    animationController.SetRootMotion(false);
+            //    //animationController.animator.SetTrigger("Vault");
+
+
+            //    controller.targetPosition = animationController.skeleton.transform.position;
+            //    controller.position = animationController.skeleton.transform.position;
+
+            //    //controller.ForceMove(transform.position);
+
+            //    // --- If we are in a transition disable controller ---
+            //    TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
+            //}
+            if(isAnimationON)
+            {
+                //transform.position = animationController.skeleton.transform.position;
+                //controller.targetPosition = transform.position;
+                //controller.position = transform.position;
+                return this;
+            }
+
+
             return null;
         }
 
         public TraverserAbility OnFixedUpdate(float deltaTime)
         {
-            if (isTransitionON)
+            if (isTransitionON || isAnimationON)
             {
                 return this;
             }

@@ -136,7 +136,7 @@ namespace Traverser
 
             Assert.IsTrue(controller != null);
 
-            if (!animator.isMatchingTarget)
+            if (!animator.isMatchingTarget && !GetComponent<TraverserParkourAbility>().isAnimationON)
                 controller.ForceMove(controller.targetPosition);
 
 

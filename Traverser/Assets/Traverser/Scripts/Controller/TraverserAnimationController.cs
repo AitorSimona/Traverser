@@ -111,7 +111,7 @@ namespace Traverser
                 animator.MatchTarget(matchPosition, matchRotation, target, weightMask, normalisedStartTime, normalisedEndTime);
             }
 
-            if (math.distancesq(transform.position, matchPosition) < 1.0f)
+            if (math.distancesq(transform.position, matchPosition) < 2.0f)
             {
                 animator.InterruptMatchTarget(false);
                 //animator.InterruptMatchTarget();

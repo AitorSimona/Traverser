@@ -105,10 +105,11 @@ namespace Traverser
             {
 
                 //Debug.Log(animationController.animator.isMatchingTarget);
-                GameObject.Find("dummy2").transform.position = controller.lastContactPoint;
+                GameObject.Find("dummy2").transform.position = controller.lastContactTransform.t;
+                GameObject.Find("dummy2").transform.rotation = controller.lastContactTransform.q;
 
                 if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JogTransition"))
-                    isTransitionON = animationController.MatchTarget(controller.lastContactPoint, Quaternion.identity, AvatarTarget.Root, weightMask, 0.0f, 1.0f);
+                    isTransitionON = animationController.MatchTarget(controller.lastContactTransform.t, controller.lastContactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f);
                 //else
                 //    Debug.Log("HAAAAA");
 

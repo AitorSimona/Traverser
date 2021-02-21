@@ -204,19 +204,19 @@ namespace Traverser
 
                 if (collision.isColliding && attemptTransition)
                 {
-                    float3 contactPoint = collision.colliderContactPoint;
-                    contactPoint.y = controller.position.y;
-                    float3 contactNormal = collision.colliderContactNormal;
+                    //float3 contactPoint = collision.colliderContactPoint;
+                    //contactPoint.y = controller.position.y;
+                    //float3 contactNormal = collision.colliderContactNormal;
 
                     // TODO: Check if works properly
-                    float Qangle;
-                    Vector3 Qaxis;
-                    transform.rotation.ToAngleAxis(out Qangle, out Qaxis);
+                    //float Qangle;
+                    //Vector3 Qaxis;
+                    //transform.rotation.ToAngleAxis(out Qangle, out Qaxis);
                     //Qaxis.x = 0.0f;
                     //Qaxis.y = 0.0f;
-                    quaternion q = quaternion.identity/*math.mul(transform.rotation, Quaternion.FromToRotation(Qaxis, contactNormal))*/;
+                    //quaternion q = math.mul(transform.rotation, Quaternion.FromToRotation(Qaxis, contactNormal));
 
-                    TraverserAffineTransform contactTransform = TraverserAffineTransform.Create(contactPoint, q);
+                    ref TraverserAffineTransform contactTransform = ref controller.lastContactTransform /*TraverserAffineTransform.Create(contactPoint, q)*/;
 
                     //  TODO : Remove temporal debug object
                     //GameObject.Find("dummy").transform.position = contactTransform.t;

@@ -68,7 +68,7 @@ namespace Traverser
         // --- Whether or not the character controller reacts to collisions ---
         public bool collisionEnabled { get => characterController.detectCollisions; set => characterController.detectCollisions = value; }
 
-        public float3 lastContactPoint = float3.zero;
+        public TraverserAffineTransform lastContactTransform = TraverserAffineTransform.Create(float3.zero, quaternion.identity);
 
         // --------------------------------
 

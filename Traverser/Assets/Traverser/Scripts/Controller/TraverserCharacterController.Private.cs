@@ -300,7 +300,8 @@ namespace Traverser
                 //Debug.Log(hit.gameObject.name);
                 state.previousCollision.CopyFrom(ref state.currentCollision);
                 state.currentCollision.colliderContactPoint = hit.point;
-                lastContactPoint = hit.point;
+                lastContactTransform.t = hit.point;
+                lastContactTransform.q = math.mul(transform.rotation, Quaternion.FromToRotation(-transform.forward, hit.normal));
                 state.currentCollision.colliderContactNormal = hit.normal;
                 state.currentCollision.collider = hit.collider;
                 state.currentCollision.isColliding = true;

@@ -44,10 +44,10 @@ namespace Traverser
 
         [Header("Rotation settings")]
         [Tooltip("How fast the character rotates in degrees/s.")]
-        public float rotationSpeed = 180.0f; // in degrees / second
+        public float rotationSpeed = 180.0f; 
 
         [Tooltip("How fast the character's rotation speed will increase with given input in degrees/s^2.")]
-        public float rotationAcceleration = 15.0f; // in degrees
+        public float rotationAcceleration = 15.0f; 
 
         [Tooltip("How fast the character achieves rotationAcceleration. Smaller values make the character reach target rotationAcceleration faster.")]
         public float rotationAccelerationTime = 0.1f;

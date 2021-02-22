@@ -152,10 +152,10 @@ namespace Traverser
         private Collider[] hitColliders = new Collider[3];
 
         // --- Ray for groundSnap checks ---
-        Ray groundRay = new Ray();
+        private Ray groundRay = new Ray();
 
         // --- Array of raycast hits for groundSnap checks ---
-        RaycastHit[] groundRayHits = new RaycastHit[1];
+        private RaycastHit[] groundRayHits = new RaycastHit[1];
 
         // --- Arrays of positions for geometry debugging ---
         private List<float3> probePositions;

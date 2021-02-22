@@ -7,13 +7,13 @@ namespace Traverser
     [RequireComponent(typeof(TraverserCharacterController))]
     public class TraverserAbilityController : MonoBehaviour // Layer to control all of the object's abilities 
     {
-        // --- Attributes ---
+        // --- Private Variables ---
 
-        TraverserAbility currentAbility;
-        TraverserCharacterController controller;
-        TraverserAnimationController animationController;
-        TraverserAnimationController.AnimatorParameters animatorParameters;
-        TraverserAbility[] abilities;
+        private TraverserAbility currentAbility;
+        private TraverserCharacterController controller;
+        private TraverserAnimationController animationController;
+        private TraverserAnimationController.AnimatorParameters animatorParameters;
+        private TraverserAbility[] abilities;
         public Animator animator;
 
         // --------------------------------
@@ -23,12 +23,10 @@ namespace Traverser
         {
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
+            abilities = GetComponents<TraverserAbility>();
 
             // --- Set animator parameters --- 
             animationController.InitializeAnimatorParameters(ref animatorParameters);
-
-
-            abilities = GetComponents<TraverserAbility>();
         }
 
         public void Update()

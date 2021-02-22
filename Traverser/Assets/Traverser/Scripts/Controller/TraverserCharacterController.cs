@@ -68,6 +68,11 @@ namespace Traverser
         // --- Whether or not the character controller reacts to collisions ---
         public bool collisionEnabled { get => characterController.detectCollisions; set => characterController.detectCollisions = value; }
 
+        // --- Enables and disables the character controller (useful to teleport the controller) ---
+        public bool characterControllerEnabled { get => characterController.enabled; set => characterController.enabled = value; }
+
+
+        // --- The last contact position and rotation extracted from last collision ---
         public TraverserAffineTransform lastContactTransform = TraverserAffineTransform.Create(float3.zero, quaternion.identity);
 
         // --------------------------------

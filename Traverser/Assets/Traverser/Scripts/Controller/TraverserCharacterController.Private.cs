@@ -137,7 +137,7 @@ namespace Traverser
         // --- Private Variables ---
 
         // --- Unity's character controller ---
-        public CharacterController characterController;
+        private CharacterController characterController;
 
         // --- Actual controller state ---
         private TraverserState state;

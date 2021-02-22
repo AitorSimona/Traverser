@@ -64,7 +64,7 @@ namespace Traverser
                 if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting")
                     && animationController.animator.GetNextAnimatorStateInfo(0).IsName("LocomotionON"))
                 {
-                    controller.characterController.enabled = false;
+                    controller.characterControllerEnabled = false;
 
                     float3 newTransform = animationController.skeleton.transform.position;
                     newTransform.y = transform.position.y;
@@ -74,7 +74,7 @@ namespace Traverser
                     controller.targetPosition = transform.position;
                     controller.position = transform.position;
 
-                    controller.characterController.enabled = true;
+                    controller.characterControllerEnabled = true;
 
                     // --- If we are in a transition disable controller ---
                     TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);

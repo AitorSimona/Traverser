@@ -62,15 +62,6 @@ namespace Traverser
             return chosenGround;
         }
 
-        // --- Turn off controller ---
-        //public static void ConfigureController(bool active, ref TraverserCharacterController controller)
-        //{
-        //    controller.collisionEnabled = !active;
-        //    controller.groundSnap = !active;
-        //    //controller.resolveGroundPenetration = !active;
-        //    controller.gravityEnabled = !active;
-        //}
-
         // --------------------------------
     }
 

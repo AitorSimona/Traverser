@@ -69,7 +69,6 @@ namespace Traverser
                     newTransform.y = transform.position.y;
                     controller.TeleportTo(newTransform);             
 
-                    // TODO: Move to controller 
                     // --- If we are in a transition disable controller ---
                     controller.ConfigureController(isTransitionON);
                     isAnimationON = false;
@@ -140,6 +139,8 @@ namespace Traverser
                 ret = true;
 
                 Debug.Log("Transitioning");
+
+
                 //// --- Identify collider's object layer ---
                 //ref MovementController.Closure closure = ref controller.current;
                 //Assert.IsTrue(closure.isColliding);

@@ -28,15 +28,17 @@ namespace Traverser
 
         // -------------------------------------------------
 
-        //AnchoredTransitionTask anchoredTransition; // Kinematica animation transition handler
+        // --- Private Variables ---
 
         TraverserCharacterController controller;
         TraverserAnimationController animationController;
-        TraverserLocomotionAbility locomotion;
+        //TraverserLocomotionAbility locomotion;
 
         bool isTransitionON = false;
         public bool isAnimationON = false;
         MatchTargetWeightMask weightMask;
+
+        // -------------------------------------------------
 
         // --- Basic Methods ---
 
@@ -45,14 +47,9 @@ namespace Traverser
             //anchoredTransition = AnchoredTransitionTask.Invalid;
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
-            locomotion = GetComponent<TraverserLocomotionAbility>();
+            //locomotion = GetComponent<TraverserLocomotionAbility>();
 
             weightMask = new MatchTargetWeightMask(Vector3.one, 1.0f);
-        }
-
-        public void OnDisable()
-        {
-            //anchoredTransition.Dispose();
         }
 
         // -------------------------------------------------
@@ -62,19 +59,11 @@ namespace Traverser
         {
             TraverserInputLayer.capture.UpdateParkour();
 
-
-
-            //if(TraverserKinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica))           
-            //     return this;
-
             if (animationController.animator.IsInTransition(0))
             {
                 if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting")
                     && animationController.animator.GetNextAnimatorStateInfo(0).IsName("LocomotionON"))
                 {
-                    //animationController.SetRootMotion(false);
-                    //animationController.animator.SetTrigger("Vault");
-
                     controller.characterController.enabled = false;
 
                     float3 newTransform = animationController.skeleton.transform.position;
@@ -84,17 +73,12 @@ namespace Traverser
                     transform.position = newTransform;
                     controller.targetPosition = transform.position;
                     controller.position = transform.position;
-                    //animationController.skeleton.localPosition = Vector3.zero;
 
                     controller.characterController.enabled = true;
-
-
-                    //controller.ForceMove(transform.position);
 
                     // --- If we are in a transition disable controller ---
                     TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
                     isAnimationON = false;
-                    //return null;
                 }
 
                 return this;
@@ -103,32 +87,17 @@ namespace Traverser
 
             if (isTransitionON)
             {
-
-                //Debug.Log(animationController.animator.isMatchingTarget);
                 GameObject.Find("dummy2").transform.position = controller.lastContactTransform.t;
                 GameObject.Find("dummy2").transform.rotation = controller.lastContactTransform.q;
 
                 if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JogTransition"))
                     isTransitionON = animationController.MatchTarget(controller.lastContactTransform.t, controller.lastContactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
-                //else
-                //    Debug.Log("HAAAAA");
-
 
                 if (!isTransitionON)
                 {
                     isAnimationON = true;
-                    //controller.targetPosition = transform.position;
-                    //controller.position = transform.position;
-                    //controller.ForceMove(transform.position);
-
                     controller.position = transform.position;
-                    //transform.GetChild(0).localPosition = Vector3.zero;
-
-
-
-                    //animationController.animator.SetTrigger("Parkour");
                     animationController.animator.SetTrigger("Vault");
-
                     return this;
                 }
 
@@ -137,30 +106,10 @@ namespace Traverser
 
             isAnimationON = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting");
 
-            Debug.Log(isAnimationON);
-
-            //if (!isAnimationON)
-            //{
-            //    animationController.SetRootMotion(false);
-            //    //animationController.animator.SetTrigger("Vault");
-
-
-            //    controller.targetPosition = animationController.skeleton.transform.position;
-            //    controller.position = animationController.skeleton.transform.position;
-
-            //    //controller.ForceMove(transform.position);
-
-            //    // --- If we are in a transition disable controller ---
-            //    TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
-            //}
+            //Debug.Log(isAnimationON);
+      
             if(isAnimationON)
-            {
-                //transform.position = animationController.skeleton.transform.position;
-                //controller.targetPosition = transform.position;
-                //controller.position = transform.position;
                 return this;
-            }
-
 
             return null;
         }
@@ -168,9 +117,7 @@ namespace Traverser
         public TraverserAbility OnFixedUpdate(float deltaTime)
         {
             if (isTransitionON || isAnimationON)
-            {
                 return this;
-            }
 
             return null;
         }
@@ -191,10 +138,7 @@ namespace Traverser
             {
                 isTransitionON = true;
                 animationController.SetRootMotion(true);
-                //animationController.animator.GetAnimatorTransitionInfo(0).
-                //animationController.animator.
                 animationController.animator.SetTrigger("Parkour");
-                //animationController.animator.Play("JogTransition", 0, 0.0f);
 
                 // --- If we are in a transition disable controller ---
                 TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);

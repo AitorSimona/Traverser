@@ -71,7 +71,7 @@ namespace Traverser
 
                     // TODO: Move to controller 
                     // --- If we are in a transition disable controller ---
-                    TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
+                    controller.ConfigureController(isTransitionON);
                     isAnimationON = false;
                 }
 
@@ -135,7 +135,7 @@ namespace Traverser
                 animationController.animator.SetTrigger("Parkour");
 
                 // --- If we are in a transition disable controller ---
-                TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
+                controller.ConfigureController(isTransitionON);
 
                 ret = true;
 

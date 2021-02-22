@@ -207,5 +207,17 @@ namespace Traverser
         }
 
         // --------------------------------
+
+        // --- Utility methids ---
+
+        // --- Disables controller functionality ---
+        public void ConfigureController(bool active)
+        {
+            collisionEnabled = !active;
+            groundSnap = !active;
+            gravityEnabled = !active;
+        }
+
+        // --------------------------------
     }
 }

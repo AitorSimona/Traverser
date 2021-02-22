@@ -64,18 +64,12 @@ namespace Traverser
                 if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting")
                     && animationController.animator.GetNextAnimatorStateInfo(0).IsName("LocomotionON"))
                 {
-                    controller.characterControllerEnabled = false;
-
+                    // --- Get skeleton's current position and teleport controller ---
                     float3 newTransform = animationController.skeleton.transform.position;
                     newTransform.y = transform.position.y;
+                    controller.TeleportTo(newTransform);             
 
-                    GameObject.Find("dummy2").transform.position = newTransform;
-                    transform.position = newTransform;
-                    controller.targetPosition = transform.position;
-                    controller.position = transform.position;
-
-                    controller.characterControllerEnabled = true;
-
+                    // TODO: Move to controller 
                     // --- If we are in a transition disable controller ---
                     TraverserCollisionLayer.ConfigureController(isTransitionON, ref controller);
                     isAnimationON = false;
@@ -87,11 +81,11 @@ namespace Traverser
 
             if (isTransitionON)
             {
-                GameObject.Find("dummy2").transform.position = controller.lastContactTransform.t;
-                GameObject.Find("dummy2").transform.rotation = controller.lastContactTransform.q;
+                GameObject.Find("dummy2").transform.position = controller.contactTransform.t;
+                GameObject.Find("dummy2").transform.rotation = controller.contactTransform.q;
 
                 if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JogTransition"))
-                    isTransitionON = animationController.MatchTarget(controller.lastContactTransform.t, controller.lastContactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
+                    isTransitionON = animationController.MatchTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
 
                 if (!isTransitionON)
                 {

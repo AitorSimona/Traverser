@@ -216,7 +216,7 @@ namespace Traverser
                     //Qaxis.y = 0.0f;
                     //quaternion q = math.mul(transform.rotation, Quaternion.FromToRotation(Qaxis, contactNormal));
 
-                    ref TraverserAffineTransform contactTransform = ref controller.lastContactTransform /*TraverserAffineTransform.Create(contactPoint, q)*/;
+                    ref TraverserAffineTransform contactTransform = ref controller.contactTransform /*TraverserAffineTransform.Create(contactPoint, q)*/;
 
                     //  TODO : Remove temporal debug object
                     //GameObject.Find("dummy").transform.position = contactTransform.t;

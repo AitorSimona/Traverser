@@ -148,6 +148,9 @@ namespace Traverser
         // --- To store simulation's last known position ---
         private float3 lastPosition;
 
+        // --- The last contact position and rotation extracted from last collision ---
+        private TraverserAffineTransform lastContactTransform = TraverserAffineTransform.Create(float3.zero, quaternion.identity);
+
         // --- Array of colliders for ground probing ---
         private Collider[] hitColliders = new Collider[3];
 
@@ -300,8 +303,8 @@ namespace Traverser
                 //Debug.Log(hit.gameObject.name);
                 state.previousCollision.CopyFrom(ref state.currentCollision);
                 state.currentCollision.colliderContactPoint = hit.point;
-                lastContactTransform.t = hit.point;
-                lastContactTransform.q = math.mul(transform.rotation, Quaternion.FromToRotation(-transform.forward, hit.normal));
+                contactTransform.t = hit.point;
+                contactTransform.q = math.mul(transform.rotation, Quaternion.FromToRotation(-transform.forward, hit.normal));
                 state.currentCollision.colliderContactNormal = hit.normal;
                 state.currentCollision.collider = hit.collider;
                 state.currentCollision.isColliding = true;

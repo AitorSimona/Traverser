@@ -96,29 +96,31 @@ namespace Traverser
 
         }
 
-        public bool MatchTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float normalisedStartTime, float normalisedEndTime)
+        /// <summary>
+        /// Adjusts game object's position and rotation to match givern position and rotation in the given time with current animation
+        /// </summary>
+        /// <param name="matchPosition"> The desired position to reach with target matching.</param>
+        /// <param name="matchRotation"> The desired rotation to reach with target matching.</param>
+        /// <param name="target"> Which bone should reach the desired transform.</param>
+        /// <param name="weightMask"> How much importance should match position and rotation have in target matching.</param>
+        /// <param name="normalisedStartTime"> At which animation timeframe should we start matching .</param>
+        /// <param name="normalisedEndTime"> At which animation timeframe should we end matching.</param>
+        /// <param name="validDistance"> If close enough to validDistance (meters), end target matching.</param>
+
+        public bool MatchTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float normalisedStartTime, float normalisedEndTime, float validDistance)
         {
-            // --- Adjusts game object's position and rotation to match givern position and rotation in the given time with current animation ---
             bool ret = true;
 
-            if (!animator.isMatchingTarget)
-            {
-                //float normalizeTime = Mathf.Repeat(animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1.0f);
-
-                //if (normalizeTime > normalisedEndTime)
-                //    ret = false;
-                //else
+            // --- Activate target matching if no matching is being run ---
+            if (!animator.isMatchingTarget)     
                 animator.MatchTarget(matchPosition, matchRotation, target, weightMask, normalisedStartTime, normalisedEndTime);
-            }
 
-            if (math.distancesq(transform.position, matchPosition) < 2.0f)
+            // --- If close enough to validDistance, end target matching ---
+            if (math.distancesq(transform.position, matchPosition) < validDistance)
             {
                 animator.InterruptMatchTarget(false);
-                //animator.InterruptMatchTarget();
                 ret = false;
             }
-
-            //ret = animator.isMatchingTarget;
 
             return ret;
         }

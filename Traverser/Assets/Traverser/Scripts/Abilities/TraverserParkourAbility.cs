@@ -109,7 +109,7 @@ namespace Traverser
                 GameObject.Find("dummy2").transform.rotation = controller.lastContactTransform.q;
 
                 if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JogTransition"))
-                    isTransitionON = animationController.MatchTarget(controller.lastContactTransform.t, controller.lastContactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f);
+                    isTransitionON = animationController.MatchTarget(controller.lastContactTransform.t, controller.lastContactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
                 //else
                 //    Debug.Log("HAAAAA");
 

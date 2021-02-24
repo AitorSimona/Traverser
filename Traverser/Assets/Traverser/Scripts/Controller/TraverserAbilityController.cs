@@ -134,9 +134,8 @@ namespace Traverser
 
             Assert.IsTrue(controller != null);
 
-            if (/*!animator.isMatchingTarget &&*/ !animationController.transition.isON)
+            if (!animationController.transition.isON)
                 controller.ForceMove(controller.targetPosition);
-
 
             // --- Let abilities apply final changes to motion, if needed ---
             if (isEnabled)

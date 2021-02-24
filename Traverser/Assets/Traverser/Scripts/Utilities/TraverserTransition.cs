@@ -28,8 +28,13 @@ namespace Traverser
 
         public void StartTransition()
         {
-            if(!isTransitionON && !isAnimationON)
+            if (!isTransitionON && !isAnimationON)
+            {
+                // --- If we are in a transition activate root motion and disable controller ---
+                animationController.SetRootMotion(true);
+                controller.ConfigureController(true);
                 isTransitionON = true;
+            }
         }
 
         public bool UpdateTransition()

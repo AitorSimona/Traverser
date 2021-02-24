@@ -26,9 +26,13 @@ namespace Traverser
         [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
         public Transform skeletonRef;
 
-
+        // --- Animator and animation transition handler ---
         public Animator animator;
         public TraverserTransition transition;
+
+        // --------------------------------
+
+        // --- Private Variables ---
 
         private TraverserCharacterController controller;
 

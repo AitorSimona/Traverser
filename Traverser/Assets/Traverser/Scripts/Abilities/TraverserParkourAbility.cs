@@ -34,9 +34,9 @@ namespace Traverser
         TraverserAnimationController animationController;
         //TraverserLocomotionAbility locomotion;
 
-        bool isTransitionON = false;
-        public bool isAnimationON = false;
-        MatchTargetWeightMask weightMask;
+        //bool isTransitionON = false;
+        //public bool isAnimationON = false;
+        //MatchTargetWeightMask weightMask;
 
         // -------------------------------------------------
 
@@ -49,7 +49,7 @@ namespace Traverser
             animationController = GetComponent<TraverserAnimationController>();
             //locomotion = GetComponent<TraverserLocomotionAbility>();
 
-            weightMask = new MatchTargetWeightMask(Vector3.one, 1.0f);
+            //weightMask = new MatchTargetWeightMask(Vector3.one, 1.0f);
         }
 
         // -------------------------------------------------
@@ -59,57 +59,57 @@ namespace Traverser
         {
             TraverserInputLayer.capture.UpdateParkour();
 
-            if (animationController.animator.IsInTransition(0))
-            {
-                if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting")
-                    && animationController.animator.GetNextAnimatorStateInfo(0).IsName("LocomotionON"))
-                {
-                    // --- Get skeleton's current position and teleport controller ---
-                    float3 newTransform = animationController.skeleton.transform.position;
-                    newTransform.y = transform.position.y;
-                    controller.TeleportTo(newTransform);             
+            //if (animationController.animator.IsInTransition(0))
+            //{
+            //    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting")
+            //        && animationController.animator.GetNextAnimatorStateInfo(0).IsName("LocomotionON"))
+            //    {
+            //        // --- Get skeleton's current position and teleport controller ---
+            //        float3 newTransform = animationController.skeleton.transform.position;
+            //        newTransform.y = transform.position.y;
+            //        controller.TeleportTo(newTransform);             
 
-                    // --- If we are in a transition disable controller ---
-                    controller.ConfigureController(isTransitionON);
-                    isAnimationON = false;
-                }
+            //        // --- If we are in a transition disable controller ---
+            //        controller.ConfigureController(isTransitionON);
+            //        isAnimationON = false;
+            //    }
 
-                return this;
-            }
+            //    return this;
+            //}
 
 
-            if (isTransitionON)
-            {
-                GameObject.Find("dummy2").transform.position = controller.contactTransform.t;
-                GameObject.Find("dummy2").transform.rotation = controller.contactTransform.q;
+            //if (isTransitionON)
+            //{
+            //    GameObject.Find("dummy2").transform.position = controller.contactTransform.t;
+            //    GameObject.Find("dummy2").transform.rotation = controller.contactTransform.q;
 
-                if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JogTransition"))
-                    isTransitionON = animationController.MatchTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
+            //    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JogTransition"))
+            //        isTransitionON = animationController.MatchTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
 
-                if (!isTransitionON)
-                {
-                    isAnimationON = true;
-                    controller.position = transform.position;
-                    animationController.animator.SetTrigger("Vault");
-                    return this;
-                }
+            //    if (!isTransitionON)
+            //    {
+            //        isAnimationON = true;
+            //        controller.position = transform.position;
+            //        animationController.animator.SetTrigger("Vault");
+            //        return this;
+            //    }
 
-                return this;
-            }
+            //    return this;
+            //}
 
-            isAnimationON = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting");
+            //isAnimationON = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Vaulting");
 
-            //Debug.Log(isAnimationON);
-      
-            if(isAnimationON)
-                return this;
+            ////Debug.Log(isAnimationON);
 
-            return null;
+            //if(isAnimationON)
+            //    return this;
+
+            return animationController.transition.UpdateTransition() ? this : null;
         }
 
         public TraverserAbility OnFixedUpdate(float deltaTime)
         {
-            if (isTransitionON || isAnimationON)
+            if (animationController.transition.isON/*isTransitionON || isAnimationON*/)
                 return this;
 
             return null;
@@ -127,14 +127,15 @@ namespace Traverser
 
             TraverserInputLayer.capture.UpdateParkour();
 
-            if (TraverserInputLayer.capture.parkourButton && !isTransitionON)
+            if (TraverserInputLayer.capture.parkourButton && !animationController.transition.isON)
             {
-                isTransitionON = true;
+                animationController.transition.StartTransition();
+                //isTransitionON = true;
                 animationController.SetRootMotion(true);
                 animationController.animator.SetTrigger("Parkour");
 
                 // --- If we are in a transition disable controller ---
-                controller.ConfigureController(isTransitionON);
+                controller.ConfigureController(true);
 
                 ret = true;
 

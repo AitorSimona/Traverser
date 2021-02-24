@@ -14,7 +14,7 @@ namespace Traverser
         private TraverserAnimationController animationController;
         private TraverserAnimationController.AnimatorParameters animatorParameters;
         private TraverserAbility[] abilities;
-        public Animator animator;
+        //public Animator animator;
 
         // --------------------------------
 
@@ -134,7 +134,7 @@ namespace Traverser
 
             Assert.IsTrue(controller != null);
 
-            if (!animator.isMatchingTarget && !GetComponent<TraverserParkourAbility>().isAnimationON)
+            if (/*!animator.isMatchingTarget &&*/ !animationController.transition.isON)
                 controller.ForceMove(controller.targetPosition);
 
 

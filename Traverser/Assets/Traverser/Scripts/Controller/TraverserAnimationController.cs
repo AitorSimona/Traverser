@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace Traverser
 {
+    [RequireComponent(typeof(TraverserCharacterController))]
+
     public class TraverserAnimationController : MonoBehaviour
     {
         // --- Attributes ---
@@ -26,8 +28,17 @@ namespace Traverser
 
 
         public Animator animator;
+        public TraverserTransition transition;
+
+        private TraverserCharacterController controller;
 
         // --------------------------------
+
+        private void Awake()
+        {
+            controller = GetComponent<TraverserCharacterController>();
+            transition = new TraverserTransition(this, ref controller);       
+        }
 
         // --- Basic Methods ---
         private void Start()
@@ -37,10 +48,8 @@ namespace Traverser
 
         private void LateUpdate()
         {
-            if(!GetComponent<TraverserParkourAbility>().isAnimationON)
-            {
+            if(!transition.isON)
                 skeleton.transform.position = skeletonRef.transform.position;
-            }
         }
 
         // --------------------------------

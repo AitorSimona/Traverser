@@ -9,7 +9,9 @@ Video game characters interact with the objects in the world in many different w
 
 ## SPECIAL THANKS / REFERENCES
 [Unity](https://unity.com/)
+
 [Guerrilla Games](https://www.youtube.com/watch?v=LrLHsbTK5bM&ab_channel=GDC)
+
 [Kinematica](https://docs.unity3d.com/Packages/com.unity.kinematica@0.8/manual/index.html)
 
 ## HOW TO USE / CONTROLS

@@ -12,10 +12,10 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Indicates if we are playing the specified transitionAnimation ---
-        private bool isTransitionON = false;
+        private bool isTransitionAnimationON = false;
 
         // --- Indicates if we are playing the specified targetAnimation ---
-        private bool isAnimationON = false;
+        private bool isTargetAnimationON = false;
 
         // --- The desired transition animation to play to reach the desired location ---
         private string transitionAnimation;
@@ -28,14 +28,14 @@ namespace Traverser
 
         MatchTargetWeightMask weightMask;
 
-        public bool isON { get => isTransitionON || isAnimationON; }
+        public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }
 
         // --- Basic Methods ---
 
         private void Initialize()
         {
-            isTransitionON = false;
-            isAnimationON = false;
+            isTransitionAnimationON = false;
+            isTargetAnimationON = false;
             transitionAnimation = "";
             targetAnimation = "";
             triggerAnimation = "";
@@ -50,7 +50,7 @@ namespace Traverser
 
         public void StartTransition(string transitionAnim, string targetAnim, string triggerAnim)
         {
-            if (!isTransitionON && !isAnimationON)
+            if (!isTransitionAnimationON && !isTargetAnimationON)
             {
                 // --- If we are in a transition activate root motion and disable controller ---
                 animationController.SetRootMotion(true);
@@ -59,7 +59,7 @@ namespace Traverser
                 targetAnimation = targetAnim;
                 triggerAnimation = triggerAnim;
                 animationController.animator.SetTrigger(triggerAnim);
-                isTransitionON = true;
+                isTransitionAnimationON = true;
             }
         }
 
@@ -69,79 +69,82 @@ namespace Traverser
 
             if (animationController != null)
             {
-                //// --- Animator is transitioning from one animation to another ---
+                // --- Animator is transitioning from one animation to another ---
                 if (animationController.animator.IsInTransition(0))
                 {
-                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation)
-                       /* && animationController.animator.GetNextAnimatorStateInfo(0).IsName("LocomotionON")*/)
+                    // --- Target animation has finished playing, we can give control back to the controller ---
+                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation)                   )
                     {
                         // --- Get skeleton's current position and teleport controller ---
                         float3 newTransform = animationController.skeleton.transform.position;
                         newTransform.y = animationController.transform.position.y;
                         controller.TeleportTo(newTransform);
 
-                        // --- If we are in a transition disable controller ---
-                        controller.ConfigureController(isTransitionON);
-                        isAnimationON = false;
+                        // --- Reenable controller and give back control ---
+                        controller.ConfigureController(true);
+                        ret = false;
                     }
-
-                    ret = true;
-                    return ret;
-                }
-
-                // --- Transition has been activated
-                if (isTransitionON)
-                {
-                    //GameObject.Find("dummy2").transform.position = controller.contactTransform.t;
-                    //GameObject.Find("dummy2").transform.rotation = controller.contactTransform.q;
-
-                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionAnimation))
-                        isTransitionON = animationController.MatchTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
-
-                    if (!isTransitionON)
-                    {
-                        isAnimationON = true;
-                        controller.position = animationController.transform.position;
-                        animationController.animator.SetTrigger(triggerAnimation);
+                    else
                         ret = true;
-                        return ret;
+                }
+                // --- Animator is not in transition and we can take control ---
+                else
+                {
+                    // --- We are using transitionAnimation to reach contact location ---
+                    if (isTransitionAnimationON)
+                    {
+                        //GameObject.Find("dummy2").transform.position = controller.contactTransform.t;
+                        //GameObject.Find("dummy2").transform.rotation = controller.contactTransform.q;
+
+                        // --- Use target matching (motion warping) to reach the contact transform as the transitionAnimation plays ---
+                        if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionAnimation))
+                            isTransitionAnimationON = animationController.MatchTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
+
+                        // --- When we reach the contact point, activate targetAnimation ---
+                        if (!isTransitionAnimationON)
+                        {
+                            isTargetAnimationON = true;
+                            controller.position = animationController.transform.position;
+                            animationController.animator.SetTrigger(triggerAnimation);
+                        }
+
+                        ret = true;
+                    }
+                    // --- We have activated targetAnimation and must keep transition on until end of play ---
+                    else if (isTargetAnimationON)
+                    {
+                        isTargetAnimationON = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation);
+                        ret = isTargetAnimationON;
                     }
 
-                    ret = true;
-                    return ret;
+                    //Debug.Log(isAnimationON);
+
+                    //if (isAnimationON)
+                    //{
+                    //    Vector3 target = controller.contactTransform.t;
+                    //    target += controller.transform.forward*controller.contactSize;
+
+                    //    GameObject.Find("dummy2").transform.position = target;
+
+
+                    //    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
+                    //        isAnimationON = animationController.MatchTarget(target, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
+
+                    //    if (!isAnimationON)
+                    //    {
+                    //        //isAnimationON = true;
+                    //        controller.position = animationController.transform.position;
+                    //        //animationController.animator.SetTrigger(triggerAnimation);
+                    //        ret = true;
+                    //        return ret;
+                    //    }
+
+                    //    ret = true;
+                    //    return ret;
+                    //}
+
+
                 }
-
-                isAnimationON = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation);
-
-                //Debug.Log(isAnimationON);
-
-                //if (isAnimationON)
-                //{
-                //    Vector3 target = controller.contactTransform.t;
-                //    target += controller.transform.forward*controller.contactSize;
-
-                //    GameObject.Find("dummy2").transform.position = target;
-
-
-                //    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                //        isAnimationON = animationController.MatchTarget(target, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
-
-                //    if (!isAnimationON)
-                //    {
-                //        //isAnimationON = true;
-                //        controller.position = animationController.transform.position;
-                //        //animationController.animator.SetTrigger(triggerAnimation);
-                //        ret = true;
-                //        return ret;
-                //    }
-
-                //    ret = true;
-                //    return ret;
-                //}
-
-                if (isAnimationON)
-                    ret = true;
-                
 
             }
 

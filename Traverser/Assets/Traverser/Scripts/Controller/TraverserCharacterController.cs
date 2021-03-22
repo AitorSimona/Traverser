@@ -68,7 +68,11 @@ namespace Traverser
         // --- Whether or not the character controller reacts to collisions ---
         public bool collisionEnabled { get => characterController.detectCollisions; set => characterController.detectCollisions = value; }
 
+        // --- Last point of contact with environment objects ---
         public ref TraverserAffineTransform contactTransform { get => ref lastContactTransform; }
+
+        // --- Last collider's size ---
+        public float contactSize = 0.0f;
 
         // --------------------------------
 

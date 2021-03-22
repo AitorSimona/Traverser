@@ -74,8 +74,7 @@ namespace Traverser
             if (TraverserInputLayer.capture.parkourButton && !animationController.transition.isON)
             {
                 Debug.Log("Transitioning");
-                animationController.transition.StartTransition();
-                animationController.animator.SetTrigger("Parkour");
+                animationController.transition.StartTransition("JogTransition","Vaulting", "Parkour");
                 ret = true;
 
                 //// --- Identify collider's object layer ---

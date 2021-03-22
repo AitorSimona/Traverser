@@ -262,7 +262,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58206854}
   m_LocalRotation: {x: -0.000000014901161, y: -0.000000014901159, z: -8.881783e-16, w: 1}
-  m_LocalPosition: {x: 1.87, y: 3.01, z: -15.82}
+  m_LocalPosition: {x: 1.87, y: 3.01, z: -19.71}
   m_LocalScale: {x: 0.10000003, y: 0.09999998, z: 0.10000002}
   m_Children: []
   m_Father: {fileID: 0}
@@ -946,7 +946,6 @@ MonoBehaviour:
   contactThreshold: 0
   maximumLinearError: 0
   maximumAngularError: 0
-  isAnimationON: 0
 --- !u!1 &1365895417
 GameObject:
   m_ObjectHideFlags: 0
@@ -7048,7 +7047,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0a5e42cf4f102b41b7e8e376e12d0cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 2513478043293839572}
 --- !u!1 &2513478043293839570
 GameObject:
   m_ObjectHideFlags: 0
@@ -7121,7 +7119,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16cebefab27c50e4e9360de1a2ba827d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterController: {fileID: 0}
   debugDraw: 1
   gravityEnabled: 1
   stepping: 1
@@ -7142,6 +7139,7 @@ MonoBehaviour:
     y: 0
     z: 0
   targetHeading: 0
+  contactSize: 0
 --- !u!4 &2523624795380712737
 Transform:
   m_ObjectHideFlags: 0

@@ -305,7 +305,7 @@ namespace Traverser
 
                 state.previousCollision.CopyFrom(ref state.currentCollision);
                 state.currentCollision.colliderContactPoint = hit.point;
-                contactSize = hit.collider.bounds.extents.magnitude;
+                contactSize = hit.collider.bounds.size.x;
                 contactTransform.t = hit.point;
                 contactTransform.q = math.mul(transform.rotation, Quaternion.FromToRotation(-transform.forward, hit.normal));
                 state.currentCollision.colliderContactNormal = hit.normal;

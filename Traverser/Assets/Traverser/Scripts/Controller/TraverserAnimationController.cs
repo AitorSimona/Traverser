@@ -30,6 +30,8 @@ namespace Traverser
         public Animator animator;
         public TraverserTransition transition;
 
+        private Vector3 deltaPosition;
+
         // --------------------------------
 
         // --- Private Variables ---
@@ -40,6 +42,7 @@ namespace Traverser
 
         private void Awake()
         {
+            deltaPosition = new Vector3(0.0f, 0.0f, 0.0f);
             controller = GetComponent<TraverserCharacterController>();
             transition = new TraverserTransition(this, ref controller);       
         }
@@ -52,8 +55,13 @@ namespace Traverser
 
         private void LateUpdate()
         {
-            if(!transition.isON)
+            if (!transition.isON)
                 skeleton.transform.position = skeletonRef.transform.position;
+            else
+            {
+                transform.position += deltaPosition * Time.deltaTime;
+                deltaPosition = Vector3.zero;
+            }
         }
 
         // --------------------------------
@@ -94,14 +102,23 @@ namespace Traverser
         {
             bool ret = true;
 
-            // --- Activate target matching if no matching is being run ---
-            if (!animator.isMatchingTarget)     
-                animator.MatchTarget(matchPosition, matchRotation, target, weightMask, normalisedStartTime, normalisedEndTime);
+            // --- Activate target matching if no matching is being run ---         
+            Vector3 difference = matchPosition - transform.position;
+            Vector3 direction = difference.normalized;
+            //float normalizeTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
+            deltaPosition = difference / animLength;
+            deltaPosition.y = 0.0f;
+
+            if (!animator.isMatchingTarget)
+            {
+                //animator.MatchTarget(matchPosition, matchRotation, target, weightMask, normalisedStartTime, normalisedEndTime);
+            }
 
             // --- If close enough to validDistance, end target matching ---
-            if (math.distancesq(transform.position, matchPosition) < validDistance)
+            if (math.distance(transform.position, matchPosition) < validDistance)
             {
-                animator.InterruptMatchTarget(false);
+                //animator.InterruptMatchTarget(false);
                 ret = false;
             }
 

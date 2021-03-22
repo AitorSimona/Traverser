@@ -56,7 +56,7 @@ namespace Traverser
             if (!isTransitionAnimationON && !isTargetAnimationON)
             {
                 // --- If we are in a transition activate root motion and disable controller ---
-                animationController.SetRootMotion(true);
+                //animationController.SetRootMotion(true);
                 controller.ConfigureController(false);
                 transitionAnimation = transitionAnim;
                 targetAnimation = targetAnim;

@@ -101,7 +101,7 @@ namespace Traverser
 
                         // --- Use target matching (motion warping) to reach the contact transform as the transitionAnimation plays ---
                         if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionAnimation))
-                            isTransitionAnimationON = animationController.MatchTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
+                            isTransitionAnimationON = animationController.WarpToTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
 
                         // --- When we reach the contact point, activate targetAnimation ---
                         if (!isTransitionAnimationON)
@@ -117,14 +117,14 @@ namespace Traverser
                     else if (isTargetAnimationON)
                     {
                         Vector3 target = controller.contactTransform.t;
-                        target += controller.transform.forward*controller.contactSize;
+                        target += -controller.contactNormal*(controller.contactSize*1.5f);
 
                         Debug.Log(controller.contactSize);
                         GameObject.Find("dummy2").transform.position = target;
 
                         // --- Use target matching (motion warping) to reach the target transform as the targetAnimation plays ---
                         if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                            isTargetAnimationON = animationController.MatchTarget(target, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, controller.contactSize*0.1f);
+                            isTargetAnimationON = animationController.WarpToTarget(target, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, controller.contactSize*0.1f);
 
                         ret = isTargetAnimationON;
                     }

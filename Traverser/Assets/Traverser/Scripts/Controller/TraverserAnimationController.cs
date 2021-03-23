@@ -98,7 +98,7 @@ namespace Traverser
         /// <param name="normalisedEndTime"> At which animation timeframe should we end matching.</param>
         /// <param name="validDistance"> If close enough to validDistance (meters), end target matching.</param>
 
-        public bool MatchTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float normalisedStartTime, float normalisedEndTime, float validDistance)
+        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float normalisedStartTime, float normalisedEndTime, float validDistance)
         {
             bool ret = true;
 

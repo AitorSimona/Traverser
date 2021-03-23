@@ -74,6 +74,9 @@ namespace Traverser
         // --- Last collider's size ---
         public float contactSize = 0.0f;
 
+        // --- Last collider's hit normal ---
+        public Vector3 contactNormal;
+
         // --------------------------------
 
         // --- Simulation methods ---

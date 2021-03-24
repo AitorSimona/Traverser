@@ -8,9 +8,6 @@ namespace Traverser
     public partial class TraverserCharacterController : MonoBehaviour
     {
         // --- Attributes ---
-        [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show geometry.")]
-        public bool debugDraw = false;
-
         [Header("Controller")]
         [Tooltip("Whether or not gravity will be applied to the controller.")]
         public bool gravityEnabled = true;
@@ -32,11 +29,18 @@ namespace Traverser
 
 
         [Header("Debug")]
+        [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show debug geometry.")]
+        public bool debugDraw = false;
+
         [Tooltip("Reference to capsule mesh for debugging purposes.")]
         public Mesh capsuleDebugMesh;
 
         [Tooltip("The debug mesh's scale.")]
         public float3 capsuleDebugMeshScale = Vector3.one;
+
+        [Tooltip("Radius of the ground collision check sphere.")]
+        [Range(0.1f, 1.0f)]
+        public float contactDebugSphereRadius = 0.5f;
 
         // --- The current state's position (simulation) ---
         public float3 position { get => state.currentCollision.position; set => state.currentCollision.position = value; }
@@ -72,9 +76,11 @@ namespace Traverser
         public ref TraverserAffineTransform contactTransform { get => ref lastContactTransform; }
 
         // --- Last collider's size ---
+        [HideInInspector]
         public float contactSize = 0.0f;
 
         // --- Last collider's hit normal ---
+        [HideInInspector]
         public Vector3 contactNormal = Vector3.zero;
 
         // --------------------------------

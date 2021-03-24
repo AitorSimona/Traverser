@@ -9,7 +9,7 @@ namespace Traverser
         private TraverserAnimationController animationController;
         private TraverserCharacterController controller;
 
-        // -------------------------------------------------
+        // --------------------------------
 
         // --- Indicates if we are playing the specified transitionAnimation ---
         private bool isTransitionAnimationON = false;
@@ -26,11 +26,19 @@ namespace Traverser
         // --- The desired animator trigger to activate for transition / target animations ---
         private string triggerAnimation;
 
+        // --- Distance at which motion warping will be considered complete, for transitionAnimation warping ---
+        private float transitionValidDistance = 0.0f;
+
+        // --- Distance at which motion warping will be considered complete, for targetAnimation warping ---
+        private float targetValidDistance = 0.0f;
+
         // --- Indicates how much importance we give to position and rotation warping ---
         MatchTargetWeightMask weightMask;
 
         // --- Indicates if transition handler is currently playing ---
         public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }
+
+        // --------------------------------
 
         // --- Basic Methods ---
 
@@ -51,8 +59,15 @@ namespace Traverser
             weightMask = new MatchTargetWeightMask(Vector3.one, 1.0f);
         }
 
-        public void StartTransition(string transitionAnim, string targetAnim, string triggerAnim)
+        // --------------------------------
+
+        // --- Utility Methods ---
+
+        public void StartTransition(string transitionAnim, string targetAnim, string triggerAnim, float transitionValidDistance, float targetValidDistance)
         {
+            // --- TransitionAnim and targetAnim must exists as states in the animator ---
+            // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---
+
             if (!isTransitionAnimationON && !isTargetAnimationON)
             {
                 // --- If we are in a transition activate root motion and disable controller ---
@@ -63,6 +78,8 @@ namespace Traverser
                 triggerAnimation = triggerAnim;
                 animationController.animator.SetTrigger(triggerAnim);
                 isTransitionAnimationON = true;
+                this.transitionValidDistance = transitionValidDistance;
+                this.targetValidDistance = targetValidDistance;
             }
         }
 
@@ -96,12 +113,9 @@ namespace Traverser
                     // --- We are using transitionAnimation to reach contact location ---
                     if (isTransitionAnimationON)
                     {
-                        //GameObject.Find("dummy2").transform.position = controller.contactTransform.t;
-                        //GameObject.Find("dummy2").transform.rotation = controller.contactTransform.q;
-
                         // --- Use target matching (motion warping) to reach the contact transform as the transitionAnimation plays ---
                         if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionAnimation))
-                            isTransitionAnimationON = animationController.WarpToTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, 2.0f);
+                            isTransitionAnimationON = animationController.WarpToTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, transitionValidDistance);
 
                         // --- When we reach the contact point, activate targetAnimation ---
                         if (!isTransitionAnimationON)
@@ -117,15 +131,11 @@ namespace Traverser
                     else if (isTargetAnimationON)
                     {
                         Vector3 target = controller.contactTransform.t;
-                        target += -controller.contactNormal*(controller.contactSize);
+                        target += -controller.contactNormal*controller.contactSize;
 
-
-                        Debug.Log(controller.contactSize);
-                        GameObject.Find("dummy2").transform.position = target;
-
-                        // --- Use target matching (motion warping) to reach the target transform as the targetAnimation plays ---
+                        // --- Use motion warping to reach the target transform as the targetAnimation plays ---
                         if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                            isTargetAnimationON = animationController.WarpToTarget(target, controller.contactTransform.q, AvatarTarget.Root, weightMask, 0.0f, 1.0f, controller.contactSize*0.1f);
+                            isTargetAnimationON = animationController.WarpToTarget(target, controller.contactTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
 
                         ret = isTargetAnimationON;
                     }
@@ -139,6 +149,6 @@ namespace Traverser
             return ret;
         }
 
-        // -------------------------------------------------
+        // --------------------------------
     }
 }

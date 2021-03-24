@@ -254,6 +254,10 @@ namespace Traverser
             if (!debugDraw || characterController == null)
                 return;
 
+            // --- Draw last contact point ---
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(contactTransform.t, contactDebugSphereRadius);
+
             // --- Draw sphere at current ground probe position ---
             for (int i = 0; i < probePositions.Count; ++i)
             {
@@ -282,6 +286,7 @@ namespace Traverser
                     Gizmos.DrawWireMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, capsuleDebugMeshScale);
                 }
             }
+            
 
             //Gizmos.DrawSphere(current.colliderContactPoint, 0.5f);
         }

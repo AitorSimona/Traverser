@@ -26,6 +26,15 @@ namespace Traverser
         [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
         public Transform skeletonRef;
 
+        [Header("Debug")]
+        [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show debug geometry.")]
+        public bool debugDraw = false;
+
+        [Tooltip("The radius of the spheres used to debug draw.")]
+        [Range(0.1f, 1.0f)]
+        public float contactDebugSphereRadius = 0.5f;
+
+
         // --- Animator and animation transition handler ---
         public Animator animator;
         public TraverserTransition transition;
@@ -99,11 +108,9 @@ namespace Traverser
         /// <param name="matchRotation"> The desired rotation to reach with target matching.</param>
         /// <param name="target"> Which bone should reach the desired transform.</param>
         /// <param name="weightMask"> How much importance should match position and rotation have in target matching.</param>
-        /// <param name="normalisedStartTime"> At which animation timeframe should we start matching .</param>
-        /// <param name="normalisedEndTime"> At which animation timeframe should we end matching.</param>
         /// <param name="validDistance"> If close enough to validDistance (meters), end target matching.</param>
 
-        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float normalisedStartTime, float normalisedEndTime, float validDistance)
+        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float validDistance)
         {
             bool ret = true;
 
@@ -111,6 +118,7 @@ namespace Traverser
             
             // --- Compute distance to match position and velocity ---
             Vector3 difference = matchPosition - transform.position;
+            difference.Scale(weightMask.positionXYZWeight);
             Vector3 velocity = difference - deltaPosition;
 
             // --- If velocity is zero, which means we just started warping, set it to one ---
@@ -119,15 +127,16 @@ namespace Traverser
 
             // --- Compute time to reach match position ---
             float timeToTarget = difference.magnitude / velocity.magnitude;
-            //Debug.Log(timeToTarget);
 
             // --- Finally compute the motion that has to be warped ---
             deltaPosition = difference;
             currentdeltaPosition = difference * timeToTarget;
+
+            // TODO: For now, we do not want Y adjustments ---
             deltaPosition.y = 0.0f;
             currentdeltaPosition.y = 0.0f;
 
-            deltaRotation = matchRotation;
+            deltaRotation = Quaternion.Lerp(transform.rotation, matchRotation, timeToTarget);
 
             // --- If close enough to validDistance, end warp ---
             if (math.distance(transform.position, matchPosition) < validDistance)
@@ -142,6 +151,18 @@ namespace Traverser
         public void SetRootMotion(bool rootMotion)
         {
             animator.applyRootMotion = rootMotion;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!debugDraw || controller == null)
+                return;
+
+            // --- Draw transition contact and target point ---
+            Gizmos.color = Color.cyan;
+            Vector3 target = controller.contactTransform.t;
+            target += -controller.contactNormal * controller.contactSize;
+            Gizmos.DrawWireSphere(target, contactDebugSphereRadius);
         }
 
         // --------------------------------

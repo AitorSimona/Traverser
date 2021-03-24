@@ -3342,6 +3342,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skeleton: {fileID: 3013642585900969313}
   skeletonRef: {fileID: 103520340}
+  debugDraw: 1
+  contactDebugSphereRadius: 0.25
   animator: {fileID: 2513478043293839572}
 --- !u!1 &739501224243112497
 GameObject:
@@ -7205,17 +7207,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16cebefab27c50e4e9360de1a2ba827d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugDraw: 1
   gravityEnabled: 1
   stepping: 1
   groundProbeRadius: 0.25
   groundSnap: 0
   groundSnapRayDistance: 0.1
+  debugDraw: 1
   capsuleDebugMesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
   capsuleDebugMeshScale:
     x: 0.75
     y: 0.85
     z: 0.75
+  contactDebugSphereRadius: 0.25
   targetPosition:
     x: 0
     y: 0

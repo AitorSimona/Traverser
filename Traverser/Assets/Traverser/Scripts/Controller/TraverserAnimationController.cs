@@ -119,7 +119,7 @@ namespace Traverser
             // --- Compute distance to match position and velocity ---
             Vector3 difference = matchPosition - transform.position;
             difference.Scale(weightMask.positionXYZWeight);
-            Vector3 velocity = difference - deltaPosition;
+            Vector3 velocity = difference - deltaPosition; //Vector3.one * 0.39f;
 
             // --- If velocity is zero, which means we just started warping, set it to one ---
             if (deltaPosition == Vector3.zero)

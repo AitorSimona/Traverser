@@ -68,7 +68,7 @@ namespace Traverser
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---
 
-            if (!isTransitionAnimationON && !isTargetAnimationON)
+            if (!isTransitionAnimationON && !isTargetAnimationON && !animationController.animator.IsInTransition(0))
             {
                 // --- If we are in a transition activate root motion and disable controller ---
                 //animationController.SetRootMotion(true);
@@ -93,7 +93,8 @@ namespace Traverser
                 if (animationController.animator.IsInTransition(0))
                 {
                     // --- Target animation has finished playing, we can give control back to the controller ---
-                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
+                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation)
+                        && isTargetAnimationON)
                     {
                         // --- Get skeleton's current position and teleport controller ---
                         float3 newTransform = animationController.skeleton.transform.position;
@@ -135,9 +136,9 @@ namespace Traverser
 
                         // --- Use motion warping to reach the target transform as the targetAnimation plays ---
                         if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                            isTargetAnimationON = animationController.WarpToTarget(target, controller.contactTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
+                            animationController.WarpToTarget(target, controller.contactTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
 
-                        ret = isTargetAnimationON;
+                        ret = true;
                     }
                 }
 

@@ -117,7 +117,7 @@ namespace Traverser
                     else if (isTargetAnimationON)
                     {
                         Vector3 target = controller.contactTransform.t;
-                        target += -controller.contactNormal*(controller.contactSize*1.5f);
+                        target += -controller.contactNormal*(controller.contactSize);
 
                         Debug.Log(controller.contactSize);
                         GameObject.Find("dummy2").transform.position = target;

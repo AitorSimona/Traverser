@@ -31,6 +31,8 @@ namespace Traverser
         public TraverserTransition transition;
 
         private Vector3 deltaPosition;
+        private Vector3 currentdeltaPosition;
+        private Quaternion deltaRotation;
 
         // --------------------------------
 
@@ -43,6 +45,8 @@ namespace Traverser
         private void Awake()
         {
             deltaPosition = new Vector3(0.0f, 0.0f, 0.0f);
+            currentdeltaPosition = new Vector3(0.0f, 0.0f, 0.0f);
+
             controller = GetComponent<TraverserCharacterController>();
             transition = new TraverserTransition(this, ref controller);       
         }
@@ -59,8 +63,9 @@ namespace Traverser
                 skeleton.transform.position = skeletonRef.transform.position;
             else
             {
-                transform.position += deltaPosition * Time.deltaTime;
-                deltaPosition = Vector3.zero;
+                transform.position += currentdeltaPosition * Time.deltaTime;
+                transform.rotation = Quaternion.Slerp(transform.rotation, deltaRotation, Time.deltaTime);
+                currentdeltaPosition = Vector3.zero;
             }
         }
 
@@ -102,23 +107,32 @@ namespace Traverser
         {
             bool ret = true;
 
-            // --- Activate target matching if no matching is being run ---         
+            // --- Warp position and rotation to match target transform ---  
+            
+            // --- Compute distance to match position and velocity ---
             Vector3 difference = matchPosition - transform.position;
-            Vector3 direction = difference.normalized;
-            //float normalizeTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
-            deltaPosition = difference / animLength;
+            Vector3 velocity = difference - deltaPosition;
+
+            // --- If velocity is zero, which means we just started warping, set it to one ---
+            if (deltaPosition == Vector3.zero)
+                velocity = Vector3.one;
+
+            // --- Compute time to reach match position ---
+            float timeToTarget = difference.magnitude / velocity.magnitude;
+            Debug.Log(timeToTarget);
+
+            // --- Finally compute the motion that has to be warped ---
+            deltaPosition = difference;
+            currentdeltaPosition = difference * timeToTarget;
             deltaPosition.y = 0.0f;
+            currentdeltaPosition.y = 0.0f;
 
-            if (!animator.isMatchingTarget)
-            {
-                //animator.MatchTarget(matchPosition, matchRotation, target, weightMask, normalisedStartTime, normalisedEndTime);
-            }
+            deltaRotation = matchRotation;
 
-            // --- If close enough to validDistance, end target matching ---
+            // --- If close enough to validDistance, end warp ---
             if (math.distance(transform.position, matchPosition) < validDistance)
             {
-                //animator.InterruptMatchTarget(false);
+                deltaPosition = Vector3.zero;
                 ret = false;
             }
 

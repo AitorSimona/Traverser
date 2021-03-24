@@ -7,15 +7,15 @@ namespace Traverser
     public struct TraverserAffineTransform
     {
         public float3 t;
-        public quaternion q;
+        public Quaternion q;
 
-        public TraverserAffineTransform(float3 t_, quaternion q_)
+        public TraverserAffineTransform(float3 t_, Quaternion q_)
         {
             t = t_;
             q = q_;
         }
 
-        public static TraverserAffineTransform Create(float3 t_, quaternion q_)
+        public static TraverserAffineTransform Create(float3 t_, Quaternion q_)
         {
             TraverserAffineTransform affineTransform;
             affineTransform.t = t_;

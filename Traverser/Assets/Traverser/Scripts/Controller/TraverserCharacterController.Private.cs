@@ -302,10 +302,17 @@ namespace Traverser
                 //Debug.Log("Collided with:");
                 //Debug.Log(hit.gameObject.name);
                 
-
                 state.previousCollision.CopyFrom(ref state.currentCollision);
                 state.currentCollision.colliderContactPoint = hit.point;
-                contactSize = hit.collider.bounds.size.x;
+
+                // --- Given current forward, compute what is the relevant collider size to store ---
+                float dot = Vector3.Dot(transform.forward, hit.transform.right);
+
+                if (Mathf.Abs(Vector3.Dot(transform.forward, hit.transform.forward)) < Mathf.Abs(dot))
+                    contactSize = hit.collider.bounds.size.z;
+                else
+                    contactSize = hit.collider.bounds.size.x;
+
                 contactNormal = hit.normal;
                 contactTransform.t = hit.point;
                 contactTransform.q = math.mul(transform.rotation, Quaternion.FromToRotation(-transform.forward, hit.normal));

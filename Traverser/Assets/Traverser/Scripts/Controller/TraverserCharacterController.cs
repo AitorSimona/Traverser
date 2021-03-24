@@ -75,7 +75,7 @@ namespace Traverser
         public float contactSize = 0.0f;
 
         // --- Last collider's hit normal ---
-        public Vector3 contactNormal;
+        public Vector3 contactNormal = Vector3.zero;
 
         // --------------------------------
 

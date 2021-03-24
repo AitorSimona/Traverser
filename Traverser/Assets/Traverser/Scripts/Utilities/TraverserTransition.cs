@@ -119,6 +119,7 @@ namespace Traverser
                         Vector3 target = controller.contactTransform.t;
                         target += -controller.contactNormal*(controller.contactSize);
 
+
                         Debug.Log(controller.contactSize);
                         GameObject.Find("dummy2").transform.position = target;
 

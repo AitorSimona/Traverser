@@ -44,8 +44,8 @@ namespace Traverser
 
         private void Awake()
         {
-            deltaPosition = new Vector3(0.0f, 0.0f, 0.0f);
-            currentdeltaPosition = new Vector3(0.0f, 0.0f, 0.0f);
+            deltaPosition = Vector3.zero;
+            currentdeltaPosition = Vector3.zero;
 
             controller = GetComponent<TraverserCharacterController>();
             transition = new TraverserTransition(this, ref controller);       
@@ -119,7 +119,7 @@ namespace Traverser
 
             // --- Compute time to reach match position ---
             float timeToTarget = difference.magnitude / velocity.magnitude;
-            Debug.Log(timeToTarget);
+            //Debug.Log(timeToTarget);
 
             // --- Finally compute the motion that has to be warped ---
             deltaPosition = difference;

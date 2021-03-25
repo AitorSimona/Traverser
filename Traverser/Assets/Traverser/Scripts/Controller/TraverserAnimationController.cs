@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -7,7 +8,9 @@ namespace Traverser
 
     public class TraverserAnimationController : MonoBehaviour
     {
+
         // --- Attributes ---
+        public Dictionary<string, int> animatorParameters = new Dictionary<string, int>();
 
         public struct AnimatorParameters
         {
@@ -57,7 +60,13 @@ namespace Traverser
             currentdeltaPosition = Vector3.zero;
 
             controller = GetComponent<TraverserCharacterController>();
-            transition = new TraverserTransition(this, ref controller);       
+            transition = new TraverserTransition(this, ref controller);
+
+            // --- Save all animator parameter hashes for future reference ---
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                animatorParameters.Add(param.name, param.nameHash);
+            }
         }
 
         // --- Basic Methods ---

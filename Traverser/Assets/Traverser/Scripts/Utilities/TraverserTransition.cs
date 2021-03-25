@@ -68,6 +68,14 @@ namespace Traverser
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---
 
+            if(!animationController.animator.HasState(0, Animator.StringToHash(transitionAnim))
+                || !animationController.animator.HasState(0, Animator.StringToHash(targetAnim))
+                || !animationController.animatorParameters.ContainsKey(triggerAnim))
+            {
+                Debug.LogWarning("TraverserTransition - StartTransition - Could not find one or more animation states/parameters in the given animator.");
+                return;
+            }
+
             if (!isTransitionAnimationON && !isTargetAnimationON && !animationController.animator.IsInTransition(0))
             {
                 // --- If we are in a transition activate root motion and disable controller ---

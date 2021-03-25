@@ -32,6 +32,7 @@ namespace Traverser
 
         private TraverserCharacterController controller;
         private TraverserAnimationController animationController;
+        private TraverserLocomotionAbility locomotionAbility;
 
         // -------------------------------------------------
 
@@ -41,6 +42,7 @@ namespace Traverser
         {
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
+            locomotionAbility = GetComponent<TraverserLocomotionAbility>();
         }
 
         // -------------------------------------------------
@@ -73,18 +75,23 @@ namespace Traverser
 
             if (TraverserInputLayer.capture.parkourButton && !animationController.transition.isON)
             {
-                Debug.Log("Transitioning");
-                animationController.transition.StartTransition("JogTransition", "Vaulting", "Parkour", 2.0f, 0.5f);
-                ret = true;
+     
 
-                //// --- Identify collider's object layer ---
+                // --- Identify collider's object layer ---
                 //ref MovementController.Closure closure = ref controller.current;
                 //Assert.IsTrue(closure.isColliding);
 
                 //Collider collider = closure.collider;
 
+                ref Collider collider = ref controller.current.collider;
+
+                TraverserParkourObject parkourObject = collider.GetComponent<TraverserParkourObject>();
+
+                ret = RequestTransition(ref parkourObject);
+
+
                 //int layerMask = 1 << collider.gameObject.layer;
-                ////Assert.IsTrue((layerMask & 0x1F01) != 0);
+                //Assert.IsTrue((layerMask & 0x1F01) != 0);
 
                 //Parkour type = Parkour.Create(collider.gameObject.layer);
                 ////Speed speed = GetSpeedTag();
@@ -118,34 +125,51 @@ namespace Traverser
             return ret;
         }
 
-        bool RequestTransition(TraverserAffineTransform contactTransform, int type) //Parkour type
+        bool RequestTransition(ref TraverserParkourObject parkourObject) 
         {
-            // --- Require transition animation of the type given ---
-            //ref Binary binary = ref synthesizer.Binary;
-            //SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.AboveGround | SegmentCollisionCheck.InsideGeometry;
+            bool ret = false;
 
-            // --- Prevent collision checks ---
-            //if (type.type == Parkour.Type.Wall)
-            //{
-            //    collisionCheck &= ~SegmentCollisionCheck.InsideGeometry;
-            //    collisionCheck &= ~SegmentCollisionCheck.AboveGround;
-            //}
+            if (parkourObject)
+            {
+                Debug.Log("Transitioning");
 
-            //QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform,
-            //        type, GetSpeedTag(), contactThreshold, collisionCheck);
+                float speed = math.length(controller.targetVelocity);
 
-            //if (sequence.length == 0)
-            //{
-            //    Debug.Log("No sequences in parkour");
-            //    return false;
-            //}
+                Debug.Log(speed);
 
-            //anchoredTransition.Dispose();
-            //anchoredTransition = AnchoredTransitionTask.Create(ref synthesizer,
-            //        sequence, contactTransform, maximumLinearError,
-            //            maximumAngularError);
+                switch (parkourObject.type)
+                {
+                    case TraverserParkourObject.TraverserParkourType.Wall:
+                        break;
+                    case TraverserParkourObject.TraverserParkourType.Table:
+                        break;
+                    case TraverserParkourObject.TraverserParkourType.Platform:
+                        break;
+                    case TraverserParkourObject.TraverserParkourType.Ledge:
 
-            return true;
+                        if (speed <= 1.0)// TODO: Create walk speed
+                        {
+                            animationController.transition.StartTransition("WalkTransition", "WalkVaulting", "WalkTransitionTrigger", 2.0f, 0.5f);
+                        }
+                        else if (speed <= locomotionAbility.movementSpeedSlow && speed >= 1.0)// TODO: Create walk speed
+                        {
+                            animationController.transition.StartTransition("JogTransition", "JogVaulting", "JogTransitionTrigger", 2.0f, 0.5f);
+                        }
+                        else
+                        {
+                            animationController.transition.StartTransition("RunTransition", "RunVaulting", "RunTransitionTrigger", 2.0f, 0.5f);
+                        }
+
+                        break;
+                    default:
+                        break;
+                }
+
+
+                ret = true;
+            }
+
+            return ret;
         }
 
         public bool OnDrop(float deltaTime)

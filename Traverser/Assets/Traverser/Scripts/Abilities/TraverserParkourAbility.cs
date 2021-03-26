@@ -147,17 +147,17 @@ namespace Traverser
                         break;
                     case TraverserParkourObject.TraverserParkourType.Ledge:
 
-                        if (speed <= 1.0)// TODO: Create walk speed
+                        if (speed <= 1.5)// TODO: Create walk speed
                         {
-                            animationController.transition.StartTransition("WalkTransition", "WalkVaulting", "WalkTransitionTrigger", 2.0f, 0.5f);
+                            animationController.transition.StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f);
                         }
-                        else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= 1.0)// TODO: Create walk speed
+                        else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= 1.5)// TODO: Create walk speed
                         {
-                            animationController.transition.StartTransition("JogTransition", "JogVaulting", "JogTransitionTrigger", 2.0f, 0.5f);
+                            animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f);
                         }
                         else
                         {
-                            animationController.transition.StartTransition("RunTransition", "RunVaulting", "RunTransitionTrigger", 2.0f, 0.5f);
+                            animationController.transition.StartTransition("RunTransition", "VaultLedgeRun", "RunTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f);
                         }
 
                         break;

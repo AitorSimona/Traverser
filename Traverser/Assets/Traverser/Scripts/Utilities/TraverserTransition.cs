@@ -63,14 +63,15 @@ namespace Traverser
 
         // --- Utility Methods ---
 
-        public void StartTransition(string transitionAnim, string targetAnim, string triggerAnim, float transitionValidDistance, float targetValidDistance)
+        public void StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, float transitionValidDistance, float targetValidDistance)
         {
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---
 
             if(!animationController.animator.HasState(0, Animator.StringToHash(transitionAnim))
                 || !animationController.animator.HasState(0, Animator.StringToHash(targetAnim))
-                || !animationController.animatorParameters.ContainsKey(triggerAnim))
+                || !animationController.animatorParameters.ContainsKey(triggerTransitionAnim)
+                || !animationController.animatorParameters.ContainsKey(triggerTargetAnim))
             {
                 Debug.LogWarning("TraverserTransition - StartTransition - Could not find one or more animation states/parameters in the given animator.");
                 return;
@@ -83,8 +84,8 @@ namespace Traverser
                 controller.ConfigureController(false);
                 transitionAnimation = transitionAnim;
                 targetAnimation = targetAnim;
-                triggerAnimation = triggerAnim;
-                animationController.animator.SetTrigger(triggerAnim);
+                triggerAnimation = triggerTargetAnim;
+                animationController.animator.SetTrigger(triggerTransitionAnim);
                 isTransitionAnimationON = true;
                 this.transitionValidDistance = transitionValidDistance;
                 this.targetValidDistance = targetValidDistance;

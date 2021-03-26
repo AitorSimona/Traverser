@@ -151,7 +151,7 @@ namespace Traverser
                         {
                             animationController.transition.StartTransition("WalkTransition", "WalkVaulting", "WalkTransitionTrigger", 2.0f, 0.5f);
                         }
-                        else if (speed <= locomotionAbility.movementSpeedSlow && speed >= 1.0)// TODO: Create walk speed
+                        else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= 1.0)// TODO: Create walk speed
                         {
                             animationController.transition.StartTransition("JogTransition", "JogVaulting", "JogTransitionTrigger", 2.0f, 0.5f);
                         }

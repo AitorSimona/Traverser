@@ -87,7 +87,8 @@ namespace Traverser
 
                 TraverserParkourObject parkourObject = collider.GetComponent<TraverserParkourObject>();
 
-                ret = RequestTransition(ref parkourObject);
+                if(parkourObject != null)
+                    ret = RequestTransition(ref parkourObject, false);
 
 
                 //int layerMask = 1 << collider.gameObject.layer;
@@ -125,7 +126,7 @@ namespace Traverser
             return ret;
         }
 
-        bool RequestTransition(ref TraverserParkourObject parkourObject) 
+        bool RequestTransition(ref TraverserParkourObject parkourObject, bool isDrop) 
         {
             bool ret = false;
 
@@ -134,6 +135,9 @@ namespace Traverser
                 Debug.Log("Transitioning");
 
                 float speed = math.length(controller.targetVelocity);
+
+                Vector3 target = controller.contactTransform.t;
+                target += -controller.contactNormal * controller.contactSize;
 
                 Debug.Log(speed);
 
@@ -145,29 +149,59 @@ namespace Traverser
 
                         if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= 1.5)// TODO: Create walk speed
                         {
-                            animationController.transition.StartTransition("JogTransition", "VaultTableJog", "JogTransitionTrigger", "TableTrigger", 2.0f, 0.5f);
+                            animationController.transition.StartTransition("JogTransition", "VaultTableJog", "JogTransitionTrigger", "TableTrigger", 2.0f, 0.5f, target);
                         }
                         else
                         {
-                            animationController.transition.StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger", "TableTrigger", 3.0f, 0.5f);
+                            animationController.transition.StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger", "TableTrigger", 3.0f, 0.5f, target);
                         }
 
                         break;
                     case TraverserParkourObject.TraverserParkourType.Platform:
+
+                        target = controller.contactTransform.t;
+
+                        if(!isDrop)
+                            target += -controller.contactNormal*0.5f;
+
+                        
+                        if (speed <= 1.5)// TODO: Create walk speed
+                        {
+                            if(!isDrop)
+                                animationController.transition.StartTransition("WalkTransition", "ClimbPlatformWalk", "WalkTransitionTrigger", "PlatformClimbTrigger", 2.0f, 0.5f, target);
+                            else
+                                animationController.transition.StartTransition("WalkTransition", "DropPlatformWalk", "WalkTransitionTrigger", "PlatformDropTrigger", 2.0f, 0.5f, target);
+
+                        }
+                        else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= 1.5)// TODO: Create walk speed
+                        {
+                            if (!isDrop)
+                                animationController.transition.StartTransition("JogTransition", "ClimbPlatformJog", "JogTransitionTrigger", "PlatformClimbTrigger", 2.0f, 0.5f, target);
+                            else
+                                animationController.transition.StartTransition("JogTransition", "DropPlatformJog", "JogTransitionTrigger", "PlatformDropTrigger", 2.0f, 0.5f, target);
+                        }
+                        else
+                        {
+                            if (!isDrop)
+                                animationController.transition.StartTransition("RunTransition", "ClimbPlatformRun", "RunTransitionTrigger", "PlatformClimbTrigger", 2.0f, 0.5f, target);
+                            else
+                                animationController.transition.StartTransition("RunTransition", "DropPlatformRun", "RunTransitionTrigger", "PlatformDropTrigger", 2.0f, 0.5f, target);
+                        }
+
                         break;
                     case TraverserParkourObject.TraverserParkourType.Ledge:
 
                         if (speed <= 1.5)// TODO: Create walk speed
                         {
-                            animationController.transition.StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f);
+                            animationController.transition.StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, target);
                         }
                         else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= 1.5)// TODO: Create walk speed
                         {
-                            animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f);
+                            animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, target);
                         }
                         else
                         {
-                            animationController.transition.StartTransition("RunTransition", "VaultLedgeRun", "RunTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f);
+                            animationController.transition.StartTransition("RunTransition", "VaultLedgeRun", "RunTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, target);
                         }
 
                         break;
@@ -186,48 +220,62 @@ namespace Traverser
         {
             bool ret = false;
 
-            if (TraverserInputLayer.capture.parkourDropDownButton && controller.previous.isGrounded && controller.previous.ground != null)
+            TraverserInputLayer.capture.UpdateParkour();
+
+            if (TraverserInputLayer.capture.parkourDropDownButton 
+                && controller.previous.isGrounded 
+                && controller.previous.ground != null
+                && !animationController.transition.isON)
             {
                 // --- Get the ground's collider ---
-                Transform ground = controller.previous.ground.transform;
-                BoxCollider collider = ground.GetComponent<BoxCollider>();
+                //Transform ground = controller.previous.ground.transform;
+                //BoxCollider collider = ground.GetComponent<BoxCollider>();
+
+                ref Collider collider = ref controller.current.ground;
 
                 if (collider != null)
                 {
-                    //// --- Create all of the collider's vertices ---
-                    //NativeArray<float3> vertices = new NativeArray<float3>(4, Allocator.Persistent);
+                    TraverserParkourObject parkourObject = controller.previous.ground.GetComponent<TraverserParkourObject>();
 
-                    //Vector3 center = collider.center;
-                    //Vector3 size = collider.size;
-
-                    //vertices[0] = ground.TransformPoint(center + new Vector3(-size.x, size.y, size.z) * 0.5f);
-                    //vertices[1] = ground.TransformPoint(center + new Vector3(size.x, size.y, size.z) * 0.5f);
-                    //vertices[2] = ground.TransformPoint(center + new Vector3(size.x, size.y, -size.z) * 0.5f);
-                    //vertices[3] = ground.TransformPoint(center + new Vector3(-size.x, size.y, -size.z) * 0.5f);
-
-                    //float3 p = controller.previous.position;
-                    //TraverserAffineTransform contactTransform = TagExtensions.GetClosestTransform(vertices[0], vertices[1], p);
-                    //float minimumDistance = math.length(contactTransform.t - p);
-
-                    //// --- Find out where the character will make contact with the ground ---
-                    //for (int i = 1; i < 4; ++i)
-                    //{
-                    //    int j = (i + 1) % 4;
-                    //    TraverserAffineTransform candidateTransform = TagExtensions.GetClosestTransform(vertices[i], vertices[j], p);
-
-                    //    float distance = math.length(candidateTransform.t - p);
-                    //    if (distance < minimumDistance)
-                    //    {
-                    //        minimumDistance = distance;
-                    //        contactTransform = candidateTransform;
-                    //    }
-                    //}
-
-                    //vertices.Dispose();
-
-                    //// --- Activate a transition towards the contact point ---
-                    //ret = RequestTransition(contactTransform, 0/*Parkour.Create(Parkour.Type.DropDown)*/);
+                    ret = RequestTransition(ref parkourObject, true);
                 }
+
+                // if (collider != null)
+                // {
+                //// --- Create all of the collider's vertices ---
+                //NativeArray<float3> vertices = new NativeArray<float3>(4, Allocator.Persistent);
+
+                //Vector3 center = collider.center;
+                //Vector3 size = collider.size;
+
+                //vertices[0] = ground.TransformPoint(center + new Vector3(-size.x, size.y, size.z) * 0.5f);
+                //vertices[1] = ground.TransformPoint(center + new Vector3(size.x, size.y, size.z) * 0.5f);
+                //vertices[2] = ground.TransformPoint(center + new Vector3(size.x, size.y, -size.z) * 0.5f);
+                //vertices[3] = ground.TransformPoint(center + new Vector3(-size.x, size.y, -size.z) * 0.5f);
+
+                //float3 p = controller.previous.position;
+                //TraverserAffineTransform contactTransform = TagExtensions.GetClosestTransform(vertices[0], vertices[1], p);
+                //float minimumDistance = math.length(contactTransform.t - p);
+
+                //// --- Find out where the character will make contact with the ground ---
+                //for (int i = 1; i < 4; ++i)
+                //{
+                //    int j = (i + 1) % 4;
+                //    TraverserAffineTransform candidateTransform = TagExtensions.GetClosestTransform(vertices[i], vertices[j], p);
+
+                //    float distance = math.length(candidateTransform.t - p);
+                //    if (distance < minimumDistance)
+                //    {
+                //        minimumDistance = distance;
+                //        contactTransform = candidateTransform;
+                //    }
+                //}
+
+                //vertices.Dispose();
+
+                //// --- Activate a transition towards the contact point ---
+                //ret = RequestTransition(contactTransform, 0/*Parkour.Create(Parkour.Type.DropDown)*/);
+                //}
             }
 
             return ret;

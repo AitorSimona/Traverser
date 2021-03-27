@@ -35,6 +35,8 @@ namespace Traverser
         // --- Indicates how much importance we give to position and rotation warping ---
         MatchTargetWeightMask weightMask;
 
+        private Vector3 targetPosition = Vector3.zero;
+
         // --- Indicates if transition handler is currently playing ---
         public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }
 
@@ -64,7 +66,7 @@ namespace Traverser
 
         // --- Utility Methods ---
 
-        public void StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, float transitionValidDistance, float targetValidDistance)
+        public void StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, float transitionValidDistance, float targetValidDistance, Vector3 targetPosition)
         {
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---
@@ -90,6 +92,7 @@ namespace Traverser
                 isTransitionAnimationON = true;
                 this.transitionValidDistance = transitionValidDistance;
                 this.targetValidDistance = targetValidDistance;
+                this.targetPosition = targetPosition;
             }
         }
 
@@ -144,12 +147,9 @@ namespace Traverser
                     // --- We have activated targetAnimation and must keep transition on until end of play ---
                     else if (isTargetAnimationON)
                     {
-                        Vector3 target = controller.contactTransform.t;
-                        target += -controller.contactNormal*controller.contactSize;
-
                         // --- Use motion warping to reach the target transform as the targetAnimation plays ---
                         if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                            animationController.WarpToTarget(target, controller.contactTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
+                            animationController.WarpToTarget(targetPosition, controller.contactTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
 
                         ret = true;
                     }

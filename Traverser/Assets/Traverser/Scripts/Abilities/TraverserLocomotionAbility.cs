@@ -250,7 +250,7 @@ namespace Traverser
 
                     attemptTransition = false; // make sure we do not react to another collision
                 }
-                else if (!controller.isGrounded) // we are dropping/falling down
+                else if (collision.isGrounded) // we are dropping/falling down and found ground
                 {
                     // --- Let other abilities take control on drop ---
                     if (contactAbility == null)

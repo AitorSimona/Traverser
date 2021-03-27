@@ -50,7 +50,7 @@ namespace Traverser
             public void UpdateParkour()
             {
                 parkourButton = Input.GetButton("A Button") || Input.GetKey("a");
-                parkourDropDownButton = Input.GetButton("C Button") || Input.GetKey("c");
+                parkourDropDownButton = Input.GetButton("X Button") || Input.GetKey("c");
             }
 
             public void UpdateClimbing()

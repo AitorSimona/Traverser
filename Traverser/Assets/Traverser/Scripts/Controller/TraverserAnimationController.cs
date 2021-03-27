@@ -44,6 +44,7 @@ namespace Traverser
 
         private Vector3 deltaPosition;
         private Vector3 currentdeltaPosition;
+        private Vector3 lastWarpPosition;
         private Quaternion deltaRotation;
 
         // --------------------------------
@@ -58,6 +59,7 @@ namespace Traverser
         {
             deltaPosition = Vector3.zero;
             currentdeltaPosition = Vector3.zero;
+            lastWarpPosition = Vector3.zero;
 
             controller = GetComponent<TraverserCharacterController>();
             transition = new TraverserTransition(this, ref controller);
@@ -124,7 +126,8 @@ namespace Traverser
             bool ret = true;
 
             // --- Warp position and rotation to match target transform ---  
-            
+            lastWarpPosition = matchPosition;
+
             // --- Compute distance to match position and velocity ---
             Vector3 difference = matchPosition - transform.position;
             difference.Scale(weightMask.positionXYZWeight);
@@ -169,9 +172,9 @@ namespace Traverser
 
             // --- Draw transition contact and target point ---
             Gizmos.color = Color.cyan;
-            Vector3 target = controller.contactTransform.t;
-            target += -controller.contactNormal * controller.contactSize;
-            Gizmos.DrawWireSphere(target, contactDebugSphereRadius);
+            //Vector3 target = controller.contactTransform.t;
+            //target += -controller.contactNormal * controller.contactSize;
+            Gizmos.DrawWireSphere(lastWarpPosition, contactDebugSphereRadius);
         }
 
         // --------------------------------

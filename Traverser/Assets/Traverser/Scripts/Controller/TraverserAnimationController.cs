@@ -132,7 +132,7 @@ namespace Traverser
 
             // --- If velocity is zero, which means we just started warping, set it to one ---
             if (deltaPosition == Vector3.zero)
-                velocity = Vector3.one;
+                velocity = controller.targetVelocity;
 
             // --- Compute time to reach match position ---
             float timeToTarget = difference.magnitude / velocity.magnitude;

@@ -2078,6 +2078,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TraverserAgent
       objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137952, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
 --- !u!1 &880145716448679975

@@ -50,6 +50,7 @@ namespace Traverser
             transitionAnimation = "";
             targetAnimation = "";
             triggerAnimation = "";
+            //animationController.SetRootMotion(false);
         }
 
         public TraverserTransition(TraverserAnimationController _animationController, ref TraverserCharacterController _controller)
@@ -115,7 +116,10 @@ namespace Traverser
                         ret = false;
                     }
                     else
+                    {
+                        animationController.WarpToTarget(controller.contactTransform.t, controller.contactTransform.q, AvatarTarget.Root, weightMask, transitionValidDistance);
                         ret = true;
+                    }
                 }
                 // --- Animator is not in transition and we can take control ---
                 else

@@ -142,6 +142,16 @@ namespace Traverser
                     case TraverserParkourObject.TraverserParkourType.Wall:
                         break;
                     case TraverserParkourObject.TraverserParkourType.Table:
+
+                        if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= 1.5)// TODO: Create walk speed
+                        {
+                            animationController.transition.StartTransition("JogTransition", "VaultTableJog", "JogTransitionTrigger", "TableTrigger", 2.0f, 0.5f);
+                        }
+                        else
+                        {
+                            animationController.transition.StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger", "TableTrigger", 3.0f, 0.5f);
+                        }
+
                         break;
                     case TraverserParkourObject.TraverserParkourType.Platform:
                         break;

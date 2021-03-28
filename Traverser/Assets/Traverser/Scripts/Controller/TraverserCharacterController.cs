@@ -227,7 +227,7 @@ namespace Traverser
         public void ConfigureController(bool active)
         {
             collisionEnabled = active;
-            groundSnap = active;
+            //groundSnap = active;
             gravityEnabled = active;
         }
 

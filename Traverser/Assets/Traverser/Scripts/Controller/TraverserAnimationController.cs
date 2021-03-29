@@ -134,11 +134,16 @@ namespace Traverser
             Vector3 velocity = difference - deltaPosition; //Vector3.one * 0.39f;
 
             // --- If velocity is zero, which means we just started warping, set it to one ---
-            if (deltaPosition == Vector3.zero || velocity == Vector3.zero)
+            if (deltaPosition == Vector3.zero)
                 velocity = controller.targetVelocity;
 
             // --- Compute time to reach match position ---
-            float timeToTarget = difference.magnitude / velocity.magnitude;
+            float timeToTarget = 0.0f;
+
+            if(velocity.magnitude != 0.0f 
+                && velocity.magnitude != float.PositiveInfinity
+                && velocity.magnitude != float.NaN)
+                timeToTarget = difference.magnitude / velocity.magnitude;
 
             // --- Finally compute the motion that has to be warped ---
             deltaPosition = difference;

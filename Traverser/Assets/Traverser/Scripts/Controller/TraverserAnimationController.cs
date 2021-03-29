@@ -10,6 +10,8 @@ namespace Traverser
     {
 
         // --- Attributes ---
+
+        // --- Stores animator parameters for future reference ---
         public Dictionary<string, int> animatorParameters = new Dictionary<string, int>();
 
         public struct AnimatorParameters
@@ -42,10 +44,17 @@ namespace Traverser
         public Animator animator;
         public TraverserTransition transition;
 
+        // --- Difference between match position and current position ---
         private Vector3 deltaPosition;
+
+        // --- Motion that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Vector3 currentdeltaPosition;
+
+        // --- Used to store last matchPosition, debug draw purposes ---
         private Vector3 lastWarpPosition;
-        private Quaternion deltaRotation;
+
+        // --- Rotation that has to be warped in the current frame given timeToTarget, pre deltaTime ---
+        private Quaternion currentdeltaRotation;
 
         // --------------------------------
 
@@ -83,8 +92,9 @@ namespace Traverser
                 skeleton.transform.position = skeletonRef.transform.position;
             else
             {
+                // --- Apply warping ---
                 transform.position += currentdeltaPosition * Time.deltaTime;
-                transform.rotation = Quaternion.Slerp(transform.rotation, deltaRotation, Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
                 currentdeltaPosition = Vector3.zero;
             }
         }
@@ -109,7 +119,6 @@ namespace Traverser
             animator.SetBool(parameters.MoveID, parameters.Move);
             animator.SetFloat(parameters.SpeedID, parameters.Speed);
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
-
         }
 
         /// <summary>
@@ -117,7 +126,8 @@ namespace Traverser
         /// </summary>
         /// <param name="matchPosition"> The desired position to reach with target matching.</param>
         /// <param name="matchRotation"> The desired rotation to reach with target matching.</param>
-        /// <param name="target"> Which bone should reach the desired transform.</param>
+        /// // TODO: Unused
+        /// <param name="target"> Which bone should reach the desired transform.</param> 
         /// <param name="weightMask"> How much importance should match position and rotation have in target matching.</param>
         /// <param name="validDistance"> If close enough to validDistance (meters), end target matching.</param>
 
@@ -153,7 +163,8 @@ namespace Traverser
             deltaPosition.y = 0.0f;
             currentdeltaPosition.y = 0.0f;
 
-            deltaRotation = Quaternion.Lerp(transform.rotation, matchRotation, timeToTarget);
+            // --- Compute the rotation that has to be warped ---
+            currentdeltaRotation = Quaternion.Lerp(transform.rotation, matchRotation, timeToTarget);
 
             // --- If close enough to validDistance, end warp ---
             if (math.distance(transform.position, matchPosition) < validDistance)
@@ -177,8 +188,6 @@ namespace Traverser
 
             // --- Draw transition contact and target point ---
             Gizmos.color = Color.cyan;
-            //Vector3 target = controller.contactTransform.t;
-            //target += -controller.contactNormal * controller.contactSize;
             Gizmos.DrawWireSphere(lastWarpPosition, contactDebugSphereRadius);
         }
 

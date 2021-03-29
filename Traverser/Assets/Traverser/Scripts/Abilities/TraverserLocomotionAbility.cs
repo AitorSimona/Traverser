@@ -251,7 +251,8 @@ namespace Traverser
                     attemptTransition = false; // make sure we do not react to another collision
                 }
                 else if (!collision.isGrounded 
-                    || (collision.ground && controller.previous.ground && (collision.ground.GetInstanceID() != controller.previous.ground.GetInstanceID()))) // we are dropping/falling down and found ground
+                    || (collision.ground && controller.previous.ground 
+                        && (collision.ground.GetInstanceID() != controller.previous.ground.GetInstanceID()))) // we are dropping/falling down and found ground
                 {
                     // --- Let other abilities take control on drop ---
                     if (contactAbility == null)
@@ -267,6 +268,8 @@ namespace Traverser
                         }
                     }
                 }
+
+                // TODO: Add case for falling without finding new ground 
             }
 
             ResetVelocityAndRotation();

@@ -33,10 +33,14 @@ namespace Traverser
         private float targetValidDistance = 0.0f;
 
         // --- Indicates how much importance we give to position and rotation warping ---
-        MatchTargetWeightMask weightMask;
+        MatchTargetWeightMask weightMask; 
 
-        private TraverserAffineTransform targetTransform;
+        // --- Transform in space we have to reach playing transitionAnimation ---
         private TraverserAffineTransform contactTransform;
+
+        // --- Transform in space we have to reach playing targetAnimation ---
+        private TraverserAffineTransform targetTransform;
+
 
         // --- Indicates if transition handler is currently playing ---
         public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }

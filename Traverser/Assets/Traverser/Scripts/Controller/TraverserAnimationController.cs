@@ -167,6 +167,7 @@ namespace Traverser
             currentdeltaRotation = Quaternion.Lerp(transform.rotation, matchRotation, timeToTarget);
 
             // --- If close enough to validDistance, end warp ---
+            // TODO: This distance takes into account Y, giving problems to valid distances of those transitions that do not use Y
             if (math.distance(transform.position, matchPosition) < validDistance)
             {
                 deltaPosition = Vector3.zero;

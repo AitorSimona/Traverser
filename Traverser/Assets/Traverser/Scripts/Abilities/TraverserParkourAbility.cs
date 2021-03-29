@@ -213,6 +213,18 @@ namespace Traverser
                         }
 
                         break;
+                    case TraverserParkourObject.TraverserParkourType.Tunnel:
+
+                        if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= 1.5) // TODO: Create walk speed
+                        {
+                            ret = animationController.transition.StartTransition("JogTransition", "SlideTunnelJog", "JogTransitionTrigger", "TunnelTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                        }
+                        else
+                        {
+                            ret = animationController.transition.StartTransition("RunTransition", "SlideTunnelRun", "RunTransitionTrigger", "TunnelTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                        }
+
+                        break;
                     default:
                         break;
                 }

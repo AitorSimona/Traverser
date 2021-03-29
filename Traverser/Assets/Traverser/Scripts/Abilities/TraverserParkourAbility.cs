@@ -146,6 +146,40 @@ namespace Traverser
                 switch (parkourObject.type)
                 {
                     case TraverserParkourObject.TraverserParkourType.Wall:
+
+                        Vector3 contactRight = Vector3.Cross(controller.contactNormal, parkourObject.transform.up);
+                        bool right = Vector3.Dot(transform.forward, contactRight) > 0.0;
+
+                        target = controller.contactTransform.t;
+
+                        if (right)
+                        {
+                            target += contactRight * 1.0f;
+                            targetTransform.q *= Quaternion.Euler(0.0f, 90.0f, 0.0f);
+                        }
+                        else
+                        {
+                            target -= contactRight * 1.0f;
+                            targetTransform.q *= Quaternion.Euler(0.0f, -90.0f, 0.0f);
+                        }
+
+                        targetTransform.t = target;
+
+                        if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= 1.5)// TODO: Create walk speed
+                        {
+                            if(right)
+                                ret = animationController.transition.StartTransition("JogTransition", "WallRunRight", "JogTransitionTrigger", "WallRunRightTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                            else
+                                ret = animationController.transition.StartTransition("JogTransition", "WallRunLeft", "JogTransitionTrigger", "WallRunLeftTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                        }
+                        else
+                        {
+                            if (right)
+                                ret = animationController.transition.StartTransition("RunTransition", "WallRunRight", "RunTransitionTrigger", "WallRunRightTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                            else
+                                ret = animationController.transition.StartTransition("RunTransition", "WallRunLeft", "RunTransitionTrigger", "WallRunLeftTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                        }
+
                         break;
                     case TraverserParkourObject.TraverserParkourType.Table:
 

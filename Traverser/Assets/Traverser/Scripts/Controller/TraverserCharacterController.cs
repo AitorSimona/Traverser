@@ -102,9 +102,9 @@ namespace Traverser
         public void Rewind()
         {
             // --- Store simulation's last position ---
-            lastPosition = position;
+            lastPosition = position; // TODO: Unused
 
-            // --- Shrink geomtry debug lists if iteration number decreased ---
+            // --- Shrink geometry debug lists if iteration number decreased ---
             if (debugDraw)
             {
                 if(probePositions.Count > simulationCounter)

@@ -51,13 +51,13 @@ namespace Traverser
 
         private void Initialize()
         {
-            // --- Reset everything ---
+            // --- Reset everything ---            
             isTransitionAnimationON = false;
             isTargetAnimationON = false;
             transitionAnimation = "";
             targetAnimation = "";
             triggerAnimation = "";
-            //animationController.SetRootMotion(false);
+            animationController.SetRootMotion(false);
         }
 
         public TraverserTransition(TraverserAnimationController _animationController, ref TraverserCharacterController _controller)
@@ -71,7 +71,7 @@ namespace Traverser
 
         // --- Utility Methods ---
 
-        public bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, float transitionValidDistance, float targetValidDistance, ref TraverserAffineTransform contactPosition, ref TraverserAffineTransform targetPosition)
+        public bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, float transitionValidDistance, float targetValidDistance, ref TraverserAffineTransform contactTransform, ref TraverserAffineTransform targetTransform)
         {
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---
@@ -97,8 +97,8 @@ namespace Traverser
                 isTransitionAnimationON = true;
                 this.transitionValidDistance = transitionValidDistance;
                 this.targetValidDistance = targetValidDistance;
-                this.targetTransform = targetPosition;
-                this.contactTransform = contactPosition;
+                this.targetTransform = targetTransform;
+                this.contactTransform = contactTransform;
                 return true;
             }
 
@@ -111,6 +111,7 @@ namespace Traverser
 
             if (animationController != null)
             {
+
                 // --- Animator is transitioning from one animation to another ---
                 if (animationController.animator.IsInTransition(0))
                 {

@@ -64,6 +64,9 @@ namespace Traverser
 
         public TraverserAbility OnPostUpdate(float deltaTime)
         {
+            if (animationController.transition.isON && !animationController.animator.applyRootMotion)
+                animationController.SetRootMotion(true);
+
             return null;
         }
 
@@ -172,7 +175,7 @@ namespace Traverser
                             else
                                 ret = animationController.transition.StartTransition("JogTransition", "WallRunLeft", "JogTransitionTrigger", "WallRunLeftTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                         }
-                        else
+                        else if (speed > locomotionAbility.movementSpeedSlow + 0.1)
                         {
                             if (right)
                                 ret = animationController.transition.StartTransition("RunTransition", "WallRunRight", "RunTransitionTrigger", "WallRunRightTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
@@ -187,7 +190,7 @@ namespace Traverser
                         {
                             ret = animationController.transition.StartTransition("JogTransition", "VaultTableJog", "JogTransitionTrigger", "TableTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                         }
-                        else
+                        else if(speed > locomotionAbility.movementSpeedSlow + 0.1)
                         {
                             ret = animationController.transition.StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger", "TableTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                         }
@@ -253,7 +256,7 @@ namespace Traverser
                         {
                             ret = animationController.transition.StartTransition("JogTransition", "SlideTunnelJog", "JogTransitionTrigger", "TunnelTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                         }
-                        else
+                        else if (speed > locomotionAbility.movementSpeedSlow + 0.1)
                         {
                             ret = animationController.transition.StartTransition("RunTransition", "SlideTunnelRun", "RunTransitionTrigger", "TunnelTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                         }

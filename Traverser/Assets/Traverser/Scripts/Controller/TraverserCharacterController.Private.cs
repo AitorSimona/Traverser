@@ -311,9 +311,15 @@ namespace Traverser
                 state.currentCollision.colliderContactPoint = hit.point;
 
                 // --- Given current forward, compute what is the relevant collider size to store ---
-                float dot = Vector3.Dot(transform.forward, hit.transform.right);
+                Vector3 fwd = transform.forward;
 
-                if (Mathf.Abs(Vector3.Dot(transform.forward, hit.transform.forward)) < Mathf.Abs(dot))
+                if (fwd.x < 0.0f || fwd.z < 0.0f)
+                    fwd *= -1.0f;
+
+                float dot = Mathf.Acos(Vector3.Dot(-fwd, hit.transform.right));
+                float dot2 = Mathf.Acos(Vector3.Dot(-fwd, hit.transform.forward));
+
+                if (dot2 < dot)
                     contactSize = hit.collider.bounds.size.z;
                 else
                     contactSize = hit.collider.bounds.size.x;

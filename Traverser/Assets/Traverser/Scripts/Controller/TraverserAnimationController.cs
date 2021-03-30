@@ -144,23 +144,12 @@ namespace Traverser
             // --- Warp position and rotation to match target transform ---  
             lastWarpPosition = matchPosition;
 
-            //AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
-            //float currentTime = info.normalizedTime;
-
-            //if (animator.GetCurrentAnimatorStateInfo(0).loop)
-            //    currentTime = Mathf.Repeat(currentTime, 1.0f);
-
-            //float remainingTime = info.length - currentTime;
-            //Vector3 rootVelocity = animator.velocity.normalized;
-            //Vector3 expectedPosition = transform.position + rootVelocity * remainingTime;
-            //Vector3 diff = matchPosition - expectedPosition;
-
             //// --- Compute distance to match position and velocity ---
             Vector3 difference = matchPosition - transform.position;
             difference.Scale(weightMask.positionXYZWeight);
             Vector3 velocity = difference - deltaPosition; //Vector3.one * 0.39f;
 
-            //// --- If velocity is zero, which means we just started warping, set it to one ---
+            // --- If velocity is zero, which means we just started warping, set it to one ---
             if (deltaPosition == Vector3.zero || velocity == Vector3.zero)
                 velocity = controller.targetVelocity;
 
@@ -175,9 +164,6 @@ namespace Traverser
             // --- Finally compute the motion that has to be warped ---
             deltaPosition = difference;
             currentdeltaPosition = difference * timeToTarget;
-
-            //deltaPosition = diff;
-            //currentdeltaPosition = diff * remainingTime;
 
             // TODO: For now, we do not want Y adjustments ---
             deltaPosition.y = 0.0f;

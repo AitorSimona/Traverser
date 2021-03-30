@@ -95,11 +95,9 @@ namespace Traverser
 
             if (parkourObject)
             {
-                //Debug.Log("Transitioning");
-
+                // --- Get speed from controller ---
                 float speed = math.length(controller.targetVelocity);
                 float walkSpeed = 1.5f; // TODO: Create walk speed
-                //Debug.Log(speed);
 
                 // --- Compute target transform at the other side of the collider ---
                 Vector3 target = controller.contactTransform.t;
@@ -174,7 +172,7 @@ namespace Traverser
                         targetTransform.t = target;
 
                         // --- Check if we are walking, jogging or running and play appropriate transition ---
-                        if (speed <= walkSpeed)// TODO: Create walk speed
+                        if (speed <= walkSpeed)
                         {
                             if(!isDrop)
                                 ret = animationController.transition.StartTransition("WalkTransition", "ClimbPlatformWalk", "WalkTransitionTrigger", "PlatformClimbTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
@@ -200,7 +198,7 @@ namespace Traverser
                     case TraverserParkourObject.TraverserParkourType.Ledge:
 
                         // --- Check if we are walking, jogging or running and play appropriate transition ---
-                        if (speed <= walkSpeed)// TODO: Create walk speed
+                        if (speed <= walkSpeed)
                             ret = animationController.transition.StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                         else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
                             ret = animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);

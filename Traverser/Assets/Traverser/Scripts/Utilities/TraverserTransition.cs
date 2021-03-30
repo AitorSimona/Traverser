@@ -121,7 +121,7 @@ namespace Traverser
                     {
                         // --- Get skeleton's current position and teleport controller ---
                         float3 newTransform = animationController.skeleton.transform.position;
-                        newTransform.y = targetTransform.t.y;
+                        newTransform.y -= controller.capsuleHeight/2.0f;
                         controller.TeleportTo(newTransform);
 
                         // --- Reenable controller and give back control ---

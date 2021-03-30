@@ -45,7 +45,7 @@ namespace Traverser
         public TraverserTransition transition;
 
         // --- Difference between match position and current position ---
-        private Vector3 deltaPosition;
+        //private Vector3 deltaPosition;
 
         // --- Motion that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Vector3 currentdeltaPosition;
@@ -55,6 +55,8 @@ namespace Traverser
 
         // --- Rotation that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Quaternion currentdeltaRotation;
+
+        private Vector3 deltaPosition = Vector3.zero;
 
         // --------------------------------
 
@@ -66,7 +68,7 @@ namespace Traverser
 
         private void Awake()
         {
-            deltaPosition = Vector3.zero;
+            //deltaPosition = Vector3.zero;
             currentdeltaPosition = Vector3.zero;
             lastWarpPosition = Vector3.zero;
 
@@ -93,9 +95,11 @@ namespace Traverser
             else
             {
                 // --- Apply warping ---
+                //SetRootMotion(false);
                 transform.position += currentdeltaPosition * Time.deltaTime;
                 transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
                 currentdeltaPosition = Vector3.zero;
+                //SetRootMotion(false);
             }
         }
 
@@ -131,6 +135,8 @@ namespace Traverser
         /// <param name="weightMask"> How much importance should match position and rotation have in target matching.</param>
         /// <param name="validDistance"> If close enough to validDistance (meters), end target matching.</param>
 
+
+
         public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float validDistance)
         {
             bool ret = true;
@@ -138,22 +144,47 @@ namespace Traverser
             // --- Warp position and rotation to match target transform ---  
             lastWarpPosition = matchPosition;
 
-            AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
-            float currentTime = info.length*Mathf.Repeat(info.normalizedTime, 1.0f);
-            float remainingTime = info.length - currentTime;
-            Vector3 rootVelocity = animator.velocity.normalized;
-            Vector3 expectedPosition = transform.position + rootVelocity * remainingTime;
-            Vector3 diff = matchPosition - expectedPosition;
+            //AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+            //float currentTime = info.normalizedTime;
 
-            deltaPosition = diff;
-            currentdeltaPosition = diff * remainingTime;
+            //if (animator.GetCurrentAnimatorStateInfo(0).loop)
+            //    currentTime = Mathf.Repeat(currentTime, 1.0f);
+
+            //float remainingTime = info.length - currentTime;
+            //Vector3 rootVelocity = animator.velocity.normalized;
+            //Vector3 expectedPosition = transform.position + rootVelocity * remainingTime;
+            //Vector3 diff = matchPosition - expectedPosition;
+
+            //// --- Compute distance to match position and velocity ---
+            Vector3 difference = matchPosition - transform.position;
+            difference.Scale(weightMask.positionXYZWeight);
+            Vector3 velocity = difference - deltaPosition; //Vector3.one * 0.39f;
+
+            //// --- If velocity is zero, which means we just started warping, set it to one ---
+            if (deltaPosition == Vector3.zero || velocity == Vector3.zero)
+                velocity = controller.targetVelocity;
+
+            // --- Compute time to reach match position ---
+            float timeToTarget = 0.0f;
+
+            if (velocity.magnitude != 0.0f
+                && velocity.magnitude != float.PositiveInfinity
+                && velocity.magnitude != float.NaN)
+                timeToTarget = difference.magnitude / velocity.magnitude;
+
+            // --- Finally compute the motion that has to be warped ---
+            deltaPosition = difference;
+            currentdeltaPosition = difference * timeToTarget;
+
+            //deltaPosition = diff;
+            //currentdeltaPosition = diff * remainingTime;
 
             // TODO: For now, we do not want Y adjustments ---
             deltaPosition.y = 0.0f;
             currentdeltaPosition.y = 0.0f;
 
             // --- Compute the rotation that has to be warped ---
-            currentdeltaRotation = Quaternion.Lerp(transform.rotation, matchRotation, 0.25f + currentTime / info.length); //timeToTarget
+            currentdeltaRotation = Quaternion.Lerp(transform.rotation, matchRotation, timeToTarget/*0.25f + currentTime / info.length*/); //timeToTarget
 
             // --- If close enough to validDistance, end warp ---
             // TODO: This distance takes into account Y, giving problems to valid distances of those transitions that do not use Y

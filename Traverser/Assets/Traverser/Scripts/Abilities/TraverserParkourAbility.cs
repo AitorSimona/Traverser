@@ -64,8 +64,8 @@ namespace Traverser
 
         public TraverserAbility OnPostUpdate(float deltaTime)
         {
-            if (animationController.transition.isON && !animationController.animator.applyRootMotion)
-                animationController.SetRootMotion(true);
+            //if (animationController.transition.isON && !animationController.animator.applyRootMotion)
+              //  animationController.SetRootMotion(true);
 
             return null;
         }

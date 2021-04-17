@@ -7,7 +7,7 @@ namespace Traverser
     [RequireComponent(typeof(TraverserAbilityController))]
     [RequireComponent(typeof(TraverserCharacterController))]
 
-    public class TraverserLocomotionAbility : MonoBehaviour, TraverserAbility // SnapshotProvider is derived from MonoBehaviour, allows the use of kinematica's snapshot debugger
+    public class TraverserLocomotionAbility : MonoBehaviour, TraverserAbility 
     {
         // --- Attributes ---
         [Header("Movement settings")]
@@ -64,6 +64,12 @@ namespace Traverser
         [Range(0.0f, 10.0f)]
         public float rotationSpeedToTurn = 1.0f;
 
+        [Header("Contact settings")]
+        [Tooltip("Maximum angle at which the character can contact with the environment in degrees. If above this number the collision won't be considered.")]
+        public float contactAngleMax = 30.0f;
+
+        [Tooltip("Maximum distance at which the character can contact with the environment in meters. If above this number the collision won't be considered.")]
+        public float contactDistanceMax = 4.0f;
 
         [Header("Simulation settings")]
         [Tooltip("How many movement iterations per frame will the controller perform. More iterations are more expensive but provide greater predictive collision detection reach.")]
@@ -204,36 +210,16 @@ namespace Traverser
 
                 if (collision.isColliding && attemptTransition)
                 {
-                    //float3 contactPoint = collision.colliderContactPoint;
-                    //contactPoint.y = controller.position.y;
-                    //float3 contactNormal = collision.colliderContactNormal;
-
-                    // TODO: Check if works properly
-                    //float Qangle;
-                    //Vector3 Qaxis;
-                    //transform.rotation.ToAngleAxis(out Qangle, out Qaxis);
-                    //Qaxis.x = 0.0f;
-                    //Qaxis.y = 0.0f;
-                    //quaternion q = math.mul(transform.rotation, Quaternion.FromToRotation(Qaxis, contactNormal));
-
                     ref TraverserAffineTransform contactTransform = ref controller.contactTransform /*TraverserAffineTransform.Create(contactPoint, q)*/;
 
-                    //  TODO : Remove temporal debug object
-                    //GameObject.Find("dummy").transform.position = contactTransform.t;
+                    float angle = Vector3.SignedAngle(controller.contactNormal, -transform.forward, Vector3.up);
 
-                    //float3 desired_direction = contactTransform.t - tmp.t;
-                    //float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(gameObject.transform.forward.z, gameObject.transform.forward.x);
-                    //float target_orientation = current_orientation + Vector3.SignedAngle(TraverserInputLayer.capture.movementDirection, desired_direction, Vector3.up);
-                    //float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
-
-                    //// TODO: The angle should be computed according to the direction we are heading too (not always the smallest angle!!)
-                    ////Debug.Log(angle);
-                    //// TODO: Expose this
-                    //// --- If we are not close to the desired angle or contact point, do not handle contacts ---
-                    //if (Mathf.Abs(angle) < 30 || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > 4.0f)
-                    //{
-                    //    continue;
-                    //}
+                    // --- If we are not close to the desired angle or contact point, do not handle contacts ---
+                    if (Mathf.Abs(angle) > contactAngleMax || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > contactDistanceMax)
+                    {
+                        Debug.Log(Mathf.Abs(angle));
+                        continue;
+                    }
 
                     if (contactAbility == null)
                     {

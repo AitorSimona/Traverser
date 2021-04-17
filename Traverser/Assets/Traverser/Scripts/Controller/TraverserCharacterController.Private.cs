@@ -291,6 +291,7 @@ namespace Traverser
             //Gizmos.DrawSphere(current.colliderContactPoint, 0.5f);
         }
 
+
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             // --- Update current collision information with hit's information ---
@@ -312,6 +313,7 @@ namespace Traverser
 
                 // --- Given hit normal, compute what is the relevant collider size to store ---
 
+                // --- Convert collided object's axis to character space ---
                 Vector3 r = transform.InverseTransformDirection(hit.transform.right);
                 Vector3 f = transform.InverseTransformDirection(hit.transform.forward);
 

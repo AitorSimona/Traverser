@@ -209,6 +209,7 @@ namespace Traverser
             if (characterController.detectCollisions)
                 CheckGroundCollision();        
 
+
             // --- Add capsule positions to geometry debug list ---
             if (debugDraw)
             {

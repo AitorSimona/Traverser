@@ -69,6 +69,9 @@ namespace Traverser
         // --- Private Variables ---
 
         private TraverserCharacterController controller;
+        private TraverserAnimationController animationController;
+        private TraverserLocomotionAbility locomotionAbility;
+
         //private CapsuleCollider capsule;
 
         private State state; // Actual Climbing movement/state
@@ -104,6 +107,10 @@ namespace Traverser
         public void OnEnable()
         {
             controller = GetComponent<TraverserCharacterController>();
+            animationController = GetComponent<TraverserAnimationController>();
+            locomotionAbility = GetComponent<TraverserLocomotionAbility>();
+
+
             //capsule = GetComponent<CapsuleCollider>();
             state = State.Suspended;
             previousState = State.Suspended;
@@ -141,60 +148,59 @@ namespace Traverser
             // --- Turn off/on controller ---
             controller.ConfigureController(!IsState(State.Suspended));
 
-            // --- If character is not falling ---
-            if (!IsState(State.Suspended))
-            {
-                // --- Handle current state ---
-                switch (state)
-                {
-                    case State.Mounting:
-                        HandleMountingState();
-                        break;
+            //// --- If character is not falling ---
+            //if (!IsState(State.Suspended))
+            //{
+            //    // --- Handle current state ---
+            //    switch (state)
+            //    {
+            //        case State.Mounting:
+            //            HandleMountingState();
+            //            break;
 
-                    case State.Dismount:
-                        HandleDismountState();
-                        break;
+            //        case State.Dismount:
+            //            HandleDismountState();
+            //            break;
 
-                    case State.PullUp:
-                        HandlePullUpState();
-                        break;
+            //        case State.PullUp:
+            //            HandlePullUpState();
+            //            break;
 
-                    case State.Climbing:
-                        HandleClimbingState(deltaTime);
-                        break;
+            //        case State.Climbing:
+            //            HandleClimbingState(deltaTime);
+            //            break;
 
-                    case State.FreeClimbing:
-                        HandleFreeClimbingState(deltaTime);
-                        break;
+            //        case State.FreeClimbing:
+            //            HandleFreeClimbingState(deltaTime);
+            //            break;
 
-                    case State.DropDown:
-                        HandleDropDownState();
-                        break;
+            //        case State.DropDown:
+            //            HandleDropDownState();
+            //            break;
 
-                    default:
-                        break;
-                }
+            //        default:
+            //            break;
+            //    }
 
-                // --- Let other abilities handle the situation ---
-                if (IsState(State.Suspended))
-                    return null;
+            //    // --- Let other abilities handle the situation ---
+            //    if (IsState(State.Suspended))
+            //        return null;
 
-                //KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
+            //    //KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
 
-                ret = this;
-            }
+            //    ret = this;
+            //}
 
-            return ret;
+            return animationController.transition.UpdateTransition() ? this : null;
         }
 
         public TraverserAbility OnFixedUpdate(float deltaTime)
         {
-            TraverserAbility ret = null;
+            if (animationController.transition.isON)
+                return this;
 
-            
 
-
-            return ret;
+            return null;
         }
 
         public TraverserAbility OnPostUpdate(float deltaTime)
@@ -628,11 +634,32 @@ namespace Traverser
 
         public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
         {
+            bool ret = false;
             TraverserInputLayer.capture.UpdateClimbing();
 
             if(TraverserInputLayer.capture.mountButton)
             {
                 Debug.Log("Climbing to ledge");
+
+                // --- Get speed from controller ---
+                float speed = math.length(controller.targetVelocity);
+                float walkSpeed = 1.5f; // TODO: Create walk speed
+
+                //if (speed <= walkSpeed)
+                //    ret = animationController.transition.StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                //else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
+                //    ret = animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                //else
+                //    ret = animationController.transition.StartTransition("RunTransition", "VaultLedgeRun", "RunTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                
+                // We want to reach the pre climb position and then activate the animation
+                TraverserAffineTransform target = TraverserAffineTransform.Create(contactTransform.t, contactTransform.q);
+                target.t.y = transform.position.y;
+
+                ret = animationController.transition.StartTransition("WalkTransition", "Mount", 
+                    "WalkTransitionTrigger", "MountTrigger", 2.0f, 0.5f,
+                    ref target,
+                    ref contactTransform);
             }
 
             // --- If we make contact with a climbable surface and player issues climb order, mount ---
@@ -658,7 +685,7 @@ namespace Traverser
             //                {
             //                    ledgeGeometry.Initialize(collider);
             //                    wallGeometry.Initialize(collider, contactTransform);
-                          
+
             //                    RequestTransition(ref synthesizer, contactTransform, Ledge.Type.Mount);
             //                    SetState(State.Mounting);
             //                    return true;
@@ -668,7 +695,7 @@ namespace Traverser
             //    }
             //}
 
-            return false;
+            return ret;
         }
 
         public bool OnDrop(float deltaTime)

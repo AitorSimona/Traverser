@@ -208,27 +208,27 @@ namespace Traverser
 
                 // --- If a collision occurs, call each ability's onContact callback ---
 
-                if(controller.collidedLedge)
-                {
-                    controller.collidedLedge = false;
+                //if(controller.collidedLedge)
+                //{
+                //    controller.collidedLedge = false;
 
-                    if (contactAbility == null)
-                    {
-                        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
-                        {
+                //    if (contactAbility == null)
+                //    {
+                //        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                //        {
 
-                            // --- If any ability reacts to the collision, break ---
-                            if (ability.IsAbilityEnabled() && ability.OnContact(TraverserAffineTransform.Create(controller.capsuleHits[0].point, 
-                                Quaternion.identity), deltaTime))
-                            {
-                                contactAbility = ability;
-                                break;
-                            }
-                        }
-                    }
-                }
+                //            // --- If any ability reacts to the collision, break ---
+                //            if (ability.IsAbilityEnabled() && ability.OnContact(TraverserAffineTransform.Create(controller.capsuleHits[0].point, 
+                //                transform.rotation), deltaTime))
+                //            {
+                //                contactAbility = ability;
+                //                break;
+                //            }
+                //        }
+                //    }
+                //}
 
-                else if (collision.isColliding && attemptTransition)
+                if (collision.isColliding && attemptTransition)
                 {
                     ref TraverserAffineTransform contactTransform = ref controller.contactTransform /*TraverserAffineTransform.Create(contactPoint, q)*/;
 

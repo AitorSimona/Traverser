@@ -85,7 +85,7 @@ namespace Traverser
 
         // --------------------------------
 
-        public bool collidedLedge = false;
+        //public bool collidedLedge = false;
 
         // --- Simulation methods ---
 
@@ -211,7 +211,7 @@ namespace Traverser
             if (characterController.detectCollisions)
             {
                 CheckGroundCollision();
-                CheckForwardLedgeCollision();
+                //CheckForwardLedgeCollision();
             }
 
 

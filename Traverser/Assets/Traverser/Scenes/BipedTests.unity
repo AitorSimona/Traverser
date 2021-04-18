@@ -262,7 +262,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58206854}
   m_LocalRotation: {x: 0.13476759, y: -0.013243977, z: -0.0037671397, w: 0.9907816}
-  m_LocalPosition: {x: 5.77, y: 7.35, z: -26.49}
+  m_LocalPosition: {x: 5.39, y: 4.99, z: -12.12}
   m_LocalScale: {x: 0.10000003, y: 0.09999998, z: 0.10000002}
   m_Children: []
   m_Father: {fileID: 0}
@@ -397,7 +397,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &64437854
 Transform:
   m_ObjectHideFlags: 0
@@ -1074,7 +1074,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &941366688
 Transform:
   m_ObjectHideFlags: 0
@@ -1172,6 +1172,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+--- !u!114 &1014694317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014694315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6caa33fa36b0c8d47ab2b106aad5ad17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  annotations: []
 --- !u!1001 &1051804314
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2440,6 +2453,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+--- !u!114 &2133811409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2133811407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6caa33fa36b0c8d47ab2b106aad5ad17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  annotations: []
 --- !u!1 &2141577386 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2037486351194723449, guid: 04969b28bdd5ac94bb719e0d33a7026d, type: 3}
@@ -2980,7 +3006,6 @@ MonoBehaviour:
   targetHeading: 0
   contactSize: 0
   contactNormal: {x: 0, y: 0, z: 0}
-  collidedLedge: 0
 --- !u!143 &919132147635878865
 CharacterController:
   m_ObjectHideFlags: 0
@@ -6629,7 +6654,6 @@ MonoBehaviour:
   targetHeading: 0
   contactSize: 0
   contactNormal: {x: 0, y: 0, z: 0}
-  collidedLedge: 0
 --- !u!143 &8296172669259688468
 CharacterController:
   m_ObjectHideFlags: 0

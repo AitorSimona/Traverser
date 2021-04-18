@@ -85,12 +85,11 @@ namespace Traverser
 
         // --- World interactable elements ---
         //[Snapshot]
-        //LedgeObject.LedgeGeometry ledgeGeometry;
-
-        //LedgeObject.LedgeGeometry auxledgeGeometry;
+        TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
+        TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
 
         //[Snapshot]
-        //WallObject.WallGeometry wallGeometry;
+        TraverserWallObject.TraverserWallGeometry wallGeometry;
 
         //[Snapshot]
         //LedgeObject.LedgeAnchor ledgeAnchor;
@@ -118,9 +117,9 @@ namespace Traverser
             previousClimbingState = ClimbingState.Idle;
             lastCollidingClimbingState = ClimbingState.None;
 
-            //ledgeGeometry = LedgeObject.LedgeGeometry.Create();
-            //auxledgeGeometry = LedgeObject.LedgeGeometry.Create();
-            //wallGeometry = WallObject.WallGeometry.Create();
+            ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
+            auxledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
+            wallGeometry = TraverserWallObject.TraverserWallGeometry.Create();
 
             //ledgeAnchor = LedgeObject.LedgeAnchor.Create();
             //wallAnchor = WallObject.WallAnchor.Create();
@@ -130,8 +129,8 @@ namespace Traverser
 
         public void OnDisable()
         {
-            //ledgeGeometry.Dispose();
-            //auxledgeGeometry.Dispose();
+            ledgeGeometry.Dispose();
+            auxledgeGeometry.Dispose();
             //anchoredTransition.Dispose();
         }
 
@@ -642,58 +641,54 @@ namespace Traverser
                 Debug.Log("Climbing to ledge");
 
                 // --- Get speed from controller ---
-                float speed = math.length(controller.targetVelocity);
-                float walkSpeed = 1.5f; // TODO: Create walk speed
+                //float speed = math.length(controller.targetVelocity);
+                //float walkSpeed = 1.5f; // TODO: Create walk speed
 
-                //if (speed <= walkSpeed)
-                //    ret = animationController.transition.StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
-                //else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
-                //    ret = animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
-                //else
-                //    ret = animationController.transition.StartTransition("RunTransition", "VaultLedgeRun", "RunTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                //---If we make contact with a climbable surface and player issues climb order, mount ---
                 
-                // We want to reach the pre climb position and then activate the animation
-                TraverserAffineTransform target = TraverserAffineTransform.Create(contactTransform.t, contactTransform.q);
-                target.t.y = transform.position.y;
+                if (IsState(State.Suspended))
+                {
+                    BoxCollider collider = controller.current.collider as BoxCollider;
 
-                ret = animationController.transition.StartTransition("WalkTransition", "Mount", 
-                    "WalkTransitionTrigger", "MountTrigger", 2.0f, 0.5f,
-                    ref target,
-                    ref contactTransform);
+                    // --- Ensure we are not falling ---
+
+                    if (collider != null && controller.isGrounded)
+                    {
+                        if (collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
+                        {
+                            auxledgeGeometry.Initialize(collider);
+                            TraverserLedgeObject.TraverserLedgeAnchor auxAnchor = auxledgeGeometry.GetAnchor(contactTransform.t);
+                            bool left = false;
+                            float distance = auxledgeGeometry.GetDistanceToClosestVertex(contactTransform.t, auxledgeGeometry.GetNormal(auxAnchor), ref left);
+
+                            // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
+                            if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
+                            {
+                                ledgeGeometry.Initialize(collider);
+                                wallGeometry.Initialize(collider, contactTransform);
+
+                                //RequestTransition(ref synthesizer, contactTransform, Ledge.Type.Mount);
+
+                                // We want to reach the pre climb position and then activate the animation
+                                TraverserAffineTransform target = TraverserAffineTransform.Create(contactTransform.t, contactTransform.q);
+                                target.t.y = ledgeGeometry.vertices[0].y;
+
+                                ret = animationController.transition.StartTransition("WalkTransition", "Mount",
+                                    "WalkTransitionTrigger", "MountTrigger", 3.0f, 0.5f,
+                                    ref contactTransform,
+                                    ref target);
+
+                                SetState(State.Mounting);
+                            }
+                        }
+                    }
+                }
+
+                //ret = animationController.transition.StartTransition("WalkTransition", "Mount", 
+                //    "WalkTransitionTrigger", "MountTrigger", 2.0f, 0.5f,
+                //    ref target,
+                //    ref contactTransform);
             }
-
-            // --- If we make contact with a climbable surface and player issues climb order, mount ---
-            //if (InputLayer.capture.mountButton)
-            //{
-            //    if (IsState(State.Suspended))
-            //    {
-            //        BoxCollider collider = controller.current.collider as BoxCollider;
-
-            //        // --- Ensure we are not falling ---
-
-            //        if (collider != null && controller.IsGrounded)
-            //        {
-            //            if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
-            //            {
-            //                auxledgeGeometry.Initialize(collider);
-            //                LedgeObject.LedgeAnchor auxAnchor = auxledgeGeometry.GetAnchor(contactTransform.t);
-            //                bool left = false;
-            //                float distance = auxledgeGeometry.GetDistanceToClosestVertex(contactTransform.t, auxledgeGeometry.GetNormal(auxAnchor), ref left);
-
-            //                // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
-            //                if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
-            //                {
-            //                    ledgeGeometry.Initialize(collider);
-            //                    wallGeometry.Initialize(collider, contactTransform);
-
-            //                    RequestTransition(ref synthesizer, contactTransform, Ledge.Type.Mount);
-            //                    SetState(State.Mounting);
-            //                    return true;
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
 
             return ret;
         }

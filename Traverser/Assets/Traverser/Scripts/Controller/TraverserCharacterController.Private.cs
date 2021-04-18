@@ -314,9 +314,9 @@ namespace Traverser
                 for (int i = 0; i < capsulePositions.Count; ++i)
                 {
                     Gizmos.DrawWireMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, capsuleDebugMeshScale);
-                    Vector3 scale = Vector3.one;
-                    scale.y *= 2;
-                    Gizmos.DrawWireMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, scale);
+                    //Vector3 scale = Vector3.one;
+                    //scale.y *= 2;
+                    //Gizmos.DrawWireMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, scale);
                 }
             }
             

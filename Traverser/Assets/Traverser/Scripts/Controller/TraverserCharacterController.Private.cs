@@ -160,7 +160,7 @@ namespace Traverser
         // --- Array of raycast hits for groundSnap checks ---
         private RaycastHit[] groundRayHits = new RaycastHit[1];
 
-        private RaycastHit[] capsuleHits = new RaycastHit[1];
+        public RaycastHit[] capsuleHits = new RaycastHit[1];
 
         // --- Arrays of positions for geometry debugging ---
         private List<float3> probePositions;
@@ -196,6 +196,31 @@ namespace Traverser
 
         // --- Collisions ---
 
+        void CheckForwardLedgeCollision()
+        {
+            int colliderIndex;
+
+            Vector3 point1 = position;
+            point1.y -= characterController.height;
+
+            Vector3 point2 = position;
+            point2.y += characterController.height;
+
+            colliderIndex = Physics.CapsuleCastNonAlloc(point1,
+                point2,
+                characterController.radius * 2.0f,
+                transform.forward,
+                capsuleHits,
+                1.0f,
+                LayerMask.GetMask("Climbable"));
+
+            if (colliderIndex != 0)
+            {
+                //Debug.Log("Test Capsule collided with climbable object");
+            }
+
+        }
+
         void CheckGroundCollision()
         {
             int colliderIndex = TraverserCollisionLayer.CastGroundProbe(position, groundProbeRadius, ref hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask);
@@ -206,29 +231,7 @@ namespace Traverser
                 current.isGrounded = true;
                 //Debug.Log("Ground is:");
                 //Debug.Log(current.ground.gameObject.name);
-            }
-
-            Vector3 point1 = position;
-            point1.y -= characterController.height;
-
-            Vector3 point2 = position;
-            point2.y += characterController.height;
-
-            colliderIndex = Physics.CapsuleCastNonAlloc(point1,
-                point2,
-                characterController.radius*2.0f,
-                transform.forward,
-                capsuleHits,
-                1.0f,
-                LayerMask.GetMask("Climbable"));
-
-            if(colliderIndex != 0)
-            {
-                Debug.Log("Test Capsule collided with climbable object");
-            }
-
-
-       
+            }      
 
             // --- Add cast position to debug draw lists ---
             if (debugDraw)

@@ -85,6 +85,8 @@ namespace Traverser
 
         // --------------------------------
 
+        public bool collidedLedge = false;
+
         // --- Simulation methods ---
 
         public void Snapshot()  
@@ -207,7 +209,10 @@ namespace Traverser
 
             // --- Cast ground probe (ground collision detection) ---
             if (characterController.detectCollisions)
-                CheckGroundCollision();        
+            {
+                CheckGroundCollision();
+                CheckForwardLedgeCollision();
+            }
 
 
             // --- Add capsule positions to geometry debug list ---

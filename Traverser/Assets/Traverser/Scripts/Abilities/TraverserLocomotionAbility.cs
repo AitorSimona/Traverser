@@ -208,7 +208,27 @@ namespace Traverser
 
                 // --- If a collision occurs, call each ability's onContact callback ---
 
-                if (collision.isColliding && attemptTransition)
+                if(controller.collidedLedge)
+                {
+                    controller.collidedLedge = false;
+
+                    if (contactAbility == null)
+                    {
+                        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                        {
+
+                            // --- If any ability reacts to the collision, break ---
+                            if (ability.IsAbilityEnabled() && ability.OnContact(TraverserAffineTransform.Create(controller.capsuleHits[0].point, 
+                                Quaternion.identity), deltaTime))
+                            {
+                                contactAbility = ability;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                else if (collision.isColliding && attemptTransition)
                 {
                     ref TraverserAffineTransform contactTransform = ref controller.contactTransform /*TraverserAffineTransform.Create(contactPoint, q)*/;
 
@@ -217,7 +237,7 @@ namespace Traverser
                     // --- If we are not close to the desired angle or contact point, do not handle contacts ---
                     if (Mathf.Abs(angle) > contactAngleMax || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > contactDistanceMax)
                     {
-                        Debug.Log(Mathf.Abs(angle));
+                        //Debug.Log(Mathf.Abs(angle));
                         continue;
                     }
 

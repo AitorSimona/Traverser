@@ -628,6 +628,13 @@ namespace Traverser
 
         public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
         {
+            TraverserInputLayer.capture.UpdateClimbing();
+
+            if(TraverserInputLayer.capture.mountButton)
+            {
+                Debug.Log("Climbing to ledge");
+            }
+
             // --- If we make contact with a climbable surface and player issues climb order, mount ---
             //if (InputLayer.capture.mountButton)
             //{

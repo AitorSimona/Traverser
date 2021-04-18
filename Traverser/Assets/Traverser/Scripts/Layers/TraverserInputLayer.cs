@@ -55,8 +55,8 @@ namespace Traverser
 
             public void UpdateClimbing()
             {
-                stickHorizontal = Input.GetAxis("Left Analog Horizontal");
-                stickVertical = Input.GetAxis("Left Analog Vertical");
+                stickHorizontal = Input.GetAxis("Horizontal");
+                stickVertical = Input.GetAxis("Vertical");
 
                 //Debug.Log(stickVertical);
                 mountButton = Input.GetButton("B Button") || Input.GetKey("b");

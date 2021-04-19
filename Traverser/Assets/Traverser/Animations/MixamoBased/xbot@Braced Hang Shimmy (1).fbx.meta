@@ -1,11 +1,14 @@
 fileFormatVersion: 2
-guid: 49e0f693c61664f4d8f1650ed4dccb92
+guid: fc4bb39dd5ffcde48959fa87f7297a4b
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: LedgeIdle
+    second: Braced Hang Shimmy (1)
+  - first:
+      74: -4087845871447620103
+    second: LedgeLeft
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -35,11 +38,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: LedgeIdle
+      name: LedgeLeft
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 70
+      lastFrame: 35
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

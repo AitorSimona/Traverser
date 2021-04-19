@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 221b7802bc5954844a3f589d2ad59029
+guid: eef99afd04283d146abedc443373c700
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: mixamo.com
+    second: LedgeRight
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -35,7 +35,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: LedgeRight
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
@@ -46,8 +46,8 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 1
       loopBlendPositionY: 1
       loopBlendPositionXZ: 1

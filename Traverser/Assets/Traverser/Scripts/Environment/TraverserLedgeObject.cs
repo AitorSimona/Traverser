@@ -38,8 +38,6 @@ namespace Traverser
         {
             // --- Attributes ---
             public NativeArray<float3> vertices; // Attribute that defines a ledge object
-            // TODO
-            //private TagExtensions.OBB obb;
 
             // --- Basic Methods ---
             public static TraverserLedgeGeometry Create()
@@ -54,6 +52,15 @@ namespace Traverser
                 vertices.Dispose(); // free memory
             }
 
+            Vector3 CreateVector3(float x, float y, float z)
+            {
+                Vector3 tmp;
+                tmp.x = x;
+                tmp.y = y;
+                tmp.z = z;
+                return tmp;
+            }
+
             public void Initialize(BoxCollider collider)
             {
                 // --- Create ledge geometry from box collider ---
@@ -61,79 +68,39 @@ namespace Traverser
 
                 Vector3 center = collider.center;
                 Vector3 size = collider.size;
-
-                vertices[0] = transform.TransformPoint(center + new Vector3(-size.x, size.y, size.z) * 0.5f);
-                vertices[1] = transform.TransformPoint(center + new Vector3(size.x, size.y, size.z) * 0.5f);
-                vertices[2] = transform.TransformPoint(center + new Vector3(size.x, size.y, -size.z) * 0.5f);
-                vertices[3] = transform.TransformPoint(center + new Vector3(-size.x, size.y, -size.z) * 0.5f);
-
-                // TODO
-                //obb = TagExtensions.OBBFromBoxCollider(collider);
+              
+                vertices[0] = transform.TransformPoint(center + CreateVector3(-size.x, size.y, size.z) * 0.5f);
+                vertices[1] = transform.TransformPoint(center + CreateVector3(size.x, size.y, size.z) * 0.5f);
+                vertices[2] = transform.TransformPoint(center + CreateVector3(size.x, size.y, -size.z) * 0.5f);
+                vertices[3] = transform.TransformPoint(center + CreateVector3(-size.x, size.y, -size.z) * 0.5f);
             }
 
             // -------------------------------------------------
 
             // --- Utilities ---
 
-            public void LimitTransform(ref Vector3 position, float offset)
-            {
-                //TagExtensions.OBB obb = TagExtensions.OBBFromBoxCollider(collider);
-
-                //bool contains = true;
-
-                //float3 p = obb.transform.inverseTransform(position);
-                //float3 halfSize = (obb.size * 0.5f);
-
-                //if (p.x < -halfSize.x) contains =  false;
-                //if (p.x > halfSize.x)  contains =  false;
-                //if (p.z < -halfSize.z) contains =  false;
-                //if (p.z > halfSize.z)  contains =  false;
-
-
-                //if (!contains /*!obb.Contains(position, 0)*/)
-                //{
-                //    float3 final = ClosestPoint(position, vertices[0], vertices[1]);
-                //    float3 tmp = ClosestPoint(position, vertices[1], vertices[2]);
-
-                //    if (math.distance(position, tmp) < math.distance(position, final))
-                //        final = tmp;
-
-                //    tmp = ClosestPoint(position, vertices[2], vertices[3]);
-
-                //    if (math.distance(position, tmp) < math.distance(position, final))
-                //        final = tmp;
-
-                //    tmp = ClosestPoint(position, vertices[3], vertices[0]);
-
-                //    if (math.distance(position, tmp) < math.distance(position, final))
-                //        final = tmp;
-
-                //    position = final;
-                //}
-
-
-                //if (position.x < vertices[0].x + offset)
-                //    position.x = vertices[0].x + offset;
-                //if (position.z > vertices[0].z - offset)
-                //    position.z = vertices[0].z - offset;
-
-                //if (position.x > vertices[2].x - offset)
-                //    position.x = vertices[2].x - offset;
-                //if (position.z < vertices[2].z + offset)
-                //    position.z = vertices[2].z + offset;
-
-                //position.y = vertices[0].y;
-            }
-
             float3 ClosestPoint(float3 position, float3 pointP1, float3 pointP2)
             {
-                float D1 = math.distance(position, pointP1);
-                float D2 = math.distance(position, pointP2);
+                float3 segment = pointP2 - pointP1;
 
-                if (D2 > D1)
-                    return pointP1;
-                else
-                    return pointP2;
+                float3 projection = math.project(position - pointP1, math.normalizesafe(segment));
+
+                float3 closestPoint = pointP1 + projection;
+
+                if (math.dot(projection, segment) < 0.0f)
+                    closestPoint = pointP1;
+                else if (math.lengthsq(projection) > math.lengthsq(segment))
+                    closestPoint = pointP2;
+
+
+                return closestPoint;
+                //float D1 = math.distance(position, pointP1);
+                //float D2 = math.distance(position, pointP2);
+
+                //if (D2 > D1)
+                //    return pointP1;
+                //else
+                //    return pointP2;
             }
 
             public int GetNextEdgeIndex(int index)
@@ -167,7 +134,6 @@ namespace Traverser
 
                 return math.length(b - a);
             }
-
 
             public float3 GetPosition(TraverserLedgeAnchor anchor)
             {
@@ -284,7 +250,9 @@ namespace Traverser
             public TraverserLedgeAnchor GetAnchor(float3 position)
             {
                 // --- Given a 3d position/ root motion transform, return the closer anchor point ---
-                TraverserLedgeAnchor result = new TraverserLedgeAnchor();
+                TraverserLedgeAnchor result;
+                result.index = 0;
+                result.distance = 0;
 
                 float3 closestPoint = ClosestPoint(position, vertices[0], vertices[1]);
                 float minimumDistance = math.length(closestPoint - position);
@@ -353,6 +321,7 @@ namespace Traverser
                 int b = GetNextEdgeIndex(anchor.index);
 
                 float length = math.length(vertices[b] - vertices[a]);
+
                 float distance = anchor.distance + displacement;
 
                 if (distance > length)
@@ -381,9 +350,6 @@ namespace Traverser
             // --- Debug ---
             public void DebugDraw()
             {
-                // TODO
-                //TagExtensions.DebugDraw(obb, Color.magenta);
-
                 for (int i = 0; i < 4; ++i)
                 {
                     float3 v0 = vertices[i];

@@ -202,6 +202,8 @@ namespace Traverser
             {
                 SetState(State.Climbing); // we are hanging onto a ledge 
                 SetClimbingState(ClimbingState.Idle);
+                ledgeAnchor = ledgeGeometry.GetAnchor(transform.position);
+
                 //animationController.animator.Play("LedgeIdle", 0, 0.0f);
             }
 
@@ -481,7 +483,10 @@ namespace Traverser
 
             Vector3 target = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
 
-            float linearDisplacement = (target - transform.position).magnitude;
+            float linearDisplacement = -(target.x - transform.position.x);
+
+
+            //Debug.Log(linearDisplacement);
 
             TraverserLedgeObject.TraverserLedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
             float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);

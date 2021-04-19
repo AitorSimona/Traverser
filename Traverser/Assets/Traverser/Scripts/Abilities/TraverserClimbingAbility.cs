@@ -9,27 +9,27 @@ namespace Traverser
     public class TraverserClimbingAbility : MonoBehaviour, TraverserAbility
     {
         // --- Attributes ---
-        [Header("Transition settings")]
-        [Tooltip("Distance in meters for performing movement validity checks")]
-        [Range(0.0f, 1.0f)]
-        public float contactThreshold;
+        //[Header("Transition settings")]
+        //[Tooltip("Distance in meters for performing movement validity checks")]
+        //[Range(0.0f, 1.0f)]
+        //public float contactThreshold;
 
-        [Tooltip("Maximum linear error for transition poses")]
-        [Range(0.0f, 1.0f)]
-        public float maximumLinearError;
+        //[Tooltip("Maximum linear error for transition poses")]
+        //[Range(0.0f, 1.0f)]
+        //public float maximumLinearError;
 
-        [Tooltip("Maximum angular error for transition poses.")]
-        [Range(0.0f, 180.0f)]
-        public float maximumAngularError;
+        //[Tooltip("Maximum angular error for transition poses.")]
+        //[Range(0.0f, 180.0f)]
+        //public float maximumAngularError;
 
         [Header("Ledge prediction settings")]
         [Tooltip("Desired speed in meters per second for ledge climbing.")]
         [Range(0.0f, 10.0f)]
         public float desiredSpeedLedge;
 
-        [Tooltip("How fast or slow the target velocity is supposed to be reached.")]
-        [Range(0.0f, 1.0f)]
-        public float velocityPercentageLedge;
+        //[Tooltip("How fast or slow the target velocity is supposed to be reached.")]
+        //[Range(0.0f, 1.0f)]
+        //public float velocityPercentageLedge;
 
         // --------------------------------
 
@@ -173,7 +173,8 @@ namespace Traverser
                 ret = this;
             }
 
-            animationController.transition.UpdateTransition();
+            if(animationController.transition.isON)
+                animationController.transition.UpdateTransition();
 
             return ret;
         }
@@ -338,6 +339,8 @@ namespace Traverser
             float2 stickInput;
             stickInput.x = TraverserInputLayer.capture.stickHorizontal;
             stickInput.y = TraverserInputLayer.capture.stickVertical;
+
+            controller.targetPosition = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
 
             // --- React to pull up/dismount ---
             if (TraverserInputLayer.capture.pullUpButton /*&& !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule)*/)

@@ -1971,11 +1971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281a5dfa61455e94fbe404ff1e632d9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contactThreshold: 0
-  maximumLinearError: 0
-  maximumAngularError: 0
-  desiredSpeedLedge: 0
-  velocityPercentageLedge: 0
+  desiredSpeedLedge: 5
 --- !u!1 &1798491133
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,12 +30,12 @@ namespace Traverser
         // --- Utilities ---
 
         // --- Return whether given capsule collider is colliding with any object in given layers ---
-        public static bool IsCharacterCapsuleColliding(Vector3 rootPosition, ref CapsuleCollider capsule)
+        public static bool IsCharacterCapsuleColliding(Vector3 rootPosition, Vector3 center, float height, float radius)
         {
-            Vector3 capsuleCenter = rootPosition + capsule.center;
-            Vector3 capsuleOffset = Vector3.up * (capsule.height * 0.5f - capsule.radius);
+            Vector3 capsuleCenter = rootPosition + center;
+            Vector3 capsuleOffset = Vector3.up * (height * 0.5f - radius);
 
-            return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, capsule.radius - 0.1f, EnvironmentCollisionMask);
+            return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, radius - 0.1f, EnvironmentCollisionMask);
         }
 
         // --- Return the collider we are grounded to (index of hitColliders), -1 if no ground found --

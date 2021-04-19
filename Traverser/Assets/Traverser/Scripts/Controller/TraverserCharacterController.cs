@@ -63,8 +63,12 @@ namespace Traverser
         // --- The current state's actual collision situation ---
         public ref TraverserCollision current { get => ref state.currentCollision; }
 
-        // --- Character controller's capsule collider height ---
+        // --- Character controller's capsule collider height, center and radius ---
         public float capsuleHeight { get => characterController.height; }
+
+        public Vector3 capsuleCenter { get => characterController.center; }
+
+        public float capsuleRadius { get => characterController.radius; }
 
         // --- Whether or not the character controller's capsule collider is grounded ---
         public bool isGrounded { get => current.isGrounded; }

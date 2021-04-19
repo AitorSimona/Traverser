@@ -332,15 +332,10 @@ namespace Traverser
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
             RaycastHit ray_hit;
+
             // --- Check if the ray hits a collider, allow dismount if true ---
             //if (Physics.Raycast(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward, Vector3.down, out ray_hit, 2.8f, CollisionLayer.EnvironmentCollisionMask))
             //    closeToDrop = true;
-
-            float2 stickInput;
-            stickInput.x = TraverserInputLayer.capture.stickHorizontal;
-            stickInput.y = TraverserInputLayer.capture.stickVertical;
-
-            controller.targetPosition = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
 
             // --- React to pull up/dismount ---
             if (TraverserInputLayer.capture.pullUpButton /*&& !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule)*/)
@@ -425,21 +420,21 @@ namespace Traverser
 
         bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
         {
-            //bool bCollision = CollisionLayer.IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f), ref capsule);
+            bool bCollision = TraverserCollisionLayer.IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f), controller.capsuleCenter ,controller.capsuleHeight, controller.capsuleRadius);
 
-            //if (climbingState == ClimbingState.Idle)
-            //{
-            //    lastCollidingClimbingState = ClimbingState.None;
-            //}
-            //else if (bCollision)
-            //{
-            //    float currentMoveDirection = climbingState == ClimbingState.Left ? 1.0f : -1.0f;
+            if (climbingState == ClimbingState.Idle)
+            {
+                lastCollidingClimbingState = ClimbingState.None;
+            }
+            else if (bCollision)
+            {
+                float currentMoveDirection = climbingState == ClimbingState.Left ? 1.0f : -1.0f;
 
-            //    if (currentMoveDirection * desiredMoveOnLedge > 0.0f)
-            //        lastCollidingClimbingState = climbingState;
-            //}
+                if (currentMoveDirection * desiredMoveOnLedge > 0.0f)
+                    lastCollidingClimbingState = climbingState;
+            }
 
-            return false;//bCollision;
+            return bCollision;
         }
 
         void UpdateClimbing(float deltaTime)
@@ -480,7 +475,23 @@ namespace Traverser
             //// --- Update root motion transform ---
             //synthesizer.WorldRootTransform = rootTransform;
 
+            float2 stickInput;
+            stickInput.x = TraverserInputLayer.capture.stickHorizontal;
+            stickInput.y = TraverserInputLayer.capture.stickVertical;
 
+            Vector3 target = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
+
+            float linearDisplacement = (target - transform.position).magnitude;
+
+            TraverserLedgeObject.TraverserLedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
+            float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
+            float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
+
+            // --- Update current anchor if it is still on the ledge ---
+            if (!UpdateCollidingClimbingState(linearDisplacement, position, desiredForward))
+                ledgeAnchor = desiredLedgeAnchor;
+
+            controller.targetPosition = target;
 
             ledgeGeometry.DebugDraw();
             ledgeGeometry.DebugDraw(ref ledgeAnchor);

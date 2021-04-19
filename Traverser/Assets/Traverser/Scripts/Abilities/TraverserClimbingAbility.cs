@@ -140,7 +140,7 @@ namespace Traverser
         public TraverserAbility OnUpdate(float deltaTime)
         {
             //ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
-            TraverserAbility ret = null;
+            TraverserAbility ret = this;
 
             TraverserInputLayer.capture.UpdateClimbing();
 
@@ -189,17 +189,18 @@ namespace Traverser
 
             //    ret = this;
             //}
+            animationController.transition.UpdateTransition();
 
-            return animationController.transition.UpdateTransition() ? this : null;
+            return ret;//;
         }
 
         public TraverserAbility OnFixedUpdate(float deltaTime)
         {
-            if (animationController.transition.isON)
+            //if (animationController.transition.isON)
                 return this;
 
 
-            return null;
+            //return null;
         }
 
         public TraverserAbility OnPostUpdate(float deltaTime)
@@ -672,22 +673,20 @@ namespace Traverser
                                 // We want to reach the pre climb position and then activate the animation
                                 TraverserAffineTransform target = TraverserAffineTransform.Create(contactTransform.t, contactTransform.q);
                                 target.t.y = ledgeGeometry.vertices[0].y;
+                                target.t.z -= 1.0f;
+
 
                                 ret = animationController.transition.StartTransition("WalkTransition", "Mount",
-                                    "WalkTransitionTrigger", "MountTrigger", 3.0f, 0.5f,
+                                    "WalkTransitionTrigger", "MountTrigger", 1.5f, 0.5f,
                                     ref contactTransform,
                                     ref target);
 
-                                SetState(State.Mounting);
+                                //SetState(State.Mounting);
                             }
                         }
                     }
                 }
 
-                //ret = animationController.transition.StartTransition("WalkTransition", "Mount", 
-                //    "WalkTransitionTrigger", "MountTrigger", 2.0f, 0.5f,
-                //    ref target,
-                //    ref contactTransform);
             }
 
             return ret;

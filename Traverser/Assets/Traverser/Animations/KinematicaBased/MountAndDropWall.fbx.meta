@@ -42,7 +42,7 @@ ModelImporter:
       name: Mount
       takeName: Take 001
       internalID: 0
-      firstFrame: 0
+      firstFrame: 30
       lastFrame: 82
       wrapMode: 0
       orientationOffsetY: 0

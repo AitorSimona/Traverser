@@ -147,51 +147,52 @@ namespace Traverser
             // --- Turn off/on controller ---
             controller.ConfigureController(!IsState(State.Suspended));
 
-            //// --- If character is not falling ---
-            //if (!IsState(State.Suspended))
-            //{
-            //    // --- Handle current state ---
-            //    switch (state)
-            //    {
-            //        case State.Mounting:
-            //            HandleMountingState();
-            //            break;
+            // --- If character is not falling ---
+            if (!IsState(State.Suspended))
+            {
+                // --- Handle current state ---
+                switch (state)
+                {
+                    case State.Mounting:
+                        HandleMountingState();
+                        break;
 
-            //        case State.Dismount:
-            //            HandleDismountState();
-            //            break;
+                    case State.Dismount:
+                        HandleDismountState();
+                        break;
 
-            //        case State.PullUp:
-            //            HandlePullUpState();
-            //            break;
+                    case State.PullUp:
+                        HandlePullUpState();
+                        break;
 
-            //        case State.Climbing:
-            //            HandleClimbingState(deltaTime);
-            //            break;
+                    case State.Climbing:
+                        HandleClimbingState(deltaTime);
+                        break;
 
-            //        case State.FreeClimbing:
-            //            HandleFreeClimbingState(deltaTime);
-            //            break;
+                    case State.FreeClimbing:
+                        HandleFreeClimbingState(deltaTime);
+                        break;
 
-            //        case State.DropDown:
-            //            HandleDropDownState();
-            //            break;
+                    case State.DropDown:
+                        HandleDropDownState();
+                        break;
 
-            //        default:
-            //            break;
-            //    }
+                    default:
+                        break;
+                }
 
-            //    // --- Let other abilities handle the situation ---
-            //    if (IsState(State.Suspended))
-            //        return null;
+                // --- Let other abilities handle the situation ---
+                if (IsState(State.Suspended))
+                    return null;
 
-            //    //KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
+                //KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
 
-            //    ret = this;
-            //}
+                ret = this;
+            }
+
             animationController.transition.UpdateTransition();
 
-            return ret;//;
+            return ret;
         }
 
         public TraverserAbility OnFixedUpdate(float deltaTime)
@@ -211,7 +212,14 @@ namespace Traverser
         // --- Climbing states wrappers ---
         void HandleMountingState()
         {
-            bool TransitionSuccess;
+            //bool TransitionSuccess;
+
+            if(!animationController.transition.isON)
+            {
+                SetState(State.Climbing); // we are hanging onto a ledge 
+                SetClimbingState(ClimbingState.Idle);
+                //animationController.animator.Play("LedgeIdle", 0, 0.0f);
+            }
 
             //if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
             //{
@@ -677,11 +685,12 @@ namespace Traverser
 
 
                                 ret = animationController.transition.StartTransition("WalkTransition", "Mount",
-                                    "WalkTransitionTrigger", "MountTrigger", 1.5f, 0.5f,
+                                    "WalkTransitionTrigger", "MountTrigger", 1.0f, 1.0f,
                                     ref contactTransform,
                                     ref target);
-
-                                //SetState(State.Mounting);
+                                
+                                if(ret)
+                                    SetState(State.Mounting);
                             }
                         }
                     }

@@ -173,8 +173,13 @@ namespace Traverser
             currentdeltaRotation = Quaternion.Lerp(transform.rotation, matchRotation, timeToTarget/*0.25f + currentTime / info.length*/); //timeToTarget
 
             // --- If close enough to validDistance, end warp ---
+
+            // For now, let's trick the warper into believing there is no height difference
+            Vector3 matchGround = matchPosition;
+            matchGround.y = transform.position.y;
+
             // TODO: This distance takes into account Y, giving problems to valid distances of those transitions that do not use Y
-            if (math.distance(transform.position, matchPosition) < validDistance)
+            if (math.distance(transform.position, matchGround) < validDistance)
             {
                 deltaPosition = Vector3.zero;
                 currentdeltaPosition = Vector3.zero;

@@ -30,6 +30,7 @@ Video game characters interact with the objects in the world in many different w
 - Microsoft Visual Studio 2019
 - Unity 2020.2.2f1
 - Kinematica's 0.8 demo assets
+- Mixamo character and several animations
 - Autodesk Maya 2019
 
 ## CWLF Project

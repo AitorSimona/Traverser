@@ -39,7 +39,6 @@ namespace Traverser
             Suspended,
             Mounting,
             Climbing,
-            FreeClimbing,
             Dismount,
             PullUp,
             DropDown
@@ -84,21 +83,12 @@ namespace Traverser
         // --------------------------------
 
         // --- World interactable elements ---
-        //[Snapshot]
+
         TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
         TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
-
-        //[Snapshot]
         TraverserWallObject.TraverserWallGeometry wallGeometry;
-
-        //[Snapshot]
         TraverserLedgeObject.TraverserLedgeAnchor ledgeAnchor;
-
-        //[Snapshot]
         TraverserWallObject.TraverserWallAnchor wallAnchor;
-
-        //[Snapshot]
-        //AnchoredTransitionTask anchoredTransition;
 
         // --------------------------------
 
@@ -123,15 +113,12 @@ namespace Traverser
 
             ledgeAnchor = TraverserLedgeObject.TraverserLedgeAnchor.Create();
             wallAnchor = TraverserWallObject.TraverserWallAnchor.Create();
-
-            //anchoredTransition = AnchoredTransitionTask.Invalid;
         }
 
         public void OnDisable()
         {
             ledgeGeometry.Dispose();
             auxledgeGeometry.Dispose();
-            //anchoredTransition.Dispose();
         }
 
         // --------------------------------
@@ -167,10 +154,6 @@ namespace Traverser
 
                     case State.Climbing:
                         HandleClimbingState(deltaTime);
-                        break;
-
-                    case State.FreeClimbing:
-                        HandleFreeClimbingState(deltaTime);
                         break;
 
                     case State.DropDown:
@@ -375,103 +358,6 @@ namespace Traverser
             //}
         }
 
-        void HandleFreeClimbingState(float deltaTime)
-        {
-            //bool bTransitionSucceeded;
-            //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
-
-            //// --- Handle special corner transitions ---
-            //if (climbingState == ClimbingState.CornerRight
-            //    || climbingState == ClimbingState.CornerLeft)
-            //{
-
-            //    if (bTransitionSucceeded)
-            //    {
-            //        ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-
-            //        RaycastHit ray_hit;
-
-            //        // --- Check if the ray hits a collider ---
-            //        if (Physics.Raycast(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward*0.5f, synthesizer.WorldRootTransform.Forward, out ray_hit, 2, CollisionLayer.EnvironmentCollisionMask))
-            //        {
-            //            wallGeometry.Initialize(ray_hit.collider as BoxCollider, synthesizer.WorldRootTransform);
-            //        }
-
-            //        //Debug.DrawRay(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward*0.5f, synthesizer.WorldRootTransform.Forward, Color.red,60);
-
-            //        SetClimbingState(ClimbingState.None);
-            //    }
-
-            //    return;
-            //}
-
-            //// --- We are climbing a wall ---
-            //UpdateFreeClimbing(ref synthesizer, deltaTime);
-
-            //ClimbingState desiredState = GetDesiredFreeClimbingState();
-
-            //if (!IsClimbingState(desiredState) || bTransitionSucceeded)
-            //{
-            //    // --- Handle wall climbing state ---
-                
-            //    Climbing climbingTrait = Climbing.Create(Climbing.Type.Wall);
-
-            //    if (desiredState == ClimbingState.Right
-            //        || desiredState == ClimbingState.Left
-            //        || desiredState == ClimbingState.CornerRight
-            //        || desiredState == ClimbingState.CornerLeft)
-            //        climbingTrait.type = Climbing.Type.Ledge;
-
-            //    if (desiredState == ClimbingState.Idle)
-            //    {
-            //        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-            //    }
-            //    else
-            //    {
-            //        // Tip: Since Direction and ClimbingState enums follow the same order, we can cast from one to the other, avoiding a switch
-            //        Direction direction = Direction.Create((Direction.Type)desiredState - 1);
-            //        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-
-            //        if (desiredState == ClimbingState.CornerRight
-            //        || desiredState == ClimbingState.CornerLeft)
-            //        {
-            //            // --- We fake a play and check if at the segment's end there is a collision ---
-
-            //            // --- If a collision is found play idle ---
-            //            if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
-            //            {
-            //                SetClimbingState(ClimbingState.Idle);
-            //                PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-            //                Debug.Log("No sequences for corner transition in free climbing, collision found");
-            //                return;
-            //            }
-            //        }
-            //    }
-
-            //    SetClimbingState(desiredState);
-            //}
-
-            //float height = wallGeometry.GetHeight(ref wallAnchor);
-            //float totalHeight = wallGeometry.GetHeight();
-            //bool closeToLedge = math.abs(totalHeight - height) <= 0.095f;
-            //bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
-
-            //float2 stickInput = InputLayer.GetStickInput();
-
-            //// --- Check if we are close to hanging onto a ledge or almost on the ground ---
-            //if (closeToLedge && -stickInput.y > 0.5f)
-            //{
-            //    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootPosition
-            //    SetState(State.Climbing);
-            //}
-            //if (closeToDrop && InputLayer.capture.dismountButton)
-            //{
-            //    Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
-            //    PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
-            //    SetState(State.Dismount);
-            //}
-        }
-
         void HandleDismountState()
         {
             //bool bTransitionSucceeded;
@@ -595,57 +481,7 @@ namespace Traverser
 
             ledgeGeometry.DebugDraw();
             ledgeGeometry.DebugDraw(ref ledgeAnchor);
-        }
-
-        void UpdateFreeClimbing(float deltaTime)
-        {
-            //
-            // Smoothly adjust current root transform towards the anchor transform
-            //
-
-            //// --- Update wall climbing ---
-            //AffineTransform deltaTransform = synthesizer.GetTrajectoryDeltaTransform(deltaTime);
-            //AffineTransform rootTransform = synthesizer.WorldRootTransform * deltaTransform;
-
-            //wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
-            //float y = 1.0f - (2.8f / wallGeometry.GetHeight());
-            //wallAnchor.y = math.min(y, wallAnchor.y);
-
-            //float3 position = wallGeometry.GetPosition(wallAnchor);
-            //float distance = math.length(rootTransform.t - position);
-
-            //if (distance >= 0.01f)
-            //{
-            //    float3 normal = math.normalize(position - rootTransform.t);
-            //    rootTransform.t += normal * 0.5f * deltaTime;
-            //}
-
-            //rootTransform.t = position;
-
-            //float angle;
-            //float3 currentForward = Missing.zaxis(rootTransform.q);
-            //float3 desiredForward = -wallGeometry.GetNormalWorldSpace();
-
-            //quaternion q = Missing.forRotation(currentForward, desiredForward);
-            //float maximumAngle = math.radians(90.0f) * deltaTime;
-            //float3 axis = Missing.axisAngle(q, out angle);
-            //angle = math.min(angle, maximumAngle);
-            //rootTransform.q = math.mul(quaternion.AxisAngle(axis, angle), rootTransform.q);
-
-            //rootTransform *= deltaTransform.inverse();
-            //rootTransform.q = math.normalize(rootTransform.q);
-
-            //// --- Update root motion transform ---
-            //synthesizer.WorldRootTransform = rootTransform;
-
-            //wallGeometry.DebugDraw();
-            //wallGeometry.DebugDraw(ref wallAnchor);
-
-            //ledgeGeometry.DebugDraw();
-            //ledgeGeometry.DebugDraw(ref ledgeAnchor);
-        }
-
-
+        }    
 
         public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
         {
@@ -783,76 +619,7 @@ namespace Traverser
         {
             return this.climbingState == climbingState;
         }
-        //public void PlayFirstSequence(PoseSet poses) 
-        //{
-        //    kinematica.Synthesizer.Ref.PlayFirstSequence(poses);
-        //    poses.Dispose();
-        //}
-
-        //ClimbingState GetDesiredFreeClimbingState()
-        //{
-        //    float2 stickInput;
-        //    stickInput.x = TraverserInputLayer.capture.stickHorizontal;
-        //    stickInput.y = TraverserInputLayer.capture.stickVertical;
-        //    stickInput.y = -stickInput.y; // negate y, so positive y means going up
-
-        //    // --- Depending on stick input, decide climbing direction ---
-        //    if (math.length(stickInput) >= 0.1f)
-        //    {
-        //        if (stickInput.x > 0.3f && stickInput.y > 0.3f)
-        //        {
-        //            return ClimbingState.UpRight;
-        //        }
-        //        else if (stickInput.x < -0.3f && stickInput.y > 0.3f)
-        //        {
-        //            return ClimbingState.UpLeft;
-        //        }
-        //        else if (stickInput.x > 0.3f && stickInput.y < -0.3f)
-        //        {
-        //            return ClimbingState.DownRight;
-        //        }
-        //        else if (stickInput.x < -0.3f && stickInput.y < -0.3f)
-        //        {
-        //            return ClimbingState.DownLeft;
-        //        }
-        //        else if (stickInput.x > 0.5f)
-        //        {
-        //            bool left = false;
-
-        //            // --- Use ledge definition to determine how close we are to the edges of the wall ---
-        //            //float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
-
-        //            //if (!left && distance < 0.1f)
-        //            //    return ClimbingState.CornerRight;
-
-        //            return ClimbingState.Right;
-        //        }
-        //        else if (stickInput.x < -0.5f)
-        //        {
-        //            bool left = false;
-
-        //            // --- Use ledge definition to determine how close we are to the edges of the wall ---
-        //            //float distance = ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
-
-        //            //if (left && distance < 0.1f)
-        //            //    return ClimbingState.CornerLeft;
-
-        //            return ClimbingState.Left;
-        //        }
-        //        else if (stickInput.y < -0.5f)
-        //        {
-        //            return ClimbingState.Down;
-        //        }
-        //        else if (stickInput.y > 0.5f)
-        //        {
-        //            return ClimbingState.Up;
-        //        }
-
-        //    }
-
-        //    return ClimbingState.Idle;
-        //}
-
+        
         ClimbingState GetDesiredClimbingState() 
         {
             float2 stickInput;
@@ -882,8 +649,6 @@ namespace Traverser
 
             return ClimbingState.Idle;
         }
-
-
 
         // --------------------------------
     }

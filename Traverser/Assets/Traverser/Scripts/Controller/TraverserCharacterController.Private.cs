@@ -6,7 +6,6 @@ namespace Traverser
 {
     public partial class TraverserCharacterController : MonoBehaviour
     {
-
         // --- Wrapper to define a controller's state collision situation and movement information ---
         public struct TraverserCollision
         {
@@ -160,8 +159,6 @@ namespace Traverser
         // --- Array of raycast hits for groundSnap checks ---
         private RaycastHit[] groundRayHits = new RaycastHit[1];
 
-        //public RaycastHit[] capsuleHits = new RaycastHit[1];
-
         // --- Arrays of positions for geometry debugging ---
         private List<float3> probePositions;
         private List<float3> capsulePositions;
@@ -196,31 +193,6 @@ namespace Traverser
 
         // --- Collisions ---
 
-        //void CheckForwardLedgeCollision()
-        //{
-        //    int colliderIndex;
-
-        //    Vector3 point1 = position;
-        //    point1.y -= characterController.height;
-
-        //    Vector3 point2 = position;
-        //    point2.y += characterController.height;
-
-        //    colliderIndex = Physics.CapsuleCastNonAlloc(point1,
-        //        point2,
-        //        characterController.radius * 2.0f,
-        //        transform.forward,
-        //        capsuleHits,
-        //        1.0f,
-        //        LayerMask.GetMask("Climbable"));
-
-        //    if (colliderIndex != 0)
-        //    {
-        //        //Debug.Log("Test Capsule collided with climbable object");
-        //    }
-
-        //}
-
         void CheckGroundCollision()
         {
             int colliderIndex = TraverserCollisionLayer.CastGroundProbe(position, groundProbeRadius, ref hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask);
@@ -229,8 +201,6 @@ namespace Traverser
             {       
                 current.ground = hitColliders[colliderIndex];
                 current.isGrounded = true;
-                //Debug.Log("Ground is:");
-                //Debug.Log(current.ground.gameObject.name);
             }      
 
             // --- Add cast position to debug draw lists ---
@@ -257,7 +227,6 @@ namespace Traverser
                 if (state.previousCollision.ground != null 
                     && Physics.RaycastNonAlloc(groundRay, groundRayHits, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore) == 0)
                 {
-                    //Debug.Log("KEPT ON BOUNDS");
                     characterController.enabled = false;
                     float3 correctedPosition = state.previousCollision.position;
                     transform.position = correctedPosition;
@@ -280,8 +249,6 @@ namespace Traverser
         {
             if (!debugDraw || characterController == null)
                 return;
-
-
 
             // --- Draw last contact point ---
             Gizmos.color = Color.cyan;
@@ -314,16 +281,10 @@ namespace Traverser
                 for (int i = 0; i < capsulePositions.Count; ++i)
                 {
                     Gizmos.DrawWireMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, capsuleDebugMeshScale);
-                    //Vector3 scale = Vector3.one;
-                    //scale.y *= 2;
-                    //Gizmos.DrawWireMesh(capsuleDebugMesh, 0, capsulePositions[i], Quaternion.identity, scale);
                 }
             }
             
-
-            //Gizmos.DrawSphere(current.colliderContactPoint, 0.5f);
         }
-
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
@@ -358,6 +319,7 @@ namespace Traverser
                 else
                     contactSize = hit.collider.bounds.size.x;
 
+                // --- Retrieve collider data ---
                 contactNormal = hit.normal;
                 contactTransform.t = hit.point;
                 contactTransform.q = math.mul(transform.rotation, Quaternion.FromToRotation(-transform.forward, hit.normal));

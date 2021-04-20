@@ -14,24 +14,27 @@ namespace Traverser
         private TraverserAnimationController animationController;
         private TraverserAnimationController.AnimatorParameters animatorParameters;
         private TraverserAbility[] abilities;
-        //public Animator animator;
 
         // --------------------------------
 
         // --- Basic methods ---
-        public void OnEnable()
+        public void Start()
         {
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
             abilities = GetComponents<TraverserAbility>();
 
+            Assert.IsTrue(controller != null);
+
             // --- Set animator parameters --- 
             animationController.InitializeAnimatorParameters(ref animatorParameters);
         }
 
+        // MYTODO: Order of update is important, it would be wise to add a priority to abilities,
+        // instead of following the arbitrary order in which they were added as components
+
         public void Update()
         {
-
             if (!controller.isActiveAndEnabled)
                 return;
 
@@ -46,19 +49,12 @@ namespace Traverser
             // --- If no ability is in control, look for one ---
             if (currentAbility == null || !isEnabled)
             {
-                // MYTODO: Order of update is important, it would be wise to add a priority to abilities,
-                // instead of following the arbitrary order in which they were added as components
-
                 // --- Iterate all abilities and update each one until one takes control ---
                 foreach (TraverserAbility ability in abilities)
                 {
                     if (!ability.IsAbilityEnabled())
                         continue;
 
-                    // An ability can either return "null" or a reference to an ability.
-                    // A "null" result signals that this ability doesn't require control.
-                    // Otherwise the returned ability (which might be different from the
-                    // one that we call "OnUpdate" on) will be the one that gains control.
                     TraverserAbility result = ability.OnUpdate(Time.deltaTime);
 
                     // --- If an ability asks to take control, break ---
@@ -70,18 +66,10 @@ namespace Traverser
                 }
             }
 
-            // --- Send updated animator parameters to animation controller ---
-            if (animationController.isActiveAndEnabled)
-            {
-                animatorParameters.Move = TraverserInputLayer.GetMoveIntensity() > 0.0f;
-                animatorParameters.Speed = math.length(controller.targetVelocity);
-                animatorParameters.Heading = controller.targetHeading;
-
-                //Debug.Log(animatorParameters.Heading);
-                animationController.UpdateAnimator(ref animatorParameters);
-            }
-
         }
+
+        // MYTODO: Order of update is important, it would be wise to add a priority to abilities,
+        // instead of following the arbitrary order in which they were added as components
 
         private void FixedUpdate()
         {
@@ -92,9 +80,7 @@ namespace Traverser
 
             // --- Keep updating our current ability ---
             if (currentAbility != null && isEnabled)
-            {
                 currentAbility = currentAbility.OnFixedUpdate(Time.fixedDeltaTime);
-            }
 
             // --- If no ability is in control, look for one ---
             if (currentAbility == null || !isEnabled)
@@ -116,60 +102,31 @@ namespace Traverser
                 }
             }
 
-            //if (!controller.isActiveAndEnabled)
-            //    return;
+            // --- Send updated animator parameters to animation controller ---
+            if (animationController.isActiveAndEnabled)
+            {
+                animatorParameters.Move = TraverserInputLayer.GetMoveIntensity() > 0.0f;
+                animatorParameters.Speed = math.length(controller.targetVelocity);
+                animatorParameters.Heading = controller.targetHeading;
 
-            // --- After all animations are evaluated, perform movement ---
+                //Debug.Log(animatorParameters.Heading);
+                animationController.UpdateAnimator(ref animatorParameters);
+            }
+
+            // --- Perform movement ---
+            if (!animationController.transition.isON)
+                controller.ForceMove(controller.targetPosition);
+
+            // --- If an ability gave back control, do not PostUpdate ---
             if (currentAbility == null)
                 return;
 
-            //bool isEnabled = currentAbility.IsAbilityEnabled();
-
-            // --- Let abilities modify motion ---
-            if (currentAbility is TraverserAbilityAnimatorMove abilityAnimatorMove)
-            {
-                if (isEnabled)
-                    abilityAnimatorMove.OnAbilityAnimatorMove();
-            }
-
-            Assert.IsTrue(controller != null);
-
-            if (!animationController.transition.isON)
-                controller.ForceMove(controller.targetPosition);
 
             // --- Let abilities apply final changes to motion, if needed ---
             if (isEnabled)
                 currentAbility.OnPostUpdate(Time.deltaTime);
-        }
 
-        //public void OnAnimatorMove()
-        //{
-        //    //if (!controller.isActiveAndEnabled)
-        //    //    return;
-
-        //    //// --- After all animations are evaluated, perform movement ---
-        //    //if (currentAbility == null)
-        //    //    return;
-
-        //    //bool isEnabled = currentAbility.IsAbilityEnabled();
-
-        //    //// --- Let abilities modify motion ---
-        //    //if (currentAbility is TraverserAbilityAnimatorMove abilityAnimatorMove)
-        //    //{
-        //    //    if (isEnabled)
-        //    //        abilityAnimatorMove.OnAbilityAnimatorMove();
-        //    //}
-
-        //    //Assert.IsTrue(controller != null);
-
-        //    //if(!animator.isMatchingTarget)
-        //    //    controller.ForceMove(controller.targetPosition);
-            
-
-        //    //// --- Let abilities apply final changes to motion, if needed ---
-        //    //if (isEnabled)
-        //    //    currentAbility.OnPostUpdate(Time.deltaTime);
-        //}
+        }     
 
         // --------------------------------
     }

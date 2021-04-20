@@ -89,8 +89,6 @@ namespace Traverser
 
         // --------------------------------
 
-        //public bool collidedLedge = false;
-
         // --- Simulation methods ---
 
         public void Snapshot()  

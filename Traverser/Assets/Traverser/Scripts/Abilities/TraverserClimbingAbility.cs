@@ -171,9 +171,6 @@ namespace Traverser
                 ret = this;
             }
 
-            //if (animationController.transition.isON)
-            //    animationController.transition.UpdateTransition();
-
             return ret;
         }
 
@@ -185,7 +182,7 @@ namespace Traverser
             {
                 SetState(State.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
-                //ledgeHook = ledgeGeometry.GetHook(transform.position); // unneeded?
+                ledgeHook = ledgeGeometry.GetHook(transform.position); 
             }
         }
 
@@ -427,12 +424,18 @@ namespace Traverser
             float2 stickInput;
             stickInput.x = TraverserInputLayer.capture.stickHorizontal;
             stickInput.y = TraverserInputLayer.capture.stickVertical;
-            Vector3 target = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
+
+            // --- Since transform.position is only updated in fixed timestep we should use the controller's 
+            // --- target position to accumulate movement and have framerate independent motion ---
+            // --- Now we are performing this in fixes update so there is no problem, just as a reminder ---
+
+            Vector3 target = controller.targetPosition; 
+            target += transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
 
             // --- Obtain target displacement
-            float linearDisplacement = -(target.x - transform.position.x);
+            float linearDisplacement = -(target.x - controller.targetPosition.x);
 
-            // --- Update 
+            // --- Update hook ---
             TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, target);
             float3 position = ledgeGeometry.GetPosition(desiredLedgeHook);
             float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeHook);

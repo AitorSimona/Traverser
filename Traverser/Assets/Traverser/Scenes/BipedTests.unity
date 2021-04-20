@@ -1975,7 +1975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281a5dfa61455e94fbe404ff1e632d9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  desiredSpeedLedge: 5
+  desiredSpeedLedge: 2
 --- !u!1 &1798491133
 GameObject:
   m_ObjectHideFlags: 0
@@ -2849,6 +2849,10 @@ PrefabInstance:
     - target: {fileID: 6740730751872137753, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: stepping
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: movementSpeedMin

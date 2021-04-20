@@ -71,8 +71,6 @@ namespace Traverser
         private TraverserAnimationController animationController;
         private TraverserLocomotionAbility locomotionAbility;
 
-        //private CapsuleCollider capsule;
-
         private State state; // Actual Climbing movement/state
         private State previousState; // Previous Climbing movement/state
 
@@ -87,13 +85,13 @@ namespace Traverser
         TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
         TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
         TraverserWallObject.TraverserWallGeometry wallGeometry;
-        TraverserLedgeObject.TraverserLedgeHook ledgeAnchor;
+        TraverserLedgeObject.TraverserLedgeHook ledgeHook;
         TraverserWallObject.TraverserWallAnchor wallAnchor;
 
         // --------------------------------
 
         // --- Basic Methods ---
-        public void OnEnable()
+        public void Start()
         {
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
@@ -109,14 +107,8 @@ namespace Traverser
             auxledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
             wallGeometry = TraverserWallObject.TraverserWallGeometry.Create();
 
-            ledgeAnchor = TraverserLedgeObject.TraverserLedgeHook.Create();
+            ledgeHook = TraverserLedgeObject.TraverserLedgeHook.Create();
             wallAnchor = TraverserWallObject.TraverserWallAnchor.Create();
-        }
-
-        public void OnDisable()
-        {
-            //ledgeGeometry.Dispose();
-            //auxledgeGeometry.Dispose();
         }
 
         // --------------------------------
@@ -124,7 +116,6 @@ namespace Traverser
         // --- Ability class methods ---
         public TraverserAbility OnUpdate(float deltaTime)
         {
-            //ref MotionSynthesizer synthesizer = ref kinematica.Synthesizer.Ref;
             TraverserAbility ret = this;
 
             TraverserInputLayer.capture.UpdateClimbing();
@@ -164,9 +155,7 @@ namespace Traverser
 
                 // --- Let other abilities handle the situation ---
                 if (IsState(State.Suspended))
-                    return null;
-
-                //KinematicaLayer.UpdateAnchoredTransition(ref anchoredTransition, ref kinematica);
+                    return null;;
 
                 ret = this;
             }
@@ -194,51 +183,13 @@ namespace Traverser
         // --- Climbing states wrappers ---
         void HandleMountingState()
         {
-            //bool TransitionSuccess;
-
+            // --- If transition is over and we were mounting change state to ledge idle ---
             if(!animationController.transition.isON)
             {
-                SetState(State.Climbing); // we are hanging onto a ledge 
+                SetState(State.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
-                ledgeAnchor = ledgeGeometry.GetHook(transform.position);
-
-                //animationController.animator.Play("LedgeIdle", 0, 0.0f);
+                //ledgeHook = ledgeGeometry.GetHook(transform.position); // unneeded?
             }
-
-            //if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
-            //{
-            //    if (!TransitionSuccess)
-            //    {
-            //        SetState(State.Suspended);
-            //        return;
-            //    }
-
-            //    bool freeClimbing = false; // ledgeDistance >= 0.1f;
-
-            //    // --- Get ledge anchor point from root motion transform ---
-            //    float3 rootPosition = synthesizer.WorldRootTransform.t;
-            //    ledgeAnchor = ledgeGeometry.GetAnchor(rootPosition);
-            //    float ledgeDistance = math.length(rootPosition - ledgeGeometry.GetPosition(ledgeAnchor));
-
-            //    if (ledgeDistance >= 0.3f)
-            //        freeClimbing = true;
-
-            //    // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
-            //    Climbing climbingTrait = freeClimbing ? Climbing.Create(Climbing.Type.Wall) : Climbing.Create(Climbing.Type.Ledge);
-
-            //    if (freeClimbing)
-            //    {
-            //        wallAnchor = wallGeometry.GetAnchor(synthesizer.WorldRootTransform.t); // rootposition
-            //        SetState(State.FreeClimbing);
-            //    }
-            //    else
-            //    {
-            //        SetState(State.Climbing); // we are hanging onto a ledge 
-            //    }
-
-            //    SetClimbingState(ClimbingState.Idle);
-            //    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-            //}
         }
 
         void HandleClimbingState(float deltaTime)
@@ -475,27 +426,28 @@ namespace Traverser
             //// --- Update root motion transform ---
             //synthesizer.WorldRootTransform = rootTransform;
 
+            // --- Given input, compute target position ---
             float2 stickInput;
             stickInput.x = TraverserInputLayer.capture.stickHorizontal;
             stickInput.y = TraverserInputLayer.capture.stickVertical;
-
             Vector3 target = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
 
+            // --- Obtain target displacement
             float linearDisplacement = -(target.x - transform.position.x);
-            //Debug.Log(linearDisplacement);
 
-            TraverserLedgeObject.TraverserLedgeHook desiredLedgeAnchor = ledgeGeometry.UpdateHook(ledgeAnchor, target);
-            float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
-            float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
+            // --- Update 
+            TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, target);
+            float3 position = ledgeGeometry.GetPosition(desiredLedgeHook);
+            float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeHook);
 
-            // --- Update current anchor if it is still on the ledge ---
+            // --- Update current hook if it is still on the ledge ---
             if (!UpdateCollidingClimbingState(linearDisplacement, position, desiredForward))
-                ledgeAnchor = desiredLedgeAnchor;
+                ledgeHook = desiredLedgeHook;
 
             controller.targetPosition = target;
 
             ledgeGeometry.DebugDraw();
-            ledgeGeometry.DebugDraw(ref ledgeAnchor);
+            ledgeGeometry.DebugDraw(ref ledgeHook);
         }    
 
         public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
@@ -505,26 +457,20 @@ namespace Traverser
 
             if(TraverserInputLayer.capture.mountButton)
             {
-
-                // --- Get speed from controller ---
-                //float speed = math.length(controller.targetVelocity);
-                //float walkSpeed = 1.5f; // TODO: Create walk speed
-
-                //---If we make contact with a climbable surface and player issues climb order, mount ---
-                
+                //---If we make contact with a climbable surface and player issues climb order, mount ---         
                 if (IsState(State.Suspended))
                 {
                     BoxCollider collider = controller.current.collider as BoxCollider;
 
                     // --- Ensure we are not falling ---
-
                     if (collider != null && controller.isGrounded)
                     {
                         if (collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
                         {
+                            // --- Fill auxiliary ledge to prevent mounting too close to a corner ---
                             auxledgeGeometry.Initialize(collider);
-                            TraverserLedgeObject.TraverserLedgeHook auxAnchor = auxledgeGeometry.GetHook(contactTransform.t);
-                            float distance = auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxAnchor);
+                            TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
+                            float distance = auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxHook);
 
                             // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
                             if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
@@ -534,17 +480,18 @@ namespace Traverser
                                 ledgeGeometry.Initialize(collider);
                                 wallGeometry.Initialize(collider, contactTransform);
 
-                                // We want to reach the pre climb position and then activate the animation
+                                // --- We want to reach the pre climb position and then activate the animation ---
                                 TraverserAffineTransform target = TraverserAffineTransform.Get(contactTransform.t, contactTransform.q);
                                 target.t.y = ledgeGeometry.vertices[0].y;
                                 target.t.z -= 1.0f;
 
-
+                                // --- Require a transition ---
                                 ret = animationController.transition.StartTransition("WalkTransition", "Mount",
                                     "WalkTransitionTrigger", "MountTrigger", 1.0f, 1.0f,
                                     ref contactTransform,
                                     ref target);
                                 
+                                // --- If transition start is successful, change state ---
                                 if(ret)
                                     SetState(State.Mounting);
                             }
@@ -575,38 +522,6 @@ namespace Traverser
         {
             return isActiveAndEnabled;
         }
-
-        //public void RequestTransition(ref MotionSynthesizer synthesizer, AffineTransform contactTransform, Ledge.Type type)
-        //{
-        //    // --- Require transition animation of the type given ---
-        //    ref Binary binary = ref synthesizer.Binary; 
-        //    Ledge trait = Ledge.Create(type);
-
-        //    SegmentCollisionCheck collisionCheck = SegmentCollisionCheck.AboveGround | SegmentCollisionCheck.InsideGeometry;
-
-        //    // --- Prevent collision checks ---
-        //    if (type == Ledge.Type.DropDown || type == Ledge.Type.Mount)
-        //    {
-        //        collisionCheck &= ~SegmentCollisionCheck.InsideGeometry;
-        //        collisionCheck &= ~SegmentCollisionCheck.AboveGround;
-        //    }
-
-        //    QueryResult sequence = TagExtensions.GetPoseSequence(ref binary, contactTransform, 
-        //        trait, trait, contactThreshold, collisionCheck);
-
-        //    if (sequence.length == 0)
-        //    {
-        //        Debug.Log("No sequences in climbing");
-        //        return;
-        //    }
-
-        //    bool rootadjust = trait.type == Ledge.Type.PullUp ? false : true;
-
-        //    anchoredTransition.Dispose();
-        //    anchoredTransition = AnchoredTransitionTask.Create(ref synthesizer,
-        //            sequence, contactTransform, maximumLinearError,
-        //                maximumAngularError, rootadjust);
-        //}
 
         // --------------------------------
 

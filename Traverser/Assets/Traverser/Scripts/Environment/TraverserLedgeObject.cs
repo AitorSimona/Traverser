@@ -147,83 +147,6 @@ namespace Traverser
                 return vertices[hook.index] + GetNormalizedEdge(hook.index) * hook.distance;
             }
 
-            //public float GetDistanceToClosestVertex(float3 position, float3 forward, ref bool left)
-            //{
-            //    float distance = vertices[0].x - position.x;
-            //    float minimumDistance = 1.0f;
-
-            //    float3 abs_forward = 0.0f;
-            //    abs_forward.x = Mathf.Abs(forward.x);
-            //    abs_forward.z = Mathf.Abs(forward.z);
-
-            //    // --- We use the forward/normal given to determine under which direction we should compute distance --- 
-
-            //    if (abs_forward.Equals(Vector3.forward))
-            //    {
-            //        minimumDistance = math.abs(math.length(vertices[0].x - position.x));
-            //        distance = vertices[0].x - position.x;
-
-            //        if (minimumDistance > math.abs(math.length(vertices[1].x - position.x)))
-            //        {
-            //            minimumDistance = math.abs(math.length(vertices[1].x - position.x));
-            //            distance = vertices[1].x - position.x;
-            //        }
-
-            //        if (minimumDistance > math.abs(math.length(vertices[2].x - position.x)))
-            //        {
-            //            minimumDistance = math.abs(math.length(vertices[2].x - position.x));
-            //            distance = vertices[2].x - position.x;
-            //        }
-
-            //        if (minimumDistance > math.abs(math.length(vertices[3].x - position.x)))
-            //        {
-            //            minimumDistance = math.abs(math.length(vertices[3].x - position.x));
-            //            distance = vertices[3].x - position.x;
-            //        }
-
-            //        // --- We are facing z, our left is the negative X ---
-            //        if (forward.z > 0.0f)
-            //            left = distance > 0.0f ? false : true;
-            //        // --- We are facing -z, our left is the positive X ---
-            //        else
-            //            left = distance > 0.0f ? true : false;
-
-            //    }
-            //    else if(abs_forward.Equals(Vector3.right))
-            //    {
-            //        minimumDistance = math.abs(math.length(vertices[0].z - position.z));
-            //        distance = vertices[0].z - position.z;
-
-            //        if (minimumDistance > math.abs(math.length(vertices[1].z - position.z)))
-            //        {
-            //            minimumDistance = math.abs(math.length(vertices[1].z - position.z));
-            //            distance = vertices[1].z - position.z;
-            //        }
-
-            //        if (minimumDistance > math.abs(math.length(vertices[2].z - position.z)))
-            //        {
-            //            minimumDistance = math.abs(math.length(vertices[2].z - position.z));
-            //            distance = vertices[2].z - position.z;
-            //        }
-
-            //        if (minimumDistance > math.abs(math.length(vertices[3].z - position.z)))
-            //        {
-            //            minimumDistance = math.abs(math.length(vertices[3].z - position.z));
-            //            distance = vertices[3].z - position.z;
-            //        }
-
-            //        // --- We are facing X, our left is the negative X ---
-            //        if (forward.x > 0.0f)
-            //            left = distance > 0.0f ? true : false;
-            //        // --- We are facing -z, our left is the positive X ---
-            //        else
-            //            left = distance > 0.0f ? false : true;
-
-            //    }
-
-            //    return minimumDistance;
-            //}
-
             public TraverserAffineTransform GetTransform(TraverserLedgeHook anchor)
             {
                 // --- Get transform out of a 2D ledge anchor --- 
@@ -244,6 +167,7 @@ namespace Traverser
 
                 return new TraverserAffineTransform(p, math.quaternion(math.float3x3(edge, up, normal)));
             }
+
             // -------------------------------------------------
 
             // --- Ledge Hook ---

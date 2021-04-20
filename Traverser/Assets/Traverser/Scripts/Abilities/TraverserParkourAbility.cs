@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using Unity.Collections;
-using Unity.Mathematics;
+﻿using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Traverser
 {
@@ -38,7 +35,7 @@ namespace Traverser
 
         // --- Basic Methods ---
 
-        public void OnEnable()
+        public void Start()
         {
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();

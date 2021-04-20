@@ -77,7 +77,7 @@ namespace Traverser
         public bool collisionEnabled { get => characterController.detectCollisions; set => characterController.detectCollisions = value; }
 
         // --- Last point of contact with environment objects ---
-        public ref TraverserAffineTransform contactTransform { get => ref lastContactTransform; }
+        public ref TraverserTransform contactTransform { get => ref lastContactTransform; }
 
         // --- Last collider's size ---
         [HideInInspector]

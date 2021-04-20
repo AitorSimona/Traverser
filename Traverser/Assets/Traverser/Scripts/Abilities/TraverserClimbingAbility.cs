@@ -273,7 +273,7 @@ namespace Traverser
                 SetClimbingState(desiredState);
             }
 
-            TraverserAffineTransform rootTransform = TraverserAffineTransform.Get(transform.position, transform.rotation);
+            TraverserTransform rootTransform = TraverserTransform.Get(transform.position, transform.rotation);
             wallGeometry.Initialize(rootTransform);
             wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
             float height = wallGeometry.GetHeight(ref wallAnchor);
@@ -447,7 +447,7 @@ namespace Traverser
             ledgeGeometry.DebugDraw(ref ledgeHook);
         }    
 
-        public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
+        public bool OnContact(TraverserTransform contactTransform, float deltaTime)
         {
             bool ret = false;
 
@@ -479,7 +479,7 @@ namespace Traverser
                                 wallGeometry.Initialize(collider, contactTransform);
 
                                 // --- We want to reach the pre climb position and then activate the animation ---
-                                TraverserAffineTransform target = TraverserAffineTransform.Get(contactTransform.t, contactTransform.q);
+                                TraverserTransform target = TraverserTransform.Get(contactTransform.t, contactTransform.q);
                                 target.t.y = ledgeGeometry.vertices[0].y;
                                 target.t.z -= 1.0f;
 

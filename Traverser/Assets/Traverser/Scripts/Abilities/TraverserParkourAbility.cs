@@ -63,7 +63,7 @@ namespace Traverser
             return null;
         }
 
-        public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
+        public bool OnContact(TraverserTransform contactTransform, float deltaTime)
         {
             bool ret = false;
 
@@ -93,7 +93,7 @@ namespace Traverser
                 // --- Compute target transform at the other side of the collider ---
                 Vector3 target = controller.contactTransform.t;
                 target += -controller.contactNormal * controller.contactSize;
-                TraverserAffineTransform targetTransform = TraverserAffineTransform.Get(target, controller.contactTransform.q);
+                TraverserTransform targetTransform = TraverserTransform.Get(target, controller.contactTransform.q);
 
                 // --- Decide which transition to play depending on object type ---
                 switch (parkourObject.type)

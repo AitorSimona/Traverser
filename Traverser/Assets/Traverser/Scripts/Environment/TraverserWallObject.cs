@@ -35,7 +35,7 @@ namespace Traverser
         public struct TraverserWallGeometry
         {
             // --- Attributes that define a wall object ---
-            public TraverserAffineTransform transform; // Ensure we remain on the same space
+            public TraverserTransform transform; // Ensure we remain on the same space
             public float3 scale; // global
 
             public float3 normal;
@@ -50,7 +50,7 @@ namespace Traverser
                 return new TraverserWallGeometry();
             }
 
-            public void Initialize(BoxCollider collider, TraverserAffineTransform contactTransform)
+            public void Initialize(BoxCollider collider, TraverserTransform contactTransform)
             {
                 // --- Create wall geometry from box collider ---
                 transform = Convert(collider.transform);
@@ -61,7 +61,7 @@ namespace Traverser
                 Initialize(contactTransform);
             }
 
-            public void Initialize(TraverserAffineTransform contactTransform)
+            public void Initialize(TraverserTransform contactTransform)
             {
                 // World space contact position to local canonical cube position
                 float3 localPosition = WorldToLocal(contactTransform.t);
@@ -110,10 +110,10 @@ namespace Traverser
                 return transform.transformDirection(direction);
             }
 
-            public static TraverserAffineTransform Convert(Transform transform)
+            public static TraverserTransform Convert(Transform transform)
             {
                 // Ensure we remain on the same space
-                return new TraverserAffineTransform(transform.position, transform.rotation);
+                return new TraverserTransform(transform.position, transform.rotation);
             }
 
             public static float PlaneDistance(float3 normal, float3 up, float3 position)

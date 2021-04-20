@@ -147,7 +147,7 @@ namespace Traverser
                 return vertices[hook.index] + GetNormalizedEdge(hook.index) * hook.distance;
             }
 
-            public TraverserAffineTransform GetTransform(TraverserLedgeHook anchor)
+            public TraverserTransform GetTransform(TraverserLedgeHook anchor)
             {
                 // --- Get transform out of a 2D ledge anchor --- 
                 float3 p = GetPosition(anchor);
@@ -155,17 +155,17 @@ namespace Traverser
                 float3 up = Vector3.up;
                 float3 n = GetNormal(anchor);
 
-                return new TraverserAffineTransform(p, math.quaternion(math.float3x3(edge, up, n)));
+                return new TraverserTransform(p, math.quaternion(math.float3x3(edge, up, n)));
             }
 
-            public TraverserAffineTransform GetTransformGivenNormal(TraverserLedgeHook anchor, float3 normal)
+            public TraverserTransform GetTransformGivenNormal(TraverserLedgeHook anchor, float3 normal)
             {
                 // --- Get transform out of a 2D ledge anchor --- 
                 float3 p = GetPosition(anchor);
                 float3 edge = GetNormalizedEdge(anchor.index);
                 float3 up = Vector3.up;
 
-                return new TraverserAffineTransform(p, math.quaternion(math.float3x3(edge, up, normal)));
+                return new TraverserTransform(p, math.quaternion(math.float3x3(edge, up, normal)));
             }
 
             // -------------------------------------------------

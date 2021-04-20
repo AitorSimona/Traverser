@@ -148,7 +148,7 @@ namespace Traverser
         private float3 lastPosition;
 
         // --- The last contact position and rotation extracted from last collision ---
-        private TraverserAffineTransform lastContactTransform = TraverserAffineTransform.Get(float3.zero, quaternion.identity);
+        private TraverserTransform lastContactTransform = TraverserTransform.Get(float3.zero, quaternion.identity);
 
         // --- Array of colliders for ground probing ---
         private Collider[] hitColliders = new Collider[3];

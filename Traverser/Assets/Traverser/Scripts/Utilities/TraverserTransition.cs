@@ -36,10 +36,10 @@ namespace Traverser
         MatchTargetWeightMask weightMask; 
 
         // --- Transform in space we have to reach playing transitionAnimation ---
-        private TraverserAffineTransform contactTransform;
+        private TraverserTransform contactTransform;
 
         // --- Transform in space we have to reach playing targetAnimation ---
-        private TraverserAffineTransform targetTransform;
+        private TraverserTransform targetTransform;
 
 
         // --- Indicates if transition handler is currently playing ---
@@ -71,7 +71,7 @@ namespace Traverser
 
         // --- Utility Methods ---
 
-        public bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, float transitionValidDistance, float targetValidDistance, ref TraverserAffineTransform contactTransform, ref TraverserAffineTransform targetTransform)
+        public bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, float transitionValidDistance, float targetValidDistance, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
         {
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---

@@ -4,28 +4,28 @@ using UnityEngine;
 namespace Traverser
 {
     // --- Wrapper that holds a position and a rotation, to ease handling of transformations ---
-    public struct TraverserAffineTransform
+    public struct TraverserTransform
     {
         public float3 t;
         public Quaternion q;
 
-        public TraverserAffineTransform(float3 t_, Quaternion q_)
+        public TraverserTransform(float3 t_, Quaternion q_)
         {
             t = t_;
             q = q_;
         }
 
-        public static TraverserAffineTransform Create(float3 t_, Quaternion q_)
+        public static TraverserTransform Create(float3 t_, Quaternion q_)
         {
-            TraverserAffineTransform affineTransform = new TraverserAffineTransform();
+            TraverserTransform affineTransform = new TraverserTransform();
             affineTransform.t = t_;
             affineTransform.q = q_;
             return affineTransform;
         }
 
-        public static TraverserAffineTransform Get(float3 t_, Quaternion q_)
+        public static TraverserTransform Get(float3 t_, Quaternion q_)
         {
-            TraverserAffineTransform affineTransform;
+            TraverserTransform affineTransform;
             affineTransform.t = t_;
             affineTransform.q = q_;
             return affineTransform;

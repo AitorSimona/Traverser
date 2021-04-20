@@ -166,7 +166,7 @@ namespace Traverser
             TraverserAbility contactAbility = null;
 
             // --- Preserve pre-simulation transform ---
-            TraverserAffineTransform tmp = TraverserAffineTransform.Get(transform.position, transform.rotation);
+            TraverserTransform tmp = TraverserTransform.Get(transform.position, transform.rotation);
 
             // --- Update current velocity and rotation ---
             UpdateMovement();
@@ -207,7 +207,7 @@ namespace Traverser
 
                 if (collision.isColliding && attemptTransition)
                 {
-                    ref TraverserAffineTransform contactTransform = ref controller.contactTransform /*TraverserAffineTransform.Create(contactPoint, q)*/;
+                    ref TraverserTransform contactTransform = ref controller.contactTransform /*TraverserAffineTransform.Create(contactPoint, q)*/;
 
                     float angle = Vector3.SignedAngle(controller.contactNormal, -transform.forward, Vector3.up);
 
@@ -260,7 +260,7 @@ namespace Traverser
             return contactAbility;
         }
 
-        public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
+        public bool OnContact(TraverserTransform contactTransform, float deltaTime)
         {
             return false;
         }

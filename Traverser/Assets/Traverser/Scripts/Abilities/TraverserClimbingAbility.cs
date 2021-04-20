@@ -116,9 +116,17 @@ namespace Traverser
         // --- Ability class methods ---
         public TraverserAbility OnUpdate(float deltaTime)
         {
-            TraverserAbility ret = this;
-
             TraverserInputLayer.capture.UpdateClimbing();
+
+            if (animationController.transition.isON)
+                animationController.transition.UpdateTransition();
+
+            return this;
+        }
+
+        public TraverserAbility OnFixedUpdate(float deltaTime)
+        {
+            TraverserAbility ret = this;
 
             // --- Turn off/on controller ---
             controller.ConfigureController(!IsState(State.Suspended));
@@ -155,24 +163,15 @@ namespace Traverser
 
                 // --- Let other abilities handle the situation ---
                 if (IsState(State.Suspended))
-                    return null;;
+                    return null;
 
                 ret = this;
             }
 
-            if(animationController.transition.isON)
-                animationController.transition.UpdateTransition();
+            //if (animationController.transition.isON)
+            //    animationController.transition.UpdateTransition();
 
             return ret;
-        }
-
-        public TraverserAbility OnFixedUpdate(float deltaTime)
-        {
-            //if (animationController.transition.isON)
-                return this;
-
-
-            //return null;
         }
 
         // --- Climbing states wrappers ---

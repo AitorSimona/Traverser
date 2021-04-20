@@ -8,7 +8,6 @@ namespace Traverser
 
     public class TraverserAnimationController : MonoBehaviour
     {
-
         // --- Attributes ---
 
         // --- Stores animator parameters for future reference ---
@@ -39,13 +38,15 @@ namespace Traverser
         [Range(0.1f, 1.0f)]
         public float contactDebugSphereRadius = 0.5f;
 
-
         // --- Animator and animation transition handler ---
         public Animator animator;
         public TraverserTransition transition;
 
-        // --- Difference between match position and current position ---
-        //private Vector3 deltaPosition;
+        // --------------------------------
+
+        // --- Private Variables ---
+
+        private TraverserCharacterController controller;
 
         // --- Motion that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Vector3 currentdeltaPosition;
@@ -56,19 +57,14 @@ namespace Traverser
         // --- Rotation that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Quaternion currentdeltaRotation;
 
-        private Vector3 deltaPosition = Vector3.zero;
-
-        // --------------------------------
-
-        // --- Private Variables ---
-
-        private TraverserCharacterController controller;
+        // --- Difference between match position and current position ---
+        private Vector3 deltaPosition;
 
         // --------------------------------
 
         private void Awake()
         {
-            //deltaPosition = Vector3.zero;
+            deltaPosition = Vector3.zero;
             currentdeltaPosition = Vector3.zero;
             lastWarpPosition = Vector3.zero;
 
@@ -83,11 +79,7 @@ namespace Traverser
         }
 
         // --- Basic Methods ---
-        private void Start()
-        {
-
-        }
-
+ 
         private void LateUpdate()
         {
             if (!transition.isON)
@@ -95,11 +87,9 @@ namespace Traverser
             else
             {
                 // --- Apply warping ---
-                //SetRootMotion(false);
-                transform.position = Vector3.Lerp(transform.position, currentdeltaPosition, Time.deltaTime);
+                transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
                 transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
                 currentdeltaPosition = Vector3.zero;
-                //SetRootMotion(false);
             }
         }
 
@@ -134,8 +124,6 @@ namespace Traverser
         /// <param name="target"> Which bone should reach the desired transform.</param> 
         /// <param name="weightMask"> How much importance should match position and rotation have in target matching.</param>
         /// <param name="validDistance"> If close enough to validDistance (meters), end target matching.</param>
-
-
 
         public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float validDistance)
         {

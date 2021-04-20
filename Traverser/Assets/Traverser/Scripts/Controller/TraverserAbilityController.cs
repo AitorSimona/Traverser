@@ -66,6 +66,14 @@ namespace Traverser
                 }
             }
 
+            // --- Send updated animator parameters to animation controller ---
+            if (animationController.isActiveAndEnabled)
+            {
+                animatorParameters.Move = TraverserInputLayer.GetMoveIntensity() > 0.0f;
+                animatorParameters.Speed = math.length(controller.targetVelocity);
+                animatorParameters.Heading = controller.targetHeading;
+                animationController.UpdateAnimator(ref animatorParameters);
+            }
         }
 
         // MYTODO: Order of update is important, it would be wise to add a priority to abilities,
@@ -102,22 +110,9 @@ namespace Traverser
                 }
             }
 
-            // --- Send updated animator parameters to animation controller ---
-            if (animationController.isActiveAndEnabled)
-            {
-                animatorParameters.Move = TraverserInputLayer.GetMoveIntensity() > 0.0f;
-                animatorParameters.Speed = math.length(controller.targetVelocity);
-                animatorParameters.Heading = controller.targetHeading;
-                animationController.UpdateAnimator(ref animatorParameters);
-            }
-
             // --- Perform movement ---
             if (!animationController.transition.isON)
                 controller.ForceMove(controller.targetPosition);
-
-            // --- If an ability gave back control, do not PostUpdate ---
-            //if (currentAbility == null)
-            //    return;
         }     
 
         // --------------------------------

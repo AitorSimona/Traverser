@@ -102,7 +102,7 @@ namespace Traverser
                 // --- Compute target transform at the other side of the collider ---
                 Vector3 target = controller.contactTransform.t;
                 target += -controller.contactNormal * controller.contactSize;
-                TraverserAffineTransform targetTransform = TraverserAffineTransform.Create(target, controller.contactTransform.q);
+                TraverserAffineTransform targetTransform = TraverserAffineTransform.Get(target, controller.contactTransform.q);
 
                 // --- Decide which transition to play depending on object type ---
                 switch (parkourObject.type)

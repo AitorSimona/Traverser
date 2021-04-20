@@ -169,7 +169,7 @@ namespace Traverser
             TraverserAbility contactAbility = null;
 
             // --- Preserve pre-simulation transform ---
-            TraverserAffineTransform tmp = TraverserAffineTransform.Create(transform.position, transform.rotation);
+            TraverserAffineTransform tmp = TraverserAffineTransform.Get(transform.position, transform.rotation);
 
             // --- Update current velocity and rotation ---
             UpdateMovement();

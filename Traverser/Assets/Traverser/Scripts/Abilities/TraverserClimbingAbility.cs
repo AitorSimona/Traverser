@@ -87,7 +87,7 @@ namespace Traverser
         TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
         TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
         TraverserWallObject.TraverserWallGeometry wallGeometry;
-        TraverserLedgeObject.TraverserLedgeAnchor ledgeAnchor;
+        TraverserLedgeObject.TraverserLedgeHook ledgeAnchor;
         TraverserWallObject.TraverserWallAnchor wallAnchor;
 
         // --------------------------------
@@ -99,8 +99,6 @@ namespace Traverser
             animationController = GetComponent<TraverserAnimationController>();
             locomotionAbility = GetComponent<TraverserLocomotionAbility>();
 
-
-            //capsule = GetComponent<CapsuleCollider>();
             state = State.Suspended;
             previousState = State.Suspended;
             climbingState = ClimbingState.Idle;
@@ -111,14 +109,14 @@ namespace Traverser
             auxledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
             wallGeometry = TraverserWallObject.TraverserWallGeometry.Create();
 
-            ledgeAnchor = TraverserLedgeObject.TraverserLedgeAnchor.Create();
+            ledgeAnchor = TraverserLedgeObject.TraverserLedgeHook.Create();
             wallAnchor = TraverserWallObject.TraverserWallAnchor.Create();
         }
 
         public void OnDisable()
         {
-            ledgeGeometry.Dispose();
-            auxledgeGeometry.Dispose();
+            //ledgeGeometry.Dispose();
+            //auxledgeGeometry.Dispose();
         }
 
         // --------------------------------
@@ -202,7 +200,7 @@ namespace Traverser
             {
                 SetState(State.Climbing); // we are hanging onto a ledge 
                 SetClimbingState(ClimbingState.Idle);
-                ledgeAnchor = ledgeGeometry.GetAnchor(transform.position);
+                ledgeAnchor = ledgeGeometry.GetHook(transform.position);
 
                 //animationController.animator.Play("LedgeIdle", 0, 0.0f);
             }
@@ -327,7 +325,7 @@ namespace Traverser
                 SetClimbingState(desiredState);
             }
 
-            TraverserAffineTransform rootTransform = TraverserAffineTransform.Create(transform.position, transform.rotation);
+            TraverserAffineTransform rootTransform = TraverserAffineTransform.Get(transform.position, transform.rotation);
             wallGeometry.Initialize(rootTransform);
             wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
             float height = wallGeometry.GetHeight(ref wallAnchor);
@@ -486,7 +484,7 @@ namespace Traverser
             float linearDisplacement = -(target.x - transform.position.x);
             //Debug.Log(linearDisplacement);
 
-            TraverserLedgeObject.TraverserLedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, target);
+            TraverserLedgeObject.TraverserLedgeHook desiredLedgeAnchor = ledgeGeometry.UpdateHook(ledgeAnchor, target);
             float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
             float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
 
@@ -507,7 +505,6 @@ namespace Traverser
 
             if(TraverserInputLayer.capture.mountButton)
             {
-                Debug.Log("Climbing to ledge");
 
                 // --- Get speed from controller ---
                 //float speed = math.length(controller.targetVelocity);
@@ -526,18 +523,19 @@ namespace Traverser
                         if (collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
                         {
                             auxledgeGeometry.Initialize(collider);
-                            TraverserLedgeObject.TraverserLedgeAnchor auxAnchor = auxledgeGeometry.GetAnchor(contactTransform.t);
-                            bool left = false;
-                            float distance = auxledgeGeometry.GetDistanceToClosestVertex(contactTransform.t, auxledgeGeometry.GetNormal(auxAnchor), ref left);
+                            TraverserLedgeObject.TraverserLedgeHook auxAnchor = auxledgeGeometry.GetHook(contactTransform.t);
+                            float distance = auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxAnchor);
 
                             // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
                             if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
                             {
+                                Debug.Log("Climbing to ledge");
+
                                 ledgeGeometry.Initialize(collider);
                                 wallGeometry.Initialize(collider, contactTransform);
 
                                 // We want to reach the pre climb position and then activate the animation
-                                TraverserAffineTransform target = TraverserAffineTransform.Create(contactTransform.t, contactTransform.q);
+                                TraverserAffineTransform target = TraverserAffineTransform.Get(contactTransform.t, contactTransform.q);
                                 target.t.y = ledgeGeometry.vertices[0].y;
                                 target.t.z -= 1.0f;
 

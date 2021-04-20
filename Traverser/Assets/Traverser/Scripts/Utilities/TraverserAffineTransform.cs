@@ -17,6 +17,14 @@ namespace Traverser
 
         public static TraverserAffineTransform Create(float3 t_, Quaternion q_)
         {
+            TraverserAffineTransform affineTransform = new TraverserAffineTransform();
+            affineTransform.t = t_;
+            affineTransform.q = q_;
+            return affineTransform;
+        }
+
+        public static TraverserAffineTransform Get(float3 t_, Quaternion q_)
+        {
             TraverserAffineTransform affineTransform;
             affineTransform.t = t_;
             affineTransform.q = q_;

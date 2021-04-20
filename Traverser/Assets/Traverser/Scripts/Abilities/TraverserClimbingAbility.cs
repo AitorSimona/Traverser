@@ -114,10 +114,13 @@ namespace Traverser
         // --------------------------------
 
         // --- Ability class methods ---
-        public TraverserAbility OnUpdate(float deltaTime)
+        public void OnInputUpdate()
         {
             TraverserInputLayer.capture.UpdateClimbing();
+        }
 
+        public TraverserAbility OnUpdate(float deltaTime)
+        {
             if (animationController.transition.isON)
                 animationController.transition.UpdateTransition();
 
@@ -447,7 +450,8 @@ namespace Traverser
         public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
         {
             bool ret = false;
-            TraverserInputLayer.capture.UpdateClimbing();
+
+            //TraverserInputLayer.capture.UpdateClimbing();
 
             if(TraverserInputLayer.capture.mountButton)
             {

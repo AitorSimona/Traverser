@@ -119,10 +119,13 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Ability class methods ---
-        public TraverserAbility OnUpdate(float deltaTime)
+        public void OnInputUpdate()
         {
             TraverserInputLayer.capture.UpdateLocomotion();
+        }
 
+        public TraverserAbility OnUpdate(float deltaTime)
+        {
             TraverserAbility ret = this;
 
             return ret;

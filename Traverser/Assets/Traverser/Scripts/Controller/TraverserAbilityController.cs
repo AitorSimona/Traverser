@@ -38,9 +38,18 @@ namespace Traverser
             if (!controller.isActiveAndEnabled)
                 return;
 
-            bool isEnabled = currentAbility == null ? false : currentAbility.IsAbilityEnabled();
+            // --- Let abilities poll for input ---
+            foreach (TraverserAbility ability in abilities)
+            {
+                if (!ability.IsAbilityEnabled())
+                    continue;
+
+                ability.OnInputUpdate();
+            }
 
             // --- Keep updating our current ability ---
+            bool isEnabled = currentAbility == null ? false : currentAbility.IsAbilityEnabled();
+
             if (currentAbility != null && isEnabled)
             {
                 currentAbility = currentAbility.OnUpdate(Time.deltaTime);

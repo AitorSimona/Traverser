@@ -45,10 +45,13 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Ability class methods ---
-        public TraverserAbility OnUpdate(float deltaTime)
+        public void OnInputUpdate()
         {
             TraverserInputLayer.capture.UpdateParkour();
+        }
 
+        public TraverserAbility OnUpdate(float deltaTime)
+        {
             return animationController.transition.UpdateTransition() ? this : null;
         }
 
@@ -63,8 +66,6 @@ namespace Traverser
         public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)
         {
             bool ret = false;
-
-            TraverserInputLayer.capture.UpdateParkour();
 
             if (TraverserInputLayer.capture.parkourButton && !animationController.transition.isON)
             {
@@ -216,8 +217,6 @@ namespace Traverser
         public bool OnDrop(float deltaTime)
         {
             bool ret = false;
-
-            TraverserInputLayer.capture.UpdateParkour();
 
             if (TraverserInputLayer.capture.parkourDropDownButton 
                 && controller.previous.isGrounded 

@@ -142,12 +142,6 @@ namespace Traverser
             return ret;
         }
 
-        public TraverserAbility OnPostUpdate(float deltaTime)
-        {
-
-            return null;
-        }
-
         TraverserAbility HandleMovementPrediction(float deltaTime)
         {
             Assert.IsTrue(controller != null); // just in case :)

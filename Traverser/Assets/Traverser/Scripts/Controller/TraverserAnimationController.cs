@@ -96,7 +96,7 @@ namespace Traverser
             {
                 // --- Apply warping ---
                 //SetRootMotion(false);
-                transform.position += currentdeltaPosition * Time.deltaTime;
+                transform.position = Vector3.Lerp(transform.position, currentdeltaPosition, Time.deltaTime);
                 transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
                 currentdeltaPosition = Vector3.zero;
                 //SetRootMotion(false);

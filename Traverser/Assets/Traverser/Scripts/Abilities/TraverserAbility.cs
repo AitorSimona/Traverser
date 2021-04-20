@@ -1,55 +1,25 @@
-﻿
-// --- All abilities derive from this base interface (class with no implementations) ---
-
-namespace Traverser
+﻿namespace Traverser
 {
+    // --- All abilities derive from this base interface ---
     public interface TraverserAbility
     {
-        //
-        // Called once per frame for each ability to update the synthesizers trajectory.
-        // The resulting ability reference indicates which ability gains
-        // ownership of the policy.
-        //
-
+        // --- Called every frame by AbilityController ---
         TraverserAbility OnUpdate(float deltaTime);
 
+        // --- Called every physics step by AbilityController ---
         TraverserAbility OnFixedUpdate(float deltaTime);
 
-        //
-        // Called from another ability to indicate that a predicted future
-        // root transform makes contact with the environment (subject to the
-        // collision shapes of the character). The return value indicates
-        // if the called ability wants to handle the contact (and will subsequently
-        // gain control over the policy).
-        //
-
+        // --- Called from another ability to indicate that a collision is about to happen ---
+        // --- Other abilities may take control ---
         bool OnContact(TraverserAffineTransform contactTransform, float deltaTime);
 
-        //
-        // Called from another ability to indicate that a predicted future
-        // root transform will no longer be grounded (subject to the collision
-        // shapes of the character). The return value indicates if the called
-        // ability want to handle this situation (and will subsequently gain
-        // control over the policy).
-        //
-
+        // --- Called from another ability to indicate that the controller is about to lose its ground ---
+        // --- Other abilities may take control ---
         bool OnDrop(float deltaTime);
 
-        //
-        //Called from ablity controller so abilities can apply last moment modifications to motion
-        //
 
-        TraverserAbility OnPostUpdate(float deltaTime);
-
+        // --- Simple method to check if an ability is enabled ---
         bool IsAbilityEnabled();
-    }
-
-    // -------------------------------------------------
-
-    // --- Abilities may implement this to further modify motion after animations have taken place ---
-    public interface TraverserAbilityAnimatorMove
-    {
-        void OnAbilityAnimatorMove();
     }
 
     // -------------------------------------------------

@@ -48,7 +48,11 @@ namespace Traverser
         public TraverserAbility OnUpdate(float deltaTime)
         {
             TraverserInputLayer.capture.UpdateParkour();
-            return animationController.transition.UpdateTransition() ? this : null;
+
+            if (animationController.transition.isON)
+                return this;
+
+            return null;
         }
 
         public TraverserAbility OnFixedUpdate(float deltaTime)
@@ -56,15 +60,7 @@ namespace Traverser
             if (animationController.transition.isON)
                 return this;
 
-            return null;
-        }
-
-        public TraverserAbility OnPostUpdate(float deltaTime)
-        {
-            //if (animationController.transition.isON && !animationController.animator.applyRootMotion)
-              //  animationController.SetRootMotion(true);
-
-            return null;
+            return animationController.transition.UpdateTransition() ? this : null;
         }
 
         public bool OnContact(TraverserAffineTransform contactTransform, float deltaTime)

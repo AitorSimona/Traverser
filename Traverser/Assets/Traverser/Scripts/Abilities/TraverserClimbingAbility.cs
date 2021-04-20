@@ -175,11 +175,6 @@ namespace Traverser
             //return null;
         }
 
-        public TraverserAbility OnPostUpdate(float deltaTime)
-        {
-            return null;
-        }
-
         // --- Climbing states wrappers ---
         void HandleMountingState()
         {

@@ -312,38 +312,38 @@ namespace Traverser
                 return result;
             }
 
-            public TraverserLedgeAnchor UpdateAnchor(TraverserLedgeAnchor anchor, float displacement)
-            {
-                // --- Displace ledge anchor point by given displacement ---
-                TraverserLedgeAnchor result;
+            //public TraverserLedgeAnchor UpdateAnchor(TraverserLedgeAnchor anchor, float displacement)
+            //{
+            //    // --- Displace ledge anchor point by given displacement ---
+            //    TraverserLedgeAnchor result;
 
-                int a = anchor.index;
-                int b = GetNextEdgeIndex(anchor.index);
+            //    int a = anchor.index;
+            //    int b = GetNextEdgeIndex(anchor.index);
 
-                float length = math.length(vertices[b] - vertices[a]);
+            //    float length = math.length(vertices[b] - vertices[a]);
 
-                float distance = anchor.distance + displacement;
+            //    float distance = anchor.distance + displacement;
 
-                if (distance > length)
-                {
-                    result.distance = distance - length;
-                    result.index = GetNextEdgeIndex(anchor.index);
+            //    if (distance > length)
+            //    {
+            //        result.distance = distance - length;
+            //        result.index = GetNextEdgeIndex(anchor.index);
 
-                    return result;
-                }
-                else if (distance < 0.0f)
-                {
-                    result.index = GetPreviousEdgeIndex(anchor.index);
-                    result.distance = GetLength(result.index) + distance;
+            //        return result;
+            //    }
+            //    else if (distance < 0.0f)
+            //    {
+            //        result.index = GetPreviousEdgeIndex(anchor.index);
+            //        result.distance = GetLength(result.index) + distance;
 
-                    return result;
-                }
+            //        return result;
+            //    }
 
-                result.distance = distance;
-                result.index = anchor.index;
+            //    result.distance = distance;
+            //    result.index = anchor.index;
 
-                return result;
-            }
+            //    return result;
+            //}
 
             // -------------------------------------------------
 

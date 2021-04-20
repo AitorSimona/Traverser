@@ -484,11 +484,9 @@ namespace Traverser
             Vector3 target = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
 
             float linearDisplacement = -(target.x - transform.position.x);
-
-
             //Debug.Log(linearDisplacement);
 
-            TraverserLedgeObject.TraverserLedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
+            TraverserLedgeObject.TraverserLedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, target);
             float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
             float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
 

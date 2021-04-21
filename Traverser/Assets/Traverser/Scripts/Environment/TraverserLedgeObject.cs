@@ -93,19 +93,35 @@ namespace Traverser
                 return closestPoint;
             }
 
-            public float ClosestPointDistance(float3 position, TraverserLedgeHook hook)
+            public bool ClosestPointDistance(float3 position, TraverserLedgeHook hook, ref float distance)
             {
+                // --- Returns true if left vertex is the closest, false otherwise ---
+
                 // --- Get current edge's vertices and compute distance to position ---
                 float3 pointP1 = vertices[hook.index];
                 float3 pointP2 = vertices[GetNextEdgeIndex(hook.index)];
-                float distanceP1 = math.length(pointP1 - position);
-                float distanceP2 = math.length(pointP2 - position);
+
+                float3 edge = pointP2 - pointP1;
+
+                // --- Project position-P1 vector on current edge ---
+                float3 projection = math.project(position - pointP1, math.normalizesafe(edge));
+                // --- Find intersection point, which is also the closest point to given position ---
+                float3 closestPoint = pointP1 + projection;
+
+                float distanceP1 = math.length(pointP1 - closestPoint);
+                float distanceP2 = math.length(pointP2 - closestPoint);
 
                 // --- Return the smallest distance ---
                 if (distanceP1 < distanceP2)
-                    return distanceP1;
+                {
+                    distance = distanceP1;
+                    return false; // right is the closest
+                }
                 else
-                    return distanceP2;
+                {
+                    distance = distanceP2;
+                    return true; // left is the closest
+                }
             }
 
             public int GetNextEdgeIndex(int index)

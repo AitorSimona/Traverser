@@ -196,18 +196,18 @@ namespace Traverser
             //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
 
             // --- Handle special corner transitions ---
-            //if (climbingState == ClimbingState.CornerRight
-            //    || climbingState == ClimbingState.CornerLeft
-            //    )
-            //{
-            //    if (bTransitionSucceeded)
-            //    {
-            //        ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-            //        SetClimbingState(ClimbingState.None);
-            //    }
+            if (climbingState == ClimbingState.CornerRight
+                || climbingState == ClimbingState.CornerLeft
+                )
+            {
+                if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=  1.0f)
+                {
+                    ledgeHook = ledgeGeometry.GetHook(animationController.skeleton.position);
+                    SetClimbingState(ClimbingState.None);
+                }
 
-            //    return;
-            //}
+                return;
+            }
 
             bool canMove = UpdateClimbing(deltaTime);
 
@@ -238,38 +238,38 @@ namespace Traverser
                     //Direction direction = Direction.Create(Direction.Type.Left);
                     //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
                 }
-                //else if (desiredState == ClimbingState.CornerRight)
-                //{
-                //    Direction direction = Direction.Create(Direction.Type.CornerRight);
+                else if (desiredState == ClimbingState.CornerRight)
+                {
+                    //Direction direction = Direction.Create(Direction.Type.CornerRight);
 
-                //    // --- We fake a play and check if at the segment's end there is a collision ---
-                //    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                    // --- We fake a play and check if at the segment's end there is a collision ---
+                    //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
 
-                //    // --- If a collision is found play idle ---
-                //    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
-                //    {
-                //        SetClimbingState(ClimbingState.Idle);
-                //        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-                //        Debug.Log("No sequences for right corner transition in climbing, collision found");
-                //        return;
-                //    }
-                //}
-                //else if (desiredState == ClimbingState.CornerLeft)
-                //{
-                //    Direction direction = Direction.Create(Direction.Type.CornerLeft);
+                    // --- If a collision is found play idle ---
+                    //if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
+                    //{
+                    //    SetClimbingState(ClimbingState.Idle);
+                    //    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                    //    Debug.Log("No sequences for right corner transition in climbing, collision found");
+                    //    return;
+                    //}
+                }
+                else if (desiredState == ClimbingState.CornerLeft)
+                {
+                    //Direction direction = Direction.Create(Direction.Type.CornerLeft);
 
-                //    // --- We fake a play and check if at the segment's end there is a collision ---
-                //    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                    //// --- We fake a play and check if at the segment's end there is a collision ---
+                    //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
 
-                //    // --- If a collision is found play idle ---
-                //    if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
-                //    {
-                //        SetClimbingState(ClimbingState.Idle);
-                //        PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-                //        Debug.Log("No sequences for left corner transition in climbing, collision found");
-                //        return;
-                //    }
-                //}
+                    //// --- If a collision is found play idle ---
+                    //if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
+                    //{
+                    //    SetClimbingState(ClimbingState.Idle);
+                    //    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
+                    //    Debug.Log("No sequences for left corner transition in climbing, collision found");
+                    //    return;
+                    //}
+                }
 
                 SetClimbingState(desiredState);
             }
@@ -481,7 +481,8 @@ namespace Traverser
                             // --- Fill auxiliary ledge to prevent mounting too close to a corner ---
                             auxledgeGeometry.Initialize(collider);
                             TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
-                            float distance = auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxHook);
+                            float distance = 0.0f;
+                            auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxHook, ref distance);
 
                             // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
                             if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
@@ -568,21 +569,24 @@ namespace Traverser
             stickInput.y = TraverserInputLayer.capture.stickVertical;
 
             // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
-            bool left = false;
-            float distance = 0.0f; //ledgeGeometry.GetDistanceToClosestVertex(kinematica.Synthesizer.Ref.WorldRootTransform.t, ledgeGeometry.GetNormal(ledgeAnchor), ref left);
+            float distance = 0.0f;
+            bool left = ledgeGeometry.ClosestPointDistance(controller.targetPosition, ledgeHook, ref distance); 
+
+            //Debug.Log(distance);
+            Debug.Log(left);
 
             if (stickInput.x > 0.5f)
             {
-                //if (!left && distance < 0.1f)
-                    //return ClimbingState.CornerRight;
+                if (!left && distance < 0.05f + desiredCornerMinDistance)
+                    return ClimbingState.CornerRight;
 
                 return ClimbingState.Right;
             }
 
             else if (stickInput.x < -0.5f)
             {
-                //if (left && distance < 0.1f)
-                    //return ClimbingState.CornerLeft;
+                if (left && distance < 0.05f + desiredCornerMinDistance)
+                    return ClimbingState.CornerLeft;
 
                 return ClimbingState.Left;
             }

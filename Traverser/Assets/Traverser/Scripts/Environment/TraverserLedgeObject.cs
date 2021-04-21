@@ -204,7 +204,7 @@ namespace Traverser
                 return result;
             }
 
-            public TraverserLedgeHook UpdateHook(TraverserLedgeHook hook, float3 position)
+            public TraverserLedgeHook UpdateHook(TraverserLedgeHook hook, float3 position, float cornerMinDistance)
             {
                 // --- Get current and next edge index ---
                 int a = hook.index;
@@ -220,7 +220,7 @@ namespace Traverser
                 float distance = math.length(closestPoint - vertices[a]);
 
                 // --- If over edge length, move anchor to next edge ---
-                if (distance > length)
+                if (distance > length - cornerMinDistance)
                 {
                     result.distance = distance - length;
                     result.index = GetNextEdgeIndex(hook.index);
@@ -228,7 +228,7 @@ namespace Traverser
                     return result;
                 }
                 // --- If below edge start, move anchor to previous edge ---
-                else if (distance < 0.0f)
+                else if (distance < cornerMinDistance)
                 {
                     result.index = GetPreviousEdgeIndex(hook.index);
                     result.distance = GetLength(result.index) + distance;

@@ -27,6 +27,10 @@ namespace Traverser
         [Range(0.0f, 10.0f)]
         public float desiredSpeedLedge;
 
+        [Tooltip("The closest the character will be able to get to a ledge corner, in meters.")]
+        [Range(0.0f, 0.5f)]
+        public float desiredCornerMinDistance;
+
         //[Tooltip("How fast or slow the target velocity is supposed to be reached.")]
         //[Range(0.0f, 1.0f)]
         //public float velocityPercentageLedge;
@@ -205,15 +209,15 @@ namespace Traverser
             //    return;
             //}
 
-            UpdateClimbing(deltaTime);
+            bool canMove = UpdateClimbing(deltaTime);
 
             ClimbingState desiredState = GetDesiredClimbingState();
 
-            if (desiredState == lastCollidingClimbingState)
+            if (desiredState == lastCollidingClimbingState || !canMove)
                 desiredState = ClimbingState.Idle;
 
             // --- Handle ledge climbing/movement direction ---
-            if (!IsClimbingState(desiredState) /*|| bTransitionSucceeded*/)
+            if (!IsClimbingState(desiredState)/*|| bTransitionSucceeded*/)
             {
                 //Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
 
@@ -363,26 +367,26 @@ namespace Traverser
             //}
         }
 
-        bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
-        {
-            bool bCollision = TraverserCollisionLayer.IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f), controller.capsuleCenter ,controller.capsuleHeight, controller.capsuleRadius);
+        //bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
+        //{
+        //    bool bCollision = TraverserCollisionLayer.IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f), controller.capsuleCenter ,controller.capsuleHeight, controller.capsuleRadius);
 
-            if (climbingState == ClimbingState.Idle)
-            {
-                lastCollidingClimbingState = ClimbingState.None;
-            }
-            else if (bCollision)
-            {
-                float currentMoveDirection = climbingState == ClimbingState.Left ? 1.0f : -1.0f;
+        //    if (climbingState == ClimbingState.Idle)
+        //    {
+        //        lastCollidingClimbingState = ClimbingState.None;
+        //    }
+        //    else if (bCollision)
+        //    {
+        //        float currentMoveDirection = climbingState == ClimbingState.Left ? 1.0f : -1.0f;
 
-                if (currentMoveDirection * desiredMoveOnLedge > 0.0f)
-                    lastCollidingClimbingState = climbingState;
-            }
+        //        if (currentMoveDirection * desiredMoveOnLedge > 0.0f)
+        //            lastCollidingClimbingState = climbingState;
+        //    }
 
-            return bCollision;
-        }
+        //    return bCollision;
+        //}
 
-        void UpdateClimbing(float deltaTime)
+        bool UpdateClimbing(float deltaTime)
         {
             //
             // Smoothly adjust current root transform towards the anchor transform
@@ -420,6 +424,8 @@ namespace Traverser
             //// --- Update root motion transform ---
             //synthesizer.WorldRootTransform = rootTransform;
 
+            bool ret = false;
+
             // --- Given input, compute target position ---
             float2 stickInput;
             stickInput.x = TraverserInputLayer.capture.stickHorizontal;
@@ -436,18 +442,22 @@ namespace Traverser
             float linearDisplacement = -(target.x - controller.targetPosition.x);
 
             // --- Update hook ---
-            TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, target);
+            TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, target, desiredCornerMinDistance);
             float3 position = ledgeGeometry.GetPosition(desiredLedgeHook);
             float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeHook);
 
             // --- Update current hook if it is still on the ledge ---
-            if (!UpdateCollidingClimbingState(linearDisplacement, position, desiredForward))
+            if (desiredLedgeHook.index == ledgeHook.index /*!UpdateCollidingClimbingState(linearDisplacement, position, desiredForward)*/)
+            {
+                ret = true;
                 ledgeHook = desiredLedgeHook;
-
-            controller.targetPosition = target;
+                controller.targetPosition = target;
+            }
 
             ledgeGeometry.DebugDraw();
             ledgeGeometry.DebugDraw(ref ledgeHook);
+
+            return ret;
         }    
 
         public bool OnContact(TraverserTransform contactTransform, float deltaTime)

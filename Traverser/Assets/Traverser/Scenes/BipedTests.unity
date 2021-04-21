@@ -1976,6 +1976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   desiredSpeedLedge: 2
+  desiredCornerMinDistance: 0.25
 --- !u!1 &1798491133
 GameObject:
   m_ObjectHideFlags: 0

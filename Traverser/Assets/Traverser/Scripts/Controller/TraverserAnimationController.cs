@@ -44,6 +44,9 @@ namespace Traverser
 
         // --------------------------------
 
+        // --- Use in case you do not want the skeleton to be adjusted to the reference in a custom transition ---
+        public bool fakeTransition = false;
+
         // --- Private Variables ---
 
         private TraverserCharacterController controller;
@@ -82,13 +85,17 @@ namespace Traverser
  
         private void LateUpdate()
         {
-            if (!transition.isON)
+            if (!transition.isON && !fakeTransition)
                 skeleton.transform.position = skeletonRef.transform.position;
             else
             {
                 // --- Apply warping ---
-                transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
-                transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
+                if (transition.isWarping)
+                {
+                    transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
+                }
+
                 currentdeltaPosition = Vector3.zero;
             }
         }

@@ -186,7 +186,15 @@ namespace Traverser
             {
                 SetState(State.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
-                ledgeHook = ledgeGeometry.GetHook(transform.position); 
+                ledgeHook = ledgeGeometry.GetHook(transform.position);
+
+                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
+                Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
+                newPos.y = hookPosition.y - controller.capsuleHeight;
+
+                controller.TeleportTo(newPos);
+                transform.rotation = hookRotation;
             }
         }
 
@@ -204,6 +212,18 @@ namespace Traverser
                 {
                     ledgeHook = ledgeGeometry.GetHook(animationController.skeleton.position);
                     SetClimbingState(ClimbingState.None);
+                    animationController.fakeTransition = false;
+
+                    float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                    Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
+
+                    Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook)*controller.capsuleRadius*1.5f;
+                    newPos.y = hookPosition.y - controller.capsuleHeight;
+
+                    controller.TeleportTo(newPos);
+                    transform.rotation = hookRotation;
+
+                    animationController.animator.Play("LedgeIdle", 0, 0.0f);
                 }
 
                 return;
@@ -240,6 +260,9 @@ namespace Traverser
                 }
                 else if (desiredState == ClimbingState.CornerRight)
                 {
+                    animationController.animator.Play("LedgeCornerRight", 0, 0.0f);
+                    animationController.fakeTransition = true;
+
                     //Direction direction = Direction.Create(Direction.Type.CornerRight);
 
                     // --- We fake a play and check if at the segment's end there is a collision ---
@@ -256,6 +279,9 @@ namespace Traverser
                 }
                 else if (desiredState == ClimbingState.CornerLeft)
                 {
+                    animationController.animator.Play("LedgeCornerLeft", 0, 0.0f);
+                    animationController.fakeTransition = true;
+
                     //Direction direction = Direction.Create(Direction.Type.CornerLeft);
 
                     //// --- We fake a play and check if at the segment's end there is a collision ---
@@ -493,9 +519,16 @@ namespace Traverser
                                 wallGeometry.Initialize(collider, contactTransform);
 
                                 // --- We want to reach the pre climb position and then activate the animation ---
-                                TraverserTransform target = TraverserTransform.Get(contactTransform.t, contactTransform.q);
-                                target.t.y = ledgeGeometry.vertices[0].y;
-                                target.t.z -= 1.0f;
+                                //target.t.y = ledgeGeometry.vertices[0].y;
+                                //target.t.z -= 1.0f;
+
+                                ledgeHook = ledgeGeometry.GetHook(transform.position);
+                                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                                Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
+
+                                Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
+                                targetPosition.y = hookPosition.y - controller.capsuleHeight;
+                                TraverserTransform target = TraverserTransform.Get(targetPosition, hookRotation);
 
                                 // --- Require a transition ---
                                 ret = animationController.transition.StartTransition("WalkTransition", "Mount",

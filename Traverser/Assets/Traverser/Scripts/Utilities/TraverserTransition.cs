@@ -41,9 +41,13 @@ namespace Traverser
         // --- Transform in space we have to reach playing targetAnimation ---
         private TraverserTransform targetTransform;
 
+        private bool isWarpOn = false;
+
 
         // --- Indicates if transition handler is currently playing ---
         public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }
+
+        public bool isWarping { get => isWarpOn; }
 
         // --------------------------------
 
@@ -51,7 +55,8 @@ namespace Traverser
 
         private void Initialize()
         {
-            // --- Reset everything ---            
+            // --- Reset everything --- 
+            isWarpOn = false;
             isTransitionAnimationON = false;
             isTargetAnimationON = false;
             transitionAnimation = "";
@@ -90,6 +95,7 @@ namespace Traverser
                 // --- If we are in a transition activate root motion and disable controller ---
                 //animationController.SetRootMotion(true);
                 controller.ConfigureController(false);
+                isWarpOn = true;
                 transitionAnimation = transitionAnim;
                 targetAnimation = targetAnim;
                 triggerAnimation = triggerTargetAnim;
@@ -130,10 +136,13 @@ namespace Traverser
                     }
                     else
                     {
-                        if(!isTargetAnimationON)
-                            animationController.WarpToTarget(contactTransform.t, contactTransform.q, AvatarTarget.Root, weightMask, transitionValidDistance);
-                        else
-                            animationController.WarpToTarget(targetTransform.t, targetTransform.q, AvatarTarget.Root, weightMask, transitionValidDistance);
+                        if (isWarpOn)
+                        {
+                            if (!isTargetAnimationON)
+                                isWarpOn = animationController.WarpToTarget(contactTransform.t, contactTransform.q, AvatarTarget.Root, weightMask, transitionValidDistance);
+                            else
+                                isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, AvatarTarget.Root, weightMask, transitionValidDistance);
+                        }
 
                         ret = true;
                     }
@@ -152,6 +161,7 @@ namespace Traverser
                         if (!isTransitionAnimationON)
                         {
                             isTargetAnimationON = true;
+                            isWarpOn = true;
                             controller.TeleportTo(animationController.transform.position);
                             animationController.animator.SetTrigger(triggerAnimation);
                         }
@@ -162,8 +172,8 @@ namespace Traverser
                     else if (isTargetAnimationON)
                     {
                         // --- Use motion warping to reach the target transform as the targetAnimation plays ---
-                        if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                            animationController.WarpToTarget(targetTransform.t, targetTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
+                        if (isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
+                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
 
                         ret = true;
                     }

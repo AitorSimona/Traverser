@@ -163,26 +163,26 @@ namespace Traverser
                 return vertices[hook.index] + GetNormalizedEdge(hook.index) * hook.distance;
             }
 
-            public TraverserTransform GetTransform(TraverserLedgeHook anchor)
-            {
-                // --- Get transform out of a 2D ledge anchor --- 
-                float3 p = GetPosition(anchor);
-                float3 edge = GetNormalizedEdge(anchor.index);
-                float3 up = Vector3.up;
-                float3 n = GetNormal(anchor);
+            //public TraverserTransform GetTransform(TraverserLedgeHook hook)
+            //{
+            //    // --- Get transform out of a 2D ledge anchor --- 
+            //    float3 p = GetPosition(hook);
+            //    float3 edge = GetNormalizedEdge(hook.index);
+            //    float3 up = Vector3.up;
+            //    float3 n = GetNormal(hook);
 
-                return new TraverserTransform(p, math.quaternion(math.float3x3(edge, up, n)));
-            }
+            //    return new TraverserTransform(p, math.quaternion(math.float3x3(edge, up, n)));
+            //}
 
-            public TraverserTransform GetTransformGivenNormal(TraverserLedgeHook anchor, float3 normal)
-            {
-                // --- Get transform out of a 2D ledge anchor --- 
-                float3 p = GetPosition(anchor);
-                float3 edge = GetNormalizedEdge(anchor.index);
-                float3 up = Vector3.up;
+            //public TraverserTransform GetTransformGivenNormal(TraverserLedgeHook hook, float3 normal)
+            //{
+            //    // --- Get transform out of a 2D ledge anchor --- 
+            //    float3 p = GetPosition(hook);
+            //    float3 edge = GetNormalizedEdge(hook.index);
+            //    float3 up = Vector3.up;
 
-                return new TraverserTransform(p, math.quaternion(math.float3x3(edge, up, normal)));
-            }
+            //    return new TraverserTransform(p, math.quaternion(math.float3x3(edge, up, normal)));
+            //}
 
             // -------------------------------------------------
 
@@ -282,11 +282,11 @@ namespace Traverser
                 }
             }
 
-            public void DebugDraw(ref TraverserLedgeHook state)
+            public void DebugDraw(ref TraverserLedgeHook hook)
             {
                 // --- Draw hook ---
-                float3 position = GetPosition(state);
-                float3 normal = GetNormal(state);
+                float3 position = GetPosition(hook);
+                float3 normal = GetNormal(hook);
 
                 Debug.DrawLine(position, position + normal * 0.3f, Color.red);
             }

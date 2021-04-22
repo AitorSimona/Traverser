@@ -239,62 +239,67 @@ namespace Traverser
             // --- Handle ledge climbing/movement direction ---
             if (!IsClimbingState(desiredState)/*|| bTransitionSucceeded*/)
             {
-                //Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
 
                 if (desiredState == ClimbingState.Idle)
-                {
                     animationController.animator.Play("LedgeIdle", 0, 0.0f);
-                    //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-                }
                 else if (desiredState == ClimbingState.Right)
-                {
                     animationController.animator.Play("LedgeRight", 0, 0.0f);
-                    //Direction direction = Direction.Create(Direction.Type.Right);
-                    //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-                }
                 else if (desiredState == ClimbingState.Left)
-                {
                     animationController.animator.Play("LedgeLeft", 0, 0.0f);
-                    //Direction direction = Direction.Create(Direction.Type.Left);
-                    //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
-                }
                 else if (desiredState == ClimbingState.CornerRight)
                 {
-                    animationController.animator.Play("LedgeCornerRight", 0, 0.0f);
-                    animationController.fakeTransition = true;
+                    // --- Leaving this here for reference, I just could not get the unity way of getting
+                    // --- the position at the last frame working... Always got the current position... ---
+                    //animationController.SetRootMotion(true);
+                    //animationController.animator.Play("LedgeCornerRight", 0, 0.0f);
+                    //animationController.animator.Update(1.0f);
+                    //Vector3 position = animationController.animator.targetPosition;
+                    //animationController.SetRootMotion(false);
 
-                    //Direction direction = Direction.Create(Direction.Type.CornerRight);
+                    // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
+                    Vector3 position = transform.position;
+                    position += transform.right;
+                    position += transform.forward;
 
-                    // --- We fake a play and check if at the segment's end there is a collision ---
-                    //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                    Vector3 start = position;
+                    Vector3 end = position;
+                    end.y += controller.capsuleHeight;
 
-                    // --- If a collision is found play idle ---
-                    //if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
-                    //{
-                    //    SetClimbingState(ClimbingState.Idle);
-                    //    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-                    //    Debug.Log("No sequences for right corner transition in climbing, collision found");
-                    //    return;
-                    //}
+                    // --- If it collides against any relevant collider, do not start the corner transition ---
+                    if (Physics.CheckCapsule(start, end, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask))
+                    {
+                        desiredState = ClimbingState.Idle;
+                        animationController.animator.Play("LedgeIdle", 0, 0.0f);
+                    }
+                    else
+                    {
+                        animationController.animator.Play("LedgeCornerRight", 0, 0.0f);
+                        animationController.fakeTransition = true;
+                    }
                 }
                 else if (desiredState == ClimbingState.CornerLeft)
                 {
-                    animationController.animator.Play("LedgeCornerLeft", 0, 0.0f);
-                    animationController.fakeTransition = true;
+                    // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
+                    Vector3 position = transform.position;
+                    position -= transform.right;
+                    position += transform.forward;
 
-                    //Direction direction = Direction.Create(Direction.Type.CornerLeft);
+                    Vector3 start = position;
+                    Vector3 end = position;
+                    end.y += controller.capsuleHeight;
 
-                    //// --- We fake a play and check if at the segment's end there is a collision ---
-                    //PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(direction).Except(Idle.Default));
+                    // --- If it collides against any relevant collider, do not start the corner transition ---
+                    if (Physics.CheckCapsule(start, end, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask))
+                    {
+                        desiredState = ClimbingState.Idle;
+                        animationController.animator.Play("LedgeIdle", 0, 0.0f);
+                    }
+                    else
+                    {
+                        animationController.animator.Play("LedgeCornerLeft", 0, 0.0f);
+                        animationController.fakeTransition = true;
+                    }
 
-                    //// --- If a collision is found play idle ---
-                    //if (!KinematicaLayer.IsCurrentAnimationEndValid(ref synthesizer))
-                    //{
-                    //    SetClimbingState(ClimbingState.Idle);
-                    //    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-                    //    Debug.Log("No sequences for left corner transition in climbing, collision found");
-                    //    return;
-                    //}
                 }
 
                 SetClimbingState(desiredState);
@@ -393,63 +398,8 @@ namespace Traverser
             //}
         }
 
-        //bool UpdateCollidingClimbingState(float desiredMoveOnLedge, float3 desiredPosition, float3 desiredForward)
-        //{
-        //    bool bCollision = TraverserCollisionLayer.IsCharacterCapsuleColliding(desiredPosition - math.normalize(desiredForward) * 0.5f - new float3(0.0f, 1.5f, 0.0f), controller.capsuleCenter ,controller.capsuleHeight, controller.capsuleRadius);
-
-        //    if (climbingState == ClimbingState.Idle)
-        //    {
-        //        lastCollidingClimbingState = ClimbingState.None;
-        //    }
-        //    else if (bCollision)
-        //    {
-        //        float currentMoveDirection = climbingState == ClimbingState.Left ? 1.0f : -1.0f;
-
-        //        if (currentMoveDirection * desiredMoveOnLedge > 0.0f)
-        //            lastCollidingClimbingState = climbingState;
-        //    }
-
-        //    return bCollision;
-        //}
-
         bool UpdateClimbing(float deltaTime)
         {
-            //
-            // Smoothly adjust current root transform towards the anchor transform
-            //
-            //Tra deltaTransform = synthesizer.GetTrajectoryDeltaTransform(deltaTime);
-            //AffineTransform rootTransform = synthesizer.WorldRootTransform * deltaTransform;
-            //float linearDisplacement = -deltaTransform.t.x;
-
-            //TraverserLedgeObject.TraverserLedgeAnchor desiredLedgeAnchor = ledgeGeometry.UpdateAnchor(ledgeAnchor, linearDisplacement);
-            //float3 position = ledgeGeometry.GetPosition(desiredLedgeAnchor);
-            //float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeAnchor);
-
-            //// --- Update current anchor if it is still on the ledge ---
-            //if (!UpdateCollidingClimbingState(linearDisplacement, position, desiredForward))
-            //    ledgeAnchor = desiredLedgeAnchor;
-
-            //float distance = math.length(rootTransform.t - position);
-
-            //if (distance >= 0.01f)
-            //{
-            //    float3 normal = math.normalize(position - rootTransform.t);
-            //    rootTransform.t += normal * 0.5f * deltaTime;
-            //}
-
-            //rootTransform.t = position;
-
-            //float angle;
-            //float3 currentForward = Missing.zaxis(rootTransform.q);
-            //quaternion q = Missing.forRotation(currentForward, desiredForward);
-            //float maximumAngle = math.radians(90.0f) * deltaTime;
-            //float3 axis = Missing.axisAngle(q, out angle);
-            //angle = math.min(angle, maximumAngle);
-            //rootTransform.q = math.mul(quaternion.AxisAngle(axis, angle), rootTransform.q);
-
-            //// --- Update root motion transform ---
-            //synthesizer.WorldRootTransform = rootTransform;
-
             bool ret = false;
 
             // --- Given input, compute target position ---
@@ -464,16 +414,11 @@ namespace Traverser
             Vector3 target = controller.targetPosition; 
             target += transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
 
-            // --- Obtain target displacement
-            float linearDisplacement = -(target.x - controller.targetPosition.x);
-
             // --- Update hook ---
             TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, target, desiredCornerMinDistance);
-            float3 position = ledgeGeometry.GetPosition(desiredLedgeHook);
-            float3 desiredForward = ledgeGeometry.GetNormal(desiredLedgeHook);
 
             // --- Update current hook if it is still on the ledge ---
-            if (desiredLedgeHook.index == ledgeHook.index /*!UpdateCollidingClimbingState(linearDisplacement, position, desiredForward)*/)
+            if (desiredLedgeHook.index == ledgeHook.index)
             {
                 ret = true;
                 ledgeHook = desiredLedgeHook;
@@ -519,8 +464,6 @@ namespace Traverser
                                 wallGeometry.Initialize(collider, contactTransform);
 
                                 // --- We want to reach the pre climb position and then activate the animation ---
-                                //target.t.y = ledgeGeometry.vertices[0].y;
-                                //target.t.z -= 1.0f;
 
                                 ledgeHook = ledgeGeometry.GetHook(transform.position);
                                 float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
@@ -604,9 +547,6 @@ namespace Traverser
             // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
             float distance = 0.0f;
             bool left = ledgeGeometry.ClosestPointDistance(controller.targetPosition, ledgeHook, ref distance); 
-
-            //Debug.Log(distance);
-            Debug.Log(left);
 
             if (stickInput.x > 0.5f)
             {

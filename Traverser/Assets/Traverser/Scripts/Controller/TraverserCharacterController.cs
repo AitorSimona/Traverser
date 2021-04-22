@@ -70,6 +70,7 @@ namespace Traverser
 
         public float capsuleRadius { get => characterController.radius; }
 
+
         // --- Whether or not the character controller's capsule collider is grounded ---
         public bool isGrounded { get => current.isGrounded; }
 

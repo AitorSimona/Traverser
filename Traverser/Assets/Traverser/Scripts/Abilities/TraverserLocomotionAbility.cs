@@ -279,6 +279,14 @@ namespace Traverser
 
         // --- Movement ---
 
+        public void ResetLocomotion()
+        {
+            movementDecelerationTimer = 0.0f;
+            previousMovementIntensity = 0.0f;
+            movementAccelerationTimer = 0.0f;
+            controller.targetVelocity = float3.zero;
+        }
+
         float GetDesiredSpeed(float deltaTime)        
         {
             float desiredSpeed = 0.0f;

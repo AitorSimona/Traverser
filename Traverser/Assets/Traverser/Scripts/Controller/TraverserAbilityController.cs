@@ -51,10 +51,7 @@ namespace Traverser
             bool isEnabled = currentAbility == null ? false : currentAbility.IsAbilityEnabled();
 
             if (currentAbility != null && isEnabled)
-            {
                 currentAbility = currentAbility.OnUpdate(Time.deltaTime);
-            }
-
             // --- If no ability is in control, look for one ---
             if (currentAbility == null || !isEnabled)
             {
@@ -79,7 +76,13 @@ namespace Traverser
             if (animationController.isActiveAndEnabled)
             {
                 animatorParameters.Move = TraverserInputLayer.GetMoveIntensity() > 0.0f;
-                animatorParameters.Speed = math.length(controller.targetVelocity);
+
+                // --- We are not interested in Y speed, since then gravity would make us run in the animator! ---
+                Vector2 speed;
+                speed.x = controller.targetVelocity.x;
+                speed.y = controller.targetVelocity.z;
+
+                animatorParameters.Speed = math.length(speed);
                 animatorParameters.Heading = controller.targetHeading;
                 animationController.UpdateAnimator(ref animatorParameters);
             }
@@ -98,7 +101,6 @@ namespace Traverser
             // --- Keep updating our current ability ---
             if (currentAbility != null && isEnabled)
                 currentAbility = currentAbility.OnFixedUpdate(Time.fixedDeltaTime);
-
             // --- If no ability is in control, look for one ---
             if (currentAbility == null || !isEnabled)
             {

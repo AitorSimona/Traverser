@@ -306,6 +306,7 @@ namespace Traverser
             }
 
             TraverserTransform rootTransform = TraverserTransform.Get(transform.position, transform.rotation);
+            rootTransform.t.y += controller.capsuleHeight;
             wallGeometry.Initialize(rootTransform);
             wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
             float height = wallGeometry.GetHeight(ref wallAnchor);
@@ -326,8 +327,8 @@ namespace Traverser
             }
             else if (closeToDrop && TraverserInputLayer.capture.dismountButton)
             {
-                //Ledge trait = Ledge.Create(Ledge.Type.Dismount); // temporal
-                //PlayFirstSequence(synthesizer.Query.Where("Ledge", trait).Except(Idle.Default)); // temporal
+                animationController.animator.Play("Dismount", 0, 0.0f);
+                animationController.fakeTransition = true;
                 SetState(State.Dismount);
             }
             //else if (!closeToDrop && -stickInput.y < -0.5)
@@ -338,14 +339,17 @@ namespace Traverser
 
         void HandleDismountState()
         {
-            //bool bTransitionSucceeded;
-            //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
-
-            //if (bTransitionSucceeded)
-            //{
-            //    SetState(State.Suspended);
-            //    PlayFirstSequence(synthesizer.Query.Where("Idle", Locomotion.Default).And(Idle.Default));
-            //}
+            if(animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime>=1.0f)
+            {
+                animationController.fakeTransition = false;
+                SetState(State.Suspended);
+                // --- Get skeleton's current position and teleport controller ---
+                float3 newTransform = animationController.skeleton.transform.position;
+                newTransform.y -= controller.capsuleHeight / 2.0f;
+                controller.TeleportTo(newTransform);                 
+                locomotionAbility.ResetLocomotion();
+                animationController.animator.Play("LocomotionON", 0, 0.0f);
+            }
         }
 
         void HandlePullUpState()

@@ -323,6 +323,8 @@ namespace Traverser
             {
                 //AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
                 //RequestTransition(ref synthesizer, contactTransform, Ledge.Type.PullUp);
+                animationController.animator.Play("PullUp", 0, 0.0f);
+                animationController.fakeTransition = true;
                 SetState(State.PullUp);
             }
             else if (closeToDrop && TraverserInputLayer.capture.dismountButton)
@@ -358,6 +360,18 @@ namespace Traverser
 
             //if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
             //    SetState(State.Suspended);
+
+            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            {
+                animationController.fakeTransition = false;
+                SetState(State.Suspended);
+                // --- Get skeleton's current position and teleport controller ---
+                float3 newTransform = animationController.skeleton.transform.position;
+                newTransform.y -= controller.capsuleHeight / 2.0f;
+                controller.TeleportTo(newTransform);
+                locomotionAbility.ResetLocomotion();
+                animationController.animator.Play("LocomotionON", 0, 0.0f);
+            }
         }
 
         void HandleDropDownState()
@@ -499,7 +513,6 @@ namespace Traverser
         public bool OnDrop(float deltaTime)
         {
             bool ret = false;
-
 
             //if (InputLayer.capture.dropDownButton && !IsState(State.DropDown))
             //{

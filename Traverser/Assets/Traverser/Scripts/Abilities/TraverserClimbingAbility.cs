@@ -135,9 +135,6 @@ namespace Traverser
         {
             TraverserAbility ret = this;
 
-            // --- Turn off/on controller ---
-            controller.ConfigureController(!IsState(State.Suspended));
-
             // --- If character is not falling ---
             if (!IsState(State.Suspended))
             {
@@ -170,9 +167,14 @@ namespace Traverser
 
                 // --- Let other abilities handle the situation ---
                 if (IsState(State.Suspended))
-                    return null;
+                {
+                    ret = null;
 
-                ret = this;
+                    // --- Turn off/on controller ---
+                    controller.ConfigureController(true/*!IsState(State.Suspended)*/);
+                }
+
+                //ret = this;
             }
 
             return ret;
@@ -186,6 +188,7 @@ namespace Traverser
             {
                 SetState(State.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
+
                 ledgeHook = ledgeGeometry.GetHook(transform.position);
 
                 float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
@@ -376,6 +379,27 @@ namespace Traverser
 
         void HandleDropDownState()
         {
+
+            if (!animationController.transition.isON)
+            {
+                //animationController.fakeTransition = false;
+                SetState(State.Climbing);
+                SetClimbingState(ClimbingState.Idle);
+                animationController.animator.Play("LedgeIdle", 0, 0.0f);
+
+                ledgeHook = ledgeGeometry.GetHook(animationController.skeleton.position);
+                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
+                Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
+                newPos.y = hookPosition.y - controller.capsuleHeight;
+
+                controller.ConfigureController(false);
+                controller.TeleportTo(newPos);
+                
+                transform.rotation = hookRotation;
+                //locomotionAbility.ResetLocomotion();
+                //animationController.animator.Play("LocomotionON", 0, 0.0f);
+            }
             //if (!anchoredTransition.isValid && previousState != State.DropDown)
             //{
             //    BoxCollider collider = controller.current.ground.GetComponent<BoxCollider>();
@@ -496,10 +520,15 @@ namespace Traverser
                                     "WalkTransitionTrigger", "MountTrigger", 1.0f, 1.0f,
                                     ref contactTransform,
                                     ref target);
-                                
+
                                 // --- If transition start is successful, change state ---
-                                if(ret)
+                                if (ret)
+                                {
                                     SetState(State.Mounting);
+
+                                    // --- Turn off/on controller ---
+                                    controller.ConfigureController(false/*!IsState(State.Suspended)*/);
+                                }
                             }
                         }
                     }
@@ -514,11 +543,41 @@ namespace Traverser
         {
             bool ret = false;
 
-            //if (InputLayer.capture.dropDownButton && !IsState(State.DropDown))
-            //{
-            //    SetState(State.DropDown);
-            //    ret = true;
-            //}
+            if (/*!animationController.transition.isON &&*/ TraverserInputLayer.capture.dropDownButton /*&& !IsState(State.DropDown)*/)
+            {
+                BoxCollider collider = controller.previous.ground as BoxCollider;
+
+
+
+                if (collider)
+                {
+                    Debug.Log(collider.name);
+
+                    ledgeGeometry.Initialize(collider);
+                    ledgeHook = ledgeGeometry.GetHook(controller.previous.position);
+                    Vector3 targetPosition = ledgeGeometry.GetPosition(ledgeHook);
+                    Quaternion hookRotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ledgeHook), transform.up);
+
+                    TraverserTransform target = TraverserTransform.Get(targetPosition, hookRotation);
+                    hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
+
+                    TraverserTransform target2 = TraverserTransform.Get(targetPosition, hookRotation);
+
+                    // --- Require a transition ---
+                    ret = animationController.transition.StartTransition("WalkTransition", "DropDown",
+                        "WalkTransitionTrigger", "DropDownTrigger", 0.25f, 1.5f, 
+                        ref target,
+                        ref target2);
+
+                    if (ret)
+                    {
+                        SetState(State.DropDown);
+                        // --- Turn off/on controller ---
+                        controller.ConfigureController(false/*!IsState(State.Suspended)*/);
+                        //ret = true;
+                    }
+                }
+            }
 
             return ret;
         }

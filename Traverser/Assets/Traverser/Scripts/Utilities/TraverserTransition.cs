@@ -175,7 +175,20 @@ namespace Traverser
                         if (isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
                             isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
 
-                        ret = true;
+                        if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
+                        {
+                            // --- Get skeleton's current position and teleport controller ---
+                            float3 newTransform = animationController.skeleton.transform.position;
+                            newTransform.y -= controller.capsuleHeight / 2.0f;
+                            controller.TeleportTo(newTransform);
+
+                            // --- Reenable controller and give back control ---
+                            controller.ConfigureController(true);
+                            ret = false;
+                            //ret = false;
+                        }
+                        else
+                            ret = true;
                     }
                 }
 

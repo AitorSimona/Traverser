@@ -144,9 +144,6 @@ namespace Traverser
         // --- State snapshot to save current state before movement simulation ---
         private TraverserState snapshotState;
 
-        // --- To store simulation's last known position ---
-        private float3 lastPosition;
-
         // --- The last contact position and rotation extracted from last collision ---
         private TraverserTransform lastContactTransform = TraverserTransform.Get(float3.zero, quaternion.identity);
 

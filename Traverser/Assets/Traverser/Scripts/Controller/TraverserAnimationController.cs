@@ -85,6 +85,7 @@ namespace Traverser
  
         private void LateUpdate()
         {
+            // --- Ensure the skeleton does not get separated from the controller (forcing in-place animation) ---
             if (!transition.isON && !fakeTransition)
                 skeleton.transform.position = skeletonRef.transform.position;
             else
@@ -123,7 +124,7 @@ namespace Traverser
         }
 
         /// <summary>
-        /// Adjusts game object's position and rotation to match givern position and rotation in the given time with current animation
+        /// Adjusts game object's position and rotation to match given position and rotation in the given time with current animation
         /// </summary>
         /// <param name="matchPosition"> The desired position to reach with target matching.</param>
         /// <param name="matchRotation"> The desired rotation to reach with target matching.</param>
@@ -143,11 +144,7 @@ namespace Traverser
             Vector3 difference = matchPosition - transform.position;
             difference.Scale(weightMask.positionXYZWeight);
             float time = animator.GetCurrentAnimatorStateInfo(0).length;
-
-            Vector3 velocity = difference / time;/*= difference - deltaPosition;*/ //Vector3.one * 0.39f;
-
-
-            //velocity = difference / time;
+            Vector3 velocity = difference / time;
 
             // --- If velocity is zero, which means we just started warping, set it to one ---
             if (deltaPosition.magnitude < 0.01f || velocity.magnitude < 0.01f)
@@ -170,7 +167,7 @@ namespace Traverser
             currentdeltaPosition.y = 0.0f;
 
             // --- Compute the rotation that has to be warped ---
-            currentdeltaRotation = Quaternion.Lerp(transform.rotation, matchRotation, timeToTarget/*0.25f + currentTime / info.length*/); //timeToTarget
+            currentdeltaRotation = Quaternion.Lerp(transform.rotation, matchRotation, timeToTarget); 
 
             // --- If close enough to validDistance, end warp ---
 

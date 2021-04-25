@@ -9,20 +9,8 @@ namespace Traverser
     public class TraverserClimbingAbility : MonoBehaviour, TraverserAbility
     {
         // --- Attributes ---
-        //[Header("Transition settings")]
-        //[Tooltip("Distance in meters for performing movement validity checks")]
-        //[Range(0.0f, 1.0f)]
-        //public float contactThreshold;
 
-        //[Tooltip("Maximum linear error for transition poses")]
-        //[Range(0.0f, 1.0f)]
-        //public float maximumLinearError;
-
-        //[Tooltip("Maximum angular error for transition poses.")]
-        //[Range(0.0f, 180.0f)]
-        //public float maximumAngularError;
-
-        [Header("Ledge prediction settings")]
+        [Header("Ledge traversal settings")]
         [Tooltip("Desired speed in meters per second for ledge climbing.")]
         [Range(0.0f, 10.0f)]
         public float desiredSpeedLedge;
@@ -31,13 +19,9 @@ namespace Traverser
         [Range(0.0f, 0.5f)]
         public float desiredCornerMinDistance;
 
-        //[Tooltip("How fast or slow the target velocity is supposed to be reached.")]
-        //[Range(0.0f, 1.0f)]
-        //public float velocityPercentageLedge;
-
         // --------------------------------
 
-        // --- Climbing movement/state ---
+        // --- Climbing ability state ---
         public enum State
         {
             Suspended,
@@ -50,7 +34,7 @@ namespace Traverser
 
         // --------------------------------
 
-        // --- Climbing directions ---
+        // --- Climbing state directions ---
         public enum ClimbingState
         {
             Idle,
@@ -76,11 +60,7 @@ namespace Traverser
         private TraverserLocomotionAbility locomotionAbility;
 
         private State state; // Actual Climbing movement/state
-        private State previousState; // Previous Climbing movement/state
-
         private ClimbingState climbingState; // Actual Climbing direction
-        private ClimbingState previousClimbingState; // Previous Climbing direction
-        private ClimbingState lastCollidingClimbingState;
 
         // --------------------------------
 
@@ -102,10 +82,7 @@ namespace Traverser
             locomotionAbility = GetComponent<TraverserLocomotionAbility>();
 
             state = State.Suspended;
-            previousState = State.Suspended;
             climbingState = ClimbingState.Idle;
-            previousClimbingState = ClimbingState.Idle;
-            lastCollidingClimbingState = ClimbingState.None;
 
             ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
             auxledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
@@ -153,12 +130,12 @@ namespace Traverser
                         HandlePullUpState();
                         break;
 
-                    case State.Climbing:
-                        HandleClimbingState(deltaTime);
-                        break;
-
                     case State.DropDown:
                         HandleDropDownState();
+                        break;
+
+                    case State.Climbing:
+                        HandleClimbingState(deltaTime);
                         break;
 
                     default:
@@ -171,13 +148,119 @@ namespace Traverser
                     ret = null;
 
                     // --- Turn off/on controller ---
-                    controller.ConfigureController(true/*!IsState(State.Suspended)*/);
+                    controller.ConfigureController(true);
                 }
-
-                //ret = this;
             }
 
             return ret;
+        }
+
+        public bool OnContact(TraverserTransform contactTransform, float deltaTime)
+        {
+            bool ret = false;
+
+            if (TraverserInputLayer.capture.mountButton)
+            {
+                //---If we make contact with a climbable surface and player issues climb order, mount ---         
+                if (IsState(State.Suspended))
+                {
+                    BoxCollider collider = controller.current.collider as BoxCollider;
+
+                    // --- Ensure we are not falling ---
+                    if (collider != null && controller.isGrounded)
+                    {
+                        if (collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
+                        {
+                            // --- Fill auxiliary ledge to prevent mounting too close to a corner ---
+                            auxledgeGeometry.Initialize(collider);
+                            TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
+                            float distance = 0.0f;
+                            auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxHook, ref distance);
+
+                            // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
+                            if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
+                            {
+                                Debug.Log("Climbing to ledge");
+
+                                ledgeGeometry.Initialize(collider);
+                                wallGeometry.Initialize(collider, contactTransform);
+
+                                // --- We want to reach the pre climb position and then activate the animation ---
+
+                                ledgeHook = ledgeGeometry.GetHook(transform.position);
+                                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                                Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
+
+                                Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
+                                targetPosition.y = hookPosition.y - controller.capsuleHeight;
+                                TraverserTransform target = TraverserTransform.Get(targetPosition, hookRotation);
+
+                                // --- Require a transition ---
+                                ret = animationController.transition.StartTransition("WalkTransition", "Mount",
+                                    "WalkTransitionTrigger", "MountTrigger", 1.0f, 1.0f,
+                                    ref contactTransform,
+                                    ref target);
+
+                                // --- If transition start is successful, change state ---
+                                if (ret)
+                                {
+                                    SetState(State.Mounting);
+
+                                    // --- Turn off/on controller ---
+                                    controller.ConfigureController(false/*!IsState(State.Suspended)*/);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public bool OnDrop(float deltaTime)
+        {
+            bool ret = false;
+
+            if (TraverserInputLayer.capture.dropDownButton)
+            {
+                BoxCollider collider = controller.previous.ground as BoxCollider;
+
+                if (collider)
+                {
+                    Debug.Log(collider.name);
+
+                    ledgeGeometry.Initialize(collider);
+                    ledgeHook = ledgeGeometry.GetHook(controller.previous.position);
+                    Vector3 targetPosition = ledgeGeometry.GetPosition(ledgeHook);
+                    Quaternion hookRotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ledgeHook), transform.up);
+
+                    TraverserTransform target = TraverserTransform.Get(targetPosition, hookRotation);
+                    hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
+
+                    TraverserTransform target2 = TraverserTransform.Get(targetPosition, hookRotation);
+
+                    // --- Require a transition ---
+                    ret = animationController.transition.StartTransition("WalkTransition", "DropDown",
+                        "WalkTransitionTrigger", "DropDownTrigger", 0.25f, 1.5f,
+                        ref target,
+                        ref target2);
+
+                    if (ret)
+                    {
+                        SetState(State.DropDown);
+                        // --- Turn off/on controller ---
+                        controller.ConfigureController(false);
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public bool IsAbilityEnabled()
+        {
+            return isActiveAndEnabled;
         }
 
         // --- Climbing states wrappers ---
@@ -201,11 +284,59 @@ namespace Traverser
             }
         }
 
+        void HandleDismountState()
+        {
+            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            {
+                animationController.fakeTransition = false;
+                SetState(State.Suspended);
+                // --- Get skeleton's current position and teleport controller ---
+                float3 newTransform = animationController.skeleton.transform.position;
+                newTransform.y -= controller.capsuleHeight / 2.0f;
+                controller.TeleportTo(newTransform);
+                locomotionAbility.ResetLocomotion();
+                animationController.animator.Play("LocomotionON", 0, 0.0f);
+            }
+        }
+
+        void HandlePullUpState()
+        {
+            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            {
+                animationController.fakeTransition = false;
+                SetState(State.Suspended);
+                // --- Get skeleton's current position and teleport controller ---
+                float3 newTransform = animationController.skeleton.transform.position;
+                newTransform.y -= controller.capsuleHeight / 2.0f;
+                controller.TeleportTo(newTransform);
+                locomotionAbility.ResetLocomotion();
+                animationController.animator.Play("LocomotionON", 0, 0.0f);
+            }
+        }
+
+        void HandleDropDownState()
+        {
+            if (!animationController.transition.isON)
+            {
+                SetState(State.Climbing);
+                SetClimbingState(ClimbingState.Idle);
+                animationController.animator.Play("LedgeIdle", 0, 0.0f);
+
+                ledgeHook = ledgeGeometry.GetHook(animationController.skeleton.position);
+                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
+                Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
+                newPos.y = hookPosition.y - controller.capsuleHeight;
+
+                controller.ConfigureController(false);
+                controller.TeleportTo(newPos);
+
+                transform.rotation = hookRotation;
+            }
+        }
+
         void HandleClimbingState(float deltaTime)
         {
-            bool bTransitionSucceeded;
-            //KinematicaLayer.GetCurrentAnimationInfo(ref synthesizer, out bTransitionSucceeded);
-
             // --- Handle special corner transitions ---
             if (climbingState == ClimbingState.CornerRight
                 || climbingState == ClimbingState.CornerLeft
@@ -236,11 +367,11 @@ namespace Traverser
 
             ClimbingState desiredState = GetDesiredClimbingState();
 
-            if (desiredState == lastCollidingClimbingState || !canMove)
+            if (!canMove)
                 desiredState = ClimbingState.Idle;
 
             // --- Handle ledge climbing/movement direction ---
-            if (!IsClimbingState(desiredState)/*|| bTransitionSucceeded*/)
+            if (!IsClimbingState(desiredState))
             {
 
                 if (desiredState == ClimbingState.Idle)
@@ -315,17 +446,9 @@ namespace Traverser
             float height = wallGeometry.GetHeight(ref wallAnchor);
             bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
 
-            RaycastHit ray_hit;
-
-            // --- Check if the ray hits a collider, allow dismount if true ---
-            //if (Physics.Raycast(synthesizer.WorldRootTransform.t - synthesizer.WorldRootTransform.Forward, Vector3.down, out ray_hit, 2.8f, CollisionLayer.EnvironmentCollisionMask))
-            //    closeToDrop = true;
-
             // --- React to pull up/dismount ---
-            if (TraverserInputLayer.capture.pullUpButton /*&& !CollisionLayer.IsCharacterCapsuleColliding(transform.position, ref capsule)*/)
+            if (TraverserInputLayer.capture.pullUpButton)
             {
-                //AffineTransform contactTransform = ledgeGeometry.GetTransform(ledgeAnchor);
-                //RequestTransition(ref synthesizer, contactTransform, Ledge.Type.PullUp);
                 animationController.animator.Play("PullUp", 0, 0.0f);
                 animationController.fakeTransition = true;
                 SetState(State.PullUp);
@@ -336,108 +459,6 @@ namespace Traverser
                 animationController.fakeTransition = true;
                 SetState(State.Dismount);
             }
-            //else if (!closeToDrop && -stickInput.y < -0.5)
-            //{
-            //    SetState(State.FreeClimbing);
-            //}
-        }
-
-        void HandleDismountState()
-        {
-            if(animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime>=1.0f)
-            {
-                animationController.fakeTransition = false;
-                SetState(State.Suspended);
-                // --- Get skeleton's current position and teleport controller ---
-                float3 newTransform = animationController.skeleton.transform.position;
-                newTransform.y -= controller.capsuleHeight / 2.0f;
-                controller.TeleportTo(newTransform);                 
-                locomotionAbility.ResetLocomotion();
-                animationController.animator.Play("LocomotionON", 0, 0.0f);
-            }
-        }
-
-        void HandlePullUpState()
-        {
-            //bool bTransitionSucceeded;
-
-            //if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out bTransitionSucceeded))
-            //    SetState(State.Suspended);
-
-            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
-            {
-                animationController.fakeTransition = false;
-                SetState(State.Suspended);
-                // --- Get skeleton's current position and teleport controller ---
-                float3 newTransform = animationController.skeleton.transform.position;
-                newTransform.y -= controller.capsuleHeight / 2.0f;
-                controller.TeleportTo(newTransform);
-                locomotionAbility.ResetLocomotion();
-                animationController.animator.Play("LocomotionON", 0, 0.0f);
-            }
-        }
-
-        void HandleDropDownState()
-        {
-
-            if (!animationController.transition.isON)
-            {
-                //animationController.fakeTransition = false;
-                SetState(State.Climbing);
-                SetClimbingState(ClimbingState.Idle);
-                animationController.animator.Play("LedgeIdle", 0, 0.0f);
-
-                ledgeHook = ledgeGeometry.GetHook(animationController.skeleton.position);
-                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
-                Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
-                Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
-                newPos.y = hookPosition.y - controller.capsuleHeight;
-
-                controller.ConfigureController(false);
-                controller.TeleportTo(newPos);
-                
-                transform.rotation = hookRotation;
-                //locomotionAbility.ResetLocomotion();
-                //animationController.animator.Play("LocomotionON", 0, 0.0f);
-            }
-            //if (!anchoredTransition.isValid && previousState != State.DropDown)
-            //{
-            //    BoxCollider collider = controller.current.ground.GetComponent<BoxCollider>();
-
-            //    if (collider != null)
-            //    {
-            //        if (collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
-            //        {
-            //            ledgeGeometry.Initialize(collider);
-            //            ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-            //            wallGeometry.Initialize(collider, ledgeGeometry.GetTransform(ledgeAnchor));
-
-            //            // --- Make sure we build the contact transform considering the wall's normal ---
-            //            AffineTransform contactTransform = ledgeGeometry.GetTransformGivenNormal(ledgeAnchor, wallGeometry.GetNormalWorldSpace());
-            //            RequestTransition(ref synthesizer, contactTransform, Ledge.Type.DropDown);
-            //        }
-            //    }
-            //}
-
-            //bool TransitionSuccess;
-
-            //if (KinematicaLayer.IsAnchoredTransitionComplete(ref anchoredTransition, out TransitionSuccess))
-            //{
-            //    if(!TransitionSuccess)
-            //    {
-            //        SetState(State.Suspended);
-            //        return;
-            //    }
-
-            //    // --- From the top of a wall, drop down onto the ledge ---
-            //    ledgeAnchor = ledgeGeometry.GetAnchor(synthesizer.WorldRootTransform.t);
-
-            //    // --- Depending on how far the anchor is, decide if we are hanging onto a ledge or climbing a wall ---
-            //    SetState(State.Climbing);
-            //    SetClimbingState(ClimbingState.Idle);
-            //    Climbing climbingTrait = Climbing.Create(Climbing.Type.Ledge);
-            //    PlayFirstSequence(synthesizer.Query.Where(climbingTrait).And(Idle.Default));
-            //}
         }
 
         bool UpdateClimbing(float deltaTime)
@@ -473,119 +494,7 @@ namespace Traverser
             return ret;
         }    
 
-        public bool OnContact(TraverserTransform contactTransform, float deltaTime)
-        {
-            bool ret = false;
-
-            //TraverserInputLayer.capture.UpdateClimbing();
-
-            if(TraverserInputLayer.capture.mountButton)
-            {
-                //---If we make contact with a climbable surface and player issues climb order, mount ---         
-                if (IsState(State.Suspended))
-                {
-                    BoxCollider collider = controller.current.collider as BoxCollider;
-
-                    // --- Ensure we are not falling ---
-                    if (collider != null && controller.isGrounded)
-                    {
-                        if (collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
-                        {
-                            // --- Fill auxiliary ledge to prevent mounting too close to a corner ---
-                            auxledgeGeometry.Initialize(collider);
-                            TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
-                            float distance = 0.0f;
-                            auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxHook, ref distance);
-
-                            // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
-                            if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
-                            {
-                                Debug.Log("Climbing to ledge");
-
-                                ledgeGeometry.Initialize(collider);
-                                wallGeometry.Initialize(collider, contactTransform);
-
-                                // --- We want to reach the pre climb position and then activate the animation ---
-
-                                ledgeHook = ledgeGeometry.GetHook(transform.position);
-                                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
-                                Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
-
-                                Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
-                                targetPosition.y = hookPosition.y - controller.capsuleHeight;
-                                TraverserTransform target = TraverserTransform.Get(targetPosition, hookRotation);
-
-                                // --- Require a transition ---
-                                ret = animationController.transition.StartTransition("WalkTransition", "Mount",
-                                    "WalkTransitionTrigger", "MountTrigger", 1.0f, 1.0f,
-                                    ref contactTransform,
-                                    ref target);
-
-                                // --- If transition start is successful, change state ---
-                                if (ret)
-                                {
-                                    SetState(State.Mounting);
-
-                                    // --- Turn off/on controller ---
-                                    controller.ConfigureController(false/*!IsState(State.Suspended)*/);
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-
-            return ret;
-        }
-
-        public bool OnDrop(float deltaTime)
-        {
-            bool ret = false;
-
-            if (/*!animationController.transition.isON &&*/ TraverserInputLayer.capture.dropDownButton /*&& !IsState(State.DropDown)*/)
-            {
-                BoxCollider collider = controller.previous.ground as BoxCollider;
-
-
-
-                if (collider)
-                {
-                    Debug.Log(collider.name);
-
-                    ledgeGeometry.Initialize(collider);
-                    ledgeHook = ledgeGeometry.GetHook(controller.previous.position);
-                    Vector3 targetPosition = ledgeGeometry.GetPosition(ledgeHook);
-                    Quaternion hookRotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ledgeHook), transform.up);
-
-                    TraverserTransform target = TraverserTransform.Get(targetPosition, hookRotation);
-                    hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
-
-                    TraverserTransform target2 = TraverserTransform.Get(targetPosition, hookRotation);
-
-                    // --- Require a transition ---
-                    ret = animationController.transition.StartTransition("WalkTransition", "DropDown",
-                        "WalkTransitionTrigger", "DropDownTrigger", 0.25f, 1.5f, 
-                        ref target,
-                        ref target2);
-
-                    if (ret)
-                    {
-                        SetState(State.DropDown);
-                        // --- Turn off/on controller ---
-                        controller.ConfigureController(false/*!IsState(State.Suspended)*/);
-                        //ret = true;
-                    }
-                }
-            }
-
-            return ret;
-        }
-
-        public bool IsAbilityEnabled()
-        {
-            return isActiveAndEnabled;
-        }
+        
 
         // --------------------------------
 
@@ -593,9 +502,7 @@ namespace Traverser
 
         public void SetState(State newState)
         {
-            previousState = state;
             state = newState;
-            lastCollidingClimbingState = ClimbingState.None;
         }
 
         public bool IsState(State queryState)
@@ -605,7 +512,6 @@ namespace Traverser
 
         public void SetClimbingState(ClimbingState climbingState)
         {
-            previousClimbingState = this.climbingState;
             this.climbingState = climbingState;
         }
 

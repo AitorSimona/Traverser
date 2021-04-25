@@ -41,12 +41,14 @@ namespace Traverser
         // --- Transform in space we have to reach playing targetAnimation ---
         private TraverserTransform targetTransform;
 
+        // --- Indicates if transition handler is currently warping ---
         private bool isWarpOn = false;
 
 
         // --- Indicates if transition handler is currently playing ---
         public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }
 
+        // --- Indicates if transition handler is currently warping ---
         public bool isWarping { get => isWarpOn; }
 
         // --------------------------------
@@ -175,6 +177,7 @@ namespace Traverser
                         if (isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
                             isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
 
+                        // --- If current state does not have a valid exit transition, return control ---
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
                         {
                             // --- Get skeleton's current position and teleport controller ---
@@ -185,7 +188,6 @@ namespace Traverser
                             // --- Reenable controller and give back control ---
                             controller.ConfigureController(true);
                             ret = false;
-                            //ret = false;
                         }
                         else
                             ret = true;

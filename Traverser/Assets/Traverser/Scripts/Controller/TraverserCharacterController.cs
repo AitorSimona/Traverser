@@ -178,7 +178,7 @@ namespace Traverser
             // --- If on simulation's first tick, store position ---
             if (simulationCounter == 0)
             {
-                // --- This are the target position, velocity and yaw rotation (heading) of the current frame ---
+                // --- These are the target position, velocity and yaw rotation (heading) of the current frame ---
                 targetPosition = transform.position;
                 targetVelocity = state.currentCollision.velocity;
                 //targetHeading = Vector3.SignedAngle(transform.forward, math.normalizesafe(targetVelocity), transform.up) * deltaTime;

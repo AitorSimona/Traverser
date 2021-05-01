@@ -299,7 +299,8 @@ namespace Traverser
                 //Debug.Log("Collided with:");
                 //Debug.Log(hit.gameObject.name);
                 
-                state.previousCollision.CopyFrom(ref state.currentCollision);
+                // NEEDED ??????? state.previousCollision.CopyFrom(ref state.currentCollision);
+
                 state.currentCollision.colliderContactPoint = hit.point;
 
                 // --- Given hit normal, compute what is the relevant collider size to store ---

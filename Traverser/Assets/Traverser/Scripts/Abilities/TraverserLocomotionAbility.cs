@@ -84,6 +84,7 @@ namespace Traverser
         // --- Private Variables ---
 
         private TraverserCharacterController controller;
+        private TraverserAnimationController animationController;
 
         // --- Character's target movement speed ---
         private float desiredLinearSpeed = 0.0f;
@@ -113,6 +114,7 @@ namespace Traverser
         {
             desiredLinearSpeed = movementSpeedSlow;
             controller = GetComponent<TraverserCharacterController>();
+            animationController = GetComponent<TraverserAnimationController>();
             TraverserInputLayer.capture.movementDirection = Vector3.zero;
         }
 
@@ -407,6 +409,46 @@ namespace Traverser
 
             // --- Cap Rotation ---
             currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, -rotationSpeed, rotationSpeed);
+        }
+
+        // -------------------------------------------------
+
+        // --- Events ---
+
+        public float distanceToGround = 1.0f;
+        public float footHeight = 1.0f;
+
+        private void OnAnimatorIK(int layerIndex)
+        {
+            animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+            animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+
+            // Left foot
+            RaycastHit hit;
+            Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
+
+            if(Physics.Raycast(ray, out hit, distanceToGround, TraverserCollisionLayer.EnvironmentCollisionMask))
+            {
+                Vector3 footPosition = hit.point;
+                footPosition.y += footHeight;
+                animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
+                animationController.animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.LeftFoot));
+            }
+
+            animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+            animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+
+            // Right foot
+            ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
+
+            if (Physics.Raycast(ray, out hit, distanceToGround, TraverserCollisionLayer.EnvironmentCollisionMask))
+            {
+                Vector3 footPosition = hit.point;
+                footPosition.y += footHeight;
+;
+                animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
+                animationController.animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.RightFoot));
+            }
         }
 
         // -------------------------------------------------

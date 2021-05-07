@@ -10,23 +10,31 @@ namespace Traverser
     public class TraverserParkourAbility : MonoBehaviour, TraverserAbility
     {
         // --- Attributes ---
-        [Header("Transition settings")]
-        [Tooltip("Distance in meters for performing movement validity checks.")]
+        [Header("Feet IK settings")]
+        [Tooltip("Activates or deactivates foot IK placement for the locomotion ability.")]
+        public bool fIKOn = true;
+        [Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the ground.")]
+        [Range(0.0f, 5.0f)]
+        public float feetIKGroundDistance = 1.0f;
+        [Tooltip("The character's foot height (size in Y, meters).")]
         [Range(0.0f, 1.0f)]
-        public float contactThreshold;
+        public float footHeight = 1.0f;
 
-        [Tooltip("Maximum linear error for transition poses.")]
-        [Range(0.0f, 1.0f)]
-        public float maximumLinearError;
-
-        [Tooltip("Maximum angular error for transition poses.")]
-        [Range(0.0f, 180.0f)]
-        public float maximumAngularError;
+        [Header("Hands IK settings")]
+        [Tooltip("Activates or deactivates foot IK placement for the locomotion ability.")]
+        public bool hIKOn = true;
+        //[Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the ground.")]
+        //[Range(0.0f, 5.0f)]
+        //public float feetIKGroundDistance = 1.0f;
+        //[Tooltip("The character's foot height (size in Y, meters).")]
+        //[Range(0.0f, 1.0f)]
+        //public float footHeight = 1.0f;
 
         // -------------------------------------------------
 
         // --- Private Variables ---
 
+        private TraverserAbilityController abilityController;
         private TraverserCharacterController controller;
         private TraverserAnimationController animationController;
         private TraverserLocomotionAbility locomotionAbility;
@@ -37,6 +45,7 @@ namespace Traverser
 
         public void Start()
         {
+            abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
             locomotionAbility = GetComponent<TraverserLocomotionAbility>();
@@ -192,7 +201,7 @@ namespace Traverser
                         if (speed <= walkSpeed)
                             ret = animationController.transition.StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                         else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
-                            ret = animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                            ret = animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 1.5f, 0.5f, ref controller.contactTransform, ref targetTransform);
                         else
                             ret = animationController.transition.StartTransition("RunTransition", "VaultLedgeRun", "RunTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
 
@@ -238,6 +247,51 @@ namespace Traverser
         public bool IsAbilityEnabled()
         {
             return isActiveAndEnabled;
+        }
+
+        // -------------------------------------------------
+
+        // --- Events ---
+
+        private void OnAnimatorIK(int layerIndex)
+        {
+            if (!abilityController.isCurrent(this))
+                return;
+
+            // --- Set weights to 0 and return if IK is off ---
+            if (!fIKOn)
+            {
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.0f);
+                return;
+            }
+
+            // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
+
+            // --- Left foot ---
+            animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+
+            RaycastHit hit;
+            Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
+
+            if (Physics.Raycast(ray, out hit, feetIKGroundDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+            {
+                Vector3 footPosition = hit.point;
+                footPosition.y += footHeight;
+                animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
+            }
+
+            // --- Right foot ---
+            animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+
+            ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
+
+            if (Physics.Raycast(ray, out hit, feetIKGroundDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+            {
+                Vector3 footPosition = hit.point;
+                footPosition.y += footHeight;;
+                animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
+            }
         }
 
         // -------------------------------------------------

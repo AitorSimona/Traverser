@@ -81,7 +81,7 @@ namespace Traverser
 
         [Header("Feet IK settings")]
         [Tooltip("Activates or deactivates foot IK placement for the locomotion ability.")]
-        public bool IKOn = true;
+        public bool fIKOn = true;
         [Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the ground.")]
         [Range(0.0f, 5.0f)]
         public float feetIKGroundDistance = 1.0f;
@@ -94,6 +94,7 @@ namespace Traverser
 
         // --- Private Variables ---
 
+        private TraverserAbilityController abilityController;
         private TraverserCharacterController controller;
         private TraverserAnimationController animationController;
 
@@ -124,6 +125,7 @@ namespace Traverser
         public void Start()
         {
             desiredLinearSpeed = movementSpeedSlow;
+            abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
             TraverserInputLayer.capture.movementDirection = Vector3.zero;
@@ -153,7 +155,7 @@ namespace Traverser
 
             // --- Another ability has been triggered ---
             if (contactAbility != null)
-                ret = contactAbility;
+                ret = contactAbility;       
 
             return ret;
         }
@@ -428,8 +430,11 @@ namespace Traverser
 
         private void OnAnimatorIK(int layerIndex)
         {
+            if (!abilityController.isCurrent(this))
+                return;
+
             // --- Set weights to 0 and return if IK is off ---
-            if(!IKOn)
+            if(!fIKOn)
             {
                 animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
                 animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 0.0f);

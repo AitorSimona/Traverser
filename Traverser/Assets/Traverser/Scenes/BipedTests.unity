@@ -262,7 +262,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58206854}
   m_LocalRotation: {x: 0.15391882, y: 0.034317914, z: -0.00534906, w: 0.9874729}
-  m_LocalPosition: {x: -1.99, y: 5.88, z: -8.95}
+  m_LocalPosition: {x: -0.64, y: 3.97, z: -15.35}
   m_LocalScale: {x: 0.10000003, y: 0.09999999, z: 0.10000003}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2900,7 +2900,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.262
+      value: -1.7
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2908,7 +2908,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.96
+      value: -10.44
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2945,6 +2945,14 @@ PrefabInstance:
     - target: {fileID: 6740730751872137753, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137758, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: footHeight
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137758, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: feetIKGroundDistance
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: stepping
@@ -3041,9 +3049,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3acd60aa110c5459b4f4696d1c34a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contactThreshold: 0
-  maximumLinearError: 0
-  maximumAngularError: 0
+  fIKOn: 1
+  feetIKGroundDistance: 1
+  footHeight: 1
+  hIKOn: 1
 --- !u!114 &919132147635878862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3075,7 +3084,7 @@ MonoBehaviour:
   contactDistanceMax: 4
   iterations: 4
   stepping: 10
-  IKOn: 1
+  fIKOn: 1
   feetIKGroundDistance: 1
   footHeight: 1
 --- !u!114 &919132147635878863
@@ -5643,12 +5652,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5500626070301710323, guid: 7e67f2114597a05449da5dfd7de01032, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5500626070301710323, guid: 7e67f2114597a05449da5dfd7de01032, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5980909
       objectReference: {fileID: 0}
     - target: {fileID: 5500626070301710323, guid: 7e67f2114597a05449da5dfd7de01032, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.6167169
+      value: 2.663
       objectReference: {fileID: 0}
     - target: {fileID: 5500626070301710323, guid: 7e67f2114597a05449da5dfd7de01032, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6693,9 +6706,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3acd60aa110c5459b4f4696d1c34a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contactThreshold: 0
-  maximumLinearError: 0
-  maximumAngularError: 0
+  fIKOn: 1
+  feetIKGroundDistance: 1
+  footHeight: 1
+  hIKOn: 1
 --- !u!114 &8296172669259688465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6727,7 +6741,7 @@ MonoBehaviour:
   contactDistanceMax: 4
   iterations: 4
   stepping: 10
-  IKOn: 1
+  fIKOn: 1
   feetIKGroundDistance: 1
   footHeight: 1
 --- !u!114 &8296172669259688466

@@ -124,7 +124,16 @@ namespace Traverser
             // --- Perform movement ---
             if (!animationController.transition.isON)
                 controller.ForceMove(controller.targetPosition);
-        }     
+        }
+
+        // --------------------------------
+
+        // --- Utilites ---
+
+        public bool isCurrent(TraverserAbility ability)
+        {
+            return currentAbility.Equals(ability);
+        }
 
         // --------------------------------
     }

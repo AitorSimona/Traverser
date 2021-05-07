@@ -66,11 +66,11 @@ namespace Traverser
 
         // --- World interactable elements ---
 
-        TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
-        TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
-        TraverserWallObject.TraverserWallGeometry wallGeometry;
-        TraverserLedgeObject.TraverserLedgeHook ledgeHook;
-        TraverserWallObject.TraverserWallAnchor wallAnchor;
+        private TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
+        private TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
+        private TraverserWallObject.TraverserWallGeometry wallGeometry;
+        private TraverserLedgeObject.TraverserLedgeHook ledgeHook;
+        private TraverserWallObject.TraverserWallAnchor wallAnchor;
 
         // --------------------------------
 
@@ -228,7 +228,7 @@ namespace Traverser
 
                 if (collider)
                 {
-                    Debug.Log(collider.name);
+                    //Debug.Log(collider.name);
 
                     ledgeGeometry.Initialize(collider);
                     ledgeHook = ledgeGeometry.GetHook(controller.previous.position);

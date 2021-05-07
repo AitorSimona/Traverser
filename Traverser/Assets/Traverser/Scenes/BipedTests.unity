@@ -2202,7 +2202,7 @@ MonoBehaviour:
   desiredSpeedLedge: 2
   desiredCornerMinDistance: 0.3
   fIKOn: 1
-  feetIKWallDistance: 0.5
+  feetIKWallDistance: 2
   footLength: 0.2
   hIKOn: 1
   handIKWallDistance: 2

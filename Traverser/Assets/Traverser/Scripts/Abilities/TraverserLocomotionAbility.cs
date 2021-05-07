@@ -82,7 +82,7 @@ namespace Traverser
         [Header("Feet IK settings")]
         [Tooltip("Activates or deactivates foot IK placement for the locomotion ability.")]
         public bool fIKOn = true;
-        [Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the ground.")]
+        [Tooltip("The maximum distance of the ray that enables foot IK, the bigger the ray the further we detect the ground.")]
         [Range(0.0f, 5.0f)]
         public float feetIKGroundDistance = 1.0f;
         [Tooltip("The character's foot height (size in Y, meters).")]

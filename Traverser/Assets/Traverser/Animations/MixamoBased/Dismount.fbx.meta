@@ -39,7 +39,7 @@ ModelImporter:
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 50
+      lastFrame: 36
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -81,22 +81,13 @@ ModelImporter:
             inWeight: 1
             outWeight: 1
           - serializedVersion: 3
-            time: -0.07295555
-            value: 1.0037661
+            time: 1.004242
+            value: 0.0004348755
             inSlope: Infinity
             outSlope: Infinity
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
-            outWeight: 0.4387687
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: -0.0035099867
-            outSlope: -0.0035099867
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0.33333334
             outWeight: 0
           preInfinity: 2
           postInfinity: 2
@@ -124,22 +115,13 @@ ModelImporter:
             inWeight: 1
             outWeight: 1
           - serializedVersion: 3
-            time: -0.07295555
-            value: 1.0037661
+            time: 1.004242
+            value: 0.0004348755
             inSlope: Infinity
             outSlope: Infinity
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
-            outWeight: 0.4387687
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: -0.0035099867
-            outSlope: -0.0035099867
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0.33333334
             outWeight: 0
           preInfinity: 2
           postInfinity: 2

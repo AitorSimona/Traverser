@@ -20,14 +20,24 @@ namespace Traverser
         public float desiredCornerMinDistance;
 
         [Header("Feet IK settings")]
-        [Tooltip("Activates or deactivates foot IK placement for the locomotion ability.")]
+        [Tooltip("Activates or deactivates foot IK placement for the climbing ability.")]
         public bool fIKOn = true;
-        [Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the ground.")]
+        [Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the wall.")]
         [Range(0.0f, 5.0f)]
         public float feetIKWallDistance = 1.0f;
-        [Tooltip("The character's foot height (size in Y, meters).")]
+        [Tooltip("The character's foot length (size in meters).")]
         [Range(0.0f, 1.0f)]
         public float footLength = 1.0f;
+
+        [Header("Hands IK settings")]
+        [Tooltip("Activates or deactivates hand IK placement for the climbing ability.")]
+        public bool hIKOn = true;
+        [Tooltip("The maximum distance of the ray that enables hand IK, the bigger the ray the further we detect the wall.")]
+        [Range(0.0f, 5.0f)]
+        public float handIKWallDistance = 1.0f;
+        [Tooltip("The character's hand length (size in meters).")]
+        [Range(0.0f, 1.0f)]
+        public float handLength = 1.0f;
 
         // --------------------------------
 

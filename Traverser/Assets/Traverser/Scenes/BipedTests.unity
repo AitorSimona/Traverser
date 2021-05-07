@@ -2204,6 +2204,10 @@ MonoBehaviour:
   fIKOn: 1
   feetIKWallDistance: 0.5
   footLength: 0.2
+  hIKOn: 1
+  handIKWallDistance: 0.2
+  handIKYDistance: 0.15
+  handLength: 0
 --- !u!1 &1798491133
 GameObject:
   m_ObjectHideFlags: 0

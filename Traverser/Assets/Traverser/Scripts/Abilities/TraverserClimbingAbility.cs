@@ -35,6 +35,9 @@ namespace Traverser
         [Tooltip("The maximum distance of the ray that enables hand IK, the bigger the ray the further we detect the wall.")]
         [Range(0.0f, 5.0f)]
         public float handIKWallDistance = 1.0f;
+        [Tooltip("The Y distance to correct in order to place the hands on the ledge.")]
+        [Range(0.0f, 1.0f)]
+        public float handIKYDistance = 1.0f;
         [Tooltip("The character's hand length (size in meters).")]
         [Range(0.0f, 1.0f)]
         public float handLength = 1.0f;
@@ -586,34 +589,73 @@ namespace Traverser
             {
                 animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
                 animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.0f);
-                return;
+            }
+            else
+            {
+                // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
+
+                // --- Left foot ---
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+
+                RaycastHit hit;
+                Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot), transform.forward);
+
+                if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+                {
+                    Vector3 footPosition = hit.point;
+                    footPosition -= transform.forward * footLength;
+                    animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
+                }
+
+                // --- Right foot ---
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+
+                ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot), transform.forward);
+
+                if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+                {
+                    Vector3 footPosition = hit.point;
+                    footPosition -= transform.forward * footLength;
+                    animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
+                }
             }
 
-            // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
-
-            // --- Left foot ---
-            animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
-
-            RaycastHit hit;
-            Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) , transform.forward);
-
-            if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+            // --- Set weights to 0 and return if IK is off ---
+            if (!hIKOn)
             {
-                Vector3 footPosition = hit.point;
-                footPosition -= transform.forward * footLength;
-                animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0.0f);
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0.0f);
             }
-
-            // --- Right foot ---
-            animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
-
-            ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) , transform.forward);
-
-            if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+            else
             {
-                Vector3 footPosition = hit.point;
-                footPosition -= transform.forward*footLength; 
-                animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
+                // --- Else, sample hand weight from the animator's parameters, which are set by the animations themselves through curves ---
+
+                // --- Left foot ---
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, animationController.animator.GetFloat("IKLeftHandWeight"));
+
+                RaycastHit hit;
+                Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand), transform.forward);
+
+                if (Physics.Raycast(ray, out hit, handIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+                {
+                    Vector3 handPosition = hit.point;
+                    handPosition -= transform.forward * handLength;
+                    handPosition.y += handIKYDistance;
+                    animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
+                }
+
+                // --- Right foot ---
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, animationController.animator.GetFloat("IKRightHandWeight"));
+
+                ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightHand), transform.forward);
+
+                if (Physics.Raycast(ray, out hit, handIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+                {
+                    Vector3 handPosition = hit.point;
+                    handPosition -= transform.forward * handLength;
+                    handPosition.y += handIKYDistance;
+                    animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
+                }
             }
         }
 

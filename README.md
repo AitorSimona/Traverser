@@ -8,11 +8,14 @@ Video game characters interact with the objects in the world in many different w
 # NOTE: This is an early WIP, so no website or documentation are in place yet. Sorry for the inconvenience. 
 
 ## SPECIAL THANKS / REFERENCES
+
 [Unity](https://unity.com/)
+
+[Kinematica](https://docs.unity3d.com/Packages/com.unity.kinematica@0.8/manual/index.html)
 
 [Guerrilla Games](https://www.youtube.com/watch?v=LrLHsbTK5bM&ab_channel=GDC)
 
-[Kinematica](https://docs.unity3d.com/Packages/com.unity.kinematica@0.8/manual/index.html)
+[The Coalition](https://www.gdcvault.com/play/1024219/Motion-Warping-in-Gears-of)
 
 ## HOW TO USE / CONTROLS
 

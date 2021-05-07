@@ -19,6 +19,16 @@ namespace Traverser
         [Range(0.0f, 0.5f)]
         public float desiredCornerMinDistance;
 
+        [Header("Feet IK settings")]
+        [Tooltip("Activates or deactivates foot IK placement for the locomotion ability.")]
+        public bool fIKOn = true;
+        [Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the ground.")]
+        [Range(0.0f, 5.0f)]
+        public float feetIKWallDistance = 1.0f;
+        [Tooltip("The character's foot height (size in Y, meters).")]
+        [Range(0.0f, 1.0f)]
+        public float footLength = 1.0f;
+
         // --------------------------------
 
         // --- Climbing ability state ---
@@ -55,6 +65,7 @@ namespace Traverser
 
         // --- Private Variables ---
 
+        private TraverserAbilityController abilityController;
         private TraverserCharacterController controller;
         private TraverserAnimationController animationController;
         private TraverserLocomotionAbility locomotionAbility;
@@ -77,6 +88,7 @@ namespace Traverser
         // --- Basic Methods ---
         public void Start()
         {
+            abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
             locomotionAbility = GetComponent<TraverserLocomotionAbility>();
@@ -551,6 +563,51 @@ namespace Traverser
         }
 
         // --------------------------------
+
+        // --- Events ---
+
+        private void OnAnimatorIK(int layerIndex)
+        {
+            if (!abilityController.isCurrent(this))
+                return;
+
+            // --- Set weights to 0 and return if IK is off ---
+            if (!fIKOn)
+            {
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.0f);
+                return;
+            }
+
+            // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
+
+            // --- Left foot ---
+            animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+
+            RaycastHit hit;
+            Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, transform.forward);
+
+            if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+            {
+                Vector3 footPosition = hit.point;
+                footPosition -= transform.forward * footLength;
+                animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
+            }
+
+            // --- Right foot ---
+            animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+
+            ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
+
+            if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+            {
+                Vector3 footPosition = hit.point;
+                footPosition -= transform.forward*footLength; 
+                animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
+            }
+        }
+
+        // -------------------------------------------------
     }
 }
 

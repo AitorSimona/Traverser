@@ -20,16 +20,6 @@ namespace Traverser
         [Range(0.0f, 1.0f)]
         public float footHeight = 1.0f;
 
-        [Header("Hands IK settings")]
-        [Tooltip("Activates or deactivates foot IK placement for the locomotion ability.")]
-        public bool hIKOn = true;
-        //[Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the ground.")]
-        //[Range(0.0f, 5.0f)]
-        //public float feetIKGroundDistance = 1.0f;
-        //[Tooltip("The character's foot height (size in Y, meters).")]
-        //[Range(0.0f, 1.0f)]
-        //public float footHeight = 1.0f;
-
         // -------------------------------------------------
 
         // --- Private Variables ---
@@ -289,7 +279,7 @@ namespace Traverser
             if (Physics.Raycast(ray, out hit, feetIKGroundDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
             {
                 Vector3 footPosition = hit.point;
-                footPosition.y += footHeight;;
+                footPosition.y += footHeight;
                 animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
             }
         }

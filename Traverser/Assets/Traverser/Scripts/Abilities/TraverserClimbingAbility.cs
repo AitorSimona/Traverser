@@ -301,7 +301,7 @@ namespace Traverser
 
                 float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
                 Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
-                Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
+                Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.3f;
                 newPos.y = hookPosition.y - controller.capsuleHeight;
 
                 controller.TeleportTo(newPos);
@@ -598,7 +598,7 @@ namespace Traverser
                 animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
 
                 RaycastHit hit;
-                Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot), transform.forward);
+                Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) - transform.forward, transform.forward);
 
                 if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
                 {
@@ -610,7 +610,7 @@ namespace Traverser
                 // --- Right foot ---
                 animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
 
-                ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot), transform.forward);
+                ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) - transform.forward, transform.forward);
 
                 if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
                 {
@@ -634,26 +634,27 @@ namespace Traverser
                 animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, animationController.animator.GetFloat("IKLeftHandWeight"));
 
                 RaycastHit hit;
-                Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand), transform.forward);
+                Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand) - transform.forward + Vector3.down, transform.forward);
 
                 if (Physics.Raycast(ray, out hit, handIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
                 {
                     Vector3 handPosition = hit.point;
                     handPosition -= transform.forward * handLength;
-                    handPosition.y += handIKYDistance;
+                    handPosition.y += handIKYDistance + Vector3.up.y;
+                    Debug.Log("AAA");
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
                 }
 
                 // --- Right foot ---
                 animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, animationController.animator.GetFloat("IKRightHandWeight"));
 
-                ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightHand), transform.forward);
+                ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightHand) - transform.forward + Vector3.down, transform.forward);
 
                 if (Physics.Raycast(ray, out hit, handIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
                 {
                     Vector3 handPosition = hit.point;
                     handPosition -= transform.forward * handLength;
-                    handPosition.y += handIKYDistance;
+                    handPosition.y += handIKYDistance + Vector3.up.y;
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
                 }
             }

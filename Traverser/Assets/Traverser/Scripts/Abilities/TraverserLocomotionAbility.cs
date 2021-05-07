@@ -155,7 +155,7 @@ namespace Traverser
 
             // --- Another ability has been triggered ---
             if (contactAbility != null)
-                ret = contactAbility;       
+                ret = contactAbility;
 
             return ret;
         }

@@ -262,7 +262,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58206854}
   m_LocalRotation: {x: 0.15391882, y: 0.034317914, z: -0.00534906, w: 0.9874729}
-  m_LocalPosition: {x: -3.86, y: 3.54, z: -9.49}
+  m_LocalPosition: {x: -1.99, y: 5.88, z: -8.95}
   m_LocalScale: {x: 0.10000003, y: 0.09999999, z: 0.10000003}
   m_Children: []
   m_Father: {fileID: 0}
@@ -602,7 +602,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2037486351194723450, guid: 04969b28bdd5ac94bb719e0d33a7026d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.933341
+      value: 2.38
       objectReference: {fileID: 0}
     - target: {fileID: 2037486351194723450, guid: 04969b28bdd5ac94bb719e0d33a7026d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2962,9 +2962,13 @@ PrefabInstance:
       propertyPath: movementSpeedMin
       value: 0.7
       objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: feetIKGroundDistance
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137952, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_ApplyRootMotion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137955, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_Center.y
@@ -3071,7 +3075,8 @@ MonoBehaviour:
   contactDistanceMax: 4
   iterations: 4
   stepping: 10
-  distanceToGround: 1
+  IKOn: 1
+  feetIKGroundDistance: 1
   footHeight: 1
 --- !u!114 &919132147635878863
 MonoBehaviour:
@@ -6722,7 +6727,8 @@ MonoBehaviour:
   contactDistanceMax: 4
   iterations: 4
   stepping: 10
-  distanceToGround: 1
+  IKOn: 1
+  feetIKGroundDistance: 1
   footHeight: 1
 --- !u!114 &8296172669259688466
 MonoBehaviour:

@@ -79,6 +79,17 @@ namespace Traverser
         [Range(1.0f, 10.0f)]
         public float stepping = 10.0f;
 
+        [Header("Feet IK settings")]
+        [Tooltip("Activates or deactivates foot IK placement for the locomotion ability.")]
+        public bool IKOn = true;
+        [Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the ground.")]
+        [Range(0.0f, 5.0f)]
+        public float feetIKGroundDistance = 1.0f;
+        [Tooltip("The character's foot height (size in Y, meters).")]
+        [Range(0.0f, 1.0f)]
+        public float footHeight = 1.0f;
+
+
         // -------------------------------------------------
 
         // --- Private Variables ---
@@ -415,19 +426,29 @@ namespace Traverser
 
         // --- Events ---
 
-        public float distanceToGround = 1.0f;
-        public float footHeight = 1.0f;
-
         private void OnAnimatorIK(int layerIndex)
         {
+            // --- Set weights to 0 and return if IK is off ---
+            if(!IKOn)
+            {
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
+                animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 0.0f);
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.0f);
+                animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 0.0f);
+                return;
+            }
+
+            // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
+
+
+            // --- Left foot ---
             animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
             animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
 
-            // Left foot
             RaycastHit hit;
             Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, Vector3.down);
 
-            if(Physics.Raycast(ray, out hit, distanceToGround, TraverserCollisionLayer.EnvironmentCollisionMask))
+            if(Physics.Raycast(ray, out hit, feetIKGroundDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
             {
                 Vector3 footPosition = hit.point;
                 footPosition.y += footHeight;
@@ -435,13 +456,13 @@ namespace Traverser
                 animationController.animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.LeftFoot));
             }
 
+            // --- Right foot ---
             animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
             animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
 
-            // Right foot
             ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
 
-            if (Physics.Raycast(ray, out hit, distanceToGround, TraverserCollisionLayer.EnvironmentCollisionMask))
+            if (Physics.Raycast(ray, out hit, feetIKGroundDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
             {
                 Vector3 footPosition = hit.point;
                 footPosition.y += footHeight;

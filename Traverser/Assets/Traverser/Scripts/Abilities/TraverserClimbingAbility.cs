@@ -585,7 +585,7 @@ namespace Traverser
             animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
 
             RaycastHit hit;
-            Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up, transform.forward);
+            Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) , transform.forward);
 
             if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
             {
@@ -597,7 +597,7 @@ namespace Traverser
             // --- Right foot ---
             animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
 
-            ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up, Vector3.down);
+            ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) , transform.forward);
 
             if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
             {

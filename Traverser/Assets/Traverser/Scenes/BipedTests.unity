@@ -2202,8 +2202,8 @@ MonoBehaviour:
   desiredSpeedLedge: 2
   desiredCornerMinDistance: 0.3
   fIKOn: 1
-  feetIKWallDistance: 1
-  footLength: 1
+  feetIKWallDistance: 3
+  footLength: 0.3
 --- !u!1 &1798491133
 GameObject:
   m_ObjectHideFlags: 0

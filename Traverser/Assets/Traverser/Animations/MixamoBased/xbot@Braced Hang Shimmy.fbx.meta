@@ -171,6 +171,119 @@ ModelImporter:
           preInfinity: 2
           postInfinity: 2
           rotationOrder: 4
+      - name: IKLeftHandWeight
+        curve:
+          serializedVersion: 2
+          curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: -0.005611163
+            outSlope: -0.005611163
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.29294762
+            value: 0.9983562
+            inSlope: -0.00162202
+            outSlope: -0.00162202
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 1
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.46398205
+            value: 0.017026644
+            inSlope: 0.0011465275
+            outSlope: 0.0011465275
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 1
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.622262
+            value: 0.011453332
+            inSlope: -0.044329174
+            outSlope: -0.044329174
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 1
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.76142234
+            value: 1.0029045
+            inSlope: 0.0929802
+            outSlope: 0.0929802
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0.7736753
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: -0.012174376
+            outSlope: -0.012174376
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0
+          preInfinity: 2
+          postInfinity: 2
+          rotationOrder: 4
+      - name: IKRightHandWeight
+        curve:
+          serializedVersion: 2
+          curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: -11.018094
+            outSlope: -11.018094
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.09013963
+            value: 0.006833055
+            inSlope: -0.0006268613
+            outSlope: -0.0006268613
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 1
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.21866992
+            value: 0.008413032
+            inSlope: 0.00063477777
+            outSlope: 0.00063477777
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 1
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.29317945
+            value: 1.0011202
+            inSlope: 0.04835078
+            outSlope: 0.04835078
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0.23929532
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: -0.0015848572
+            outSlope: -0.0015848572
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0
+          preInfinity: 2
+          postInfinity: 2
+          rotationOrder: 4
       events: []
       transformMask: []
       maskType: 3

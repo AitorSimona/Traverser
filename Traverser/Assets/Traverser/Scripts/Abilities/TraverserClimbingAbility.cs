@@ -39,7 +39,7 @@ namespace Traverser
         [Range(0.0f, 1.0f)]
         public float handIKYDistance = 1.0f;
         [Tooltip("The character's hand length (size in meters).")]
-        [Range(0.0f, 1.0f)]
+        [Range(-1.0f, 1.0f)]
         public float handLength = 1.0f;
 
         // --------------------------------

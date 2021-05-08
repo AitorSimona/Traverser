@@ -2206,7 +2206,7 @@ MonoBehaviour:
   footLength: 0.2
   hIKOn: 1
   handIKWallDistance: 2
-  handIKYDistance: 0.125
+  handIKYDistance: 0.05
   handLength: 0.05
 --- !u!1 &1798491133
 GameObject:

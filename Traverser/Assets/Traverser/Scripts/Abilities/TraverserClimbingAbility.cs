@@ -22,9 +22,6 @@ namespace Traverser
         [Header("Feet IK settings")]
         [Tooltip("Activates or deactivates foot IK placement for the climbing ability.")]
         public bool fIKOn = true;
-        [Tooltip("The maximum distance of the ray that enables foor IK, the bigger the ray the further we detect the wall.")]
-        [Range(0.0f, 5.0f)]
-        public float feetIKWallDistance = 1.0f;
         [Tooltip("The character's foot length (size in meters).")]
         [Range(0.0f, 1.0f)]
         public float footLength = 1.0f;
@@ -32,13 +29,10 @@ namespace Traverser
         [Header("Hands IK settings")]
         [Tooltip("Activates or deactivates hand IK placement for the climbing ability.")]
         public bool hIKOn = true;
-        [Tooltip("The maximum distance of the ray that enables hand IK, the bigger the ray the further we detect the wall.")]
-        [Range(0.0f, 5.0f)]
-        public float handIKWallDistance = 1.0f;
         [Tooltip("The Y distance to correct in order to place the hands on the ledge.")]
         [Range(0.0f, 1.0f)]
         public float handIKYDistance = 1.0f;
-        [Tooltip("The character's hand length (size in meters).")]
+        [Tooltip("The character's hand length (size in meters) / correction in forward direction.")]
         [Range(-1.0f, 1.0f)]
         public float handLength = 1.0f;
 
@@ -107,7 +101,7 @@ namespace Traverser
             locomotionAbility = GetComponent<TraverserLocomotionAbility>();
 
             state = State.Suspended;
-            climbingState = ClimbingState.Idle;
+            climbingState = ClimbingState.None;
 
             ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
             auxledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
@@ -171,6 +165,7 @@ namespace Traverser
                 if (IsState(State.Suspended))
                 {
                     ret = null;
+                    SetClimbingState(ClimbingState.None);
 
                     // --- Turn off/on controller ---
                     controller.ConfigureController(true);
@@ -581,7 +576,7 @@ namespace Traverser
 
         private void OnAnimatorIK(int layerIndex)
         {
-            if (!abilityController.isCurrent(this))
+            if (!abilityController.isCurrent(this) || climbingState == ClimbingState.None)
                 return;
 
             // --- Set weights to 0 and return if IK is off ---
@@ -595,27 +590,26 @@ namespace Traverser
                 // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
 
                 // --- Left foot ---
-                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+                float weight = animationController.animator.GetFloat("IKLeftFootWeight");
 
-                RaycastHit hit;
-                Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) - transform.forward, transform.forward);
-
-                if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+                if (weight > 0.0f)
                 {
-                    Vector3 footPosition = hit.point;
+                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, weight);
+                    Vector3 footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot)));
                     footPosition -= transform.forward * footLength;
+                    footPosition.y = animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot).y;
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
                 }
 
+                weight = animationController.animator.GetFloat("IKRightFootWeight");
+
                 // --- Right foot ---
-                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
-
-                ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) - transform.forward, transform.forward);
-
-                if (Physics.Raycast(ray, out hit, feetIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+                if (weight > 0.0f)
                 {
-                    Vector3 footPosition = hit.point;
+                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+                    Vector3 footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot)));
                     footPosition -= transform.forward * footLength;
+                    footPosition.y = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot).y;
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
                 }
             }
@@ -629,31 +623,27 @@ namespace Traverser
             else
             {
                 // --- Else, sample hand weight from the animator's parameters, which are set by the animations themselves through curves ---
+                float weight = animationController.animator.GetFloat("IKLeftHandWeight");
 
-                // --- Left foot ---
-                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, animationController.animator.GetFloat("IKLeftHandWeight"));
-
-                RaycastHit hit;
-                Ray ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand) - transform.forward + Vector3.down, transform.forward);
-
-                if (Physics.Raycast(ray, out hit, handIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+                // --- Left hand ---
+                if (weight > 0.0f)
                 {
-                    Vector3 handPosition = hit.point;
+                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, animationController.animator.GetFloat("IKLeftHandWeight"));
+                    Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand)));
                     handPosition -= transform.forward * handLength;
-                    handPosition.y += handIKYDistance + Vector3.up.y;
+                    handPosition.y = ledgeGeometry.vertices[0].y + handIKYDistance;
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
                 }
 
-                // --- Right foot ---
-                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, animationController.animator.GetFloat("IKRightHandWeight"));
+                weight = animationController.animator.GetFloat("IKRightHandWeight");
 
-                ray = new Ray(animationController.animator.GetIKPosition(AvatarIKGoal.RightHand) - transform.forward + Vector3.down, transform.forward);
-
-                if (Physics.Raycast(ray, out hit, handIKWallDistance, TraverserCollisionLayer.EnvironmentCollisionMask))
+                // --- Right hand ---
+                if (weight > 0.0f)
                 {
-                    Vector3 handPosition = hit.point;
+                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, animationController.animator.GetFloat("IKRightHandWeight"));
+                    Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightHand)));
                     handPosition -= transform.forward * handLength;
-                    handPosition.y += handIKYDistance + Vector3.up.y;
+                    handPosition.y = ledgeGeometry.vertices[0].y + handIKYDistance;
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
                 }
             }

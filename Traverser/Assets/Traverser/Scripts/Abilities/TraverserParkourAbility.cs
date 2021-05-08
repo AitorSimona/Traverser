@@ -29,8 +29,6 @@ namespace Traverser
         private TraverserAnimationController animationController;
         private TraverserLocomotionAbility locomotionAbility;
 
-        // --- Array of raycast hits for feet IK checks ---
-        private RaycastHit[] IKRayHits = new RaycastHit[1];
         // --- Ray for feet IK checks ---
         private Ray IKRay = new Ray();
 
@@ -263,15 +261,17 @@ namespace Traverser
 
             // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
 
+            RaycastHit hit;
+
             // --- Left foot ---
             animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
 
             IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up;
             IKRay.direction = Vector3.down;
 
-            if (Physics.RaycastNonAlloc(IKRay, IKRayHits, feetIKGroundDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore) == 0)
+            if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
             {
-                Vector3 footPosition = IKRayHits[0].point;
+                Vector3 footPosition = hit.point;
                 footPosition.y += footHeight;
                 animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
             }
@@ -282,9 +282,9 @@ namespace Traverser
             IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up;
             IKRay.direction = Vector3.down;
 
-            if (Physics.RaycastNonAlloc(IKRay, IKRayHits, feetIKGroundDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore) == 0)
+            if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
             {
-                Vector3 footPosition = IKRayHits[0].point;
+                Vector3 footPosition = hit.point;
                 footPosition.y += footHeight;
                 animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
             }

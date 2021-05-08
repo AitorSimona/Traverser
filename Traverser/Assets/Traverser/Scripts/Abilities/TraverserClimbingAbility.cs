@@ -584,6 +584,8 @@ namespace Traverser
             {
                 animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
                 animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.0f);
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0.0f);
+                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0.0f);
             }
             else
             {

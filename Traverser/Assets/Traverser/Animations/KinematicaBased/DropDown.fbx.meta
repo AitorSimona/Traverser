@@ -137,7 +137,7 @@ ModelImporter:
           preInfinity: 3
           postInfinity: 3
           rotationOrder: 4
-      - name: Curve
+      - name: IKRightHandWeight
         curve:
           serializedVersion: 2
           curve:

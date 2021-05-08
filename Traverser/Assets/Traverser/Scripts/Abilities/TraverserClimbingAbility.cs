@@ -641,7 +641,6 @@ namespace Traverser
                     Vector3 handPosition = hit.point;
                     handPosition -= transform.forward * handLength;
                     handPosition.y += handIKYDistance + Vector3.up.y;
-                    Debug.Log("AAA");
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
                 }
 

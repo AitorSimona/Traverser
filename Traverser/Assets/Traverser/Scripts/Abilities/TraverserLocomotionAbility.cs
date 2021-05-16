@@ -120,13 +120,14 @@ namespace Traverser
         private float previousMovementIntensity = 0.0f;
 
         // --- Ray for feet IK checks ---
-        private Ray IKRay = new Ray();
+        private Ray IKRay;
 
         // -------------------------------------------------
 
         // --- Basic Methods ---
         public void Start()
         {
+            IKRay = new Ray();
             desiredLinearSpeed = movementSpeedSlow;
             abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
@@ -449,6 +450,8 @@ namespace Traverser
             // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
 
             RaycastHit hit;
+            //Vector3 rayOrigin;
+            //Vector3 rayDirection;
 
             // --- Left foot ---
             animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));

@@ -148,13 +148,10 @@ namespace Traverser
         private TraverserTransform lastContactTransform = TraverserTransform.Get(float3.zero, quaternion.identity);
 
         // --- Array of colliders for ground probing ---
-        private Collider[] hitColliders = new Collider[3];
+        private Collider[] hitColliders;
 
         // --- Ray for groundSnap checks ---
-        private Ray groundRay = new Ray();
-
-        // --- Array of raycast hits for groundSnap checks ---
-        private RaycastHit[] groundRayHits = new RaycastHit[1];
+        private Ray groundRay;
 
         // --- Arrays of positions for geometry debugging ---
         private List<float3> probePositions;
@@ -172,6 +169,8 @@ namespace Traverser
         void Start()
         {
             // --- Initialize controller ---
+            hitColliders = new Collider[3];
+            groundRay = new Ray();
             state = TraverserState.Create();
             snapshotState = TraverserState.Create();
             characterController = GetComponent<CharacterController>();
@@ -223,7 +222,7 @@ namespace Traverser
                 groundRay.direction = -Vector3.up;
 
                 if (state.previousCollision.ground != null 
-                    && Physics.RaycastNonAlloc(groundRay, groundRayHits, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore) == 0)
+                    && Physics.Raycast(groundRay.origin, groundRay.direction, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
                 {
                     characterController.enabled = false;
                     float3 correctedPosition = state.previousCollision.position;

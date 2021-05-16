@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ namespace Traverser
         //    Tunnel
         //};
 
-        public List<Transform> annotations;
+        //public List<Transform> annotations;
         //public TraverserClimbingType type = TraverserClimbingType.Ledge;
     }
 }

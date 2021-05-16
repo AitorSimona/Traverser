@@ -30,7 +30,7 @@ namespace Traverser
         private TraverserLocomotionAbility locomotionAbility;
 
         // --- Ray for feet IK checks ---
-        private Ray IKRay = new Ray();
+        private Ray IKRay;
 
         // -------------------------------------------------
 
@@ -38,6 +38,7 @@ namespace Traverser
 
         public void Start()
         {
+            IKRay = new Ray();
             abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();

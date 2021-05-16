@@ -97,6 +97,7 @@ namespace Traverser
             // --- Check current state before simulation start --- 
             state.currentCollision.velocity = characterController.velocity / stepping;
 
+            // TODO: NEEDED? performance hit
             if (characterController.detectCollisions)
                 CheckGroundCollision();
 

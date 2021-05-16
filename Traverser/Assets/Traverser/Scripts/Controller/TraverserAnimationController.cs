@@ -11,7 +11,7 @@ namespace Traverser
         // --- Attributes ---
 
         // --- Stores animator parameters for future reference ---
-        public Dictionary<string, int> animatorParameters = new Dictionary<string, int>();
+        public Dictionary<string, int> animatorParameters;
 
         public struct AnimatorParameters
         {
@@ -72,7 +72,12 @@ namespace Traverser
             lastWarpPosition = Vector3.zero;
 
             controller = GetComponent<TraverserCharacterController>();
+        }
+
+        private void Start()
+        {
             transition = new TraverserTransition(this, ref controller);
+            animatorParameters = new Dictionary<string, int>();
 
             // --- Save all animator parameter hashes for future reference ---
             foreach (AnimatorControllerParameter param in animator.parameters)
@@ -82,7 +87,7 @@ namespace Traverser
         }
 
         // --- Basic Methods ---
- 
+
         private void LateUpdate()
         {
             // --- Ensure the skeleton does not get separated from the controller (forcing in-place animation) ---

@@ -222,7 +222,7 @@ namespace Traverser
                 groundRay.direction = -Vector3.up;
 
                 if (state.previousCollision.ground != null 
-                    && Physics.Raycast(groundRay.origin, groundRay.direction, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
+                    && !Physics.Raycast(groundRay.origin, groundRay.direction, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
                 {
                     characterController.enabled = false;
                     float3 correctedPosition = state.previousCollision.position;

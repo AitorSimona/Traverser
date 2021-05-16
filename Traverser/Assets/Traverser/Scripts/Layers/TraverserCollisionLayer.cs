@@ -44,7 +44,7 @@ namespace Traverser
             // --- Ground collision check ---
             int chosenGround = -1;
             float3 colliderPosition;
-            int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+            int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
 
             if (numColliders > 0)
             {

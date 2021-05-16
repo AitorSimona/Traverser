@@ -195,7 +195,8 @@ namespace Traverser
             int colliderIndex = TraverserCollisionLayer.CastGroundProbe(position, groundProbeRadius, ref hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask);
 
             if (colliderIndex != -1)
-            {       
+            {   
+                // --- Set the closest collider as our ground ---  
                 current.ground = hitColliders[colliderIndex];
                 current.isGrounded = true;
             }      
@@ -295,14 +296,7 @@ namespace Traverser
                 // --- Make sure we do not activate a collision against our current ground ---
                 if (state.previousCollision.ground != null && hit.collider.Equals(state.previousCollision.ground))
                     return;
-
-                //Debug.Log("Collided with:");
-                //Debug.Log(hit.gameObject.name);
-                
-                // NEEDED ??????? state.previousCollision.CopyFrom(ref state.currentCollision);
-
-                state.currentCollision.colliderContactPoint = hit.point;
-
+              
                 // --- Given hit normal, compute what is the relevant collider size to store ---
 
                 // --- Convert collided object's axis to character space ---
@@ -321,6 +315,7 @@ namespace Traverser
                 contactNormal = hit.normal;
                 contactTransform.t = hit.point;
                 contactTransform.q = math.mul(transform.rotation, Quaternion.FromToRotation(-transform.forward, hit.normal));
+                state.currentCollision.colliderContactPoint = hit.point;
                 state.currentCollision.colliderContactNormal = hit.normal;
                 state.currentCollision.collider = hit.collider;
                 state.currentCollision.isColliding = true;

@@ -45,6 +45,13 @@ namespace Traverser
             return m.MultiplyVector(direction);
         }
 
+        // transforms direction from world to local
+        public float3 inverseTransformDirection(float3 direction)
+        {
+            Matrix4x4 m = Matrix4x4.TRS(t, q, Vector3.one);
+            return m.inverse.MultiplyVector(direction);
+        }
+
         // transforms point p from world to local
         public float3 inverseTransform(float3 point)
         {

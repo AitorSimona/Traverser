@@ -232,6 +232,35 @@ namespace Traverser
                     state.currentCollision.velocity = characterController.velocity / stepping;
                 }
 
+                //math.pr
+
+
+                if (state.currentCollision.ground)
+                {
+                    // --- Convert collided object's axis to character space ---
+                    Vector3 right = state.currentCollision.ground.transform.right;
+                    Vector3 forward = state.currentCollision.ground.transform.forward;
+                    Vector3 normal = -Vector3.Cross(right, forward);
+
+                    float angle = Vector3.SignedAngle(normal, right, Vector3.up);
+                    float angle2 = Vector3.SignedAngle(normal, forward, Vector3.up);
+
+                    //if (Mathf.Abs(angle2) < Mathf.Abs(angle))
+                    //    contactSize = hit.collider.bounds.size.z;
+                    //else
+                    //    contactSize = hit.collider.bounds.size.x;
+
+                    //Debug.DrawRay(groundRay.origin, right * 10.0f);
+                    //Debug.DrawRay(groundRay.origin, forward * 10.0f);
+                    //Debug.DrawRay(groundRay.origin, normal * 10.0f);
+
+                    Vector3 relative;
+                    relative = transform.InverseTransformDirection(Vector3.right);
+                    Debug.DrawRay(groundRay.origin, relative * 10.0f);
+                    //relative = transform.InverseTransformDirection(Vector3.forward);
+                    //Debug.DrawRay(groundRay.origin, relative * 10.0f);
+                }
+
                 // --- Draw casted ray ---
                 if (debugDraw)
                     Debug.DrawRay(groundRay.origin, groundRay.direction * groundSnapRayDistance);
@@ -299,11 +328,15 @@ namespace Traverser
                 // --- Given hit normal, compute what is the relevant collider size to store ---
 
                 // --- Convert collided object's axis to character space ---
-                Vector3 r = transform.InverseTransformDirection(hit.transform.right);
-                Vector3 f = transform.InverseTransformDirection(hit.transform.forward);
+                Vector3 right = transform.InverseTransformDirection(hit.transform.right);
+                Vector3 forward = transform.InverseTransformDirection(hit.transform.forward);
 
-                float angle = Vector3.SignedAngle(hit.normal, r, Vector3.up);
-                float angle2 = Vector3.SignedAngle(hit.normal, f, Vector3.up);
+                // --- If you wanted to do ther above manually ---
+                //Matrix4x4 m = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);      
+                //Vector3 f = m.inverse.MultiplyVector(hit.transform.forward);
+
+                float angle = Vector3.SignedAngle(hit.normal, right, Vector3.up);
+                float angle2 = Vector3.SignedAngle(hit.normal, forward, Vector3.up);
 
                 if (Mathf.Abs(angle2) < Mathf.Abs(angle))
                     contactSize = hit.collider.bounds.size.z;

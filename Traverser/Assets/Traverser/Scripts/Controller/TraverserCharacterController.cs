@@ -212,7 +212,6 @@ namespace Traverser
             if (characterController.detectCollisions)
             {
                 CheckGroundCollision();
-                //CheckForwardLedgeCollision();
             }
 
 

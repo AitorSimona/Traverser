@@ -224,41 +224,38 @@ namespace Traverser
                 if (state.previousCollision.ground != null 
                     && !Physics.Raycast(groundRay.origin, groundRay.direction, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
                 {
-                    characterController.enabled = false;
                     float3 correctedPosition = state.previousCollision.position;
+
+                    if (state.currentCollision.ground)
+                    {
+                        // --- Convert collided object's axis to character space ---
+                        Vector3 right = state.currentCollision.ground.transform.right;
+                        Vector3 forward = state.currentCollision.ground.transform.forward;
+
+                        float angle = Vector3.SignedAngle(transform.forward, right, Vector3.up);
+                        float angle2 = Vector3.SignedAngle(transform.forward, forward, Vector3.up);
+
+                        if (Mathf.Abs(angle2) < Mathf.Abs(angle))
+                        {
+                            // project on ground's right
+                            correctedPosition += math.project(state.currentCollision.velocity, right) * Time.deltaTime;
+                        }
+                        else
+                        {
+                            // project on ground's forward
+                            correctedPosition += math.project(state.currentCollision.velocity, forward) * Time.deltaTime;
+                        }
+
+                        Debug.DrawRay(groundRay.origin, right * 10.0f);
+                        Debug.DrawRay(groundRay.origin, forward * 10.0f);
+                        Debug.DrawRay(groundRay.origin, transform.forward * 10.0f);
+                    }
+
+                    characterController.enabled = false;
                     transform.position = correctedPosition;
                     characterController.enabled = true;
                     state.currentCollision.position = transform.position;
                     state.currentCollision.velocity = characterController.velocity / stepping;
-                }
-
-                //math.pr
-
-
-                if (state.currentCollision.ground)
-                {
-                    // --- Convert collided object's axis to character space ---
-                    Vector3 right = state.currentCollision.ground.transform.right;
-                    Vector3 forward = state.currentCollision.ground.transform.forward;
-                    Vector3 normal = -Vector3.Cross(right, forward);
-
-                    float angle = Vector3.SignedAngle(normal, right, Vector3.up);
-                    float angle2 = Vector3.SignedAngle(normal, forward, Vector3.up);
-
-                    //if (Mathf.Abs(angle2) < Mathf.Abs(angle))
-                    //    contactSize = hit.collider.bounds.size.z;
-                    //else
-                    //    contactSize = hit.collider.bounds.size.x;
-
-                    //Debug.DrawRay(groundRay.origin, right * 10.0f);
-                    //Debug.DrawRay(groundRay.origin, forward * 10.0f);
-                    //Debug.DrawRay(groundRay.origin, normal * 10.0f);
-
-                    Vector3 relative;
-                    relative = transform.InverseTransformDirection(Vector3.right);
-                    Debug.DrawRay(groundRay.origin, relative * 10.0f);
-                    //relative = transform.InverseTransformDirection(Vector3.forward);
-                    //Debug.DrawRay(groundRay.origin, relative * 10.0f);
                 }
 
                 // --- Draw casted ray ---
@@ -331,7 +328,7 @@ namespace Traverser
                 Vector3 right = transform.InverseTransformDirection(hit.transform.right);
                 Vector3 forward = transform.InverseTransformDirection(hit.transform.forward);
 
-                // --- If you wanted to do ther above manually ---
+                // --- If you wanted to do the above manually ---
                 //Matrix4x4 m = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);      
                 //Vector3 f = m.inverse.MultiplyVector(hit.transform.forward);
 

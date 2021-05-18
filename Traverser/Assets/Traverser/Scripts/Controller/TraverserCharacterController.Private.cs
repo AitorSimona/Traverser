@@ -225,37 +225,57 @@ namespace Traverser
                     && !Physics.Raycast(groundRay.origin, groundRay.direction, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
                 {
                     float3 correctedPosition = state.previousCollision.position;
+                    float3 closest = state.previousCollision.ground.ClosestPoint(state.currentCollision.position);
+                    //Vector3 diff = closest - state.previousCollision.position;
+                    Vector3 diff = closest - state.previousCollision.position;
+
+                    GameObject.Find("dummy2").transform.position = closest;
 
                     if (state.currentCollision.ground)
                     {
                         // --- Convert collided object's axis to character space ---
-                        Vector3 right = state.currentCollision.ground.transform.right;
-                        Vector3 forward = state.currentCollision.ground.transform.forward;
+                        //Vector3 right = transform.InverseTransformDirection(state.currentCollision.ground.transform.right);
+                        //Vector3 forward = transform.InverseTransformDirection(state.currentCollision.ground.transform.forward);
 
-                        float angle = Vector3.SignedAngle(transform.forward, right, Vector3.up);
-                        float angle2 = Vector3.SignedAngle(transform.forward, forward, Vector3.up);
+                        //float angle = Vector3.SignedAngle(transform.forward, right, Vector3.up);
+                        //float angle2 = Vector3.SignedAngle(transform.forward, forward, Vector3.up);
 
-                        if (Mathf.Abs(angle2) < Mathf.Abs(angle))
-                        {
-                            // project on ground's right
-                            correctedPosition += math.project(state.currentCollision.velocity, right) * Time.deltaTime;
-                        }
-                        else
-                        {
-                            // project on ground's forward
-                            correctedPosition += math.project(state.currentCollision.velocity, forward) * Time.deltaTime;
-                        }
+                        //if (Mathf.Abs(angle2) < Mathf.Abs(angle))
+                        //{
+                        //    // project on ground's right
+                        //    correctedPosition += math.project(state.currentCollision.velocity, state.currentCollision.ground.transform.right) * Time.deltaTime;
+                        //    Debug.Log("rig");
+                        //}
+                        //else
+                        //{
+                        //    // project on ground's forward
+                        //    correctedPosition += math.project(state.currentCollision.velocity, state.currentCollision.ground.transform.forward) * Time.deltaTime;
+                        //    Debug.Log("for");
+                        //}
 
-                        Debug.DrawRay(groundRay.origin, right * 10.0f);
-                        Debug.DrawRay(groundRay.origin, forward * 10.0f);
-                        Debug.DrawRay(groundRay.origin, transform.forward * 10.0f);
+                        //float correctedRight = math.project(state.currentCollision.velocity, state.currentCollision.ground.transform.right).x;
+                        //float correctedForward = math.project(state.currentCollision.velocity, state.currentCollision.ground.transform.forward).z;
+
+                        
+                        float3 correctedVelocity = math.projectsafe(state.currentCollision.velocity, diff);
+
+                        //correctedPosition.x += diff.x*Time.deltaTime;
+                        //correctedPosition.z += diff.z*Time.deltaTime;
+                        //correctedPosition.x += correctedRight * Time.deltaTime;
+                        //correctedPosition.z += correctedForward * Time.deltaTime;
+
+                        correctedPosition += correctedVelocity * Time.deltaTime;
+                        state.currentCollision.velocity = correctedVelocity / stepping;
+
+                        //Debug.DrawRay(groundRay.origin, right * 10.0f);
+                        //Debug.DrawRay(groundRay.origin, forward * 10.0f);
+                        //Debug.DrawRay(groundRay.origin, transform.forward * 10.0f);
                     }
 
                     characterController.enabled = false;
                     transform.position = correctedPosition;
                     characterController.enabled = true;
                     state.currentCollision.position = transform.position;
-                    state.currentCollision.velocity = characterController.velocity / stepping;
                 }
 
                 // --- Draw casted ray ---

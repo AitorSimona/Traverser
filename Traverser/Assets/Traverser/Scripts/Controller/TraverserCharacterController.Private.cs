@@ -224,58 +224,23 @@ namespace Traverser
                 if (state.previousCollision.ground != null 
                     && !Physics.Raycast(groundRay.origin, groundRay.direction, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
                 {
+                    // --- We want to slide along the edge of the collider, not get trapped on it, so we need to properly adjust the trajectory ---
+
+                    // --- Obtain collider's closest point and compute a new velocity vector ---
                     float3 correctedPosition = state.previousCollision.position;
-                    float3 closest = state.previousCollision.ground.ClosestPoint(state.currentCollision.position);
-                    //Vector3 diff = closest - state.previousCollision.position;
-                    Vector3 diff = closest - state.previousCollision.position;
+                    float3 closestColliderPosition = state.previousCollision.ground.ClosestPoint(state.currentCollision.position);
+                    Vector3 correctedVelocityVector = closestColliderPosition - state.previousCollision.position;
 
-                    GameObject.Find("dummy2").transform.position = closest;
+                    // --- Project our current velocity on the newly computed velocity vector ---                   
+                    float3 desiredVelocity = math.projectsafe(state.currentCollision.velocity, correctedVelocityVector);
+                    correctedPosition += desiredVelocity * Time.deltaTime;
+                    state.currentCollision.velocity = desiredVelocity / stepping;
 
-                    if (state.currentCollision.ground)
-                    {
-                        // --- Convert collided object's axis to character space ---
-                        //Vector3 right = transform.InverseTransformDirection(state.currentCollision.ground.transform.right);
-                        //Vector3 forward = transform.InverseTransformDirection(state.currentCollision.ground.transform.forward);
-
-                        //float angle = Vector3.SignedAngle(transform.forward, right, Vector3.up);
-                        //float angle2 = Vector3.SignedAngle(transform.forward, forward, Vector3.up);
-
-                        //if (Mathf.Abs(angle2) < Mathf.Abs(angle))
-                        //{
-                        //    // project on ground's right
-                        //    correctedPosition += math.project(state.currentCollision.velocity, state.currentCollision.ground.transform.right) * Time.deltaTime;
-                        //    Debug.Log("rig");
-                        //}
-                        //else
-                        //{
-                        //    // project on ground's forward
-                        //    correctedPosition += math.project(state.currentCollision.velocity, state.currentCollision.ground.transform.forward) * Time.deltaTime;
-                        //    Debug.Log("for");
-                        //}
-
-                        //float correctedRight = math.project(state.currentCollision.velocity, state.currentCollision.ground.transform.right).x;
-                        //float correctedForward = math.project(state.currentCollision.velocity, state.currentCollision.ground.transform.forward).z;
-
-                        
-                        float3 correctedVelocity = math.projectsafe(state.currentCollision.velocity, diff);
-
-                        //correctedPosition.x += diff.x*Time.deltaTime;
-                        //correctedPosition.z += diff.z*Time.deltaTime;
-                        //correctedPosition.x += correctedRight * Time.deltaTime;
-                        //correctedPosition.z += correctedForward * Time.deltaTime;
-
-                        correctedPosition += correctedVelocity * Time.deltaTime;
-                        state.currentCollision.velocity = correctedVelocity / stepping;
-
-                        //Debug.DrawRay(groundRay.origin, right * 10.0f);
-                        //Debug.DrawRay(groundRay.origin, forward * 10.0f);
-                        //Debug.DrawRay(groundRay.origin, transform.forward * 10.0f);
-                    }
-
+                    // --- Manually correct controller's position ---
                     characterController.enabled = false;
                     transform.position = correctedPosition;
                     characterController.enabled = true;
-                    state.currentCollision.position = transform.position;
+                    state.currentCollision.position = transform.position;                   
                 }
 
                 // --- Draw casted ray ---

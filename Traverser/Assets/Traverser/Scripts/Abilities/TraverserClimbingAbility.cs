@@ -246,7 +246,8 @@ namespace Traverser
             {
                 BoxCollider collider = controller.previous.ground as BoxCollider;
 
-                if (collider)
+                // --- If collider exists and it is a climbable object ---
+                if (collider && collider.GetComponent<TraverserClimbingObject>())
                 {
                     //Debug.Log(collider.name);
 

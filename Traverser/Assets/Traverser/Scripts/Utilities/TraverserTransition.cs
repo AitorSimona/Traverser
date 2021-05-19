@@ -141,9 +141,9 @@ namespace Traverser
                         if (isWarpOn)
                         {
                             if (!isTargetAnimationON)
-                                isWarpOn = animationController.WarpToTarget(contactTransform.t, contactTransform.q, AvatarTarget.Root, weightMask, transitionValidDistance);
+                                isWarpOn = animationController.WarpToTarget(contactTransform.t, contactTransform.q, transitionValidDistance);
                             else
-                                isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, AvatarTarget.Root, weightMask, transitionValidDistance);
+                                isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, transitionValidDistance);
                         }
 
                         ret = true;
@@ -157,7 +157,7 @@ namespace Traverser
                     {
                         // --- Use target matching (motion warping) to reach the contact transform as the transitionAnimation plays ---
                         if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionAnimation))
-                            isTransitionAnimationON = animationController.WarpToTarget(contactTransform.t, contactTransform.q, AvatarTarget.Root, weightMask, transitionValidDistance);
+                            isTransitionAnimationON = animationController.WarpToTarget(contactTransform.t, contactTransform.q, transitionValidDistance);
 
                         // --- When we reach the contact point, activate targetAnimation ---
                         if (!isTransitionAnimationON)
@@ -175,7 +175,7 @@ namespace Traverser
                     {
                         // --- Use motion warping to reach the target transform as the targetAnimation plays ---
                         if (isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, AvatarTarget.Root, weightMask, targetValidDistance);
+                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, targetValidDistance);
 
                         // --- If current state does not have a valid exit transition, return control ---
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)

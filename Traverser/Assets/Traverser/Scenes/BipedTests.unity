@@ -3518,6 +3518,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137758, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: fIKOn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137758, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: footHeight
       value: 0.05
       objectReference: {fileID: 0}
@@ -3559,7 +3563,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137954, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: groundSnap
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137955, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_Center.y

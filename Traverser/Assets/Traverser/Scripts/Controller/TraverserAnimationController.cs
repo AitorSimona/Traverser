@@ -128,26 +128,15 @@ namespace Traverser
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
         }
 
-        /// <summary>
-        /// Adjusts game object's position and rotation to match given position and rotation in the given time with current animation
-        /// </summary>
-        /// <param name="matchPosition"> The desired position to reach with target matching.</param>
-        /// <param name="matchRotation"> The desired rotation to reach with target matching.</param>
-        /// // TODO: Unused
-        /// <param name="target"> Which bone should reach the desired transform.</param> 
-        /// <param name="weightMask"> How much importance should match position and rotation have in target matching.</param>
-        /// <param name="validDistance"> If close enough to validDistance (meters), end target matching.</param>
-
-        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, AvatarTarget target, MatchTargetWeightMask weightMask, float validDistance)
+        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, float validDistance)
         {
             bool ret = true;
 
-            // --- Warp position and rotation to match target transform ---  
+            // --- Warp position and rotation to match matchPosition and matchRotation ---  
             lastWarpPosition = matchPosition;
 
             //// --- Compute distance to match position and velocity ---
             Vector3 difference = matchPosition - transform.position;
-            difference.Scale(weightMask.positionXYZWeight);
             float time = animator.GetCurrentAnimatorStateInfo(0).length;
             Vector3 velocity = difference / time;
 

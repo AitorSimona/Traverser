@@ -203,7 +203,7 @@ namespace Traverser
 
             // --- Speed damping, reduce speed when turning around ---
             if (currentRotationSpeed > rotationSpeedToTurn && speed < movementSpeedNoTurn)
-                speed *= movementSpeedDampingOnTurn; 
+                speed *= movementSpeedDampingOnTurn;
 
             // --- Compute desired displacement ---
             Vector3 finalDisplacement = transform.forward * speed * deltaTime;

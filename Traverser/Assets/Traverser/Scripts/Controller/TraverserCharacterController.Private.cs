@@ -168,7 +168,7 @@ namespace Traverser
         private bool currentGravity;
 
         // --------------------------------
-
+        
         // --- Basic methods ---
 
         // Start is called before the first frame update

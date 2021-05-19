@@ -95,6 +95,8 @@ namespace Traverser
         {
             // --- Check current state before simulation start --- 
             state.currentCollision.velocity = characterController.velocity / stepping;
+
+            // --- Set ground snap and gravity to user-defined value ---
             currentGroundSnap = groundSnap;
             currentGravity = gravityEnabled;
 

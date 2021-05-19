@@ -159,7 +159,13 @@ namespace Traverser
         private List<float3> planePositions;
 
         // --- Simulation counter (keep track of current iteration) ---
-        private int simulationCounter = 0;
+        private int simulationCounter;
+
+        // --- Keeps track of current ground snap value ---
+        private bool currentGroundSnap;
+
+        // --- Keeps track of current gravity value ---
+        private bool currentGravity;
 
         // --------------------------------
 
@@ -169,12 +175,14 @@ namespace Traverser
         void Start()
         {
             // --- Initialize controller ---
-            hitColliders = new Collider[3];
-            groundRay = new Ray();
+            characterController = GetComponent<CharacterController>();
             state = TraverserState.Create();
             snapshotState = TraverserState.Create();
-            characterController = GetComponent<CharacterController>();
-            current.position = transform.position;
+            lastContactTransform = TraverserTransform.Get(float3.zero, quaternion.identity);
+            hitColliders = new Collider[3];
+            groundRay = new Ray();
+
+            state.currentCollision.position = transform.position;
             targetPosition = transform.position;
             targetVelocity = float3.zero;
             targetHeading = 0.0f;
@@ -183,6 +191,10 @@ namespace Traverser
             probePositions = new List<float3>(3);
             planePositions = new List<float3>(3);
             capsulePositions = new List<float3>(3);
+
+            simulationCounter = 0;
+            currentGroundSnap = groundSnap;
+            currentGravity = gravityEnabled;
         }
 
         // --------------------------------
@@ -216,7 +228,7 @@ namespace Traverser
 
             // --- Prevent drop/fall, snap to ground ---
 
-            if (groundSnap)
+            if (currentGroundSnap)
             {
                 groundRay.origin = characterController.transform.position;
                 groundRay.direction = -Vector3.up;

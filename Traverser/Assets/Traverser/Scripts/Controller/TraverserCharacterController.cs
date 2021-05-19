@@ -9,7 +9,7 @@ namespace Traverser
     {
         // --- Attributes ---
         [Header("Controller")]
-        [Tooltip("Whether or not gravity will be applied to the controller.")]
+        [Tooltip("Whether or not gravity will be applied to the controller. Deactivated during transitions.")]
         public bool gravityEnabled = true;
         [Tooltip("How much will given displacement be increased, bigger stepping increases prediction reach at the cost of precision (void space). Can be overwriten by abilities.")]
         [Range(1.0f, 10.0f)]
@@ -21,12 +21,11 @@ namespace Traverser
         [Range(0.1f, 1.0f)]
         public float groundProbeRadius = 0.25f;
 
-        [Tooltip("If enabled, character will be snapped to current ground, preventing it from falling down.")]
+        [Tooltip("If enabled, character will be snapped to current ground, preventing it from falling down. Deactivated during transitions.")]
         public bool groundSnap = false;
 
         [Tooltip("The max length of the ray used to snap the character to current ground.")]
         public float groundSnapRayDistance = 0.1f;
-
 
         [Header("Debug")]
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show debug geometry.")]
@@ -96,6 +95,8 @@ namespace Traverser
         {
             // --- Check current state before simulation start --- 
             state.currentCollision.velocity = characterController.velocity / stepping;
+            currentGroundSnap = groundSnap;
+            currentGravity = gravityEnabled;
 
             // TODO: NEEDED? performance hit
             if (characterController.detectCollisions)
@@ -196,7 +197,7 @@ namespace Traverser
             state.desiredDisplacement = Vector3.zero;
 
             // --- Apply gravity ---
-            if (gravityEnabled)
+            if (currentGravity)
             {
                 float3 gravity = Physics.gravity;
                 state.currentCollision.dynamicsDisplacement = gravity * deltaTime * stepping;
@@ -233,8 +234,8 @@ namespace Traverser
         public void ConfigureController(bool active)
         {
             collisionEnabled = active;
-            //groundSnap = active;
-            gravityEnabled = active;
+            currentGroundSnap = active;      
+            currentGravity = active;
         }
 
         // --------------------------------

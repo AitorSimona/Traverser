@@ -39,6 +39,10 @@ namespace Traverser
         [Range(-1.0f, 1.0f)]
         public float handLength = 1.0f;
 
+        [Header("Debug")]
+        [Tooltip("If active, debug utilities will be shown (information/geometry draw). Selecting the object may be required to show debug geometry.")]
+        public bool debugDraw = false;
+
         // --------------------------------
 
         // --- Climbing ability state ---
@@ -455,9 +459,10 @@ namespace Traverser
                 SetClimbingState(desiredState);
             }
 
-            //bool closeToDrop = Mathf.Abs(ledgeGeometry.height - 2.8f) <= 0.095f;
             bool closeToDrop = Physics.Raycast(transform.position, Vector3.down, maxClimbableHeight - controller.capsuleHeight, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
-            Debug.DrawRay(transform.position, Vector3.down * (maxClimbableHeight - controller.capsuleHeight), Color.white);
+
+            if(debugDraw)
+                Debug.DrawRay(transform.position, Vector3.down * (maxClimbableHeight - controller.capsuleHeight), Color.yellow);
 
             // --- React to pull up/dismount ---
             if (TraverserInputLayer.capture.pullUpButton)
@@ -497,8 +502,11 @@ namespace Traverser
             else
                 controller.targetDisplacement = Vector3.zero;
 
-            ledgeGeometry.DebugDraw();
-            ledgeGeometry.DebugDraw(ref ledgeHook);
+            if (debugDraw)
+            {
+                ledgeGeometry.DebugDraw();
+                ledgeGeometry.DebugDraw(ref ledgeHook);
+            }
 
             return ret;
         }        
@@ -537,7 +545,6 @@ namespace Traverser
             float distance = 0.0f;
             bool left = ledgeGeometry.ClosestPointDistance(transform.position, ledgeHook, ref distance);
 
-            //Debug.Log(ledgeHook.distance);
             if (stickInput.x > 0.5f)
             {
                 if (!left && distance <= desiredCornerMinDistance)

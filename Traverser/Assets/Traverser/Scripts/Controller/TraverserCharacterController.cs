@@ -27,7 +27,7 @@ namespace Traverser
         public float groundSnapRayDistance = 0.1f;
 
         [Header("Debug")]
-        [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show debug geometry.")]
+        [Tooltip("If active, debug utilities will be shown (information/geometry draw). Selecting the object may be required to show debug geometry.")]
         public bool debugDraw = false;
 
         [Tooltip("Reference to capsule mesh for debugging purposes.")]

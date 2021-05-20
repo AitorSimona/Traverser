@@ -48,6 +48,8 @@ namespace Traverser
         [HideInInspector]
         public float3 targetPosition;
 
+        // --- The displacement the character needs to cover until the next controller update --- 
+        [HideInInspector]
         public float3 targetDisplacement;
 
         // --- The current state's velocity ---

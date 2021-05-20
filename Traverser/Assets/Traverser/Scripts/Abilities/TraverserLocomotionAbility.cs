@@ -198,7 +198,7 @@ namespace Traverser
                 speed = 0.0f;
 
             // --- Rotate controller ---
-            controller.ForceRotate(currentRotationSpeed * deltaTime);
+            controller.Rotate(currentRotationSpeed * deltaTime);
 
             // --- Speed damping, reduce speed when turning around ---
             if (currentRotationSpeed > rotationSpeedToTurn && speed < movementSpeedNoTurn)

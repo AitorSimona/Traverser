@@ -182,7 +182,7 @@ namespace Traverser
             groundRay = new Ray();
 
             state.currentCollision.position = transform.position;
-            //targetPosition = transform.position;
+            targetDisplacement = Vector3.zero;
             targetVelocity = Vector3.zero;
             targetHeading = 0.0f;
 

@@ -90,7 +90,10 @@ namespace Traverser
             Vector3 final = transform.position + controller.targetDisplacement;
 
             if (!animationController.transition.isON)
+            {
                 controller.ForceMove(Vector3.Lerp(transform.position, final, Time.deltaTime / Time.fixedDeltaTime));
+                controller.ForceRotate(Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.AngleAxis(controller.targetHeading, Vector3.up), Time.deltaTime / Time.fixedDeltaTime));
+            }
         }
 
         // MYTODO: Order of update is important, it would be wise to add a priority to abilities,

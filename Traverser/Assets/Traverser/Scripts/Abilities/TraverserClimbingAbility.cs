@@ -504,11 +504,12 @@ namespace Traverser
             {
                 ret = true;
                 ledgeHook = desiredLedgeHook;
-                //controller.targetPosition = target;
                 controller.targetDisplacement = target - transform.position;
             }
             else
+            {
                 controller.targetDisplacement = Vector3.zero;
+            }
 
             ledgeGeometry.DebugDraw();
             ledgeGeometry.DebugDraw(ref ledgeHook);

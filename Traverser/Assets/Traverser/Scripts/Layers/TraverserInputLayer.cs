@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 
 // --- Wrapper for ability-input interactions ---
 
@@ -10,7 +9,7 @@ namespace Traverser
         public struct FrameCapture
         {
             // --- Attributes ---
-            public float3 movementDirection;
+            public Vector3 movementDirection;
             //public float moveIntensity;
             public bool run;
             public bool dropDownButton;
@@ -77,7 +76,7 @@ namespace Traverser
 
         public static float GetMoveIntensity()
         {
-            return math.clamp(math.length(capture.movementDirection), 0.0f, 1.0f);
+            return Mathf.Clamp(Vector3.Magnitude(capture.movementDirection), 0.0f, 1.0f);
         }
 
         // --------------------------------

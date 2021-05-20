@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Traverser
@@ -82,14 +81,13 @@ namespace Traverser
                 speed.x = controller.targetVelocity.x;
                 speed.y = controller.targetVelocity.z;
 
-                animatorParameters.Speed = math.length(speed);
+                animatorParameters.Speed = speed.magnitude;
                 animatorParameters.Heading = controller.targetHeading;
                 animationController.UpdateAnimator(ref animatorParameters);
             }
 
 
-            float3 final = transform.position;
-            final += controller.targetDisplacement;
+            Vector3 final = transform.position + controller.targetDisplacement;
 
             if (!animationController.transition.isON )
                 controller.ForceMove(Vector3.Lerp(transform.position, final,  Time.deltaTime / Time.fixedDeltaTime));

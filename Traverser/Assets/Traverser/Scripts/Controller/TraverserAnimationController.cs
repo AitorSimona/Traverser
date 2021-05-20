@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Traverser
@@ -170,7 +169,7 @@ namespace Traverser
             matchGround.y = transform.position.y;
 
             // TODO: This distance takes into account Y, giving problems to valid distances of those transitions that do not use Y
-            if (math.distance(transform.position, matchGround) < validDistance)
+            if (Vector3.Distance(transform.position, matchGround) < validDistance)
             {
                 deltaPosition = Vector3.zero;
                 currentdeltaPosition = Vector3.zero;

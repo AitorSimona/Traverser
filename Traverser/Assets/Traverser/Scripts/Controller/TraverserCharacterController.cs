@@ -1,4 +1,3 @@
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Traverser
@@ -35,26 +34,26 @@ namespace Traverser
         public Mesh capsuleDebugMesh;
 
         [Tooltip("The debug mesh's scale.")]
-        public float3 capsuleDebugMeshScale = Vector3.one;
+        public Vector3 capsuleDebugMeshScale = Vector3.one;
 
         [Tooltip("Radius of the ground collision check sphere.")]
         [Range(0.1f, 1.0f)]
         public float contactDebugSphereRadius = 0.5f;
 
         // --- The current state's position (simulation) ---
-        public float3 position { get => state.currentCollision.position; set => state.currentCollision.position = value; }
+        public Vector3 position { get => state.currentCollision.position; set => state.currentCollision.position = value; }
 
         // --- The next position user code should move to ---
         [HideInInspector]
-        public float3 targetPosition;
+        public Vector3 targetPosition;
 
         // --- The displacement the character needs to cover until the next controller update --- 
         [HideInInspector]
-        public float3 targetDisplacement;
+        public Vector3 targetDisplacement;
 
         // --- The current state's velocity ---
         [HideInInspector]
-        public float3 targetVelocity;
+        public Vector3 targetVelocity;
 
         // --- The current state's rotation ---
         [HideInInspector]
@@ -141,7 +140,7 @@ namespace Traverser
 
         // --- Movement methods ---
 
-        public void Move(float3 displacement)
+        public void Move(Vector3 displacement)
         {
             state.desiredDisplacement += displacement;
         }
@@ -158,7 +157,7 @@ namespace Traverser
             position = transform.position;
         }
 
-        public void TeleportTo(float3 desiredPosition)
+        public void TeleportTo(Vector3 desiredPosition)
         {
             // --- Disables controller, teleport object and adjust internal position variables ---
             characterController.enabled = false;
@@ -180,8 +179,8 @@ namespace Traverser
             UpdateMovement(deltaTime);
 
             // --- If speed value drops to nearly zero, but not 0, force it to zero ---
-            if (math.length(state.currentCollision.velocity) < Vector3.one.magnitude/10.0f)
-                state.currentCollision.velocity = float3.zero;
+            if (Vector3.Magnitude(state.currentCollision.velocity) < Vector3.one.magnitude/10.0f)
+                state.currentCollision.velocity = Vector3.zero;
 
             // --- If on simulation's first tick, store position ---
             if (simulationCounter == 0)
@@ -206,13 +205,13 @@ namespace Traverser
             // --- Apply gravity ---
             if (currentGravity)
             {
-                float3 gravity = Physics.gravity;
+                Vector3 gravity = Physics.gravity;
                 state.currentCollision.dynamicsDisplacement = gravity * deltaTime * stepping;
             }
 
             // --- Compute final displacement/position and move character controller ---
-            float3 desiredDisplacement = state.currentCollision.kinematicDisplacement + state.currentCollision.dynamicsDisplacement;
-            float3 finalPosition = position + desiredDisplacement;
+            Vector3 desiredDisplacement = state.currentCollision.kinematicDisplacement + state.currentCollision.dynamicsDisplacement;
+            Vector3 finalPosition = position + desiredDisplacement;
             ForceMove(finalPosition);
             state.currentCollision.velocity = characterController.velocity / stepping;
 

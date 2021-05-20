@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Traverser
 {
@@ -90,7 +89,7 @@ namespace Traverser
             if (parkourObject)
             {
                 // --- Get speed from controller ---
-                float speed = math.length(controller.targetVelocity);
+                float speed = Vector3.Magnitude(controller.targetVelocity);
                 float walkSpeed = 1.5f; // TODO: Create walk speed
 
                 // --- Compute target transform at the other side of the collider ---

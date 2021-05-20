@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Traverser
 {
@@ -38,13 +37,13 @@ namespace Traverser
         public struct TraverserLedgeGeometry
         {
             // --- Attributes ---
-            public float3[] vertices; // Array of 4 vertices that build the ledge's edges
+            public Vector3[] vertices; // Array of 4 vertices that build the ledge's edges
 
             // --- Basic Methods ---
             public static TraverserLedgeGeometry Create()
             {
                 TraverserLedgeGeometry ledge = new TraverserLedgeGeometry();
-                ledge.vertices = new float3[4]; 
+                ledge.vertices = new Vector3[4]; 
                 return ledge;
             }
 
@@ -74,42 +73,42 @@ namespace Traverser
                 return tmp;
             }
 
-            float3 ClosestPoint(float3 position, float3 pointP1, float3 pointP2)
+            Vector3 ClosestPoint(Vector3 position, Vector3 pointP1, Vector3 pointP2)
             {
-                float3 edge = pointP2 - pointP1;
+                Vector3 edge = pointP2 - pointP1;
 
                 // --- Project position-P1 vector on current edge ---
-                float3 projection = math.project(position - pointP1, math.normalizesafe(edge));
+                Vector3 projection = Vector3.Project(position - pointP1, Vector3.Normalize(edge));
 
                 // --- Find intersection point, which is also the closest point to given position ---
-                float3 closestPoint = pointP1 + projection;
+                Vector3 closestPoint = pointP1 + projection;
 
-                if (math.dot(projection, edge) < 0.0f)
+                if (Vector3.Dot(projection, edge) < 0.0f)
                     closestPoint = pointP1;
-                else if (math.lengthsq(projection) > math.lengthsq(edge))
+                else if (Vector3.SqrMagnitude(projection) > Vector3.SqrMagnitude(edge))
                     closestPoint = pointP2;
 
 
                 return closestPoint;
             }
 
-            public bool ClosestPointDistance(float3 position, TraverserLedgeHook hook, ref float distance)
+            public bool ClosestPointDistance(Vector3 position, TraverserLedgeHook hook, ref float distance)
             {
                 // --- Returns true if left vertex is the closest, false otherwise ---
 
                 // --- Get current edge's vertices and compute distance to position ---
-                float3 pointP1 = vertices[hook.index];
-                float3 pointP2 = vertices[GetNextEdgeIndex(hook.index)];
+                Vector3 pointP1 = vertices[hook.index];
+                Vector3 pointP2 = vertices[GetNextEdgeIndex(hook.index)];
 
-                float3 edge = pointP2 - pointP1;
+                Vector3 edge = pointP2 - pointP1;
 
                 // --- Project position-P1 vector on current edge ---
-                float3 projection = math.project(position - pointP1, math.normalizesafe(edge));
+                Vector3 projection = Vector3.Project(position - pointP1, Vector3.Normalize(edge));
                 // --- Find intersection point, which is also the closest point to given position ---
-                float3 closestPoint = pointP1 + projection;
+                Vector3 closestPoint = pointP1 + projection;
 
-                float distanceP1 = math.length(pointP1 - closestPoint);
-                float distanceP2 = math.length(pointP2 - closestPoint);
+                float distanceP1 = Vector3.SqrMagnitude(pointP1 - closestPoint);
+                float distanceP2 = Vector3.SqrMagnitude(pointP2 - closestPoint);
 
                 // --- Return the smallest distance ---
                 if (distanceP1 < distanceP2)
@@ -134,30 +133,30 @@ namespace Traverser
                 return (index + 3) % 4;
             }
 
-            public float3 GetNormalizedEdge(int index)
+            public Vector3 GetNormalizedEdge(int index)
             {
                 // --- Get unitary vector from edge ---
-                float3 pointP1 = vertices[index];
-                float3 pointP2 = vertices[GetNextEdgeIndex(index)];
-                return math.normalize(pointP2 - pointP1);
+                Vector3 pointP1 = vertices[index];
+                Vector3 pointP2 = vertices[GetNextEdgeIndex(index)];
+                return Vector3.Normalize(pointP2 - pointP1);
             }
 
-            public float3 GetNormal(TraverserLedgeHook hook)
+            public Vector3 GetNormal(TraverserLedgeHook hook)
             {
                 // --- Returns the normal of the given hook's current edge ---
-                return -math.cross(GetNormalizedEdge(hook.index), Vector3.up);
+                return -Vector3.Cross(GetNormalizedEdge(hook.index), Vector3.up);
             }
 
             public float GetLength(int index)
             {
                 // --- Get length of ledge edge given by index ---
-                float3 a = vertices[index];
-                float3 b = vertices[GetNextEdgeIndex(index)];
+                Vector3 a = vertices[index];
+                Vector3 b = vertices[GetNextEdgeIndex(index)];
 
-                return math.length(b - a);
+                return Vector3.Magnitude(b - a);
             }
 
-            public float3 GetPosition(TraverserLedgeHook hook)
+            public Vector3 GetPosition(TraverserLedgeHook hook)
             {
                 // --- Get 3D position from given ledge 1D hook point ---
                 return vertices[hook.index] + GetNormalizedEdge(hook.index) * hook.distance;
@@ -188,52 +187,52 @@ namespace Traverser
 
             // --- Ledge Hook ---
 
-            public TraverserLedgeHook GetHook(float3 position)
+            public TraverserLedgeHook GetHook(Vector3 position)
             {
                 // --- Given a 3d position/ root motion transform, return the closer anchor point ---
                 TraverserLedgeHook result;
                 result.index = 0;
                 result.distance = 0;
 
-                float3 closestPoint = ClosestPoint(position, vertices[0], vertices[1]);
-                float minimumDistance = math.length(closestPoint - position);
+                Vector3 closestPoint = ClosestPoint(position, vertices[0], vertices[1]);
+                float minimumDistance = Vector3.Magnitude(closestPoint - position);
 
-                result.distance = math.length(closestPoint - vertices[0]);
+                result.distance = Vector3.Magnitude(closestPoint - vertices[0]);
 
                 int numEdges = vertices.Length;
 
                 for (int i = 1; i < numEdges; ++i)
                 {
                     closestPoint = ClosestPoint(position, vertices[i], vertices[GetNextEdgeIndex(i)]);
-                    float distance = math.length(closestPoint - position);
+                    float distance = Vector3.Magnitude(closestPoint - position);
 
                     if (distance < minimumDistance)
                     {
                         minimumDistance = distance;
                         result.index = i;
-                        result.distance = math.length(closestPoint - vertices[i]);
+                        result.distance = Vector3.Magnitude(closestPoint - vertices[i]);
                     }
                 }
 
-                result.distance = math.clamp(result.distance, 0.0f, GetLength(result.index));
+                result.distance = Mathf.Clamp(result.distance, 0.0f, GetLength(result.index));
 
                 return result;
             }
 
-            public TraverserLedgeHook UpdateHook(TraverserLedgeHook hook, float3 position, float cornerMinDistance)
+            public TraverserLedgeHook UpdateHook(TraverserLedgeHook hook, Vector3 position, float cornerMinDistance)
             {
                 // --- Get current and next edge index ---
                 int a = hook.index;
                 int b = GetNextEdgeIndex(hook.index);
 
                 // --- Use vector rejection to get the closest point in current edge from given position ---
-                float3 closestPoint = ClosestPoint(position, vertices[a], vertices[b]);
+                Vector3 closestPoint = ClosestPoint(position, vertices[a], vertices[b]);
 
                 TraverserLedgeHook result;
 
                 // --- Compute edge length and distance from edge's pointP1 (start) and closestPoint ---
-                float length = math.length(vertices[b] - vertices[a]);
-                float distance = math.length(closestPoint - vertices[a]);
+                float length = Vector3.Magnitude(vertices[b] - vertices[a]);
+                float distance = Vector3.Magnitude(closestPoint - vertices[a]);
 
                 // --- If over edge length, move anchor to next edge ---
                 if (distance > length - cornerMinDistance)
@@ -267,17 +266,17 @@ namespace Traverser
                 // --- Iterate vertices and draw ledge edges ---
                 for (int i = 0; i < 4; ++i)
                 {
-                    float3 v0 = vertices[i];
-                    float3 v1 = vertices[GetNextEdgeIndex(i)];
-                    float3 c = (v0 + v1) * 0.5f;
+                    Vector3 v0 = vertices[i];
+                    Vector3 v1 = vertices[GetNextEdgeIndex(i)];
+                    Vector3 c = (v0 + v1) * 0.5f;
 
                     if(i == 0)
                         Debug.DrawLine(v0, v1, Color.blue);
                     else
                         Debug.DrawLine(v0, v1, Color.green);
 
-                    float3 edge = GetNormalizedEdge(i);
-                    float3 n = -math.cross(edge, Vector3.up);
+                    Vector3 edge = GetNormalizedEdge(i);
+                    Vector3 n = -Vector3.Cross(edge, Vector3.up);
                     Debug.DrawLine(c, c + n * 0.3f, Color.cyan);
                 }
             }
@@ -285,8 +284,8 @@ namespace Traverser
             public void DebugDraw(ref TraverserLedgeHook hook)
             {
                 // --- Draw hook ---
-                float3 position = GetPosition(hook);
-                float3 normal = GetNormal(hook);
+                Vector3 position = GetPosition(hook);
+                Vector3 normal = GetNormal(hook);
 
                 Debug.DrawLine(position, position + normal * 0.3f, Color.red);
             }

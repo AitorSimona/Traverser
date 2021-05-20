@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Traverser
@@ -18,10 +17,10 @@ namespace Traverser
             public bool isColliding;
 
             // --- The point at which we collided with the current collider ---
-            public float3 colliderContactPoint;
+            public Vector3 colliderContactPoint;
 
             // --- The current collider's normal direction ---
-            public float3 colliderContactNormal;
+            public Vector3 colliderContactNormal;
 
             // --- Transform of the current ground, the object below the character ---
             public Collider ground;
@@ -30,16 +29,16 @@ namespace Traverser
             public bool isGrounded;
 
             // --- The controller's position (simulation) ---
-            public float3 position;
+            public Vector3 position;
 
             // --- The controller's velocity (simulation) ---
-            public float3 velocity;
+            public Vector3 velocity;
 
             // --- The controller's current kinematic based displacement ---
-            public float3 kinematicDisplacement;
+            public Vector3 kinematicDisplacement;
 
             // --- The controller's current dynamics based displacement ---
-            public float3 dynamicsDisplacement;
+            public Vector3 dynamicsDisplacement;
 
             // --------------------------------
 
@@ -49,12 +48,12 @@ namespace Traverser
             {
                 return new TraverserCollision()
                 {
-                    position = float3.zero,
-                    velocity = float3.zero,
+                    position = Vector3.zero,
+                    velocity = Vector3.zero,
                     collider = null,
                     isColliding = false,
-                    colliderContactNormal = float3.zero,
-                    colliderContactPoint = float3.zero,
+                    colliderContactNormal = Vector3.zero,
+                    colliderContactPoint = Vector3.zero,
                     ground = null,
                     isGrounded = false,
                     kinematicDisplacement = Vector3.zero,
@@ -64,16 +63,16 @@ namespace Traverser
 
             internal void Reset()
             {
-                position = float3.zero;
-                velocity = float3.zero;
+                position = Vector3.zero;
+                velocity = Vector3.zero;
                 collider = null;
                 isColliding = false;
-                colliderContactNormal = float3.zero;
-                colliderContactPoint = float3.zero;
+                colliderContactNormal = Vector3.zero;
+                colliderContactPoint = Vector3.zero;
                 ground = null;
                 isGrounded = false;
-                kinematicDisplacement = float3.zero;
-                dynamicsDisplacement = float3.zero;
+                kinematicDisplacement = Vector3.zero;
+                dynamicsDisplacement = Vector3.zero;
             }
 
             internal void CopyFrom(ref TraverserCollision copyCollision)
@@ -105,7 +104,7 @@ namespace Traverser
             public TraverserCollision currentCollision;
 
             // --- The state's desired absolute displacement ---
-            public float3 desiredDisplacement;
+            public Vector3 desiredDisplacement;
 
             // --------------------------------
 
@@ -117,7 +116,7 @@ namespace Traverser
                 {
                     previousCollision = TraverserCollision.Create(),
                     currentCollision = TraverserCollision.Create(),
-                    desiredDisplacement = float3.zero,
+                    desiredDisplacement = Vector3.zero,
                 };
             }
 
@@ -145,7 +144,7 @@ namespace Traverser
         private TraverserState snapshotState;
 
         // --- The last contact position and rotation extracted from last collision ---
-        private TraverserTransform lastContactTransform = TraverserTransform.Get(float3.zero, quaternion.identity);
+        private TraverserTransform lastContactTransform = TraverserTransform.Get(Vector3.zero, Quaternion.identity);
 
         // --- Array of colliders for ground probing ---
         private Collider[] hitColliders;
@@ -154,9 +153,9 @@ namespace Traverser
         private Ray groundRay;
 
         // --- Arrays of positions for geometry debugging ---
-        private List<float3> probePositions;
-        private List<float3> capsulePositions;
-        private List<float3> planePositions;
+        private List<Vector3> probePositions;
+        private List<Vector3> capsulePositions;
+        private List<Vector3> planePositions;
 
         // --- Simulation counter (keep track of current iteration) ---
         private int simulationCounter;
@@ -178,19 +177,19 @@ namespace Traverser
             characterController = GetComponent<CharacterController>();
             state = TraverserState.Create();
             snapshotState = TraverserState.Create();
-            lastContactTransform = TraverserTransform.Get(float3.zero, quaternion.identity);
+            lastContactTransform = TraverserTransform.Get(Vector3.zero, Quaternion.identity);
             hitColliders = new Collider[3];
             groundRay = new Ray();
 
             state.currentCollision.position = transform.position;
             targetPosition = transform.position;
-            targetVelocity = float3.zero;
+            targetVelocity = Vector3.zero;
             targetHeading = 0.0f;
 
             // --- Initialize debug lists (consider commenting in build, with debugDraw set to false) ---
-            probePositions = new List<float3>(3);
-            planePositions = new List<float3>(3);
-            capsulePositions = new List<float3>(3);
+            probePositions = new List<Vector3>(3);
+            planePositions = new List<Vector3>(3);
+            capsulePositions = new List<Vector3>(3);
 
             simulationCounter = 0;
             currentGroundSnap = groundSnap;
@@ -239,12 +238,12 @@ namespace Traverser
                     // --- We want to slide along the edge of the collider, not get trapped on it, so we need to properly adjust the trajectory ---
 
                     // --- Obtain collider's closest point and compute a new velocity vector ---
-                    float3 correctedPosition = state.previousCollision.position;
-                    float3 closestColliderPosition = state.previousCollision.ground.ClosestPoint(state.currentCollision.position);
+                    Vector3 correctedPosition = state.previousCollision.position;
+                    Vector3 closestColliderPosition = state.previousCollision.ground.ClosestPoint(state.currentCollision.position);
                     Vector3 correctedVelocityVector = closestColliderPosition - state.previousCollision.position;
 
                     // --- Project our current velocity on the newly computed velocity vector ---                   
-                    float3 desiredVelocity = math.projectsafe(state.currentCollision.velocity, correctedVelocityVector);
+                    Vector3 desiredVelocity = Vector3.Project(state.currentCollision.velocity, correctedVelocityVector);
                     correctedPosition += desiredVelocity * Time.deltaTime;
                     state.currentCollision.velocity = desiredVelocity / stepping;
 
@@ -281,16 +280,16 @@ namespace Traverser
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawWireSphere(probePositions[i], groundProbeRadius);
             }
-         
+
             // --- Draw ground collision height limit (if below limit this ground won't be detected in regular collisions) ---
-            float3 planeScale = Vector3.one;
+            Vector3 planeScale = Vector3.one;
             planeScale.y = 0.05f;
 
             Gizmos.color = Color.yellow;
 
             for (int i = 0; i < planePositions.Count; ++i)
             {
-                Gizmos.DrawWireCube(planePositions[i], Vector3.one * planeScale);
+                Gizmos.DrawWireCube(planePositions[i], planeScale);
             }
 
             // --- Draw capsule at last simulation position ---      
@@ -340,7 +339,7 @@ namespace Traverser
                 // --- Retrieve collider data ---
                 contactNormal = hit.normal;
                 contactTransform.t = hit.point;
-                contactTransform.q = math.mul(transform.rotation, Quaternion.FromToRotation(-transform.forward, hit.normal));
+                contactTransform.q = transform.rotation * Quaternion.FromToRotation(-transform.forward, hit.normal);
                 state.currentCollision.colliderContactPoint = hit.point;
                 state.currentCollision.colliderContactNormal = hit.normal;
                 state.currentCollision.collider = hit.collider;

@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 
 // --- Wrapper for ability-collisions interactions ---
 
@@ -39,11 +38,11 @@ namespace Traverser
         }
 
         // --- Return the collider we are grounded to (index of hitColliders), -1 if no ground found --
-        public static int CastGroundProbe(float3 position, float groundProbeRadius, ref Collider[] hitColliders, int layerMask)
+        public static int CastGroundProbe(Vector3 position, float groundProbeRadius, ref Collider[] hitColliders, int layerMask)
         {
             // --- Ground collision check ---
             int chosenGround = -1;
-            float3 colliderPosition;
+            Vector3 colliderPosition;
             int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
 
             if (numColliders > 0)
@@ -54,7 +53,7 @@ namespace Traverser
                 {
                     colliderPosition = hitColliders[i].ClosestPoint(position);
 
-                    if (math.distance(colliderPosition.y, position.y) < minDistance)
+                    if (Mathf.Abs(colliderPosition.y - position.y) < minDistance)
                         chosenGround = i;
                 }
             }

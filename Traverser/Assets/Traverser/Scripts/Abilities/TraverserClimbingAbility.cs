@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Traverser
 {
@@ -208,7 +207,7 @@ namespace Traverser
                                 // --- We want to reach the pre climb position and then activate the animation ---
 
                                 ledgeHook = ledgeGeometry.GetHook(transform.position);
-                                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                                Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
                                 Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
 
                                 Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
@@ -295,7 +294,7 @@ namespace Traverser
 
                 ledgeHook = ledgeGeometry.GetHook(transform.position);
 
-                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
                 Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
                 Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.3f;
                 newPos.y = hookPosition.y - controller.capsuleHeight;
@@ -312,7 +311,7 @@ namespace Traverser
                 animationController.fakeTransition = false;
                 SetState(State.Suspended);
                 // --- Get skeleton's current position and teleport controller ---
-                float3 newTransform = animationController.skeleton.transform.position;
+                Vector3 newTransform = animationController.skeleton.transform.position;
                 newTransform.y -= controller.capsuleHeight / 2.0f;
                 controller.TeleportTo(newTransform);
                 locomotionAbility.ResetLocomotion();
@@ -327,7 +326,7 @@ namespace Traverser
                 animationController.fakeTransition = false;
                 SetState(State.Suspended);
                 // --- Get skeleton's current position and teleport controller ---
-                float3 newTransform = animationController.skeleton.transform.position;
+                Vector3 newTransform = animationController.skeleton.transform.position;
                 newTransform.y -= controller.capsuleHeight / 2.0f;
                 controller.TeleportTo(newTransform);
                 locomotionAbility.ResetLocomotion();
@@ -344,7 +343,7 @@ namespace Traverser
                 animationController.animator.Play("LedgeIdle", 0, 0.0f);
 
                 ledgeHook = ledgeGeometry.GetHook(animationController.skeleton.position);
-                float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
                 Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
                 Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
                 newPos.y = hookPosition.y - controller.capsuleHeight;
@@ -369,7 +368,7 @@ namespace Traverser
                     SetClimbingState(ClimbingState.None);
                     animationController.fakeTransition = false;
 
-                    float3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                    Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
                     Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
 
                     Vector3 newPos = hookPosition - ledgeGeometry.GetNormal(ledgeHook)*controller.capsuleRadius*1.5f;
@@ -465,7 +464,7 @@ namespace Traverser
             wallGeometry.Initialize(rootTransform);
             wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
             float height = wallGeometry.GetHeight(ref wallAnchor);
-            bool closeToDrop = math.abs(height - 2.8f) <= 0.095f;
+            bool closeToDrop = Mathf.Abs(height - 2.8f) <= 0.095f;
 
             // --- React to pull up/dismount ---
             if (TraverserInputLayer.capture.pullUpButton)
@@ -487,7 +486,7 @@ namespace Traverser
             bool ret = false;
 
             // --- Given input, compute target position ---
-            float2 stickInput;
+            Vector2 stickInput;
             stickInput.x = TraverserInputLayer.capture.stickHorizontal;
             stickInput.y = TraverserInputLayer.capture.stickVertical;
 
@@ -543,7 +542,7 @@ namespace Traverser
         
         ClimbingState GetDesiredClimbingState() 
         {
-            float2 stickInput;
+            Vector2 stickInput;
             stickInput.x = TraverserInputLayer.capture.stickHorizontal;
             stickInput.y = TraverserInputLayer.capture.stickVertical;
 

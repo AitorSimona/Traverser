@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Unity.Mathematics;
 using UnityEngine.Assertions;
 
 namespace Traverser
@@ -231,7 +230,7 @@ namespace Traverser
                     float angle = Vector3.SignedAngle(controller.contactNormal, -transform.forward, Vector3.up);
 
                     // --- If we are not close to the desired angle or contact point, do not handle contacts ---
-                    if (Mathf.Abs(angle) > contactAngleMax || Mathf.Abs(math.distance(contactTransform.t, tmp.t)) > contactDistanceMax)
+                    if (Mathf.Abs(angle) > contactAngleMax || Mathf.Abs(Vector3.Distance(contactTransform.t, tmp.t)) > contactDistanceMax)
                     {
                         //Debug.Log(Mathf.Abs(angle));
                         continue;
@@ -303,7 +302,7 @@ namespace Traverser
             movementDecelerationTimer = 0.0f;
             previousMovementIntensity = 0.0f;
             movementAccelerationTimer = 0.0f;
-            controller.targetVelocity = float3.zero;
+            controller.targetVelocity = Vector3.zero;
         }
 
         float GetDesiredSpeed(float deltaTime)        

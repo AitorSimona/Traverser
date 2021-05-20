@@ -497,16 +497,30 @@ namespace Traverser
             }
             else
             {
-                controller.targetDisplacement = Vector3.zero;
+                //// --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
+                //float distance = 0.0f;
+                //bool left = ledgeGeometry.ClosestPointDistance(transform.position, ledgeHook, ref distance);
+
+                //if (left)
+                //{
+                //    target = ledgeGeometry.GetPositionAtDistance(ledgeHook.index, ledgeGeometry.GetLength(ledgeHook.index) - desiredCornerMinDistance);
+                //    controller.targetDisplacement = Vector3.Project(target - ledgeGeometry.GetPosition(ledgeHook), transform.right);
+                //}
+                //else
+                //{
+                //    target = ledgeGeometry.GetPositionAtDistance(ledgeHook.index, desiredCornerMinDistance);
+                //    controller.targetDisplacement = Vector3.Project(target - ledgeGeometry.GetPosition(ledgeHook), transform.right);
+                //}
+
+                //Debug.Log(ledgeHook.distance);
+                //controller.targetDisplacement = Vector3.Project(ledgeGeometry.GetPositionAtDistance(ledgeHook, 0.75f) - ledgeGeometry.GetPosition(ledgeHook), transform.right);
             }
 
             ledgeGeometry.DebugDraw();
             ledgeGeometry.DebugDraw(ref ledgeHook);
 
             return ret;
-        }    
-
-        
+        }        
 
         // --------------------------------
 
@@ -540,11 +554,12 @@ namespace Traverser
 
             // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
             float distance = 0.0f;
-            bool left = ledgeGeometry.ClosestPointDistance(transform.position + controller.targetDisplacement, ledgeHook, ref distance); 
+            bool left = ledgeGeometry.ClosestPointDistance(transform.position, ledgeHook, ref distance);
 
+            Debug.Log(ledgeHook.distance);
             if (stickInput.x > 0.5f)
             {
-                if (!left && distance < 0.05f + desiredCornerMinDistance)
+                if (!left && distance <= desiredCornerMinDistance)
                     return ClimbingState.CornerRight;
 
                 return ClimbingState.Right;
@@ -552,7 +567,7 @@ namespace Traverser
 
             else if (stickInput.x < -0.5f)
             {
-                if (left && distance < 0.05f + desiredCornerMinDistance)
+                if (left && distance <= desiredCornerMinDistance)
                     return ClimbingState.CornerLeft;
 
                 return ClimbingState.Left;

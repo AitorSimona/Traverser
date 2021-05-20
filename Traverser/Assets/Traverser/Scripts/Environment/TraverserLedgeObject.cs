@@ -165,6 +165,12 @@ namespace Traverser
                 return vertices[hook.index] + GetNormalizedEdge(hook.index) * hook.distance;
             }
 
+            public Vector3 GetPositionAtDistance(int index, float distance)
+            {
+                // --- Get 3D position from given ledge 1D hook point ---
+                return vertices[index] + GetNormalizedEdge(index) * distance;
+            }
+
             //public TraverserTransform GetTransform(TraverserLedgeHook hook)
             //{
             //    // --- Get transform out of a 2D ledge anchor --- 

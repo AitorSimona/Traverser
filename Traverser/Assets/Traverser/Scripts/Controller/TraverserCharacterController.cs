@@ -48,6 +48,8 @@ namespace Traverser
         [HideInInspector]
         public float3 targetPosition;
 
+        public float3 targetDisplacement;
+
         // --- The current state's velocity ---
         [HideInInspector]
         public float3 targetVelocity;
@@ -184,6 +186,7 @@ namespace Traverser
             {
                 // --- These are the target position, velocity and yaw rotation (heading) of the current frame ---
                 targetPosition = transform.position;
+                targetDisplacement = targetPosition - snapshotState.currentCollision.position;
                 targetVelocity = state.currentCollision.velocity;
                 //targetHeading = Vector3.SignedAngle(transform.forward, math.normalizesafe(targetVelocity), transform.up) * deltaTime;
             }

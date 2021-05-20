@@ -86,6 +86,13 @@ namespace Traverser
                 animatorParameters.Heading = controller.targetHeading;
                 animationController.UpdateAnimator(ref animatorParameters);
             }
+
+
+            float3 final = transform.position;
+            final += controller.targetDisplacement;
+
+            if (!animationController.transition.isON )
+                controller.ForceMove(Vector3.Lerp(transform.position, final,  Time.deltaTime / Time.fixedDeltaTime));
         }
 
         // MYTODO: Order of update is important, it would be wise to add a priority to abilities,
@@ -120,10 +127,6 @@ namespace Traverser
                     }
                 }
             }
-
-            // --- Perform movement ---
-            if (!animationController.transition.isON)
-                controller.ForceMove(controller.targetPosition);
         }
 
         // --------------------------------

@@ -492,10 +492,9 @@ namespace Traverser
 
             // --- Since transform.position is only updated in fixed timestep we should use the controller's 
             // --- target position to accumulate movement and have framerate independent motion ---
-            // --- Now we are performing this in fixes update so there is no problem, just as a reminder ---
+            // --- Now we are performing this in fixed update so there is no problem, just as a reminder ---
 
-            Vector3 target = controller.targetPosition; 
-            target += transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
+            Vector3 target = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
 
             // --- Update hook ---
             TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, target, desiredCornerMinDistance);
@@ -505,8 +504,11 @@ namespace Traverser
             {
                 ret = true;
                 ledgeHook = desiredLedgeHook;
-                controller.targetPosition = target;
+                //controller.targetPosition = target;
+                controller.targetDisplacement = target - transform.position;
             }
+            else
+                controller.targetDisplacement = Vector3.zero;
 
             ledgeGeometry.DebugDraw();
             ledgeGeometry.DebugDraw(ref ledgeHook);
@@ -548,7 +550,7 @@ namespace Traverser
 
             // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
             float distance = 0.0f;
-            bool left = ledgeGeometry.ClosestPointDistance(controller.targetPosition, ledgeHook, ref distance); 
+            bool left = ledgeGeometry.ClosestPointDistance(transform.position + controller.targetDisplacement, ledgeHook, ref distance); 
 
             if (stickInput.x > 0.5f)
             {

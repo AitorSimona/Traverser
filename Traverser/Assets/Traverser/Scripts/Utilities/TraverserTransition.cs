@@ -106,6 +106,7 @@ namespace Traverser
                 this.targetValidDistance = targetValidDistance;
                 this.targetTransform = targetTransform;
                 this.contactTransform = contactTransform;
+
                 return true;
             }
 

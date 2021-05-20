@@ -44,8 +44,8 @@ namespace Traverser
         public Vector3 position { get => state.currentCollision.position; set => state.currentCollision.position = value; }
 
         // --- The next position user code should move to ---
-        [HideInInspector]
-        public Vector3 targetPosition;
+        //[HideInInspector]
+        //public Vector3 targetPosition;
 
         // --- The displacement the character needs to cover until the next controller update --- 
         [HideInInspector]
@@ -161,9 +161,9 @@ namespace Traverser
         {
             // --- Disables controller, teleport object and adjust internal position variables ---
             characterController.enabled = false;
-
+            targetDisplacement = Vector3.zero;
             transform.position = desiredPosition;
-            targetPosition = transform.position;
+            //targetPosition = transform.position;
             position = transform.position;
 
             characterController.enabled = true;
@@ -186,8 +186,8 @@ namespace Traverser
             if (simulationCounter == 0)
             {
                 // --- These are the target position, velocity and yaw rotation (heading) of the current frame ---
-                targetPosition = transform.position;
-                targetDisplacement = targetPosition - snapshotState.currentCollision.position;
+                //targetPosition = transform.position;
+                targetDisplacement = transform.position - snapshotState.currentCollision.position;
                 targetVelocity = state.currentCollision.velocity;
                 //targetHeading = Vector3.SignedAngle(transform.forward, math.normalizesafe(targetVelocity), transform.up) * deltaTime;
             }

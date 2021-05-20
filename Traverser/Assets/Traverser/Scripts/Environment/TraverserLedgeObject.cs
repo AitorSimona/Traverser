@@ -38,12 +38,14 @@ namespace Traverser
         {
             // --- Attributes ---
             public Vector3[] vertices; // Array of 4 vertices that build the ledge's edges
+            public float height;
 
             // --- Basic Methods ---
             public static TraverserLedgeGeometry Create()
             {
                 TraverserLedgeGeometry ledge = new TraverserLedgeGeometry();
-                ledge.vertices = new Vector3[4]; 
+                ledge.vertices = new Vector3[4];
+                ledge.height = 0.0f;
                 return ledge;
             }
 
@@ -51,6 +53,7 @@ namespace Traverser
             {
                 // --- Create ledge geometry from box collider ---
                 Transform transform = collider.transform;
+                height = collider.bounds.size.y;
 
                 Vector3 center = collider.center;
                 Vector3 size = collider.size;

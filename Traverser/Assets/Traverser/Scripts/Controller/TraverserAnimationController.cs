@@ -101,6 +101,7 @@ namespace Traverser
                     transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
                 }
 
+                controller.targetHeading = 0.0f;
                 controller.targetDisplacement = Vector3.zero;
                 currentdeltaPosition = Vector3.zero;
             }

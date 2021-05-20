@@ -85,9 +85,7 @@ namespace Traverser
 
         private TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
         private TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
-        private TraverserWallObject.TraverserWallGeometry wallGeometry;
         private TraverserLedgeObject.TraverserLedgeHook ledgeHook;
-        private TraverserWallObject.TraverserWallAnchor wallAnchor;
 
         // --------------------------------
 
@@ -104,10 +102,7 @@ namespace Traverser
 
             ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
             auxledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
-            wallGeometry = TraverserWallObject.TraverserWallGeometry.Create();
-
             ledgeHook = TraverserLedgeObject.TraverserLedgeHook.Create();
-            wallAnchor = TraverserWallObject.TraverserWallAnchor.Create();
         }
 
         // --------------------------------
@@ -199,13 +194,10 @@ namespace Traverser
                             // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
                             if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
                             {
-                                Debug.Log("Climbing to ledge");
-
-                                ledgeGeometry.Initialize(collider);
-                                wallGeometry.Initialize(collider, contactTransform);
+                                //Debug.Log("Climbing to ledge");
 
                                 // --- We want to reach the pre climb position and then activate the animation ---
-
+                                ledgeGeometry.Initialize(collider);
                                 ledgeHook = ledgeGeometry.GetHook(transform.position);
                                 Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
                                 Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
@@ -461,10 +453,7 @@ namespace Traverser
 
             TraverserTransform rootTransform = TraverserTransform.Get(transform.position, transform.rotation);
             rootTransform.t.y += controller.capsuleHeight;
-            wallGeometry.Initialize(rootTransform);
-            wallAnchor = wallGeometry.GetAnchor(rootTransform.t);
-            float height = wallGeometry.GetHeight(ref wallAnchor);
-            bool closeToDrop = Mathf.Abs(height - 2.8f) <= 0.095f;
+            bool closeToDrop = Mathf.Abs(ledgeGeometry.height - 2.8f) <= 0.095f;
 
             // --- React to pull up/dismount ---
             if (TraverserInputLayer.capture.pullUpButton)

@@ -18,6 +18,10 @@ namespace Traverser
         [Range(0.0f, 0.5f)]
         public float desiredCornerMinDistance;
 
+        [Tooltip("The maximum distance the character will be able to cover when climbing to a ledge.")]
+        [Range(0.0f, 3.0f)]
+        public float maxClimbableHeight;
+
         [Header("Feet IK settings")]
         [Tooltip("Activates or deactivates foot IK placement for the climbing ability.")]
         public bool fIKOn = true;
@@ -451,9 +455,9 @@ namespace Traverser
                 SetClimbingState(desiredState);
             }
 
-            TraverserTransform rootTransform = TraverserTransform.Get(transform.position, transform.rotation);
-            rootTransform.t.y += controller.capsuleHeight;
-            bool closeToDrop = Mathf.Abs(ledgeGeometry.height - 2.8f) <= 0.095f;
+            //bool closeToDrop = Mathf.Abs(ledgeGeometry.height - 2.8f) <= 0.095f;
+            bool closeToDrop = Physics.Raycast(transform.position, Vector3.down, maxClimbableHeight - controller.capsuleHeight, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+            Debug.DrawRay(transform.position, Vector3.down * (maxClimbableHeight - controller.capsuleHeight), Color.white);
 
             // --- React to pull up/dismount ---
             if (TraverserInputLayer.capture.pullUpButton)
@@ -478,11 +482,6 @@ namespace Traverser
             Vector2 stickInput;
             stickInput.x = TraverserInputLayer.capture.stickHorizontal;
             stickInput.y = TraverserInputLayer.capture.stickVertical;
-
-            // --- Since transform.position is only updated in fixed timestep we should use the controller's 
-            // --- target position to accumulate movement and have framerate independent motion ---
-            // --- Now we are performing this in fixed update so there is no problem, just as a reminder ---
-
             Vector3 target = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
 
             // --- Update hook ---
@@ -496,25 +495,7 @@ namespace Traverser
                 controller.targetDisplacement = target - transform.position;
             }
             else
-            {
-                //// --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
-                //float distance = 0.0f;
-                //bool left = ledgeGeometry.ClosestPointDistance(transform.position, ledgeHook, ref distance);
-
-                //if (left)
-                //{
-                //    target = ledgeGeometry.GetPositionAtDistance(ledgeHook.index, ledgeGeometry.GetLength(ledgeHook.index) - desiredCornerMinDistance);
-                //    controller.targetDisplacement = Vector3.Project(target - ledgeGeometry.GetPosition(ledgeHook), transform.right);
-                //}
-                //else
-                //{
-                //    target = ledgeGeometry.GetPositionAtDistance(ledgeHook.index, desiredCornerMinDistance);
-                //    controller.targetDisplacement = Vector3.Project(target - ledgeGeometry.GetPosition(ledgeHook), transform.right);
-                //}
-
-                //Debug.Log(ledgeHook.distance);
-                //controller.targetDisplacement = Vector3.Project(ledgeGeometry.GetPositionAtDistance(ledgeHook, 0.75f) - ledgeGeometry.GetPosition(ledgeHook), transform.right);
-            }
+                controller.targetDisplacement = Vector3.zero;
 
             ledgeGeometry.DebugDraw();
             ledgeGeometry.DebugDraw(ref ledgeHook);
@@ -556,7 +537,7 @@ namespace Traverser
             float distance = 0.0f;
             bool left = ledgeGeometry.ClosestPointDistance(transform.position, ledgeHook, ref distance);
 
-            Debug.Log(ledgeHook.distance);
+            //Debug.Log(ledgeHook.distance);
             if (stickInput.x > 0.5f)
             {
                 if (!left && distance <= desiredCornerMinDistance)

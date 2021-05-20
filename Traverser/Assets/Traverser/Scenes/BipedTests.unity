@@ -2193,6 +2193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   desiredSpeedLedge: 2
   desiredCornerMinDistance: 0.2
+  maxClimbableHeight: 3
   fIKOn: 1
   footLength: 0.2
   hIKOn: 1

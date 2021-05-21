@@ -129,58 +129,54 @@ namespace Traverser
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
         }
 
-        bool start = false;
 
         public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, float validDistance)
         {
             bool ret = true;
 
-
-
             // --- Warp position and rotation to match matchPosition and matchRotation ---  
             //lastWarpPosition = matchPosition;
             bool loop = animator.GetCurrentAnimatorStateInfo(0).loop;
 
-            Vector3 currentPosition = skeleton.transform.position;
+            Vector3 currentPosition = transform.position;
 
-            matchPosition.y = transform.position.y;
+            if(!loop)
+                currentPosition = skeleton.transform.position;
+
+            matchPosition.y = currentPosition.y;
             //// --- Compute distance to match position and velocity ---
-            Vector3 difference = matchPosition - transform.position;
+            Vector3 difference = matchPosition - currentPosition;
             //difference.y = 0.0f;
 
 
-            Vector3 validPosition = transform.position + difference - (transform.forward * validDistance);
+            Vector3 validPosition = currentPosition + difference - (transform.forward * validDistance);
 
             if(!loop)
                 validPosition = matchPosition + (transform.forward * validDistance);
 
             GameObject.Find("dummy2").transform.position = validPosition;
 
-            if (!start)
-            {
-                start = true;
 
-                // --- We are too close and should backtrack (maybe only for non loopable anims?) ---
-                if (loop)
-                {
-                    Vector3 desiredDisplacement = validPosition - transform.position;
-                    Vector3 velocity = controller.targetVelocity;
-                    float time = desiredDisplacement.magnitude / velocity.magnitude;
-                    currentdeltaPosition = desiredDisplacement / time;
-                }
-                else
-                {
-                    Vector3 desiredDisplacement = validPosition - transform.position;
-                    float time = animator.GetCurrentAnimatorStateInfo(0).length - animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                    currentdeltaPosition = desiredDisplacement / time;
-                }
+            // --- We are too close and should backtrack (maybe only for non loopable anims?) ---
+            if (loop)
+            {
+                Vector3 desiredDisplacement = validPosition - currentPosition;
+                Vector3 velocity = desiredDisplacement.normalized * controller.targetVelocity.magnitude;
+                float time = desiredDisplacement.magnitude / velocity.magnitude;
+                currentdeltaPosition = desiredDisplacement / time;
+            }
+            else
+            {
+                Vector3 desiredDisplacement = validPosition - currentPosition;
+                float time = animator.GetCurrentAnimatorStateInfo(0).length - animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                currentdeltaPosition = desiredDisplacement / time;
             }
 
-            if (Vector3.Distance(transform.position, validPosition) < 0.1f)
+
+            if (Vector3.Distance(currentPosition, validPosition) < 0.1f)
             {
                 currentdeltaPosition = Vector3.zero;
                 //    currentdeltaRotation = Quaternion.identity;
-                start = false;
                 ret = false;
             }
 

@@ -192,11 +192,11 @@ namespace Traverser
 
                         // --- Check if we are walking, jogging or running and play appropriate transition ---
                         if (speed <= walkSpeed)
-                            ret = animationController.transition.StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                            ret = animationController.transition.StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger", "LedgeTrigger", 0.5f, 0.5f, ref controller.contactTransform, ref targetTransform);
                         else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
-                            ret = animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 1.5f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                            ret = animationController.transition.StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger", "LedgeTrigger", 1.0f, 0.25f, ref controller.contactTransform, ref targetTransform);
                         else
-                            ret = animationController.transition.StartTransition("RunTransition", "VaultLedgeRun", "RunTransitionTrigger", "LedgeTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                            ret = animationController.transition.StartTransition("RunTransition", "VaultLedgeRun", "RunTransitionTrigger", "LedgeTrigger", 1.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
 
                         break;
                     case TraverserParkourObject.TraverserParkourType.Tunnel:

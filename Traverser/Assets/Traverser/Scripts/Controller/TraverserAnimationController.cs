@@ -29,6 +29,11 @@ namespace Traverser
         [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
         public Transform skeletonRef;
 
+        [Header("Warping")]
+        [Tooltip("The distance at which the character has to be within for warping success.")]
+        [Range(0.1f, 0.3f)]
+        public float warpingValidDistance = 0.1f;
+
         [Header("Debug")]
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show debug geometry.")]
         public bool debugDraw = false;
@@ -44,6 +49,7 @@ namespace Traverser
         // --------------------------------
 
         // --- Use in case you do not want the skeleton to be adjusted to the reference in a custom transition ---
+        [HideInInspector]
         public bool fakeTransition = false;
 
         // --- Private Variables ---
@@ -95,7 +101,7 @@ namespace Traverser
                 if (transition.isWarping)
                 {
                     transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
-                    //transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
                 }
 
                 controller.targetHeading = 0.0f;
@@ -151,12 +157,28 @@ namespace Traverser
                 Vector3 desiredDisplacement = validPosition - currentPosition;
                 Vector3 velocity = desiredDisplacement.normalized * controller.targetVelocity.magnitude;
                 float time = desiredDisplacement.magnitude / velocity.magnitude;
+
                 currentdeltaPosition = desiredDisplacement / time;
 
-                if (Vector3.Distance(currentPosition, validPosition) < 0.1f)
+                //currentdeltaRotation = Quaternion.Inverse(transform.rotation)* matchRotation;
+                //float angle;
+                //Vector3 axis;
+                //currentdeltaRotation.ToAngleAxis(out angle, out axis);
+                //angle /= time;
+
+                //currentdeltaRotation = transform.rotation * Quaternion.AngleAxis(angle, axis);
+
+                currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / time);
+
+                GameObject.Find("dummy2").transform.position = transform.position;
+                GameObject.Find("dummy2").transform.rotation = matchRotation;
+
+                if (Vector3.Distance(currentPosition, validPosition) < warpingValidDistance)
                 {
                     currentdeltaPosition = Vector3.zero;
-                    //currentdeltaRotation = Quaternion.identity;
+                    transform.rotation = matchRotation; // force final rotation
+                    currentdeltaRotation = transform.rotation;
+                    
                     ret = false;
                 }
             }
@@ -177,11 +199,24 @@ namespace Traverser
                     (animator.GetCurrentAnimatorStateInfo(0).normalizedTime*animator.GetCurrentAnimatorStateInfo(0).length);
                 
                 currentdeltaPosition = desiredDisplacement / time;
+                //currentdeltaRotation = transform.rotation;
 
-                if (Vector3.Distance(currentPosition, validPosition) < 0.1f)
+                currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / time);
+
+
+                //currentdeltaRotation = Quaternion.Inverse(transform.rotation) * matchRotation;
+                //float angle;
+                //Vector3 axis;
+                //currentdeltaRotation.ToAngleAxis(out angle, out axis);
+                //angle /= time;
+
+                //currentdeltaRotation = transform.rotation * Quaternion.AngleAxis(angle, axis);
+
+                if (Vector3.Distance(currentPosition, validPosition) < warpingValidDistance)
                 {
                     currentdeltaPosition = Vector3.zero;
-                    //currentdeltaRotation = Quaternion.identity;
+                    transform.rotation = matchRotation; // force final rotation
+                    currentdeltaRotation = transform.rotation;
                     ret = false;
                 }
             }

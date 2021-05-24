@@ -93,6 +93,8 @@ namespace Traverser
                 float walkSpeed = 1.5f; // TODO: Create walk speed
 
                 // --- Compute target transform at the other side of the collider ---
+                
+
                 Vector3 target = controller.contactTransform.t;
                 target += -controller.contactNormal * controller.contactSize;
                 TraverserTransform targetTransform = TraverserTransform.Get(target, controller.contactTransform.q);

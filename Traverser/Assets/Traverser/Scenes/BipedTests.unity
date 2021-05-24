@@ -2199,6 +2199,7 @@ MonoBehaviour:
   hIKOn: 1
   handIKYDistance: 0.05
   handLength: 0.05
+  debugDraw: 0
 --- !u!1 &1798491133
 GameObject:
   m_ObjectHideFlags: 0
@@ -3541,6 +3542,10 @@ PrefabInstance:
     - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: rotationSpeed
       value: 540
+      objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: contactAngleMax
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: distanceToGround

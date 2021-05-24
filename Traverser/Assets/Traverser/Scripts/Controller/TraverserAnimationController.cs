@@ -150,8 +150,7 @@ namespace Traverser
                 matchPosition.y = currentPosition.y;
 
                 // --- Compute distance to match position and velocity ---
-                Vector3 difference = matchPosition - currentPosition;
-                Vector3 validPosition = currentPosition + difference - (transform.forward * validDistance);
+                Vector3 validPosition = matchPosition - (transform.forward * validDistance);
 
                 // --- A looped animation, one of the transition Animations, no root motion ---
                 Vector3 desiredDisplacement = validPosition - currentPosition;
@@ -159,19 +158,7 @@ namespace Traverser
                 float time = desiredDisplacement.magnitude / velocity.magnitude;
 
                 currentdeltaPosition = desiredDisplacement / time;
-
-                //currentdeltaRotation = Quaternion.Inverse(transform.rotation)* matchRotation;
-                //float angle;
-                //Vector3 axis;
-                //currentdeltaRotation.ToAngleAxis(out angle, out axis);
-                //angle /= time;
-
-                //currentdeltaRotation = transform.rotation * Quaternion.AngleAxis(angle, axis);
-
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / time);
-
-                GameObject.Find("dummy2").transform.position = transform.position;
-                GameObject.Find("dummy2").transform.rotation = matchRotation;
 
                 if (Vector3.Distance(currentPosition, validPosition) < warpingValidDistance)
                 {
@@ -188,7 +175,6 @@ namespace Traverser
                 matchPosition.y = currentPosition.y;
 
                 // --- Compute distance to match position and velocity ---
-                Vector3 difference = matchPosition - currentPosition;
                 Vector3 validPosition = matchPosition + (transform.forward * validDistance);
 
                 // --- A targetAnimation, we want to take profit of the animation's motion ---
@@ -199,18 +185,7 @@ namespace Traverser
                     (animator.GetCurrentAnimatorStateInfo(0).normalizedTime*animator.GetCurrentAnimatorStateInfo(0).length);
                 
                 currentdeltaPosition = desiredDisplacement / time;
-                //currentdeltaRotation = transform.rotation;
-
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / time);
-
-
-                //currentdeltaRotation = Quaternion.Inverse(transform.rotation) * matchRotation;
-                //float angle;
-                //Vector3 axis;
-                //currentdeltaRotation.ToAngleAxis(out angle, out axis);
-                //angle /= time;
-
-                //currentdeltaRotation = transform.rotation * Quaternion.AngleAxis(angle, axis);
 
                 if (Vector3.Distance(currentPosition, validPosition) < warpingValidDistance)
                 {

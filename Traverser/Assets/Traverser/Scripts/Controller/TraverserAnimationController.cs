@@ -146,7 +146,9 @@ namespace Traverser
             // --- Compute delta position to be covered ---
             if (loop)
             {
-                Vector3 currentPosition = transform.position;
+                Vector3 currentPosition = skeleton.transform.position;
+
+                // --- Prevent transition animations from warping Y ---
                 matchPosition.y = currentPosition.y;
 
                 // --- Compute distance to match position and velocity ---
@@ -171,7 +173,14 @@ namespace Traverser
             }
             else
             {
-                Vector3 currentPosition = skeleton.transform.position;
+                //SetRootMotion(true);
+                //animator.SetTarget(AvatarTarget.Root, 1.0f);
+                //animator.Update(0);
+                //Vector3 pos = animator.targetPosition;
+                //SetRootMotion(false);
+
+                // --- In our target animation, we cover the Y distance ---
+                Vector3 currentPosition = skeleton.transform.position /*- (Vector3.up * (matchPosition.y - pos.y))*/;               
                 matchPosition.y = currentPosition.y;
 
                 // --- Compute distance to match position and velocity ---
@@ -182,7 +191,8 @@ namespace Traverser
 
                 // For maximum time left precision we should take into account the exit transition time too 
                 float time = animator.GetCurrentAnimatorStateInfo(0).length - 
-                    (animator.GetCurrentAnimatorStateInfo(0).normalizedTime*animator.GetCurrentAnimatorStateInfo(0).length);
+                    (animator.GetCurrentAnimatorStateInfo(0).normalizedTime*animator.GetCurrentAnimatorStateInfo(0).length)
+                    ;
                 
                 currentdeltaPosition = desiredDisplacement / time;
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / time);
@@ -203,6 +213,19 @@ namespace Traverser
         {
             animator.applyRootMotion = rootMotion;
         }
+
+        public void GetPositionAtTime(float normalizedTime, out Vector3 position)
+        {
+            // --- Samples current animation at the given normalized time (0.0f - 1.0f) ---
+            // --- Useful to know at what position will an animation end ---
+
+            SetRootMotion(true);
+            animator.SetTarget(AvatarTarget.Root, 1.0f);
+            animator.Update(0);
+            position = animator.targetPosition;
+            SetRootMotion(false);
+        }
+    
 
         private void OnDrawGizmosSelected()
         {

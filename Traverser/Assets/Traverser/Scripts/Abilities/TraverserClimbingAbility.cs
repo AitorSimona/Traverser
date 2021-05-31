@@ -200,7 +200,7 @@ namespace Traverser
                             auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxHook, ref distance);
 
                             // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
-                            if (!collider.Equals(controller.current.ground.GetComponent<BoxCollider>()) && distance > 0.25)
+                            if (!collider.Equals(controller.current.ground as BoxCollider) && distance > 0.25)
                             {
                                 //Debug.Log("Climbing to ledge");
 

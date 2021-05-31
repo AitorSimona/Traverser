@@ -1334,7 +1334,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3342283489894244882, guid: a5b1b13a797ea9f4181e9ce14338f39f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.753
+      value: 5.767
       objectReference: {fileID: 0}
     - target: {fileID: 3342283489894244882, guid: a5b1b13a797ea9f4181e9ce14338f39f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3537,7 +3537,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: footHeight
-      value: 0.1
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: rotationSpeed
@@ -3853,6 +3853,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skeleton: {fileID: 0}
   skeletonRef: {fileID: 0}
+  warpingValidDistance: 0.1
   debugDraw: 1
   contactDebugSphereRadius: 0.25
   animator: {fileID: 0}
@@ -7495,6 +7496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skeleton: {fileID: 0}
   skeletonRef: {fileID: 0}
+  warpingValidDistance: 0.1
   debugDraw: 1
   contactDebugSphereRadius: 0.25
   animator: {fileID: 0}

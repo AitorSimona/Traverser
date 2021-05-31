@@ -216,7 +216,7 @@ namespace Traverser
 
                                 // --- Require a transition ---
                                 ret = animationController.transition.StartTransition("WalkTransition", "Mount",
-                                    "WalkTransitionTrigger", "MountTrigger", 1.0f, 1.0f,
+                                    "WalkTransitionTrigger", "MountTrigger", 1.0f, 0.0f,
                                     ref contactTransform,
                                     ref target);
 

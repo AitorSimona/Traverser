@@ -173,12 +173,6 @@ namespace Traverser
             }
             else
             {
-                //SetRootMotion(true);
-                //animator.SetTarget(AvatarTarget.Root, 1.0f);
-                //animator.Update(0);
-                //Vector3 pos = animator.targetPosition;
-                //SetRootMotion(false);
-
                 // --- In our target animation, we cover the Y distance ---
                 Vector3 currentPosition = skeleton.transform.position /*- (Vector3.up * (matchPosition.y - pos.y))*/;               
                 matchPosition.y = currentPosition.y;

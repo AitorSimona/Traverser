@@ -208,19 +208,6 @@ namespace Traverser
             animator.applyRootMotion = rootMotion;
         }
 
-        public void GetPositionAtTime(float normalizedTime, out Vector3 position)
-        {
-            // --- Samples current animation at the given normalized time (0.0f - 1.0f) ---
-            // --- Useful to know at what position will an animation end ---
-
-            SetRootMotion(true);
-            animator.SetTarget(AvatarTarget.Root, 1.0f);
-            animator.Update(0);
-            position = animator.targetPosition;
-            SetRootMotion(false);
-        }
-    
-
         private void OnDrawGizmosSelected()
         {
             if (!debugDraw || controller == null)

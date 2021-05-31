@@ -145,9 +145,9 @@ namespace Traverser
 
                         // --- Check if we are jogging or running and play appropriate transition ---
                         if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
-                            ret = animationController.transition.StartTransition("JogTransition", "VaultTableJog", "JogTransitionTrigger", "TableTrigger", 1.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                            ret = animationController.transition.StartTransition("JogTransition", "VaultTableJog", "JogTransitionTrigger", "TableTrigger", 1.0f, 1.0f, ref controller.contactTransform, ref targetTransform);
                         else if(speed > locomotionAbility.movementSpeedSlow + 0.1)
-                            ret = animationController.transition.StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger", "TableTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                            ret = animationController.transition.StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger", "TableTrigger", 1.5f, 1.0f, ref controller.contactTransform, ref targetTransform);
 
                         break;
                     case TraverserParkourObject.TraverserParkourType.Platform:

@@ -10,13 +10,18 @@ namespace Traverser
     {
         // --- Attributes ---
         [Header("Movement settings")]
-        [Tooltip("Desired speed in meters per second for slow movement.")]
-        [Range(0.0f, 10.0f)]
-        public float movementSpeedSlow = 3.9f;
 
-        [Tooltip("Desired speed in meters per second for fast movement.")]
-        [Range(0.0f, 10.0f)]
-        public float movementSpeedFast = 5.5f;
+        [Tooltip("Desired speed in meters per second for walk movement.")]
+        [Range(0.0f, 1.5f)]
+        public float walkSpeed = 1.0f;
+
+        [Tooltip("Desired speed in meters per second for jog movement.")]
+        [Range(0.0f, 4.0f)]
+        public float jogSpeed = 3.9f;
+
+        [Tooltip("Desired speed in meters per second for run movement.")]
+        [Range(0.0f, 6.0f)]
+        public float runSpeed = 5.5f;
 
         [Tooltip("Character won't move if below this speed.")]
         [Range(0.0f, 10.0f)]
@@ -34,11 +39,11 @@ namespace Traverser
         [Tooltip("How much current speed impacts deceleration. Smaller values will make a running character decelerate slower.")]
         public float movementDecelerationRatio = 0.5f;
 
-        [Tooltip("How fast the character reaches its desired slow movement speed in seconds. Smaller values make character reach movementSpeedSlow slower")]
-        public float movementSpeedSlowTime = 0.75f;
+        [Tooltip("How fast the character reaches its desired jog movement speed in seconds. Smaller values make character reach jogSpeed slower")]
+        public float jogSpeedTime = 0.75f;
 
-        [Tooltip("How fast the character reaches its desired fast speed (and decelerates to slow) in seconds. Smaller values make character reach movementSpeedFast and decelerate to movementSpeedSlow slower.")]
-        public float movementSpeedFastTime = 1.5f;
+        [Tooltip("How fast the character reaches its desired run speed (and decelerates to slow) in seconds. Smaller values make character reach runSpeed and decelerate to jogSpeed slower.")]
+        public float runSpeedTime = 1.5f;
 
 
         [Header("Rotation settings")]
@@ -127,7 +132,7 @@ namespace Traverser
         public void Start()
         {
             IKRay = new Ray();
-            desiredLinearSpeed = movementSpeedSlow;
+            desiredLinearSpeed = jogSpeed;
             abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
@@ -311,13 +316,13 @@ namespace Traverser
             float moveIntensity = GetDesiredMovementIntensity(deltaTime);
 
             // --- Sprinting, Accelerate/Decelerate to movementSpeedFast or movementSpeedSlow ---
-            if (TraverserInputLayer.capture.run && desiredLinearSpeed < movementSpeedFast)
-                desiredLinearSpeed += (movementSpeedFast - movementSpeedSlow) * deltaTime * movementSpeedFastTime;
-            else if (desiredLinearSpeed > movementSpeedSlow && TraverserInputLayer.GetMoveIntensity() > 0.0f)
-                desiredLinearSpeed += (movementSpeedSlow - movementSpeedFast) * deltaTime * movementSpeedFastTime;
+            if (TraverserInputLayer.capture.run && desiredLinearSpeed < runSpeed)
+                desiredLinearSpeed += (runSpeed - jogSpeed) * deltaTime * runSpeedTime;
+            else if (desiredLinearSpeed > jogSpeed && TraverserInputLayer.GetMoveIntensity() > 0.0f)
+                desiredLinearSpeed += (jogSpeed - runSpeed) * deltaTime * runSpeedTime;
 
             // --- Increase timer ---
-            movementAccelerationTimer += movementSpeedSlowTime*deltaTime;
+            movementAccelerationTimer += jogSpeedTime*deltaTime;
 
             // --- Cap timer ---
             if (movementAccelerationTimer > movementAccelerationMaxTime)

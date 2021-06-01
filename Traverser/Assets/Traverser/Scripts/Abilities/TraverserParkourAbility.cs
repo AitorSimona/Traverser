@@ -154,8 +154,6 @@ namespace Traverser
 
             // --- Get speed from controller ---
             //float speed = Vector3.Magnitude(controller.targetVelocity);
-            //float walkSpeed = 1.5f; // TODO: Create walk speed
-
 
             // --- NON-WORKING SOLUTION ---
 
@@ -205,15 +203,14 @@ namespace Traverser
 
             // --- Get speed from controller ---
             float speed = Vector3.Magnitude(controller.targetVelocity);
-            float walkSpeed = 1.5f; // TODO: Create walk speed
 
             // --- Check if we are jogging or running and play appropriate transition ---
-            if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
+            if (speed <= locomotionAbility.jogSpeed + 0.1 && speed >= locomotionAbility.walkSpeed)
             {
                 ret = StartTransition("JogTransition", "VaultTableJog", "JogTransitionTrigger",
                     "TableTrigger", 1.0f, 1.0f, ref contactTransform, ref targetTransform);
             }
-            else if (speed > locomotionAbility.movementSpeedSlow + 0.1)
+            else if (speed > locomotionAbility.jogSpeed + 0.1)
             {
                 ret = StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger",
                     "TableTrigger", 1.5f, 1.0f, ref contactTransform, ref targetTransform);
@@ -228,7 +225,6 @@ namespace Traverser
 
             // --- Get speed from controller ---
             float speed = Vector3.Magnitude(controller.targetVelocity);
-            float walkSpeed = 1.5f; // TODO: Create walk speed
 
             // --- If we are dropping our target should be the locomotion simulation's last iteration position ---
             targetTransform.t = controller.current.position;
@@ -248,7 +244,7 @@ namespace Traverser
             //targetTransform.t = target;
 
             // --- Check if we are walking, jogging or running and play appropriate transition ---
-            if (speed <= walkSpeed)
+            if (speed <= locomotionAbility.walkSpeed)
             {
                 if (!isDrop)
                 {
@@ -262,7 +258,7 @@ namespace Traverser
                         "PlatformDropTrigger", 1.0f, 0.1f, ref contactTransform, ref targetTransform);
                 }
             }
-            else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
+            else if (speed <= locomotionAbility.jogSpeed + 0.1 && speed >= locomotionAbility.walkSpeed)
             {
                 if (!isDrop)
                 {
@@ -300,15 +296,14 @@ namespace Traverser
 
             // --- Get speed from controller ---
             float speed = Vector3.Magnitude(controller.targetVelocity);
-            float walkSpeed = 1.5f; // TODO: Create walk speed
 
             // --- Check if we are walking, jogging or running and play appropriate transition ---
-            if (speed <= walkSpeed)
+            if (speed <= locomotionAbility.walkSpeed)
             {
                 ret = StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger",
                     "LedgeTrigger", 0.5f, 0.5f, ref contactTransform, ref targetTransform);
             }
-            else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
+            else if (speed <= locomotionAbility.jogSpeed + 0.1 && speed >= locomotionAbility.walkSpeed)
             {
                 ret = StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger",
                     "LedgeTrigger", 1.0f, 0.25f, ref contactTransform, ref targetTransform);
@@ -328,19 +323,18 @@ namespace Traverser
 
             // --- Get speed from controller ---
             float speed = Vector3.Magnitude(controller.targetVelocity);
-            float walkSpeed = 1.5f; // TODO: Create walk speed
 
             // --- End warp point should be at skeleton height ---
             targetTransform.t.y = controller.current.ground.ClosestPoint(targetTransform.t).y
                 + (animationController.skeleton.transform.position.y - transform.position.y);
 
             // --- Check if we are jogging or running and play appropriate transition ---
-            if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
+            if (speed <= locomotionAbility.jogSpeed + 0.1 && speed >= locomotionAbility.walkSpeed)
             {
                 ret = StartTransition("JogTransition", "SlideTunnelJog", "JogTransitionTrigger",
                     "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform);
             }
-            else if (speed > locomotionAbility.movementSpeedSlow + 0.1)
+            else if (speed > locomotionAbility.jogSpeed + 0.1)
             {
                 ret = StartTransition("RunTransition", "SlideTunnelRun", "RunTransitionTrigger",
                     "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform);

@@ -114,6 +114,7 @@ namespace Traverser
                     transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
                 }
 
+                targetWarpTime -= Time.deltaTime;
                 controller.targetHeading = 0.0f;
                 controller.targetDisplacement = Vector3.zero;
                 //currentdeltaPosition = Vector3.zero;
@@ -198,11 +199,12 @@ namespace Traverser
             else
             {
                 // --- In our target animation, we cover the Y distance ---
-                Vector3 currentPosition = skeleton.transform.position;               
+                Vector3 currentPosition = skeleton.transform.position;
+                matchPosition.y = currentPosition.y;
 
                 // --- A targetAnimation, we want to take profit of the animation's motion ---
                 Vector3 desiredDisplacement = matchPosition - currentPosition;
-                desiredDisplacement.y = matchPosition.y - bodyEndPosition.y;
+                //desiredDisplacement.y = matchPosition.y - bodyEndPosition.y;
                 
                 currentdeltaPosition = desiredDisplacement / targetWarpTime;
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / targetWarpTime);

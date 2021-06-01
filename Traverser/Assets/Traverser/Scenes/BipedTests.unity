@@ -263,7 +263,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58206854}
   m_LocalRotation: {x: 0.15395403, y: 0.027073022, z: -0.004219745, w: 0.987698}
-  m_LocalPosition: {x: 9.41, y: 14.47986, z: -19.53}
+  m_LocalPosition: {x: 1.55, y: 14.41, z: -9.33}
   m_LocalScale: {x: 0.10000003, y: 0.09999999, z: 0.10000003}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3575,7 +3575,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.23
+      value: 1.71
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3583,7 +3583,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.51
+      value: -6.22
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3871,15 +3871,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04ada65e61b5509409a184339805abd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeedSlow: 3.9
-  movementSpeedFast: 5.5
+  walkSpeed: 1
+  jogSpeed: 3.9
+  runSpeed: 5.5
   movementSpeedMin: 0.1
   movementAcceleration: 50
   movementAccelerationTime: 0.1
   movementDecelerationTime: 0.75
   movementDecelerationRatio: 0.5
-  movementSpeedSlowTime: 0.75
-  movementSpeedFastTime: 1.5
+  jogSpeedTime: 0.75
+  runSpeedTime: 1.5
   rotationSpeed: 270
   rotationAcceleration: 30
   rotationAccelerationTime: 0.1
@@ -7527,15 +7528,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04ada65e61b5509409a184339805abd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeedSlow: 3.9
-  movementSpeedFast: 5.5
+  walkSpeed: 1
+  jogSpeed: 3.9
+  runSpeed: 5.5
   movementSpeedMin: 0.1
   movementAcceleration: 50
   movementAccelerationTime: 0.1
   movementDecelerationTime: 0.75
   movementDecelerationRatio: 0.5
-  movementSpeedSlowTime: 0.75
-  movementSpeedFastTime: 1.5
+  jogSpeedTime: 0.75
+  runSpeedTime: 1.5
   rotationSpeed: 270
   rotationAcceleration: 30
   rotationAccelerationTime: 0.1

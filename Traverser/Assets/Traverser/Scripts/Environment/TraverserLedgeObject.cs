@@ -147,7 +147,7 @@ namespace Traverser
             public Vector3 GetNormal(TraverserLedgeHook hook)
             {
                 // --- Returns the normal of the given hook's current edge ---
-                return -Vector3.Cross(GetNormalizedEdge(hook.index), Vector3.up);
+                return -Vector3.Cross(GetNormalizedEdge(hook.index), Vector3.up).normalized;
             }
 
             public float GetLength(int index)

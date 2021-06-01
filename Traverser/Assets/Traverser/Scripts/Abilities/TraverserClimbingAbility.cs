@@ -211,13 +211,16 @@ namespace Traverser
                                 Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
                                 targetPosition.y = hookPosition.y -
                                     (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
-                                TraverserTransform target = TraverserTransform.Get(targetPosition, hookRotation);
+                                TraverserTransform hangedTransform = TraverserTransform.Get(targetPosition, hookRotation);
 
+                                float transitionValidDistance = 1.0f;
+                                contactTransform.t -= transform.forward * transitionValidDistance;
+           
                                 // --- Require a transition ---
                                 ret = animationController.transition.StartTransition("WalkTransition", "Mount",
                                     "WalkTransitionTrigger", "MountTrigger", 1.25f, 0.5f,
                                     ref contactTransform,
-                                    ref target);
+                                    ref hangedTransform);
 
                                 // --- If transition start is successful, change state ---
                                 if (ret)

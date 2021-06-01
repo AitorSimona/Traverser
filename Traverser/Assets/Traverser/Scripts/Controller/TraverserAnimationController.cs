@@ -112,9 +112,12 @@ namespace Traverser
                 {
                     transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
                     transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
+
+                    // --- Update time ---
+                    targetWarpTime -= Time.deltaTime;
                 }
 
-                targetWarpTime -= Time.deltaTime;
+         
                 controller.targetHeading = 0.0f;
                 controller.targetDisplacement = Vector3.zero;
                 //currentdeltaPosition = Vector3.zero;

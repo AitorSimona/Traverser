@@ -262,20 +262,23 @@ namespace Traverser
 
                     float targetOffset = 0.25f;
                     TraverserTransform hangedTransform = GetHangedTransform();
-                    hangedTransform.t += ledgeGeometry.GetNormal(ledgeHook) * targetOffset;
-                    hangedTransform.q = hookRotation;
-
-                    //GameObject.Find("dummy2").transform.position = hangedTransform.t;
-
-                    // --- Require a transition ---
-                    ret = animationController.transition.StartTransition("WalkTransition", "DropDown",
-                        "WalkTransitionTrigger", "DropDownTrigger", ref contactTransform, ref hangedTransform);
-
-                    if (ret)
+         
+                    // --- If capsule collides against any relevant collider, do not start the dropDown transition ---
+                    if (!Physics.CheckCapsule(hangedTransform.t, hangedTransform.t + Vector3.up * controller.capsuleHeight, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask))
                     {
-                        SetState(State.DropDown);
-                        // --- Turn off/on controller ---
-                        controller.ConfigureController(false);
+                        hangedTransform.t += ledgeGeometry.GetNormal(ledgeHook) * targetOffset;
+                        hangedTransform.q = hookRotation;
+
+                        // --- Require a transition ---
+                        ret = animationController.transition.StartTransition("WalkTransition", "DropDown",
+                            "WalkTransitionTrigger", "DropDownTrigger", ref contactTransform, ref hangedTransform);
+
+                        if (ret)
+                        {
+                            SetState(State.DropDown);
+                            // --- Turn off/on controller ---
+                            controller.ConfigureController(false);
+                        }
                     }
                 }
             }

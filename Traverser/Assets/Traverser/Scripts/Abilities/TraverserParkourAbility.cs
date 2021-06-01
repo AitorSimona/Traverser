@@ -207,6 +207,9 @@ namespace Traverser
                         break;
                     case TraverserParkourObject.TraverserParkourType.Tunnel:
 
+                        // --- End warp point should be at skeleton height ---
+                        targetTransform.t.y = controller.current.ground.ClosestPoint(targetTransform.t).y + (animationController.skeleton.transform.position.y - transform.position.y);
+
                         // --- Check if we are jogging or running and play appropriate transition ---
                         if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed) 
                             ret = animationController.transition.StartTransition("JogTransition", "SlideTunnelJog", "JogTransitionTrigger", "TunnelTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);

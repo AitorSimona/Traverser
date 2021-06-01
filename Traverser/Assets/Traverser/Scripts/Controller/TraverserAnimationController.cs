@@ -180,11 +180,11 @@ namespace Traverser
                 matchPosition.y = currentPosition.y;
 
                 // --- Compute distance to match position and velocity ---
-                Vector3 validPosition = matchPosition - (transform.forward * validDistance);
+                Vector3 validPosition = matchPosition /*- (transform.forward * validDistance)*/;
 
                 // --- A looped animation, one of the transition Animations, no root motion ---
                 Vector3 desiredDisplacement = validPosition - currentPosition;
-                Vector3 velocity = desiredDisplacement.normalized * controller.targetVelocity.magnitude;
+                Vector3 velocity = desiredDisplacement.normalized * Mathf.Max(controller.targetVelocity.magnitude, 1.0f);
                 float time = desiredDisplacement.magnitude / velocity.magnitude;
 
                 currentdeltaPosition = desiredDisplacement / time;
@@ -206,7 +206,7 @@ namespace Traverser
                 //matchPosition.y = currentPosition.y;
 
                 // --- Compute distance to match position and velocity ---
-                Vector3 validPosition = matchPosition + (transform.forward * validDistance); // Move out
+                Vector3 validPosition = matchPosition /*+ (transform.forward * validDistance)*/; // Move out
 
                 // --- A targetAnimation, we want to take profit of the animation's motion ---
                 Vector3 desiredDisplacement = validPosition - currentPosition;

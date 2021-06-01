@@ -77,7 +77,8 @@ namespace Traverser
 
         // --- Utility Methods ---
 
-        public bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, float transitionValidDistance, float targetValidDistance, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
+        public bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim,
+            float transitionValidDistance, float targetValidDistance, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
         {
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---

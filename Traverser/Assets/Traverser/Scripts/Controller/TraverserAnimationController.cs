@@ -175,22 +175,18 @@ namespace Traverser
             if (loop)
             {
                 Vector3 currentPosition = skeleton.transform.position;
-
                 // --- Prevent transition animations from warping Y ---
                 matchPosition.y = currentPosition.y;
 
-                // --- Compute distance to match position and velocity ---
-                Vector3 validPosition = matchPosition /*- (transform.forward * validDistance)*/;
-
                 // --- A looped animation, one of the transition Animations, no root motion ---
-                Vector3 desiredDisplacement = validPosition - currentPosition;
+                Vector3 desiredDisplacement = matchPosition - currentPosition;
                 Vector3 velocity = desiredDisplacement.normalized * Mathf.Max(controller.targetVelocity.magnitude, 1.0f);
                 float time = desiredDisplacement.magnitude / velocity.magnitude;
 
                 currentdeltaPosition = desiredDisplacement / time;
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / time);
 
-                if (Vector3.Distance(currentPosition, validPosition) < warpingValidDistance)
+                if (Vector3.Distance(currentPosition, matchPosition) < warpingValidDistance)
                 {
                     currentdeltaPosition = Vector3.zero;
                     transform.rotation = matchRotation; // force final rotation
@@ -203,19 +199,15 @@ namespace Traverser
             {
                 // --- In our target animation, we cover the Y distance ---
                 Vector3 currentPosition = skeleton.transform.position;               
-                //matchPosition.y = currentPosition.y;
-
-                // --- Compute distance to match position and velocity ---
-                Vector3 validPosition = matchPosition /*+ (transform.forward * validDistance)*/; // Move out
 
                 // --- A targetAnimation, we want to take profit of the animation's motion ---
-                Vector3 desiredDisplacement = validPosition - currentPosition;
-                desiredDisplacement.y = validPosition.y - bodyEndPosition.y;
+                Vector3 desiredDisplacement = matchPosition - currentPosition;
+                desiredDisplacement.y = matchPosition.y - bodyEndPosition.y;
                 
                 currentdeltaPosition = desiredDisplacement / targetWarpTime;
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / targetWarpTime);
 
-                if (Vector3.Distance(currentPosition, validPosition) < warpingValidDistance)
+                if (Vector3.Distance(currentPosition, matchPosition) < warpingValidDistance)
                 {
                     currentdeltaPosition = Vector3.zero;
                     transform.rotation = matchRotation; // force final rotation

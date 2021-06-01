@@ -140,6 +140,8 @@ namespace Traverser
                     {
                         if (isWarpOn && !isTargetAnimationON)                               
                             animationController.WarpToTarget(contactTransform.t, contactTransform.q, transitionValidDistance);
+                        //else if (isWarpOn)
+                        //    animationController.WarpToTarget(targetTransform.t, targetTransform.q, targetValidDistance);
 
                         ret = true;
                     }

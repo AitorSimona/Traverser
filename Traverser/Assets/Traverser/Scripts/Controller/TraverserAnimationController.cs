@@ -132,6 +132,10 @@ namespace Traverser
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
         }
 
+        bool start = true;
+        Vector3 endPos;
+        float timeT;
+        Vector3 previousMatchPosition;
 
         public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, float validDistance)
         {
@@ -142,6 +146,25 @@ namespace Traverser
 
             // --- Check whether we are in a transition or target animation ---
             bool loop = animator.GetCurrentAnimatorStateInfo(0).loop;
+
+            if (previousMatchPosition != matchPosition)
+                start = true;
+
+            if (!loop & start)
+            {
+                //GetPositionAtTime(1.0f, out endPos);
+                //endPos.x = matchPosition.x;
+                //endPos.z = matchPosition.z;
+                start = false;
+
+                timeT = animator.GetCurrentAnimatorStateInfo(0).length -
+                    (animator.GetCurrentAnimatorStateInfo(0).normalizedTime * animator.GetCurrentAnimatorStateInfo(0).length)
+                    - 0.25f;
+
+                previousMatchPosition = matchPosition;
+            }
+
+            
 
             // --- Compute delta position to be covered ---
             if (loop)
@@ -174,7 +197,7 @@ namespace Traverser
             else
             {
                 // --- In our target animation, we cover the Y distance ---
-                Vector3 currentPosition = skeleton.transform.position /*- (Vector3.up * (matchPosition.y - pos.y))*/;               
+                Vector3 currentPosition = skeleton.transform.position;               
                 matchPosition.y = currentPosition.y;
 
                 // --- Compute distance to match position and velocity ---
@@ -184,12 +207,12 @@ namespace Traverser
                 Vector3 desiredDisplacement = validPosition - currentPosition;
 
                 // For maximum time left precision we should take into account the exit transition time too 
-                float time = animator.GetCurrentAnimatorStateInfo(0).length - 
-                    (animator.GetCurrentAnimatorStateInfo(0).normalizedTime*animator.GetCurrentAnimatorStateInfo(0).length)
-                    ;
+                //float time = animator.GetCurrentAnimatorStateInfo(0).length - 
+                //    (animator.GetCurrentAnimatorStateInfo(0).normalizedTime*animator.GetCurrentAnimatorStateInfo(0).length)
+                //    ;
                 
-                currentdeltaPosition = desiredDisplacement / time;
-                currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / time);
+                currentdeltaPosition = desiredDisplacement / timeT;
+                currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / timeT);
 
                 if (Vector3.Distance(currentPosition, validPosition) < warpingValidDistance)
                 {
@@ -206,6 +229,18 @@ namespace Traverser
         public void SetRootMotion(bool rootMotion)
         {
             animator.applyRootMotion = rootMotion;
+        }
+
+        public void GetPositionAtTime(float normalizedTime, out Vector3 position)
+        {
+            // --- Samples current animation at the given normalized time (0.0f - 1.0f) ---
+            // --- Useful to know at what position will an animation end ---
+
+            SetRootMotion(true);
+            animator.SetTarget(AvatarTarget.Body, 1.0f);
+            animator.Update(0);
+            position = animator.targetPosition;
+            SetRootMotion(false);
         }
 
         private void OnDrawGizmosSelected()

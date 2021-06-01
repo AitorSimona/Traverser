@@ -19,7 +19,7 @@ namespace Traverser
         public float desiredCornerMinDistance;
 
         [Tooltip("The maximum distance the character will be able to cover when climbing to a ledge.")]
-        [Range(0.0f, 3.0f)]
+        [Range(0.0f, 5.0f)]
         public float maxClimbableHeight;
 
         [Header("Feet IK settings")]
@@ -211,12 +211,13 @@ namespace Traverser
                                 Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
 
                                 Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
-                                targetPosition.y = hookPosition.y - controller.capsuleHeight;
+                                targetPosition.y = hookPosition.y -
+                                    (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
                                 TraverserTransform target = TraverserTransform.Get(targetPosition, hookRotation);
 
                                 // --- Require a transition ---
                                 ret = animationController.transition.StartTransition("WalkTransition", "Mount",
-                                    "WalkTransitionTrigger", "MountTrigger", 1.0f, 0.1f,
+                                    "WalkTransitionTrigger", "MountTrigger", 1.25f, 0.5f,
                                     ref contactTransform,
                                     ref target);
 

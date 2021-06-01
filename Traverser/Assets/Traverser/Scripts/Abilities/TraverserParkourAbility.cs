@@ -160,9 +160,13 @@ namespace Traverser
                         {
                             target = controller.contactTransform.t;
                             target += -controller.contactNormal * 0.5f;
+                            target.y += (animationController.skeleton.transform.position.y - transform.position.y);
                         }
                         else
+                        {
                             targetTransform.q = transform.rotation;
+                            target.y += (animationController.skeleton.transform.position.y - transform.position.y);
+                        }
 
                         targetTransform.t = target;
 
@@ -170,23 +174,23 @@ namespace Traverser
                         if (speed <= walkSpeed)
                         {
                             if(!isDrop)
-                                ret = animationController.transition.StartTransition("WalkTransition", "ClimbPlatformWalk", "WalkTransitionTrigger", "PlatformClimbTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                                ret = animationController.transition.StartTransition("WalkTransition", "ClimbPlatformWalk", "WalkTransitionTrigger", "PlatformClimbTrigger", 1.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                             else
-                                ret = animationController.transition.StartTransition("WalkTransition", "DropPlatformWalk", "WalkTransitionTrigger", "PlatformDropTrigger", 1.5f, 0.5f, ref targetTransform, ref targetTransform);
+                                ret = animationController.transition.StartTransition("WalkTransition", "DropPlatformWalk", "WalkTransitionTrigger", "PlatformDropTrigger", 1.0f, 0.5f, ref targetTransform, ref targetTransform);
                         }
                         else if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
                         {
                             if (!isDrop)
-                                ret = animationController.transition.StartTransition("JogTransition", "ClimbPlatformJog", "JogTransitionTrigger", "PlatformClimbTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                                ret = animationController.transition.StartTransition("JogTransition", "ClimbPlatformJog", "JogTransitionTrigger", "PlatformClimbTrigger", 1.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                             else
-                                ret = animationController.transition.StartTransition("JogTransition", "DropPlatformJog", "JogTransitionTrigger", "PlatformDropTrigger", 1.5f, 0.5f, ref targetTransform, ref targetTransform);
+                                ret = animationController.transition.StartTransition("JogTransition", "DropPlatformJog", "JogTransitionTrigger", "PlatformDropTrigger", 1.0f, 0.5f, ref targetTransform, ref targetTransform);
                         }
                         else
                         {
                             if (!isDrop)
-                                ret = animationController.transition.StartTransition("RunTransition", "ClimbPlatformRun", "RunTransitionTrigger", "PlatformClimbTrigger", 2.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
+                                ret = animationController.transition.StartTransition("RunTransition", "ClimbPlatformRun", "RunTransitionTrigger", "PlatformClimbTrigger", 1.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
                             else
-                                ret = animationController.transition.StartTransition("RunTransition", "DropPlatformRun", "RunTransitionTrigger", "PlatformDropTrigger", 1.5f, 0.5f, ref targetTransform, ref targetTransform);
+                                ret = animationController.transition.StartTransition("RunTransition", "DropPlatformRun", "RunTransitionTrigger", "PlatformDropTrigger", 1.0f, 0.5f, ref targetTransform, ref targetTransform);
                         }
 
                         break;

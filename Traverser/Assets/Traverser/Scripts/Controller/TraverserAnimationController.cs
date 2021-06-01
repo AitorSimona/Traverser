@@ -65,6 +65,16 @@ namespace Traverser
         // --- Rotation that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Quaternion currentdeltaRotation;
 
+        // --- Simple way of making sure to only compute bodyEndPosition and targetWarpTime once  (at the beginning of target animation warping) ---
+        private bool warpStart = true;
+        private Vector3 previousMatchPosition;
+
+        // --- The position at which the skeleton will arrive at the end of the current animation (root motion) --- 
+        private Vector3 bodyEndPosition;
+
+        // --- Time left until animation end transition, the available time to apply warping ---
+        private float targetWarpTime;
+
 
         // --------------------------------
 
@@ -132,11 +142,6 @@ namespace Traverser
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
         }
 
-        bool start = true;
-        Vector3 endPos;
-        float timeT;
-        Vector3 previousMatchPosition;
-
         public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, float validDistance)
         {
             bool ret = true;
@@ -147,24 +152,24 @@ namespace Traverser
             // --- Check whether we are in a transition or target animation ---
             bool loop = animator.GetCurrentAnimatorStateInfo(0).loop;
 
+            // --- If a new warp has been issued, reset start variables ---
             if (previousMatchPosition != matchPosition)
-                start = true;
+                warpStart = true;
 
-            if (!loop & start)
+            // --- Compute bodyEndPosition and targetWarpTime once at the beginning of warping ---
+            if (!loop && warpStart)
             {
-                //GetPositionAtTime(1.0f, out endPos);
-                //endPos.x = matchPosition.x;
-                //endPos.z = matchPosition.z;
-                start = false;
-
-                timeT = animator.GetCurrentAnimatorStateInfo(0).length -
-                    (animator.GetCurrentAnimatorStateInfo(0).normalizedTime * animator.GetCurrentAnimatorStateInfo(0).length)
-                    - 0.25f;
-
+                warpStart = false;
                 previousMatchPosition = matchPosition;
-            }
 
-            
+                // --- Compute current target animation's final Y position ---
+                GetPositionAtTime(1.0f, out bodyEndPosition);
+
+                // --- Compute warping time (time left until animation end transition) ---
+                targetWarpTime = animator.GetCurrentAnimatorStateInfo(0).length  // total animation length
+                    - (animator.GetCurrentAnimatorStateInfo(0).normalizedTime * animator.GetCurrentAnimatorStateInfo(0).length) // start transition time
+                    - 0.25f; // end transition time
+            }        
 
             // --- Compute delta position to be covered ---
             if (loop)
@@ -198,21 +203,17 @@ namespace Traverser
             {
                 // --- In our target animation, we cover the Y distance ---
                 Vector3 currentPosition = skeleton.transform.position;               
-                matchPosition.y = currentPosition.y;
+                //matchPosition.y = currentPosition.y;
 
                 // --- Compute distance to match position and velocity ---
-                Vector3 validPosition = matchPosition + (transform.forward * validDistance);
+                Vector3 validPosition = matchPosition + (transform.forward * validDistance); // Move out
 
                 // --- A targetAnimation, we want to take profit of the animation's motion ---
                 Vector3 desiredDisplacement = validPosition - currentPosition;
-
-                // For maximum time left precision we should take into account the exit transition time too 
-                //float time = animator.GetCurrentAnimatorStateInfo(0).length - 
-                //    (animator.GetCurrentAnimatorStateInfo(0).normalizedTime*animator.GetCurrentAnimatorStateInfo(0).length)
-                //    ;
+                desiredDisplacement.y = validPosition.y - bodyEndPosition.y;
                 
-                currentdeltaPosition = desiredDisplacement / timeT;
-                currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / timeT);
+                currentdeltaPosition = desiredDisplacement / targetWarpTime;
+                currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / targetWarpTime);
 
                 if (Vector3.Distance(currentPosition, validPosition) < warpingValidDistance)
                 {

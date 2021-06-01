@@ -143,7 +143,7 @@ namespace Traverser
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
         }
 
-        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, float validDistance)
+        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation)
         {
             bool ret = true;
 

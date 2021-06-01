@@ -213,14 +213,12 @@ namespace Traverser
                                     (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
                                 TraverserTransform hangedTransform = TraverserTransform.Get(targetPosition, hookRotation);
 
-                                float transitionValidDistance = 1.0f;
-                                contactTransform.t -= transform.forward * transitionValidDistance;
+                                float transitionOffset = 1.0f;
+                                contactTransform.t -= transform.forward * transitionOffset;
            
                                 // --- Require a transition ---
                                 ret = animationController.transition.StartTransition("WalkTransition", "Mount",
-                                    "WalkTransitionTrigger", "MountTrigger", 1.25f, 0.5f,
-                                    ref contactTransform,
-                                    ref hangedTransform);
+                                    "WalkTransitionTrigger", "MountTrigger", ref contactTransform, ref hangedTransform);
 
                                 // --- If transition start is successful, change state ---
                                 if (ret)
@@ -258,22 +256,20 @@ namespace Traverser
                     hookPosition.y += (animationController.skeleton.transform.position.y - transform.position.y);
                     Quaternion hookRotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ledgeHook), transform.up);
 
-                    float transitionValidDistance = 0.5f;
+                    float transitionOffset = 0.5f;
                     TraverserTransform contactTransform = TraverserTransform.Get(hookPosition, hookRotation);
-                    contactTransform.t -= transform.forward * transitionValidDistance;
+                    contactTransform.t -= transform.forward * transitionOffset;
 
-                    float targetValidDistance = 0.25f;
+                    float targetOffset = 0.25f;
                     TraverserTransform hangedTransform = GetHangedTransform();
-                    hangedTransform.t += ledgeGeometry.GetNormal(ledgeHook) * targetValidDistance;
+                    hangedTransform.t += ledgeGeometry.GetNormal(ledgeHook) * targetOffset;
                     hangedTransform.q = hookRotation;
 
                     //GameObject.Find("dummy2").transform.position = hangedTransform.t;
 
                     // --- Require a transition ---
                     ret = animationController.transition.StartTransition("WalkTransition", "DropDown",
-                        "WalkTransitionTrigger", "DropDownTrigger", 0.25f, 0.5f,
-                        ref contactTransform,
-                        ref hangedTransform);
+                        "WalkTransitionTrigger", "DropDownTrigger", ref contactTransform, ref hangedTransform);
 
                     if (ret)
                     {

@@ -344,14 +344,14 @@ namespace Traverser
         }
 
         private bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, 
-            float contactValidDistance, float targetValidDistance, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
+            float contactOffset, float targetOffset, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
         {
             // --- Apply offsets to warp points ---
-            contactTransform.t -= (transform.forward * contactValidDistance);
-            targetTransform.t += (transform.forward * targetValidDistance);
+            contactTransform.t -= (transform.forward * contactOffset);
+            targetTransform.t += (transform.forward * targetOffset);
 
             return animationController.transition.StartTransition(transitionAnim, targetAnim, triggerTransitionAnim, triggerTargetAnim, 
-                contactValidDistance, targetValidDistance, ref contactTransform, ref targetTransform);
+                ref contactTransform, ref targetTransform);
         }
 
         // -------------------------------------------------

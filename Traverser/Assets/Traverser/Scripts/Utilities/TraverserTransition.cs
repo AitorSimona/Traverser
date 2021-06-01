@@ -25,15 +25,6 @@ namespace Traverser
         // --- The desired animator trigger to activate for transition / target animations ---
         private string triggerAnimation;
 
-        // --- Distance at which motion warping will be considered complete, for transitionAnimation warping ---
-        private float transitionValidDistance = 0.0f;
-
-        // --- Distance at which motion warping will be considered complete, for targetAnimation warping ---
-        private float targetValidDistance = 0.0f;
-
-        // --- Indicates how much importance we give to position and rotation warping ---
-        MatchTargetWeightMask weightMask; 
-
         // --- Transform in space we have to reach playing transitionAnimation ---
         private TraverserTransform contactTransform;
 
@@ -42,7 +33,6 @@ namespace Traverser
 
         // --- Indicates if transition handler is currently warping ---
         private bool isWarpOn = false;
-
 
         // --- Indicates if transition handler is currently playing ---
         public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }
@@ -70,7 +60,6 @@ namespace Traverser
         {
             animationController = _animationController;
             controller = _controller;
-            weightMask = new MatchTargetWeightMask(Vector3.one, 1.0f);
         }
 
         // --------------------------------
@@ -78,7 +67,7 @@ namespace Traverser
         // --- Utility Methods ---
 
         public bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim,
-            float transitionValidDistance, float targetValidDistance, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
+            ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
         {
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---
@@ -103,8 +92,6 @@ namespace Traverser
                 triggerAnimation = triggerTargetAnim;
                 animationController.animator.SetTrigger(triggerTransitionAnim);
                 isTransitionAnimationON = true;
-                this.transitionValidDistance = transitionValidDistance;
-                this.targetValidDistance = targetValidDistance;
                 this.targetTransform = targetTransform;
                 this.contactTransform = contactTransform;
 
@@ -140,7 +127,7 @@ namespace Traverser
                     else
                     {
                         if (isWarpOn && !isTargetAnimationON)                               
-                            animationController.WarpToTarget(contactTransform.t, contactTransform.q, transitionValidDistance);
+                            animationController.WarpToTarget(contactTransform.t, contactTransform.q);
                         //else if (isWarpOn)
                         //    animationController.WarpToTarget(targetTransform.t, targetTransform.q, targetValidDistance);
 
@@ -155,7 +142,7 @@ namespace Traverser
                     {
                         // --- Use target matching (motion warping) to reach the contact transform as the transitionAnimation plays ---
                         if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionAnimation))
-                            isTransitionAnimationON = animationController.WarpToTarget(contactTransform.t, contactTransform.q, transitionValidDistance);
+                            isTransitionAnimationON = animationController.WarpToTarget(contactTransform.t, contactTransform.q);
 
                         // --- When we reach the contact point, activate targetAnimation ---
                         if (!isTransitionAnimationON)
@@ -173,7 +160,7 @@ namespace Traverser
                     {
                         // --- Use motion warping to reach the target transform as the targetAnimation plays ---
                         if (isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, targetValidDistance);
+                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q);
 
                         // --- If current state does not have a valid exit transition, return control ---
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)

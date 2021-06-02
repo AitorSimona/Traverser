@@ -248,8 +248,6 @@ namespace Traverser
                 // --- If collider exists and it is a climbable object ---
                 if (collider && collider.GetComponent<TraverserClimbingObject>())
                 {
-                    //Debug.Log(collider.name);
-
                     ledgeGeometry.Initialize(collider);
                     ledgeHook = ledgeGeometry.GetHook(controller.previous.position);
                     Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
@@ -267,6 +265,7 @@ namespace Traverser
                     if (!Physics.CheckCapsule(hangedTransform.t, hangedTransform.t + Vector3.up * controller.capsuleHeight, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask))
                     {
                         hangedTransform.t += ledgeGeometry.GetNormal(ledgeHook) * targetOffset;
+                        hangedTransform.t.y += (animationController.skeleton.transform.position.y - transform.position.y);
                         hangedTransform.q = hookRotation;
 
                         // --- Require a transition ---

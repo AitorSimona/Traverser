@@ -115,6 +115,7 @@ namespace Traverser
 
                     // --- Update time ---
                     targetWarpTime -= Time.deltaTime;
+                    targetWarpTime = Mathf.Max(targetWarpTime, 0.1f);
                 }
 
          

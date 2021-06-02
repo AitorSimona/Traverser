@@ -75,6 +75,9 @@ namespace Traverser
         // --- Time left until animation end transition, the available time to apply warping ---
         private float targetWarpTime;
 
+        // --- The distance in Y we need to warp --- 
+        private float targetYWarp;
+
 
         // --------------------------------
 
@@ -114,8 +117,8 @@ namespace Traverser
                     transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
                     transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
 
-                    // --- Update time ---
-                    YWarp -= transform.position.y - previousY;
+                    // --- Update time and Y warping ---
+                    targetYWarp -= transform.position.y - previousY;
                     targetWarpTime -= Time.deltaTime;
                     targetWarpTime = Mathf.Max(targetWarpTime, 0.1f);
                 }
@@ -148,7 +151,6 @@ namespace Traverser
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
         }
 
-        float YWarp;
         public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation)
         {
             bool ret = true;
@@ -169,17 +171,18 @@ namespace Traverser
                 warpStart = false;
                 previousMatchPosition = matchPosition;
 
-                // --- Compute current target animation's final Y position ---
+                // --- Compute current target animation's final position (root motion) ---
                 GetPositionAtTime(1.0f, out bodyEndPosition);
 
-                // --- Compute warping time (time left until animation end transition) ---
+                // --- Compute warping time (time left until animation end) ---
                 targetWarpTime = animator.GetCurrentAnimatorStateInfo(0).length  // total animation length
                     - (animator.GetCurrentAnimatorStateInfo(0).normalizedTime * animator.GetCurrentAnimatorStateInfo(0).length) // start transition time
-                    ; // end transition time
+                    ; // end transition time ?
 
-                targetWarpTime = Mathf.Max(targetWarpTime, 0.1f);
+                targetWarpTime = Mathf.Max(targetWarpTime, 0.001f);
 
-                YWarp = matchPosition.y - bodyEndPosition.y;
+                // --- Compute difference between root motion's target Y and our target Y ---   
+                targetYWarp = matchPosition.y - bodyEndPosition.y;
             }
 
             // --- Compute delta position to be covered ---
@@ -216,11 +219,8 @@ namespace Traverser
                 // --- A targetAnimation, we want to take profit of the animation's motion ---
                 Vector3 desiredDisplacement = validPosition - currentPosition;
 
-                desiredDisplacement.y = YWarp;
-                currentdeltaPosition = desiredDisplacement / targetWarpTime;
-
-                //GameObject.Find("dummy2").transform.position = validPosition;
-             
+                desiredDisplacement.y = targetYWarp;
+                currentdeltaPosition = desiredDisplacement / targetWarpTime;             
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / targetWarpTime);
           
                 if (Vector3.Distance(currentPosition, matchPosition) < warpingValidDistance)

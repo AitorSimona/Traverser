@@ -3673,8 +3673,16 @@ PrefabInstance:
       propertyPath: rotationAcceleration
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: movementDecelerationRatio
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137952, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137954, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: debugDraw
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137954, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
@@ -3874,11 +3882,9 @@ MonoBehaviour:
   walkSpeed: 1
   jogSpeed: 3.9
   runSpeed: 5.5
-  movementSpeedMin: 0.1
   movementAcceleration: 50
   movementAccelerationTime: 0.1
-  movementDecelerationTime: 0.75
-  movementDecelerationRatio: 0.5
+  movementDecelerationRatio: 0.75
   jogSpeedTime: 0.75
   runSpeedTime: 1.5
   rotationSpeed: 270
@@ -7531,11 +7537,9 @@ MonoBehaviour:
   walkSpeed: 1
   jogSpeed: 3.9
   runSpeed: 5.5
-  movementSpeedMin: 0.1
   movementAcceleration: 50
   movementAccelerationTime: 0.1
-  movementDecelerationTime: 0.75
-  movementDecelerationRatio: 0.5
+  movementDecelerationRatio: 0.75
   jogSpeedTime: 0.75
   runSpeedTime: 1.5
   rotationSpeed: 270

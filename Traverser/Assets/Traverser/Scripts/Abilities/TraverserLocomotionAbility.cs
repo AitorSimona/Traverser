@@ -23,9 +23,9 @@ namespace Traverser
         [Range(0.0f, 6.0f)]
         public float runSpeed = 5.5f;
 
-        [Tooltip("Character won't move if below this speed.")]
-        [Range(0.0f, 10.0f)]
-        public float movementSpeedMin = 0.1f;
+        //[Tooltip("Character won't move if below this speed.")]
+        //[Range(0.0f, 10.0f)]
+        //public float movementSpeedMin = 0.1f;
 
         [Tooltip("How fast the character's speed will increase with given input in m/s^2.")]
         public float movementAcceleration = 50.0f;
@@ -34,9 +34,9 @@ namespace Traverser
         [Range(0.1f, 5.0f)]
         public float movementAccelerationTime = 0.1f;
 
-        [Tooltip("How fast the character decreases movementSpeed. Smaller values make the character reach target movementSpeed slower. Can't be 0.")]
+        [Tooltip("How fast the character decreases movementSpeed. Smaller values make the character reach target movementSpeed slower.")]
         [Range(0.1f, 5.0f)]
-        public float movementDecelerationTime = 0.75f;
+        public float movementDecelerationRatio = 0.75f;
 
         [Tooltip("How fast the character reaches its desired jog movement speed in seconds. Smaller values make character reach jogSpeed slower")]
         [Range(0.1f, 5.0f)]
@@ -54,7 +54,7 @@ namespace Traverser
         [Tooltip("How fast the character's rotation speed will increase with given input in degrees/s^2.")]
         public float rotationAcceleration = 15.0f; 
 
-        [Tooltip("How fast the character achieves rotationAcceleration. Smaller values make the character reach target rotationAcceleration faster.")]
+        [Tooltip("How fast the character achieves rotationAcceleration. Smaller values make the character reach target rotationAcceleration faster. Can't be 0.")]
         [Range(0.1f, 5.0f)]
         public float rotationAccelerationTime = 0.1f;
 
@@ -200,9 +200,9 @@ namespace Traverser
             // --- Compute desired speed ---
             float speed = GetDesiredSpeed(deltaTime);
 
-            // --- Don't move if below minimum speed ---
-            if (speed < movementSpeedMin)
-                speed = 0.0f;
+            //// --- Don't move if below minimum speed ---
+            //if (speed < movementSpeedMin)
+            //    speed = 0.0f;
 
             // --- Rotate controller ---
             controller.Rotate(currentRotationSpeed * deltaTime);
@@ -362,7 +362,7 @@ namespace Traverser
                 previousMovementIntensity = moveIntensity; 
 
                 // --- We use movementDecelerationTime to decelerate, bigger value makes decelerating a longer task ---
-                movementDecelerationTimer -= movementDecelerationTime * deltaTime;
+                movementDecelerationTimer -= movementDecelerationRatio * deltaTime;
             }
             // --- Update timer if accelerating/constant acceleration ---
             else

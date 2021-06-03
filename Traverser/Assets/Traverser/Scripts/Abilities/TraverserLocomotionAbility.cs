@@ -30,19 +30,20 @@ namespace Traverser
         [Tooltip("How fast the character's speed will increase with given input in m/s^2.")]
         public float movementAcceleration = 50.0f;
 
-        [Tooltip("How fast the character achieves movementAcceleration. Smaller values make the character reach target movementAcceleration faster.")]
+        [Tooltip("How fast the character achieves movementAcceleration. Smaller values make the character reach target movementAcceleration faster. Can't be 0.")]
+        [Range(0.1f, 5.0f)]
         public float movementAccelerationTime = 0.1f;
 
-        [Tooltip("How fast the character decreases movementSpeed. Smaller values make the character reach target movementSpeed slower.")]
+        [Tooltip("How fast the character decreases movementSpeed. Smaller values make the character reach target movementSpeed slower. Can't be 0.")]
+        [Range(0.1f, 5.0f)]
         public float movementDecelerationTime = 0.75f;
 
-        [Tooltip("How much current speed impacts deceleration. Smaller values will make a running character decelerate slower.")]
-        public float movementDecelerationRatio = 0.5f;
-
         [Tooltip("How fast the character reaches its desired jog movement speed in seconds. Smaller values make character reach jogSpeed slower")]
+        [Range(0.1f, 5.0f)]
         public float jogSpeedTime = 0.75f;
 
         [Tooltip("How fast the character reaches its desired run speed (and decelerates to slow) in seconds. Smaller values make character reach runSpeed and decelerate to jogSpeed slower.")]
+        [Range(0.1f, 5.0f)]
         public float runSpeedTime = 1.5f;
 
 
@@ -54,6 +55,7 @@ namespace Traverser
         public float rotationAcceleration = 15.0f; 
 
         [Tooltip("How fast the character achieves rotationAcceleration. Smaller values make the character reach target rotationAcceleration faster.")]
+        [Range(0.1f, 5.0f)]
         public float rotationAccelerationTime = 0.1f;
 
         [Tooltip("Speed will be multiplied by this value when turning around (heading above rotationSpeedToTurn and movement speed below movementSpeedNoTurn). Used for keeping character in place when turning around")]
@@ -345,6 +347,7 @@ namespace Traverser
             // --- Compute desired movement intensity given input and timer ---
             float moveIntensity = TraverserInputLayer.GetMoveIntensity();
 
+
             // --- Cap timer, reset previous movement intensity ---
             if (movementDecelerationTimer < 0.0f)
             {
@@ -356,9 +359,10 @@ namespace Traverser
             if (moveIntensity < previousMovementIntensity)
             {
                 moveIntensity = movementDecelerationTimer;
-                previousMovementIntensity = moveIntensity + 0.01f; 
-                // --- We use movementDecelerationTime and our previous speed to decelerate, bigger previous speed makes decelerating a longer task ---
-                movementDecelerationTimer -= (movementDecelerationTime - previousMovementIntensity*movementDecelerationRatio) * deltaTime;
+                previousMovementIntensity = moveIntensity; 
+
+                // --- We use movementDecelerationTime to decelerate, bigger value makes decelerating a longer task ---
+                movementDecelerationTimer -= movementDecelerationTime * deltaTime;
             }
             // --- Update timer if accelerating/constant acceleration ---
             else
@@ -366,6 +370,8 @@ namespace Traverser
                 movementDecelerationTimer = moveIntensity;
                 previousMovementIntensity = moveIntensity;
             }
+            Debug.Log(moveIntensity);
+
 
             return moveIntensity;
         }

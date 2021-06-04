@@ -29,7 +29,7 @@ namespace Traverser
             animationController.InitializeAnimatorParameters(ref animatorParameters);
         }
 
-        // MYTODO: Order of update is important, it would be wise to add a priority to abilities,
+        // MYTODO: If order of update is important, it would be wise to add a priority to abilities,
         // instead of following the arbitrary order in which they were added as components
 
         public void Update()
@@ -94,7 +94,7 @@ namespace Traverser
             }
         }
 
-        // MYTODO: Order of update is important, it would be wise to add a priority to abilities,
+        // MYTODO: If order of update is important, it would be wise to add a priority to abilities,
         // instead of following the arbitrary order in which they were added as components
 
         private void FixedUpdate()

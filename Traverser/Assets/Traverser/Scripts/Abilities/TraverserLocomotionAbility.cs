@@ -451,8 +451,6 @@ namespace Traverser
             // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
 
             RaycastHit hit;
-            //Vector3 rayOrigin;
-            //Vector3 rayDirection;
 
             // --- Left foot ---
             animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));

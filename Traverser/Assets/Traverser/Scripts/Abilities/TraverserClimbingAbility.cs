@@ -298,11 +298,6 @@ namespace Traverser
             {
                 SetState(State.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
-
-                //TraverserTransform hangedTransform = GetHangedTransform();
-
-                //controller.TeleportTo(hangedTransform.t);
-                //transform.rotation = hangedTransform.q;
             }
         }
 
@@ -312,6 +307,7 @@ namespace Traverser
             {
                 animationController.fakeTransition = false;
                 SetState(State.Suspended);
+
                 // --- Get skeleton's current position and teleport controller ---
                 Vector3 newTransform = animationController.skeleton.transform.position;
                 newTransform.y -= controller.capsuleHeight / 2.0f;
@@ -327,6 +323,7 @@ namespace Traverser
             {
                 animationController.fakeTransition = false;
                 SetState(State.Suspended);
+
                 // --- Get skeleton's current position and teleport controller ---
                 Vector3 newTransform = animationController.skeleton.transform.position;
                 newTransform.y -= controller.capsuleHeight / 2.0f;
@@ -393,15 +390,7 @@ namespace Traverser
                     animationController.animator.Play("LedgeLeft", 0, 0.0f);
                 else if (desiredState == ClimbingState.CornerRight)
                 {
-                    // --- Leaving this here for reference, I just could not get the unity way of getting
-                    // --- the position at the last frame working... Always got the current position... ---
-                    //animationController.SetRootMotion(true);
-                    //animationController.animator.Play("LedgeCornerRight", 0, 0.0f);
-                    //animationController.animator.Update(1.0f);
-                    //Vector3 position = animationController.animator.targetPosition;
-                    //animationController.SetRootMotion(false);
-
-                    // TODO: USE ANIMATION CONTROLLER'S NEW FUNCTIONALITY
+                    // TODO: USE ANIMATION CONTROLLER'S NEW FUNCTIONALITY (end position)
 
                     // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
                     Vector3 position = transform.position;
@@ -650,8 +639,6 @@ namespace Traverser
                     handPosition -= transform.forward * handLength;
                     handPosition.y = ledgeGeometry.vertices[0].y + handIKYDistance;
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
-
-                    GameObject.Find("dummy2").transform.position = handPosition;
                 }
             }
         }

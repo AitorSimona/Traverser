@@ -99,7 +99,6 @@ namespace Traverser
             currentGroundSnap = groundSnap;
             currentGravity = gravityEnabled;
 
-            // TODO: NEEDED? performance hit
             if (characterController.detectCollisions)
                 CheckGroundCollision();
 

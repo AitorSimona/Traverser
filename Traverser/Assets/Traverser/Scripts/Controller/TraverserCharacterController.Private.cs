@@ -340,7 +340,6 @@ namespace Traverser
                 contactNormal = hit.normal;
                 contactTransform.t = hit.point;
                 contactTransform.t.y = hit.collider.bounds.center.y + hit.collider.bounds.extents.y;
-                //contactTransform.q = transform.rotation * Quaternion.FromToRotation(-transform.forward, hit.normal);
                 contactTransform.q = Quaternion.LookRotation((contactTransform.t - contactNormal*contactSize) - contactTransform.t, hit.transform.up);
                 state.currentCollision.colliderContactPoint = hit.point;
                 state.currentCollision.colliderContactNormal = hit.normal;

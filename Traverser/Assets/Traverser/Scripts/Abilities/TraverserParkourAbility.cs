@@ -286,7 +286,7 @@ namespace Traverser
                 {
                     contactTransform = targetTransform;
                     ret = StartTransition("RunTransition", "DropPlatformRun", "RunTransitionTrigger",
-                        "PlatformDropTrigger", 1.0f, 0.1f, ref contactTransform, ref targetTransform);
+                        "PlatformDropTrigger", 1.5f, 0.1f, ref contactTransform, ref targetTransform);
                 }
             }
 

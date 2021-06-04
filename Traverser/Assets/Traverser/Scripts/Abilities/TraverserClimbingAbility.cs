@@ -299,10 +299,10 @@ namespace Traverser
                 SetState(State.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
 
-                TraverserTransform hangedTransform = GetHangedTransform();
+                //TraverserTransform hangedTransform = GetHangedTransform();
 
-                controller.TeleportTo(hangedTransform.t);
-                transform.rotation = hangedTransform.q;
+                //controller.TeleportTo(hangedTransform.t);
+                //transform.rotation = hangedTransform.q;
             }
         }
 
@@ -578,6 +578,10 @@ namespace Traverser
             if (!abilityController.isCurrent(this) || climbingState == ClimbingState.None)
                 return;
 
+            // --- Ensure IK is not activated during a transition between two differently placed animations (mount-idle bug) ---
+            if (animationController.animator.IsInTransition(0))
+                return;
+
             // --- Set weights to 0 and return if IK is off ---
             if (!fIKOn)
             {
@@ -607,7 +611,7 @@ namespace Traverser
                 // --- Right foot ---
                 if (weight > 0.0f)
                 {
-                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, weight);
                     Vector3 footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot)));
                     footPosition -= transform.forward * footLength;
                     footPosition.y = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot).y;
@@ -629,7 +633,7 @@ namespace Traverser
                 // --- Left hand ---
                 if (weight > 0.0f)
                 {
-                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, animationController.animator.GetFloat("IKLeftHandWeight"));
+                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, weight);
                     Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand)));
                     handPosition -= transform.forward * handLength;
                     handPosition.y = ledgeGeometry.vertices[0].y + handIKYDistance;
@@ -641,11 +645,13 @@ namespace Traverser
                 // --- Right hand ---
                 if (weight > 0.0f)
                 {
-                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, animationController.animator.GetFloat("IKRightHandWeight"));
+                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, weight);
                     Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightHand)));
                     handPosition -= transform.forward * handLength;
                     handPosition.y = ledgeGeometry.vertices[0].y + handIKYDistance;
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
+
+                    GameObject.Find("dummy2").transform.position = handPosition;
                 }
             }
         }

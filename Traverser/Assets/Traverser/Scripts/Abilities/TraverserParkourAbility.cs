@@ -301,7 +301,7 @@ namespace Traverser
             if (speed <= locomotionAbility.walkSpeed)
             {
                 ret = StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger",
-                    "LedgeTrigger", 0.5f, 0.5f, ref contactTransform, ref targetTransform);
+                    "LedgeTrigger", 0.75f, 0.5f, ref contactTransform, ref targetTransform);
             }
             else if (speed <= locomotionAbility.jogSpeed + 0.1 && speed >= locomotionAbility.walkSpeed)
             {

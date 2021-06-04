@@ -31,6 +31,9 @@ namespace Traverser
         // --- Ray for feet IK checks ---
         private Ray IKRay;
 
+        // --- Default delta/epsilon used for parkour speed checks ---
+        private float epsilon = 0.001f;
+
         // -------------------------------------------------
 
         // --- Basic Methods ---
@@ -205,12 +208,12 @@ namespace Traverser
             float speed = Vector3.Magnitude(controller.targetVelocity);
 
             // --- Check if we are jogging or running and play appropriate transition ---
-            if (speed <= locomotionAbility.jogSpeed + 0.1 && speed >= locomotionAbility.walkSpeed)
+            if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
             {
                 ret = StartTransition("JogTransition", "VaultTableJog", "JogTransitionTrigger",
                     "TableTrigger", 1.0f, 1.0f, ref contactTransform, ref targetTransform);
             }
-            else if (speed > locomotionAbility.jogSpeed + 0.1)
+            else if (speed > locomotionAbility.jogSpeed + epsilon)
             {
                 ret = StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger",
                     "TableTrigger", 1.5f, 1.0f, ref contactTransform, ref targetTransform);
@@ -258,7 +261,7 @@ namespace Traverser
                         "PlatformDropTrigger", 1.0f, 0.1f, ref contactTransform, ref targetTransform);
                 }
             }
-            else if (speed <= locomotionAbility.jogSpeed + 0.1 && speed >= locomotionAbility.walkSpeed)
+            else if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
             {
                 if (!isDrop)
                 {
@@ -303,7 +306,7 @@ namespace Traverser
                 ret = StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger",
                     "LedgeTrigger", 0.75f, 0.5f, ref contactTransform, ref targetTransform);
             }
-            else if (speed <= locomotionAbility.jogSpeed + 0.1 && speed >= locomotionAbility.walkSpeed)
+            else if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
             {
                 ret = StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger",
                     "LedgeTrigger", 1.0f, 0.25f, ref contactTransform, ref targetTransform);
@@ -329,12 +332,12 @@ namespace Traverser
                 + (animationController.skeleton.transform.position.y - transform.position.y);
 
             // --- Check if we are jogging or running and play appropriate transition ---
-            if (speed <= locomotionAbility.jogSpeed + 0.1 && speed >= locomotionAbility.walkSpeed)
+            if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
             {
                 ret = StartTransition("JogTransition", "SlideTunnelJog", "JogTransitionTrigger",
                     "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform);
             }
-            else if (speed > locomotionAbility.jogSpeed + 0.1)
+            else if (speed > locomotionAbility.jogSpeed + epsilon)
             {
                 ret = StartTransition("RunTransition", "SlideTunnelRun", "RunTransitionTrigger",
                     "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform);

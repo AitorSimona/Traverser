@@ -216,7 +216,7 @@ namespace Traverser
             else if (speed > locomotionAbility.jogSpeed + epsilon)
             {
                 ret = StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger",
-                    "TableTrigger", 1.5f, 1.0f, ref contactTransform, ref targetTransform);
+                    "TableTrigger", 1.75f, 1.0f, ref contactTransform, ref targetTransform);
             }
 
             return ret;

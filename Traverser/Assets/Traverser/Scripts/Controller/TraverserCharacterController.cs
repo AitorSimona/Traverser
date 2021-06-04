@@ -180,7 +180,7 @@ namespace Traverser
             UpdateMovement(deltaTime);
 
             // --- If speed value drops to nearly zero, but not 0, force it to zero ---
-            if (Vector3.Magnitude(state.currentCollision.velocity) < Vector3.one.magnitude/10.0f)
+            if (Mathf.Approximately(state.currentCollision.velocity.magnitude, 0.0f))
                 state.currentCollision.velocity = Vector3.zero;
 
             // --- If on simulation's first tick, store position ---

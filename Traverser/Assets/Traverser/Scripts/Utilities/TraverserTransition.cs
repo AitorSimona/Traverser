@@ -10,6 +10,14 @@ namespace Traverser
 
         // --------------------------------
 
+        // --- Indicates if transition handler is currently playing ---
+        public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }
+
+        // --- Indicates if transition handler is currently warping ---
+        public bool isWarping { get => isWarpOn; }
+
+        // --- Private Variables ---
+
         // --- Indicates if we are playing the specified transitionAnimation ---
         private bool isTransitionAnimationON = false;
 
@@ -34,11 +42,9 @@ namespace Traverser
         // --- Indicates if transition handler is currently warping ---
         private bool isWarpOn = false;
 
-        // --- Indicates if transition handler is currently playing ---
-        public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }
+        // --- Whether or not the warper will cover Y distances ---
+        private bool warpY = true;
 
-        // --- Indicates if transition handler is currently warping ---
-        public bool isWarping { get => isWarpOn; }
 
         // --------------------------------
 
@@ -67,7 +73,7 @@ namespace Traverser
         // --- Utility Methods ---
 
         public bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim,
-            ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
+            ref TraverserTransform contactTransform, ref TraverserTransform targetTransform, bool warpY = true)
         {
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---
@@ -94,6 +100,7 @@ namespace Traverser
                 isTransitionAnimationON = true;
                 this.targetTransform = targetTransform;
                 this.contactTransform = contactTransform;
+                this.warpY = warpY;
 
                 return true;
             }
@@ -160,7 +167,7 @@ namespace Traverser
                     {
                         // --- Use motion warping to reach the target transform as the targetAnimation plays ---
                         if (isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q);
+                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, warpY);
 
                         // --- If current state does not have a valid exit transition, return control ---
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)

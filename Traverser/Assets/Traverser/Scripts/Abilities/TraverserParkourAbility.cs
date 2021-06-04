@@ -335,26 +335,26 @@ namespace Traverser
             if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
             {
                 ret = StartTransition("JogTransition", "SlideTunnelJog", "JogTransitionTrigger",
-                    "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform);
+                    "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform, false);
             }
             else if (speed > locomotionAbility.jogSpeed + epsilon)
             {
                 ret = StartTransition("RunTransition", "SlideTunnelRun", "RunTransitionTrigger",
-                    "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform);
+                    "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform, false);
             }
 
             return ret;
         }
 
         private bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, 
-            float contactOffset, float targetOffset, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
+            float contactOffset, float targetOffset, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform, bool warpY = true)
         {
             // --- Apply offsets to warp points ---
             contactTransform.t -= (transform.forward * contactOffset);
             targetTransform.t += (transform.forward * targetOffset);
 
             return animationController.transition.StartTransition(transitionAnim, targetAnim, triggerTransitionAnim, triggerTargetAnim, 
-                ref contactTransform, ref targetTransform);
+                ref contactTransform, ref targetTransform, warpY);
         }
 
         // -------------------------------------------------

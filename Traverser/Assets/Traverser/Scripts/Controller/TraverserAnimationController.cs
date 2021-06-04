@@ -151,7 +151,7 @@ namespace Traverser
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
         }
 
-        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation)
+        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, bool warpY = true)
         {
             bool ret = true;
 
@@ -219,7 +219,11 @@ namespace Traverser
                 // --- A targetAnimation, we want to take profit of the animation's motion ---
                 Vector3 desiredDisplacement = validPosition - currentPosition;
 
-                desiredDisplacement.y = targetYWarp;
+                if (warpY)
+                    desiredDisplacement.y = targetYWarp;
+                else
+                    matchPosition.y = currentPosition.y;
+
                 currentdeltaPosition = desiredDisplacement / targetWarpTime;             
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / targetWarpTime);
           

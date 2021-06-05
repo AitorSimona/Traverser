@@ -205,9 +205,14 @@ namespace Traverser
 
             // --- Compute desired displacement ---
             Vector3 camForward = camera.forward;
+            Vector3 camRight = camera.right;
+
             camForward.y = 0.0f;
-            Vector3 finalDisplacement = camForward * speed;
-            currentVelocity = finalDisplacement.normalized;
+            currentVelocity = TraverserInputLayer.capture.stickHorizontal * camRight
+                + TraverserInputLayer.capture.stickVertical * camForward;
+
+            Vector3 finalDisplacement = currentVelocity.normalized * speed;
+            //currentVelocity = finalDisplacement.normalized;
             finalDisplacement *= deltaTime;
 
             UpdateRotation();

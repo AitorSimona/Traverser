@@ -81,6 +81,8 @@ namespace Traverser
                 speed.x = controller.targetVelocity.x;
                 speed.y = controller.targetVelocity.z;
 
+                // TODO: Should we interpolate these values?
+
                 animatorParameters.Speed = speed.magnitude;
                 animatorParameters.Heading = controller.targetHeading;
                 animationController.UpdateAnimator(ref animatorParameters);
@@ -91,6 +93,8 @@ namespace Traverser
             {
                 controller.ForceMove(Vector3.Lerp(transform.position, transform.position + controller.targetDisplacement, Time.deltaTime / Time.fixedDeltaTime));
                 controller.ForceRotate(Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.AngleAxis(controller.targetHeading, Vector3.up), Time.deltaTime / Time.fixedDeltaTime));
+
+                //Debug.Log(Time.deltaTime / Time.fixedDeltaTime);
             }
         }
 

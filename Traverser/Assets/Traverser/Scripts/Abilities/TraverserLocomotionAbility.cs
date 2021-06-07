@@ -14,6 +14,10 @@ namespace Traverser
         [Tooltip("A reference to the character's camera to adapt movement.")]
         public Transform camera;
 
+        [Tooltip("If below this value, do not update velocity as this would stop the character immediately.")]
+        [Range(0.0f, 0.1f)]
+        public float minimumInputIntensity = 0.1f;
+
         [Tooltip("Desired speed in meters per second for walk movement.")]
         [Range(0.0f, 1.5f)]
         public float walkSpeed = 1.0f;
@@ -25,13 +29,6 @@ namespace Traverser
         [Tooltip("Desired speed in meters per second for run movement.")]
         [Range(0.0f, 6.0f)]
         public float runSpeed = 5.5f;
-
-        [Tooltip("How fast the character's speed will increase with given input in m/s^2.")]
-        public float movementAcceleration = 50.0f;
-
-        [Tooltip("How fast the character achieves movementAcceleration. Smaller values make the character reach target movementAcceleration faster. Can't be 0.")]
-        [Range(0.1f, 5.0f)]
-        public float movementAccelerationTime = 0.1f;
 
         [Tooltip("How fast the character decreases movementSpeed. Smaller values make the character reach target movementSpeed slower.")]
         [Range(0.1f, 5.0f)]
@@ -192,35 +189,39 @@ namespace Traverser
             // --- Preserve pre-simulation transform ---
             TraverserTransform tmp = TraverserTransform.Get(transform.position, transform.rotation);
 
-            // --- Update current velocity and rotation ---
-
             // --- Compute desired speed ---
             float speed = GetDesiredSpeed(deltaTime);
 
-
-
             // --- Speed damping, reduce speed when turning around ---
-            //if (currentRotationSpeed > rotationSpeedToTurn && speed < movementSpeedNoTurn)
-            //    speed *= movementSpeedDampingOnTurn;
+            if (currentRotationSpeed > rotationSpeedToTurn && speed < movementSpeedNoTurn)
+                speed *= movementSpeedDampingOnTurn;
 
-            // --- Compute desired displacement ---
+            // --- Compute desired velocity given camera transform ---
             Vector3 camForward = camera.forward;
             Vector3 camRight = camera.right;
-
             camForward.y = 0.0f;
-            currentVelocity = TraverserInputLayer.capture.stickHorizontal * camRight
-                + TraverserInputLayer.capture.stickVertical * camForward;
 
+            Vector3 inputDirection;
+            inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
+            inputDirection.y = 0.0f;
+            inputDirection.z = TraverserInputLayer.capture.stickVertical;
+
+            // --- If stick is released, do not update velocity as this would stop the character immediately ---
+            if (inputDirection.magnitude > minimumInputIntensity)
+            {
+                currentVelocity = inputDirection.x * camRight
+                        + inputDirection.z * camForward;
+            }
+
+            // --- Compute desired displacement ---
             Vector3 finalDisplacement = currentVelocity.normalized * speed;
-            //currentVelocity = finalDisplacement.normalized;
             finalDisplacement *= deltaTime;
 
+            // --- Update rotation ---
             UpdateRotation();
 
             // --- Rotate controller ---
             controller.Rotate(currentRotationSpeed * deltaTime);
-
-            Debug.DrawRay(transform.position, currentVelocity * 5.0f);
 
             for (int i = 0; i < iterations; ++i)
             {
@@ -288,7 +289,7 @@ namespace Traverser
                 // TODO: Add case for falling without finding new ground 
             }
 
-            ResetVelocityAndRotation();
+            ResetRotation();
 
             return contactAbility;
         }
@@ -382,51 +383,16 @@ namespace Traverser
             return moveIntensity;
         }
 
-        //public void AccelerateMovement(Vector3 acceleration)
-        //{
-        //    if (acceleration.magnitude > movementAcceleration)
-        //        acceleration = acceleration.normalized * movementAcceleration;
-
-        //    currentVelocity += acceleration;
-        //}
-
         public void AccelerateRotation(float rotation_acceleration)
         {
             Mathf.Clamp(rotation_acceleration, -rotationAcceleration, rotationAcceleration);
             currentRotationSpeed += rotation_acceleration;
         }
 
-        public void ResetVelocityAndRotation()
+        public void ResetRotation()
         {
             //currentVelocity = Vector3.zero;
             currentRotationSpeed = 0.0f;
-        }
-
-        public void UpdateMovement()
-        {
-            // --- Gather current input in Vector3 format ---
-            //Vector3 inputDirection;
-            //inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
-            //inputDirection.y = 0.0f;
-            //inputDirection.z = TraverserInputLayer.capture.stickVertical;
-
-            //// --- Compute desired acceleration given input, current velocity, and time to accelerate ---
-            //Vector3 acceleration = (inputDirection*desiredLinearSpeed - currentVelocity) / movementAccelerationTime;
-
-            //// --- Cap acceleration ---
-            //if (acceleration.magnitude > movementAcceleration)
-            //{
-            //    acceleration.Normalize();
-            //    acceleration *= movementAcceleration;
-            //}
-
-            //// --- Update velocity ---
-            //AccelerateMovement(acceleration);
-
-            //// --- Cap Velocity ---
-            //currentVelocity.x = Mathf.Clamp(currentVelocity.x, -desiredLinearSpeed, desiredLinearSpeed);
-            //currentVelocity.z = Mathf.Clamp(currentVelocity.z, -desiredLinearSpeed, desiredLinearSpeed);
-            //currentVelocity.y = Mathf.Clamp(currentVelocity.y, -desiredLinearSpeed, desiredLinearSpeed);
         }
 
         public void UpdateRotation()

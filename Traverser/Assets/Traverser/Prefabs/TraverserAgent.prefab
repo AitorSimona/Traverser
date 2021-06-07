@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1489611528
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1489611529}
+  m_Layer: 10
+  m_Name: LookAt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1489611529
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489611528}
+  m_LocalRotation: {x: -0, y: -0, z: 1.1146609e-14, w: 1}
+  m_LocalPosition: {x: 0.6269996, y: 1.4840002, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6251051581523075235}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &157109353181864383
 GameObject:
   m_ObjectHideFlags: 0
@@ -1421,6 +1451,7 @@ Transform:
   - {fileID: 3352120979383946181}
   - {fileID: 1914135976827797559}
   - {fileID: 875332095277158377}
+  - {fileID: 1489611529}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1478,7 +1509,7 @@ MonoBehaviour:
   groundProbeRadius: 0.25
   groundSnap: 0
   groundSnapRayDistance: 0.1
-  debugDraw: 0
+  debugDraw: 1
   capsuleDebugMesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
   capsuleDebugMeshScale: {x: 0.75, y: 0.85, z: 0.75}
   contactDebugSphereRadius: 0.25
@@ -1530,16 +1561,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04ada65e61b5509409a184339805abd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camera: {fileID: 0}
   walkSpeed: 1.5
   jogSpeed: 3.9
   runSpeed: 5.5
-  movementAcceleration: 50
-  movementAccelerationTime: 0.1
   movementDecelerationRatio: 0.5
   jogSpeedTime: 0.75
   runSpeedTime: 1.5
-  rotationSpeed: 540
-  rotationAcceleration: 90
+  rotationSpeed: 360
+  rotationAcceleration: 10
   rotationAccelerationTime: 0.1
   movementSpeedDampingOnTurn: 0.1
   movementSpeedNoTurn: 1
@@ -1586,7 +1616,7 @@ MonoBehaviour:
   hIKOn: 1
   handIKYDistance: 0.05
   handLength: 0.05
-  debugDraw: 0
+  debugDraw: 1
 --- !u!1 &6795803929205676354
 GameObject:
   m_ObjectHideFlags: 0

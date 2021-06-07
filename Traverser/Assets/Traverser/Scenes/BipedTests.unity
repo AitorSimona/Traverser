@@ -2198,36 +2198,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1417738448}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1489611528
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1489611529}
-  m_Layer: 10
-  m_Name: LookAt
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1489611529
+--- !u!4 &1489611529 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 1489611529, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+  m_PrefabInstance: {fileID: 875332096207356258}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489611528}
-  m_LocalRotation: {x: -0, y: -0, z: 1.1146609e-14, w: 1}
-  m_LocalPosition: {x: 0.6269996, y: 1.4840002, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1945743864}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1533369962
 GameObject:
   m_ObjectHideFlags: 0
@@ -2875,11 +2850,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1945743864 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-  m_PrefabInstance: {fileID: 875332096207356258}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1993329054
 GameObject:
   m_ObjectHideFlags: 3
@@ -3780,10 +3750,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1784888620, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: debugDraw
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -3833,33 +3799,9 @@ PrefabInstance:
       value: TraverserAgent
       objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 58206857}
-    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: camera
       value: 
       objectReference: {fileID: 58206857}
-    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: min_angle
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: rotationSpeed
-      value: 360
-      objectReference: {fileID: 0}
-    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: movementAcceleration
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: rotationAcceleration
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 6740730751872137954, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: debugDraw
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
 --- !u!1 &880145716448679975
@@ -3946,8 +3888,6 @@ MonoBehaviour:
   walkSpeed: 1
   jogSpeed: 3.9
   runSpeed: 5.5
-  movementAcceleration: 50
-  movementAccelerationTime: 0.1
   movementDecelerationRatio: 0.75
   jogSpeedTime: 0.75
   runSpeedTime: 1.5
@@ -7659,8 +7599,6 @@ MonoBehaviour:
   walkSpeed: 1
   jogSpeed: 3.9
   runSpeed: 5.5
-  movementAcceleration: 50
-  movementAccelerationTime: 0.1
   movementDecelerationRatio: 0.75
   jogSpeedTime: 0.75
   runSpeedTime: 1.5

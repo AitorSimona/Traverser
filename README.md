@@ -22,11 +22,11 @@ Video game characters interact with the objects in the world in many different w
 - Connect a gamepad 
 - move with left joystick, aim with right joystick
 - Run keeping left joystick pressed while moving
-- Use A to climb to wall, dismount
-- Use X to pull up from a ledge, drop down to ledge
-- Use X to vault and get on top of platforms
+- Use B to climb to wall, dismount
+- Use A to pull up from a ledge, drop down to ledge
+- Use A to vault and get on top of platforms
 - Use B to drop from platforms
-- Keep left joystick pressed to drop from any ground if Locomotion's Freedrop is not active
+
 
 ## TOOLS USED
 

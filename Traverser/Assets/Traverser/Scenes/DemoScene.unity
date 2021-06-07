@@ -1213,6 +1213,11 @@ MonoBehaviour:
   m_Damping: 0
   m_DampingWhenOccluded: 0
   m_OptimalTargetDistance: 0
+--- !u!4 &628065472 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1914135976827797559, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+  m_PrefabInstance: {fileID: 1868045176}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &631113901
 GameObject:
   m_ObjectHideFlags: 0
@@ -2855,6 +2860,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1511330270 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1489611528, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+  m_PrefabInstance: {fileID: 1868045176}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1818360608 &1511330271
+PositionConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511330270}
+  m_Enabled: 1
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0.6269996, y: 1.4840002, z: 0}
+  m_TranslationOffset: {x: 0.62699944, y: 0.5340004, z: 0.013998064}
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_IsContraintActive: 1
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 628065472}
+    weight: 1
 --- !u!1 &1525447860
 GameObject:
   m_ObjectHideFlags: 0

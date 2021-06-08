@@ -1,37 +1,44 @@
-## Welcome to GitHub Pages
+## Welcome to Traverser
 
-You can use the [editor on GitHub](https://github.com/AitorSimona/Traverser/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Traverser is a player traversal toolkit featuring as of now the most basic traversal abilities which are 
+Locomotion, Parkour and Climbing. It is self-contained in a set of scripts and has no dependencies apart 
+from the basic Unity functionality. Use the given abilities or expand the system through its shared 
+ability workflow.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Check the main github repo Readme.md for install instructions and other relevant information.
 
-### Markdown
+![Image](docs/Welcome.png)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Showcase
 
-```markdown
-Syntax highlighted code block
+### Version 1.0.0 demo
 
-# Header 1
-## Header 2
-### Header 3
+Include video / gif here
 
-- Bulleted
-- List
+## How to use:
 
-1. Numbered
-2. List
+![Image](docs/Controls.PNG)
 
-**Bold** and _Italic_ and `Code` text
+## Authors:
 
-[Link](url) and ![Image](src)
-```
+I am:
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+* GitHub webpage: [AitorSimona](https://aitorsimona.github.io/)
 
-### Jekyll Themes
+## Tools used
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/AitorSimona/Traverser/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+- Microsoft Visual Studio 2019
+- Unity 2020.2.2f1
+- Kinematica's 0.8 demo assets
+- Mixamo character and several animations
+- Autodesk Maya 2019
 
-### Support or Contact
+## Special thanks / References
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+[Unity](https://unity.com/)
+
+[Kinematica](https://docs.unity3d.com/Packages/com.unity.kinematica@0.8/manual/index.html)
+
+[Guerrilla Games](https://www.youtube.com/watch?v=LrLHsbTK5bM&ab_channel=GDC)
+
+[The Coalition](https://www.gdcvault.com/play/1024219/Motion-Warping-in-Gears-of)

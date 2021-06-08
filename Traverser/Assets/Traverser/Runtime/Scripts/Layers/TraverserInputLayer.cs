@@ -43,13 +43,13 @@ namespace Traverser
 
                //Debug.Log(stickHorizontal);
 
-               run = Input.GetButton("Left Analog Button");
+               run = Input.GetButton("Left Joystick Button");
             }
 
             public void UpdateParkour()
             {
                 parkourButton = Input.GetButton("A Button") || Input.GetKey("a");
-                parkourDropDownButton = Input.GetButton("X Button") || Input.GetKey("c");
+                parkourDropDownButton = Input.GetButton("B Button") || Input.GetKey("c");
             }
 
             public void UpdateClimbing()

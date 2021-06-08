@@ -16,6 +16,10 @@ of creating all of these different interactions.
 - Use A to vault and get on top of platforms
 - Use B to drop from platforms
 
+## DEPENDENCIES
+
+- Basic Unity functionality, core engine
+- Unity's animation system, Mecanim's humanoid. 
 
 ## TOOLS USED
 

@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.aitorsimona.traverser": {
+      "version": "file:Traverser",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.cinemachine": {
       "version": "2.6.3",
       "depth": 0,

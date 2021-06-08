@@ -5,17 +5,28 @@ Traverser is a player traversal toolkit featuring as of now the most basic trave
 
 ## HOW TO USE 
 
+### DOWNLOADING
+
 In github, click on Code and copy the git URL. Go to Unity's Package manager, and add the package through this git URL. Unity's package manager will automatically
 download the files and add them to your project. Note that this way puts the package in the package cache, and thus ends up being read-only. You can easily 
 move the whole folder com.aitorsimona.traverser to the Packages folder, while renaming it to not containg anything after the @. 
 
 You can also download the master branch as a ZIP and in Unity add the package from disk.
 
+### DEMO
+
+Once you install the package, you will notice that the package manager shows a Samples drop down,
+inside there is a downloadable demo which contains a demo scene and the required assets to showcase
+the package's functionality. Some abilities may ask for animations found in this demo, which of course
+can be replaced (I use them in development). 
+
+### INPUT
+
 Unfortunately Unity's current default input manager does not allow to create entries directly from code, so you have to do this yourself.
 
 Create input entries in Edit->ProjectSettings->InputManager.
 
-Xbox-like gamepads supported
+Xbox-like gamepads supported, the script TraverserInputLayer uses the following bindings.
 
 - Horizontal -> Default
 

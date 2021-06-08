@@ -19,42 +19,42 @@ Xbox-like gamepads supported
 - Vertical -> Default
 
 - A Button -> 
-	Alt Positive Button: joystick button 0
-	Gravity / Dead / Sensitivity: 0 / 0 / 0
-	Snap / Invert: Unchecked
-	Type: Key or Mouse Button
-	Axis: X axis
-	Joy Num: Get Motion from all Joysticks
+	- Alt Positive Button: joystick button 0
+	- Gravity / Dead / Sensitivity: 0 / 0 / 0
+	- Snap / Invert: Unchecked
+	- Type: Key or Mouse Button
+	- Axis: X axis
+	- Joy Num: Get Motion from all Joysticks
 
 - B Button -> 
-	Alt Positive Button: joystick button 1
-	Gravity / Dead / Sensitivity: 0 / 0 / 0
-	Snap / Invert: Unchecked
-	Type: Key or Mouse Button
-	Axis: X axis
-	Joy Num: Get Motion from all Joysticks
+	- Alt Positive Button: joystick button 1
+	- Gravity / Dead / Sensitivity: 0 / 0 / 0
+	- Snap / Invert: Unchecked
+	- Type: Key or Mouse Button
+	- Axis: X axis
+	- Joy Num: Get Motion from all Joysticks
 
 - Right Joystick Y -> 
-	Gravity / Dead / Sensitivity: 0 / 0.19 / 1
-	Snap / Invert: Unchecked
-	Type: Joystick Axis
-	Axis: 5th axis (Joysticks)
-	Joy Num: Get Motion from all Joysticks
+	- Gravity / Dead / Sensitivity: 0 / 0.19 / 1
+	- Snap / Invert: Unchecked
+	- Type: Joystick Axis
+	- Axis: 5th axis (Joysticks)
+	- Joy Num: Get Motion from all Joysticks
 
 - Right Joystick X -> 
-	Gravity / Dead / Sensitivity: 0 / 0.19 / 1
-	Snap / Invert: Unchecked
-	Type: Joystick Axis
-	Axis: 4th axis (Joysticks)
-	Joy Num: Get Motion from all Joysticks
+	- Gravity / Dead / Sensitivity: 0 / 0.19 / 1
+	- Snap / Invert: Unchecked
+	- Type: Joystick Axis
+	- Axis: 4th axis (Joysticks)
+	- Joy Num: Get Motion from all Joysticks
 
 - Left Joystick Button -> 
-	Alt Positive Button: joystick button 8
-	Gravity / Dead / Sensitivity: 0 / 0 / 0
-	Snap / Invert: Unchecked
-	Type: Joystick Axis
-	Axis: 3rd axis (Joysticks and Scrollwheel)
-	Joy Num: Get Motion from all Joysticks
+	- Alt Positive Button: joystick button 8
+	- Gravity / Dead / Sensitivity: 0 / 0 / 0
+	- Snap / Invert: Unchecked
+	- Type: Joystick Axis
+	- Axis: 3rd axis (Joysticks and Scrollwheel)
+	- Joy Num: Get Motion from all Joysticks
 
 ## CONTROLS
 

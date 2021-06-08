@@ -6,7 +6,7 @@
   "unity": "2020.2",
   "unityRelease": "2f1",
   "documentationUrl": "https://aitorsimona.github.io/Traverser/",
-  "changelogUrl": "https://example.com/changelog.html",
+  "changelogUrl": "https://github.com/AitorSimona/Traverser/blob/master/CHANGELOG.md",
   "licensesUrl": "https://github.com/AitorSimona/Traverser/blob/master/LICENSE",
   "keywords": [
     "traversal",

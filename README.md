@@ -11,7 +11,8 @@ In github, click on Code and copy the git URL. Go to Unity's Package manager, an
 download the files and add them to your project. Note that this way puts the package in the package cache, and thus ends up being read-only. You can easily 
 move the whole folder com.aitorsimona.traverser to the Packages folder, while renaming it to not containg anything after the @. 
 
-You can also download the master branch as a ZIP and in Unity add the package from disk.
+You can also download the master branch as a ZIP and in Unity add the package from disk, or 
+drop all files inside the Packages folder, under a newly created parent folder called com.aitorsimona.traverser.
 
 ### DEMO
 

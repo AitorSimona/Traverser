@@ -15,7 +15,7 @@ ability workflow.
 
 ## How to use:
 
-## CONTROLS
+## Controls
 
 Check the main github repo README.md for install instructions and other relevant information.
 

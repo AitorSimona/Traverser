@@ -14,6 +14,8 @@ move the whole folder com.aitorsimona.traverser to the Packages folder, while re
 You can also download the master branch as a ZIP and in Unity add the package from disk, or 
 drop all files inside the Packages folder, under a newly created parent folder called com.aitorsimona.traverser.
 
+You could also drop all the files in the Assets folder, and remove the unneeded package files such as package.json. 
+
 ### DEMO
 
 Once you install the package, you will notice that the package manager shows a Samples drop down,

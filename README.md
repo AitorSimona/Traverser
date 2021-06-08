@@ -87,6 +87,7 @@ Xbox-like gamepads supported, the script TraverserInputLayer uses the following 
 
 - Basic Unity functionality, core engine
 - Unity's animation system, Mecanim's humanoid. 
+- Demo uses the HDRP and Cinemachine Unity packages.
 
 ## TOOLS USED
 

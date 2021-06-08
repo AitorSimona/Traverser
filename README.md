@@ -1,10 +1,7 @@
 # Traverser
 ### *By Aitor Simona*
 
-Video game characters interact with the objects in the world in many different ways. 
-They climb, vault and hold onto objects. They slide on ice, and dive into water. 
-The idea behind this work is to provide a modular and easy to use framework that simplifies the process 
-of creating all of these different interactions.
+Traverser is a player traversal toolkit featuring as of now the most basic traversal abilities which are Locomotion, Parkour and Climbing. It is self-contained in a set of scripts and has no dependencies apart from the basic Unity functionality. Use the given abilities or expand the system through its shared ability workflow.
 
 ## HOW TO USE 
 

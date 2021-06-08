@@ -21,7 +21,7 @@ inside there is a downloadable demo which contains a demo scene and the required
 the package's functionality. Some abilities may ask for animations found in this demo, which of course
 can be replaced (I use them in development). 
 
-IMPORTANT: The demo used Cinemachine and the HDRP, make sure to install them first or all materials
+IMPORTANT: The demo uses Cinemachine and the HDRP, make sure to install them first or all materials
 will look pink and there will be missing scripts. 
 
 ### INPUT

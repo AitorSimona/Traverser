@@ -5,19 +5,27 @@ Locomotion, Parkour and Climbing. It is self-contained in a set of scripts and h
 from the basic Unity functionality. Use the given abilities or expand the system through its shared 
 ability workflow.
 
-Check the main github repo Readme.md for install instructions and other relevant information.
-
 ![Image](docs/Welcome.png)
 
 ## Showcase
 
 ### Version 1.0.0 demo
 
-Include video / gif here
+![Image](docs/Showcase.gif)
 
 ## How to use:
 
-![Image](docs/Controls.PNG)
+## CONTROLS
+
+Check the main github repo README.md for install instructions and other relevant information.
+
+- Connect a gamepad (xbox)
+- move with left joystick, aim with right joystick
+- Run keeping left joystick pressed while moving
+- Use B to climb to wall, dismount
+- Use A to pull up from a ledge, drop down to ledge
+- Use A to vault and get on top of platforms
+- Use B to drop from platforms
 
 ## Authors:
 

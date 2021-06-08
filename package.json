@@ -22,7 +22,7 @@
             "description": "Contains animations, models, prefabs and a demo scene. Recommended to see how the system is used.",
             "path": "Samples~/TraverserSamples"
         }
-    ]
+  ],
   "author": {
     "name": "Aitor Simona",
     "email": "simonaaitor@gmail.com",

@@ -5,9 +5,12 @@ Traverser is a player traversal toolkit featuring as of now the most basic trave
 
 ## HOW TO USE 
 
-Create entries in Edit->ProjectSettings->InputManager.
-Unfortunately Unity's current default input manager does not allow to create
-entries directly from code, so you have to do this yourself .
+In github, click on Code and copy the git URL. Go to Unity's Package manager, and add the package through this git URL. Unity's package manager will automatically
+download the files and add them to your project.
+
+Unfortunately Unity's current default input manager does not allow to create entries directly from code, so you have to do this yourself.
+
+Create input entries in Edit->ProjectSettings->InputManager.
 
 Xbox-like gamepads supported
 

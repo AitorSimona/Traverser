@@ -208,7 +208,7 @@ namespace Traverser
                                 Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
                                 Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
 
-                                Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
+                                Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius;
                                 targetPosition.y = hookPosition.y -
                                     (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
                                 TraverserTransform hangedTransform = TraverserTransform.Get(targetPosition, hookRotation);
@@ -270,7 +270,7 @@ namespace Traverser
 
                         // --- Require a transition ---
                         ret = animationController.transition.StartTransition("WalkTransition", "DropDown",
-                            "WalkTransitionTrigger", "DropDownTrigger", ref contactTransform, ref hangedTransform);
+                            "WalkTransitionTrigger", "DropDownTrigger", ref contactTransform, ref hangedTransform, false);
 
                         if (ret)
                         {
@@ -503,7 +503,7 @@ namespace Traverser
             ledgeHook = ledgeGeometry.GetHook(animationController.skeleton.position);
             Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
             Quaternion hangedRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
-            Vector3 hangedPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius * 1.5f;
+            Vector3 hangedPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius;
             hangedPosition.y = hookPosition.y - controller.capsuleHeight;
             return TraverserTransform.Get(hangedPosition, hangedRotation);
         }

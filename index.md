@@ -11,7 +11,7 @@ ability workflow.
 
 ### Version 1.0.0 demo
 
-<iframe width="800" height="600" src="https://www.youtube.com/embed/i9MpvKYgodc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="854" height="480" src="https://www.youtube.com/embed/i9MpvKYgodc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ![Image](docs/Showcase.gif)
 

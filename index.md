@@ -13,8 +13,6 @@ ability workflow.
 
 <iframe width="854" height="480" src="https://www.youtube.com/embed/i9MpvKYgodc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-![Image](docs/Showcase.gif)
-
 ## How to use:
 
 ## Controls

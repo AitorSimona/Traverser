@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aitorsimona.traverser", "aitorsimona.traverser.csproj", "{F01D18AD-A0D0-D4A1-B03D-9ECF4729BCB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{DD5DF23A-ADED-5444-79A7-E9E1B6FBD1FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{1BA92361-16CA-2F0C-D3D6-58625F8FD8A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F01D18AD-A0D0-D4A1-B03D-9ECF4729BCB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F01D18AD-A0D0-D4A1-B03D-9ECF4729BCB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F01D18AD-A0D0-D4A1-B03D-9ECF4729BCB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F01D18AD-A0D0-D4A1-B03D-9ECF4729BCB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD5DF23A-ADED-5444-79A7-E9E1B6FBD1FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD5DF23A-ADED-5444-79A7-E9E1B6FBD1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD5DF23A-ADED-5444-79A7-E9E1B6FBD1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD5DF23A-ADED-5444-79A7-E9E1B6FBD1FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BA92361-16CA-2F0C-D3D6-58625F8FD8A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BA92361-16CA-2F0C-D3D6-58625F8FD8A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BA92361-16CA-2F0C-D3D6-58625F8FD8A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BA92361-16CA-2F0C-D3D6-58625F8FD8A2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

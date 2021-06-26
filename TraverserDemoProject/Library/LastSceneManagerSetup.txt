@@ -1,5 +1,0 @@
-sceneSetups:
-- path: Assets/Samples/Traverser/1.0.0/Demo/Scenes/DemoScene.unity
-  isLoaded: 1
-  isActive: 1
-  isSubScene: 0

@@ -13,6 +13,8 @@ namespace Traverser
             //public float moveIntensity;
             public bool run;
             public bool dropDownButton;
+            public float rightStickHorizontal;
+            public float rightStickVertical;
             // --------------------------------
 
             public bool parkourButton;
@@ -20,8 +22,8 @@ namespace Traverser
 
             // --------------------------------
 
-            public float stickHorizontal;
-            public float stickVertical;
+            public float leftStickHorizontal;
+            public float leftStickVertical;
             public bool mountButton;
             public bool dismountButton;
             public bool pullUpButton;
@@ -35,11 +37,11 @@ namespace Traverser
 
             public void UpdateLocomotion()
             {
-                stickHorizontal = Input.GetAxis("Horizontal");
-                stickVertical = Input.GetAxis("Vertical");
-                movementDirection.x = stickHorizontal;
+                leftStickHorizontal = Input.GetAxis("Horizontal");
+                leftStickVertical = Input.GetAxis("Vertical");
+                movementDirection.x = leftStickHorizontal;
                 movementDirection.y = 0.0f;
-                movementDirection.z = stickVertical;
+                movementDirection.z = leftStickVertical;
 
                //Debug.Log(stickHorizontal);
 
@@ -54,10 +56,13 @@ namespace Traverser
 
             public void UpdateClimbing()
             {
-                stickHorizontal = Input.GetAxis("Horizontal");
-                stickVertical = Input.GetAxis("Vertical");
+                leftStickHorizontal = Input.GetAxis("Horizontal");
+                leftStickVertical = Input.GetAxis("Vertical");
+                rightStickHorizontal = Input.GetAxis("Right Joystick X");
+                rightStickVertical = Input.GetAxis("Right Joystick Y");
 
-                //Debug.Log(stickVertical);
+                //Debug.Log(rightStickVertical);
+
                 mountButton = Input.GetButton("B Button") || Input.GetKey("b");
                 dropDownButton = Input.GetButton("A Button") || Input.GetKey("a");
                 dismountButton = Input.GetButton("B Button") || Input.GetKey("b");

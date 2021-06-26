@@ -47,6 +47,10 @@ namespace Traverser
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Selecting the object may be required to show debug geometry.")]
         public bool debugDraw = false;
 
+        [Tooltip("Indicates the point the character is aiming to, used to trigger a ledge to ledge transition.")]
+        [Range(0.0f, 1.0f)]
+        public float aimDebugSphereRadius = 0.25f;
+
         // --------------------------------
 
         // --- Climbing ability state ---
@@ -57,7 +61,8 @@ namespace Traverser
             Climbing,
             Dismount,
             PullUp,
-            DropDown
+            DropDown,
+            LedgeToLedge
         }
 
         // --------------------------------
@@ -90,6 +95,9 @@ namespace Traverser
 
         private State state; // Actual Climbing movement/state
         private ClimbingState climbingState; // Actual Climbing direction
+
+        // --- The position at which we are currently aiming to, determined by maxJumpRadius ---
+        private Vector3 targetAimPosition;
 
         // --------------------------------
 
@@ -470,15 +478,18 @@ namespace Traverser
             Vector2 leftStickInput;
             leftStickInput.x = TraverserInputLayer.capture.leftStickHorizontal;
             leftStickInput.y = TraverserInputLayer.capture.leftStickVertical;
+            Vector3 targetPosition = transform.position + transform.right * leftStickInput.x * desiredSpeedLedge * deltaTime;
 
+            // --- Given input, compute target aim Position (used to trigger ledge to ledge transitions) ---
             Vector3 aimDirection = transform.right * TraverserInputLayer.capture.leftStickHorizontal
                 + transform.up * TraverserInputLayer.capture.leftStickVertical;
 
-            Vector3 targetAimPosition = transform.position + transform.up*controller.capsuleHeight + aimDirection * maxJumpRadius;
+            targetAimPosition = transform.position 
+                + transform.up * controller.capsuleHeight 
+                + aimDirection * maxJumpRadius
+                + transform.forward * controller.capsuleRadius;
 
-            GameObject.Find("dummy1").transform.position = targetAimPosition;
-
-            Vector3 targetPosition = transform.position + transform.right * leftStickInput.x * desiredSpeedLedge * deltaTime;
+            //GameObject.Find("dummy1").transform.position = targetAimPosition;
 
             // --- Update hook ---
             TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetPosition, desiredCornerMinDistance);
@@ -492,6 +503,22 @@ namespace Traverser
             }
             else
                 controller.targetDisplacement = Vector3.zero;
+
+            RaycastHit hit;
+
+            // --- Trigger a ledge to ledge transition if required by player ---
+            if (TraverserInputLayer.capture.pullUpButton 
+                && Physics.SphereCast(targetAimPosition,aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
+            {
+                // --- Check if collided object is climbable ---
+                if (hit.transform.GetComponent<TraverserClimbingObject>())
+                {
+                    // --- Trigger a transition and change state ---
+                    //ledgeGeometry.Initialize(hit.collider as BoxCollider);
+                    //ledgeHook = ledgeGeometry.GetHook(controller.previous.position);
+                }
+            }
+
 
             if (debugDraw)
             {
@@ -663,6 +690,16 @@ namespace Traverser
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
                 }
             }
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!debugDraw || abilityController == null)
+                return;
+
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(targetAimPosition, aimDebugSphereRadius);
+
         }
 
         // -------------------------------------------------

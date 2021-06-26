@@ -202,9 +202,9 @@ namespace Traverser
             camForward.y = 0.0f;
 
             Vector3 inputDirection;
-            inputDirection.x = TraverserInputLayer.capture.stickHorizontal;
+            inputDirection.x = TraverserInputLayer.capture.leftStickHorizontal;
             inputDirection.y = 0.0f;
-            inputDirection.z = TraverserInputLayer.capture.stickVertical;
+            inputDirection.z = TraverserInputLayer.capture.leftStickVertical;
 
             // --- If stick is released, do not update velocity as this would stop the character immediately ---
             if (inputDirection.magnitude > minimumInputIntensity)

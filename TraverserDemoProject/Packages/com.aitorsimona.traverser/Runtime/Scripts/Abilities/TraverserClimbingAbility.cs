@@ -22,6 +22,10 @@ namespace Traverser
         [Range(0.0f, 5.0f)]
         public float maxClimbableHeight;
 
+        [Tooltip("The maximum distance the character will be able to cover when jumping from ledge to ledge.")]
+        [Range(0.0f, 5.0f)]
+        public float maxJumpRadius = 1.0f;
+
         [Header("Feet IK settings")]
         [Tooltip("Activates or deactivates foot IK placement for the climbing ability.")]
         public bool fIKOn = true;
@@ -463,20 +467,28 @@ namespace Traverser
             bool ret = false;
 
             // --- Given input, compute target position ---
-            Vector2 stickInput;
-            stickInput.x = TraverserInputLayer.capture.stickHorizontal;
-            stickInput.y = TraverserInputLayer.capture.stickVertical;
-            Vector3 target = transform.position + transform.right * stickInput.x * desiredSpeedLedge * deltaTime;
+            Vector2 leftStickInput;
+            leftStickInput.x = TraverserInputLayer.capture.leftStickHorizontal;
+            leftStickInput.y = TraverserInputLayer.capture.leftStickVertical;
+
+            Vector3 aimDirection = transform.right * TraverserInputLayer.capture.leftStickHorizontal
+                + transform.up * TraverserInputLayer.capture.leftStickVertical;
+
+            Vector3 targetAimPosition = transform.position + transform.up*controller.capsuleHeight + aimDirection * maxJumpRadius;
+
+            GameObject.Find("dummy1").transform.position = targetAimPosition;
+
+            Vector3 targetPosition = transform.position + transform.right * leftStickInput.x * desiredSpeedLedge * deltaTime;
 
             // --- Update hook ---
-            TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, target, desiredCornerMinDistance);
+            TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetPosition, desiredCornerMinDistance);
 
             // --- Update current hook if it is still on the ledge ---
             if (desiredLedgeHook.index == ledgeHook.index)
             {
                 ret = true;
                 ledgeHook = desiredLedgeHook;
-                controller.targetDisplacement = target - transform.position;
+                controller.targetDisplacement = targetPosition - transform.position;
             }
             else
                 controller.targetDisplacement = Vector3.zero;
@@ -541,8 +553,8 @@ namespace Traverser
         ClimbingState GetDesiredClimbingState() 
         {
             Vector2 stickInput;
-            stickInput.x = TraverserInputLayer.capture.stickHorizontal;
-            stickInput.y = TraverserInputLayer.capture.stickVertical;
+            stickInput.x = TraverserInputLayer.capture.leftStickHorizontal;
+            stickInput.y = TraverserInputLayer.capture.leftStickVertical;
 
             // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
             float distance = 0.0f;

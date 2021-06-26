@@ -58,11 +58,11 @@ namespace Traverser
         {
             Suspended,
             Mounting,
-            Climbing,
             Dismount,
             PullUp,
             DropDown,
-            LedgeToLedge
+            LedgeToLedge,
+            Climbing
         }
 
         // --------------------------------
@@ -153,7 +153,7 @@ namespace Traverser
                 {
                     case State.Mounting:
                         HandleMountingState();
-                        break;
+                        break;        
 
                     case State.Dismount:
                         HandleDismountState();
@@ -165,6 +165,10 @@ namespace Traverser
 
                     case State.DropDown:
                         HandleDropDownState();
+                        break;
+
+                    case State.LedgeToLedge:
+                        HandleLedgeToLedgeState();
                         break;
 
                     case State.Climbing:
@@ -361,6 +365,22 @@ namespace Traverser
             }
         }
 
+        void HandleLedgeToLedgeState()
+        {
+            if (!animationController.transition.isON)
+            {
+                SetState(State.Climbing);
+                SetClimbingState(ClimbingState.Idle);
+                animationController.animator.Play("LedgeIdle", 0, 0.0f);
+
+                TraverserTransform hangedTransform = GetHangedTransform();
+
+                controller.ConfigureController(false);
+                controller.TeleportTo(hangedTransform.t);
+                transform.rotation = hangedTransform.q;
+            }
+        }
+
         void HandleClimbingState(float deltaTime)
         {
             // --- Handle special corner transitions ---
@@ -514,8 +534,21 @@ namespace Traverser
                 if (hit.transform.GetComponent<TraverserClimbingObject>())
                 {
                     // --- Trigger a transition and change state ---
-                    //ledgeGeometry.Initialize(hit.collider as BoxCollider);
-                    //ledgeHook = ledgeGeometry.GetHook(controller.previous.position);
+                    ledgeGeometry.Initialize(hit.collider as BoxCollider);
+                    ledgeHook = ledgeGeometry.GetHook(controller.previous.position);
+
+                    TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeleton.transform.position, transform.rotation);
+                    TraverserTransform targetTransform = TraverserTransform.Get(ledgeGeometry.GetPosition(ledgeHook), transform.rotation);
+
+                    bool success = animationController.transition.StartTransition("ClimbTransition", "LedgeToLedge",
+                        "ClimbTransitionTrigger", "LedgeToLedgeTrigger", ref contactTransform, ref targetTransform);
+
+                    if (success)
+                    {
+                        SetState(State.LedgeToLedge);
+                        // --- Turn off/on controller ---
+                        controller.ConfigureController(false);
+                    }
                 }
             }
 

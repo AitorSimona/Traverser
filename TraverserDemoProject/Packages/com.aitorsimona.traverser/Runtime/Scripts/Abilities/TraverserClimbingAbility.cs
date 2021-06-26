@@ -394,15 +394,11 @@ namespace Traverser
 
                     // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
                     Vector3 position = transform.position;
-                    position += transform.right;
-                    position += transform.forward;
-
-                    Vector3 start = position;
-                    Vector3 end = position;
-                    end.y += controller.capsuleHeight;
+                    position += transform.right * 0.5f;
+                    position += transform.forward * 0.5f;
 
                     // --- If it collides against any relevant collider, do not start the corner transition ---
-                    if (Physics.CheckCapsule(start, end, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask))
+                    if (IsCapsuleColliding(ref position))
                     {
                         desiredState = ClimbingState.Idle;
                         animationController.animator.Play("LedgeIdle", 0, 0.0f);
@@ -417,15 +413,11 @@ namespace Traverser
                 {
                     // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
                     Vector3 position = transform.position;
-                    position -= transform.right;
-                    position += transform.forward;
-
-                    Vector3 start = position;
-                    Vector3 end = position;
-                    end.y += controller.capsuleHeight;
+                    position -= transform.right * 0.5f;
+                    position += transform.forward * 0.5f;
 
                     // --- If it collides against any relevant collider, do not start the corner transition ---
-                    if (Physics.CheckCapsule(start, end, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask))
+                    if (IsCapsuleColliding(ref position))
                     {
                         desiredState = ClimbingState.Idle;
                         animationController.animator.Play("LedgeIdle", 0, 0.0f);
@@ -446,8 +438,13 @@ namespace Traverser
             if(debugDraw)
                 Debug.DrawRay(transform.position, Vector3.down * (maxClimbableHeight - controller.capsuleHeight), Color.yellow);
 
+            // --- The position at which we perform a capsule check to prevent pulling up into a wall --- 
+            Vector3 pullupPosition = transform.position;
+            pullupPosition += transform.up * controller.capsuleHeight;
+            pullupPosition += transform.forward * 0.5f;
+
             // --- React to pull up/dismount ---
-            if (TraverserInputLayer.capture.pullUpButton)
+            if (TraverserInputLayer.capture.pullUpButton && !IsCapsuleColliding(ref pullupPosition))
             {
                 animationController.animator.Play("PullUp", 0, 0.0f);
                 animationController.fakeTransition = true;
@@ -496,6 +493,19 @@ namespace Traverser
         // --------------------------------
 
         // --- Utilities ---    
+
+        private bool IsCapsuleColliding(ref Vector3 start)
+        {
+            Vector3 end = start;
+            end.y += controller.capsuleHeight;
+
+            // DEBUG
+            //GameObject.Find("dummy1").transform.position = start;
+            //GameObject.Find("dummy2").transform.position = end;
+
+            // --- Cast a capsule and return whether there has been a collision or not ---
+            return Physics.CheckCapsule(start, end, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask);        
+        }
 
         private TraverserTransform GetHangedTransform()
         {

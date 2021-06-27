@@ -10,6 +10,8 @@ namespace Traverser
         private static int ms_EnvironmentCollisionMask = -1;
 
         // --- All object layers our character can collide with ---
+
+        // TODO : Remove unused layers
         public static int EnvironmentCollisionMask
         {
             get

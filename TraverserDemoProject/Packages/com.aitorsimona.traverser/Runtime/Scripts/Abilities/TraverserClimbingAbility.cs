@@ -371,7 +371,7 @@ namespace Traverser
             {
                 SetState(State.Climbing);
                 SetClimbingState(ClimbingState.Idle);
-                animationController.animator.Play("LedgeIdle", 0, 0.0f);
+                //animationController.animator.Play("LedgeIdle", 0, 0.0f);
 
                 TraverserTransform hangedTransform = GetHangedTransform();
 
@@ -472,7 +472,7 @@ namespace Traverser
 
             // --- The position at which we perform a capsule check to prevent pulling up into a wall --- 
             Vector3 pullupPosition = transform.position;
-            pullupPosition += transform.up * controller.capsuleHeight;
+            pullupPosition += transform.up * controller.capsuleHeight * 1.25f;
             pullupPosition += transform.forward * 0.5f;
 
             // --- React to pull up/dismount ---
@@ -503,6 +503,7 @@ namespace Traverser
             // --- Given input, compute target aim Position (used to trigger ledge to ledge transitions) ---
             Vector3 aimDirection = transform.right * TraverserInputLayer.capture.leftStickHorizontal
                 + transform.up * TraverserInputLayer.capture.leftStickVertical;
+            aimDirection.Normalize();
 
             targetAimPosition = transform.position 
                 + transform.up * controller.capsuleHeight 
@@ -528,20 +529,49 @@ namespace Traverser
 
             // --- Trigger a ledge to ledge transition if required by player ---
             if (TraverserInputLayer.capture.pullUpButton 
-                && Physics.SphereCast(targetAimPosition,aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
+                && Physics.SphereCast(targetAimPosition - aimDirection * maxJumpRadius, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
             {
                 // --- Check if collided object is climbable ---
                 if (hit.transform.GetComponent<TraverserClimbingObject>())
                 {
                     // --- Trigger a transition and change state ---
                     ledgeGeometry.Initialize(hit.collider as BoxCollider);
-                    ledgeHook = ledgeGeometry.GetHook(controller.previous.position);
+                    ledgeHook = ledgeGeometry.GetHook(targetAimPosition);
+            
+                    //ledgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetAimPosition, desiredCornerMinDistance);
 
                     TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeleton.transform.position, transform.rotation);
                     TraverserTransform targetTransform = TraverserTransform.Get(ledgeGeometry.GetPosition(ledgeHook), transform.rotation);
 
-                    bool success = animationController.transition.StartTransition("ClimbTransition", "LedgeToLedge",
-                        "ClimbTransitionTrigger", "LedgeToLedgeTrigger", ref contactTransform, ref targetTransform);
+
+                    float angle = Vector3.SignedAngle(transform.up, aimDirection, -transform.forward);
+
+                    bool success = false;
+
+                    if (Mathf.Abs(angle) < 45.0f)
+                    {
+                        success = animationController.transition.StartTransition("ClimbTransition", "HopUp",
+                            "ClimbTransitionTrigger", "HopUpTrigger", ref contactTransform, ref targetTransform);
+                    }
+                    else if (angle > 45.0f && angle < 90.0f)
+                    {
+                        success = animationController.transition.StartTransition("ClimbTransition", "HopRight",
+                            "ClimbTransitionTrigger", "HopRightTrigger", ref contactTransform, ref targetTransform);
+                    }
+                    else if (angle < -45.0f && angle > 90.0f)
+                    {
+                        success = animationController.transition.StartTransition("ClimbTransition", "HopLeft",
+                            "ClimbTransitionTrigger", "HopLeftTrigger", ref contactTransform, ref targetTransform);
+                    }
+                    else
+                    {
+                        success = animationController.transition.StartTransition("ClimbTransition", "HopDown",
+                            "ClimbTransitionTrigger", "HopDownTrigger", ref contactTransform, ref targetTransform);
+                    }
+
+
+                    Debug.Log(angle);
+
 
                     if (success)
                     {
@@ -572,8 +602,8 @@ namespace Traverser
             end.y += controller.capsuleHeight;
 
             // DEBUG
-            //GameObject.Find("dummy1").transform.position = start;
-            //GameObject.Find("dummy2").transform.position = end;
+            GameObject.Find("dummy1").transform.position = start;
+            GameObject.Find("dummy2").transform.position = end;
 
             // --- Cast a capsule and return whether there has been a collision or not ---
             return Physics.CheckCapsule(start, end, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask);        

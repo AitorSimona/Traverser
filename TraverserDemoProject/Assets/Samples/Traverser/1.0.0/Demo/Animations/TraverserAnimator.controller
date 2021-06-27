@@ -2017,7 +2017,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Braced Hang Hop Left
+  m_Name: HopLeft
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -2762,7 +2762,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Braced Hang Drop
+  m_Name: HopDown
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -3943,7 +3943,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Braced Hang Hop Right
+  m_Name: HopRight
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -4906,7 +4906,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Braced Hang Hop Up
+  m_Name: HopUp
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:

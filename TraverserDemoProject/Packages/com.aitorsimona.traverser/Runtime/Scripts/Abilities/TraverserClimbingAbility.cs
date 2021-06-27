@@ -537,11 +537,14 @@ namespace Traverser
                     // --- Trigger a transition and change state ---
                     ledgeGeometry.Initialize(hit.collider as BoxCollider);
                     ledgeHook = ledgeGeometry.GetHook(targetAimPosition);
-            
+
                     //ledgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetAimPosition, desiredCornerMinDistance);
+                    Vector3 matchPosition = ledgeGeometry.GetPosition(ledgeHook);
+                    matchPosition -= Vector3.up * (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
+                    matchPosition -= transform.forward * controller.capsuleRadius;
 
                     TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeleton.transform.position, transform.rotation);
-                    TraverserTransform targetTransform = TraverserTransform.Get(ledgeGeometry.GetPosition(ledgeHook), transform.rotation);
+                    TraverserTransform targetTransform = TraverserTransform.Get(matchPosition, transform.rotation);
 
 
                     float angle = Vector3.SignedAngle(transform.up, aimDirection, -transform.forward);
@@ -553,12 +556,12 @@ namespace Traverser
                         success = animationController.transition.StartTransition("ClimbTransition", "HopUp",
                             "ClimbTransitionTrigger", "HopUpTrigger", ref contactTransform, ref targetTransform);
                     }
-                    else if (angle > 45.0f && angle < 90.0f)
+                    else if (angle >= 45.0f && angle <= 90.0f)
                     {
                         success = animationController.transition.StartTransition("ClimbTransition", "HopRight",
                             "ClimbTransitionTrigger", "HopRightTrigger", ref contactTransform, ref targetTransform);
                     }
-                    else if (angle < -45.0f && angle > 90.0f)
+                    else if (angle <= -45.0f && angle >= -90.0f)
                     {
                         success = animationController.transition.StartTransition("ClimbTransition", "HopLeft",
                             "ClimbTransitionTrigger", "HopLeftTrigger", ref contactTransform, ref targetTransform);

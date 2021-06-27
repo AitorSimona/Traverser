@@ -200,7 +200,7 @@ namespace Traverser
                 currentdeltaPosition = desiredDisplacement / time;
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / time);
 
-                if (Vector3.SqrMagnitude(matchPosition - currentPosition) < Mathf.Pow(warpingValidDistance, 2.0f))
+                if (Vector3.Magnitude(matchPosition - currentPosition) < warpingValidDistance)
                 {
                     currentdeltaPosition = Vector3.zero;
                     transform.rotation = matchRotation; // force final rotation
@@ -226,7 +226,7 @@ namespace Traverser
                 currentdeltaPosition = desiredDisplacement / targetWarpTime;             
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / targetWarpTime);
           
-                if (Vector3.SqrMagnitude(matchPosition - currentPosition) < Mathf.Pow(warpingValidDistance, 2.0f))
+                if (Vector3.Magnitude(matchPosition - currentPosition) < warpingValidDistance)
                 {
                     currentdeltaPosition = Vector3.zero;
                     transform.rotation = matchRotation; // force final rotation

@@ -426,7 +426,7 @@ namespace Traverser
 
                     // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
                     Vector3 position = transform.position;
-                    position += transform.right * 0.5f;
+                    position += transform.right * 0.75f;
                     position += transform.forward * 0.5f;
 
                     // --- If it collides against any relevant collider, do not start the corner transition ---
@@ -445,7 +445,7 @@ namespace Traverser
                 {
                     // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
                     Vector3 position = transform.position;
-                    position -= transform.right * 0.5f;
+                    position -= transform.right * 0.75f;
                     position += transform.forward * 0.5f;
 
                     // --- If it collides against any relevant collider, do not start the corner transition ---
@@ -476,7 +476,7 @@ namespace Traverser
             pullupPosition += transform.forward * 0.5f;
 
             // --- React to pull up/dismount ---
-            if (TraverserInputLayer.capture.pullUpButton && !IsCapsuleColliding(ref pullupPosition))
+            if (TraverserInputLayer.capture.pullUpButton && state != State.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
             {
                 animationController.animator.Play("PullUp", 0, 0.0f);
                 animationController.fakeTransition = true;

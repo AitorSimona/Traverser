@@ -318,6 +318,7 @@ namespace Traverser
             movementDecelerationTimer = 0.0f;
             previousMovementIntensity = 0.0f;
             movementAccelerationTimer = 0.0f;
+            currentVelocity = Vector3.zero;
             controller.targetVelocity = Vector3.zero;
         }
 

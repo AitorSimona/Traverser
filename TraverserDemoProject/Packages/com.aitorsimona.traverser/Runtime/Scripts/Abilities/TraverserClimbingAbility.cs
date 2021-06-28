@@ -388,17 +388,17 @@ namespace Traverser
 
         void HandleJumpBackState()
         {
-            if (!animationController.transition.isON)
+            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
+                animationController.fakeTransition = false;
                 SetState(State.Suspended);
                 //SetClimbingState(ClimbingState.Idle);
-                //animationController.animator.Play("LedgeIdle", 0, 0.0f);
-
-                //TraverserTransform hangedTransform = GetHangedTransform();
-
-                //controller.ConfigureController(true);
-                //controller.TeleportTo(hangedTransform.t);
-                //transform.rotation = hangedTransform.q;
+                animationController.animator.Play("FallLoop", 0, 0.0f);
+                Vector3 newTransform = animationController.skeleton.transform.position;
+                newTransform.y -= controller.capsuleHeight / 2.0f;
+                controller.TeleportTo(newTransform);
+                locomotionAbility.ResetLocomotion();
+                transform.rotation = animationController.skeleton.transform.rotation;
             }
         }
 
@@ -606,6 +606,17 @@ namespace Traverser
                         controller.ConfigureController(false);
                     }
                 }
+            }
+
+            // --- Trigger a jump back transition if required by player ---
+            if(TraverserInputLayer.capture.pullUpButton)
+            {
+                SetState(State.JumpBack);
+                // --- Turn off/on controller ---
+                controller.ConfigureController(false);
+
+                animationController.animator.Play("JumpBack", 0, 0.0f);
+                animationController.fakeTransition = true;
             }
 
 

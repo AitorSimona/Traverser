@@ -62,6 +62,7 @@ namespace Traverser
             PullUp,
             DropDown,
             LedgeToLedge,
+            JumpBack,
             Climbing
         }
 
@@ -169,6 +170,10 @@ namespace Traverser
 
                     case State.LedgeToLedge:
                         HandleLedgeToLedgeState();
+                        break;
+
+                    case State.JumpBack:
+                        HandleJumpBackState();
                         break;
 
                     case State.Climbing:
@@ -381,6 +386,22 @@ namespace Traverser
             }
         }
 
+        void HandleJumpBackState()
+        {
+            if (!animationController.transition.isON)
+            {
+                SetState(State.Suspended);
+                //SetClimbingState(ClimbingState.Idle);
+                //animationController.animator.Play("LedgeIdle", 0, 0.0f);
+
+                //TraverserTransform hangedTransform = GetHangedTransform();
+
+                //controller.ConfigureController(true);
+                //controller.TeleportTo(hangedTransform.t);
+                //transform.rotation = hangedTransform.q;
+            }
+        }
+
         void HandleClimbingState(float deltaTime)
         {
             // --- Handle special corner transitions ---
@@ -476,7 +497,8 @@ namespace Traverser
             pullupPosition += transform.forward * 0.5f;
 
             // --- React to pull up/dismount ---
-            if (TraverserInputLayer.capture.pullUpButton && state != State.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
+            if (TraverserInputLayer.capture.leftStickVertical > 0.5f &&
+                state != State.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
             {
                 animationController.animator.Play("PullUp", 0, 0.0f);
                 animationController.fakeTransition = true;
@@ -528,7 +550,8 @@ namespace Traverser
             RaycastHit hit;
 
             // --- Trigger a ledge to ledge transition if required by player ---
-            if (TraverserInputLayer.capture.pullUpButton 
+            if ((TraverserInputLayer.capture.leftStickVertical > 0.1f
+                || TraverserInputLayer.capture.leftStickHorizontal > 0.1f)
                 && Physics.SphereCast(targetAimPosition - aimDirection * maxJumpRadius, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
             {
                 // --- Check if collided object is climbable ---

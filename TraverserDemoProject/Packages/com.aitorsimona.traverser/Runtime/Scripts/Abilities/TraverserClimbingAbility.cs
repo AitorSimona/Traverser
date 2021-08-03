@@ -53,8 +53,8 @@ namespace Traverser
 
         // --------------------------------
 
-        // --- Climbing ability state ---
-        public enum State
+        // --- Ability-level state ---
+        public enum ClimbingAbilityState
         {
             Suspended,
             Mounting,
@@ -68,7 +68,7 @@ namespace Traverser
 
         // --------------------------------
 
-        // --- Climbing state directions ---
+        // --- Climbing-level state (directions) ---
         public enum ClimbingState
         {
             Idle,
@@ -94,7 +94,7 @@ namespace Traverser
         private TraverserAnimationController animationController;
         private TraverserLocomotionAbility locomotionAbility;
 
-        private State state; // Actual Climbing movement/state
+        private ClimbingAbilityState state; // Actual Climbing movement/state
         private ClimbingState climbingState; // Actual Climbing direction
 
         // --- The position at which we are currently aiming to, determined by maxJumpRadius ---
@@ -118,7 +118,7 @@ namespace Traverser
             animationController = GetComponent<TraverserAnimationController>();
             locomotionAbility = GetComponent<TraverserLocomotionAbility>();
 
-            state = State.Suspended;
+            state = ClimbingAbilityState.Suspended;
             climbingState = ClimbingState.None;
 
             ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
@@ -147,36 +147,36 @@ namespace Traverser
             TraverserAbility ret = this;
 
             // --- If character is not falling ---
-            if (!IsState(State.Suspended))
+            if (!IsState(ClimbingAbilityState.Suspended))
             {
                 // --- Handle current state ---
                 switch (state)
                 {
-                    case State.Mounting:
+                    case ClimbingAbilityState.Mounting:
                         HandleMountingState();
                         break;        
 
-                    case State.Dismount:
+                    case ClimbingAbilityState.Dismount:
                         HandleDismountState();
                         break;
 
-                    case State.PullUp:
+                    case ClimbingAbilityState.PullUp:
                         HandlePullUpState();
                         break;
 
-                    case State.DropDown:
+                    case ClimbingAbilityState.DropDown:
                         HandleDropDownState();
                         break;
 
-                    case State.LedgeToLedge:
+                    case ClimbingAbilityState.LedgeToLedge:
                         HandleLedgeToLedgeState();
                         break;
 
-                    case State.JumpBack:
+                    case ClimbingAbilityState.JumpBack:
                         HandleJumpBackState();
                         break;
 
-                    case State.Climbing:
+                    case ClimbingAbilityState.Climbing:
                         HandleClimbingState(deltaTime);
                         break;
 
@@ -185,7 +185,7 @@ namespace Traverser
                 }
 
                 // --- Let other abilities handle the situation ---
-                if (IsState(State.Suspended))
+                if (IsState(ClimbingAbilityState.Suspended))
                 {
                     ret = null;
                     SetClimbingState(ClimbingState.None);
@@ -205,7 +205,7 @@ namespace Traverser
             if (TraverserInputLayer.capture.mountButton)
             {
                 //---If we make contact with a climbable surface and player issues climb order, mount ---         
-                if (IsState(State.Suspended))
+                if (IsState(ClimbingAbilityState.Suspended))
                 {
                     BoxCollider collider = controller.current.collider as BoxCollider;
 
@@ -244,7 +244,7 @@ namespace Traverser
                                 // --- If transition start is successful, change state ---
                                 if (ret)
                                 {
-                                    SetState(State.Mounting);
+                                    SetState(ClimbingAbilityState.Mounting);
 
                                     // --- Turn off/on controller ---
                                     controller.ConfigureController(false);
@@ -295,7 +295,7 @@ namespace Traverser
 
                         if (ret)
                         {
-                            SetState(State.DropDown);
+                            SetState(ClimbingAbilityState.DropDown);
                             // --- Turn off/on controller ---
                             controller.ConfigureController(false);
                         }
@@ -317,7 +317,7 @@ namespace Traverser
             // --- If transition is over and we were mounting change state to ledge idle ---
             if(!animationController.transition.isON)
             {
-                SetState(State.Climbing); 
+                SetState(ClimbingAbilityState.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
             }
         }
@@ -327,7 +327,7 @@ namespace Traverser
             if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
                 animationController.fakeTransition = false;
-                SetState(State.Suspended);
+                SetState(ClimbingAbilityState.Suspended);
 
                 // --- Get skeleton's current position and teleport controller ---
                 Vector3 newTransform = animationController.skeleton.transform.position;
@@ -343,7 +343,7 @@ namespace Traverser
             if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
                 animationController.fakeTransition = false;
-                SetState(State.Suspended);
+                SetState(ClimbingAbilityState.Suspended);
 
                 // --- Get skeleton's current position and teleport controller ---
                 Vector3 newTransform = animationController.skeleton.transform.position;
@@ -358,7 +358,7 @@ namespace Traverser
         {
             if (!animationController.transition.isON)
             {
-                SetState(State.Climbing);
+                SetState(ClimbingAbilityState.Climbing);
                 SetClimbingState(ClimbingState.Idle);
                 animationController.animator.Play("LedgeIdle", 0, 0.0f);
 
@@ -374,7 +374,7 @@ namespace Traverser
         {
             if (!animationController.transition.isON)
             {
-                SetState(State.Climbing);
+                SetState(ClimbingAbilityState.Climbing);
                 SetClimbingState(ClimbingState.Idle);
                 //animationController.animator.Play("LedgeIdle", 0, 0.0f);
 
@@ -391,14 +391,15 @@ namespace Traverser
             if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
                 animationController.fakeTransition = false;
-                SetState(State.Suspended);
+                SetState(ClimbingAbilityState.Suspended);
                 //SetClimbingState(ClimbingState.Idle);
                 animationController.animator.Play("FallLoop", 0, 0.0f);
                 Vector3 newTransform = animationController.skeleton.transform.position;
                 newTransform.y -= controller.capsuleHeight / 2.0f;
                 controller.TeleportTo(newTransform);
                 locomotionAbility.ResetLocomotion();
-                transform.rotation = animationController.skeleton.transform.rotation;
+                locomotionAbility.SetLocomotionState(TraverserLocomotionAbility.LocomotionAbilityState.Falling);
+                transform.rotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ledgeHook),Vector3.up)/*animationController.skeleton.transform.rotation*/;
             }
         }
 
@@ -498,17 +499,17 @@ namespace Traverser
 
             // --- React to pull up/dismount ---
             if (TraverserInputLayer.capture.leftStickVertical > 0.5f &&
-                state != State.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
+                state != ClimbingAbilityState.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
             {
                 animationController.animator.Play("PullUp", 0, 0.0f);
                 animationController.fakeTransition = true;
-                SetState(State.PullUp);
+                SetState(ClimbingAbilityState.PullUp);
             }
             else if (closeToDrop && TraverserInputLayer.capture.dismountButton)
             {
                 animationController.animator.Play("Dismount", 0, 0.0f);
                 animationController.fakeTransition = true;
-                SetState(State.Dismount);
+                SetState(ClimbingAbilityState.Dismount);
             }
         }
 
@@ -601,7 +602,7 @@ namespace Traverser
 
                     if (success)
                     {
-                        SetState(State.LedgeToLedge);
+                        SetState(ClimbingAbilityState.LedgeToLedge);
                         // --- Turn off/on controller ---
                         controller.ConfigureController(false);
                     }
@@ -611,7 +612,7 @@ namespace Traverser
             // --- Trigger a jump back transition if required by player ---
             if(TraverserInputLayer.capture.pullUpButton)
             {
-                SetState(State.JumpBack);
+                SetState(ClimbingAbilityState.JumpBack);
                 // --- Turn off/on controller ---
                 controller.ConfigureController(false);
 
@@ -639,8 +640,8 @@ namespace Traverser
             end.y += controller.capsuleHeight;
 
             // DEBUG
-            GameObject.Find("dummy1").transform.position = start;
-            GameObject.Find("dummy2").transform.position = end;
+            //GameObject.Find("dummy1").transform.position = start;
+            //GameObject.Find("dummy2").transform.position = end;
 
             // --- Cast a capsule and return whether there has been a collision or not ---
             return Physics.CheckCapsule(start, end, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask);        
@@ -657,12 +658,12 @@ namespace Traverser
             return TraverserTransform.Get(hangedPosition, hangedRotation);
         }
 
-        public void SetState(State newState)
+        public void SetState(ClimbingAbilityState newState)
         {
             state = newState;
         }
 
-        public bool IsState(State queryState)
+        public bool IsState(ClimbingAbilityState queryState)
         {
             return state == queryState;
         }

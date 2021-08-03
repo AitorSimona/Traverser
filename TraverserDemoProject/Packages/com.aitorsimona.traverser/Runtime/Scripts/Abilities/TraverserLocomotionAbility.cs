@@ -100,6 +100,14 @@ namespace Traverser
         private TraverserCharacterController controller;
         private TraverserAnimationController animationController;
 
+        // --- Ability-level state ---
+        public enum LocomotionAbilityState
+        {
+            Moving,
+            Falling,
+            Landing
+        }
+
         // --- Character's target movement speed ---
         private float desiredLinearSpeed = 0.0f;
         
@@ -124,11 +132,14 @@ namespace Traverser
         // --- Ray for feet IK checks ---
         private Ray IKRay;
 
+        private LocomotionAbilityState state;
+
         // -------------------------------------------------
 
         // --- Basic Methods ---
         public void Start()
         {
+            state = LocomotionAbilityState.Moving;
             IKRay = new Ray();
             desiredLinearSpeed = jogSpeed;
             abilityController = GetComponent<TraverserAbilityController>();
@@ -149,6 +160,31 @@ namespace Traverser
         {
             TraverserAbility ret = this;
 
+            if (animationController.transition.isON)
+            {
+                animationController.transition.UpdateTransition();
+
+                //if (state == LocomotionAbilityState.Landing)
+                //{
+                //    state = LocomotionAbilityState.Moving;
+                //    Vector3 newTransform = animationController.skeleton.transform.position;
+                //    newTransform.y -= controller.capsuleHeight / 2.0f;
+                //    controller.TeleportTo(transform.position);
+                //    transform.rotation = animationController.skeleton.transform.rotation;
+                //}
+            }
+            else
+            {
+                //if (state == LocomotionAbilityState.Landing)
+                //{
+                //    state = LocomotionAbilityState.Moving;
+                //    Vector3 newTransform = animationController.skeleton.transform.position;
+                //    newTransform.y -= controller.capsuleHeight / 2.0f;
+                //    controller.TeleportTo(newTransform);
+                //    transform.rotation = animationController.skeleton.transform.rotation;
+                //}
+            }
+
             return ret;
         }
 
@@ -156,12 +192,15 @@ namespace Traverser
         {
             TraverserAbility ret = this;
 
-            // --- We perform future movement to check for collisions, then rewind using snapshot debugger's capabilities ---
-            TraverserAbility contactAbility = HandleMovementPrediction(deltaTime);
+            if (!animationController.transition.isON)
+            {
+                // --- We perform future movement to check for collisions, then rewind using snapshot debugger's capabilities ---
+                TraverserAbility contactAbility = HandleMovementPrediction(deltaTime);
 
-            // --- Another ability has been triggered ---
-            if (contactAbility != null)
-                ret = contactAbility;
+                // --- Another ability has been triggered ---
+                if (contactAbility != null)
+                    ret = contactAbility;
+            }
 
             return ret;
         }
@@ -267,9 +306,7 @@ namespace Traverser
 
                     attemptTransition = false; // make sure we do not react to another collision
                 }
-                else if (!collision.isGrounded 
-                    || (collision.ground && controller.previous.ground 
-                        && (collision.ground.GetInstanceID() != controller.previous.ground.GetInstanceID()))) // we are dropping/falling down and found ground
+                else if (!collision.isGrounded || (collision.ground && controller.previous.ground && (collision.ground.GetInstanceID() != controller.previous.ground.GetInstanceID()))) // we are dropping/falling down and found ground
                 {
                     // --- Let other abilities take control on drop ---
                     if (contactAbility == null)
@@ -285,6 +322,33 @@ namespace Traverser
                         }
                     }
                 }
+                else if (collision.isGrounded && collision.ground && controller.previous.ground == null)
+                {
+                    // --- We are falling and the simulation has found a new ground ---
+                    
+                    TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation/*Quaternion.LookRotation(-Vector3.forward, Vector3.up)*/);
+                    TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position) - Vector3.forward * 5.0f + Vector3.up, // roll animation offset
+                        /*Quaternion.LookRotation(-Vector3.forward, Vector3.up)*/ transform.rotation );
+
+                    GameObject.Find("dummy1").transform.position = targetTransform.t;
+                    GameObject.Find("dummy1").transform.rotation = targetTransform.q;
+
+                    bool success;
+
+                    animationController.animator.Play("FallTransition", 0, 0.0f);
+
+                    // --- We pass an existing transition trigger that won't do anything, we are already in falling animation ---
+                    success = animationController.transition.StartTransition("FallTransition", "FallToRoll",
+                            "ClimbTransitionTrigger", "FallToRollTrigger", ref contactTransform, ref targetTransform, true, true);
+
+                    // --- Trigger a landing transition ---
+                    if (success)
+                        state = LocomotionAbilityState.Landing;
+
+                    break;
+                }
+
+                // TODO: Add case for colliding against another wall
 
                 // TODO: Add case for falling without finding new ground 
             }
@@ -315,14 +379,20 @@ namespace Traverser
 
         public void ResetLocomotion()
         {
+            controller.Reset();
             movementDecelerationTimer = 0.0f;
             previousMovementIntensity = 0.0f;
             movementAccelerationTimer = 0.0f;
             currentVelocity = Vector3.zero;
-            controller.targetVelocity = Vector3.zero;
+            state = LocomotionAbilityState.Moving;
         }
 
-        float GetDesiredSpeed(float deltaTime)        
+        public void SetLocomotionState(LocomotionAbilityState newState)
+        {
+            state = newState;
+        }
+
+        private float GetDesiredSpeed(float deltaTime)        
         {
             float desiredSpeed = 0.0f;
             float moveIntensity = GetDesiredMovementIntensity(deltaTime);
@@ -352,7 +422,7 @@ namespace Traverser
             return desiredSpeed;
         }
 
-        float GetDesiredMovementIntensity(float deltaTime)
+        private float GetDesiredMovementIntensity(float deltaTime)
         {
             // --- Compute desired movement intensity given input and timer ---
             float moveIntensity = TraverserInputLayer.GetMoveIntensity();

@@ -243,6 +243,15 @@ namespace Traverser
             currentGravity = active;
         }
 
+        public void Reset()
+        {
+            targetDisplacement = Vector3.zero;
+            targetVelocity = Vector3.zero;
+            targetHeading = 0.0f;
+            //state.Reset();
+            //snapshotState.Reset();
+        }
+
         // --------------------------------
     }
 }

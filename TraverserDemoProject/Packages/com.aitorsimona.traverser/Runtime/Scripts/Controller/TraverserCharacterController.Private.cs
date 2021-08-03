@@ -127,6 +127,13 @@ namespace Traverser
                 desiredDisplacement = copyState.desiredDisplacement;
             }
 
+            internal void Reset()
+            {
+                desiredDisplacement = Vector3.zero;
+                currentCollision.Reset();
+                previousCollision.Reset();
+            }
+
             // --------------------------------
         }
 

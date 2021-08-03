@@ -151,7 +151,7 @@ namespace Traverser
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
         }
 
-        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, bool warpY = true)
+        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, bool warpY = true, bool forceSuccess = false)
         {
             bool ret = true;
 
@@ -200,7 +200,8 @@ namespace Traverser
                 currentdeltaPosition = desiredDisplacement / time;
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / time);
 
-                if (Vector3.Magnitude(matchPosition - currentPosition) < warpingValidDistance)
+                if (Vector3.Magnitude(matchPosition - currentPosition) < warpingValidDistance
+                    || forceSuccess)
                 {
                     currentdeltaPosition = Vector3.zero;
                     transform.rotation = matchRotation; // force final rotation
@@ -226,7 +227,8 @@ namespace Traverser
                 currentdeltaPosition = desiredDisplacement / targetWarpTime;             
                 currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / targetWarpTime);
           
-                if (Vector3.Magnitude(matchPosition - currentPosition) < warpingValidDistance)
+                if (Vector3.Magnitude(matchPosition - currentPosition) < warpingValidDistance
+                    || forceSuccess)
                 {
                     currentdeltaPosition = Vector3.zero;
                     transform.rotation = matchRotation; // force final rotation
@@ -236,6 +238,14 @@ namespace Traverser
             }
 
             return ret;
+        }
+
+        public void ResetWarper()
+        {
+            currentdeltaPosition = Vector3.zero;
+            currentdeltaRotation = transform.rotation;
+            targetWarpTime = 0.001f;
+            bodyEndPosition = transform.position;
         }
 
         public void SetRootMotion(bool rootMotion)

@@ -322,12 +322,13 @@ namespace Traverser
                         }
                     }
                 }
-                else if (collision.isGrounded && collision.ground && controller.previous.ground == null)
+                else if (collision.isGrounded && collision.ground && controller.previous.ground == null 
+                    && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) < controller.capsuleHeight)
                 {
                     // --- We are falling and the simulation has found a new ground ---
                     
                     TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation/*Quaternion.LookRotation(-Vector3.forward, Vector3.up)*/);
-                    TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position) - Vector3.forward * 5.0f + Vector3.up, // roll animation offset
+                    TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position) + transform.forward * 5.0f + Vector3.up, // roll animation offset
                         /*Quaternion.LookRotation(-Vector3.forward, Vector3.up)*/ transform.rotation );
 
                     GameObject.Find("dummy1").transform.position = targetTransform.t;

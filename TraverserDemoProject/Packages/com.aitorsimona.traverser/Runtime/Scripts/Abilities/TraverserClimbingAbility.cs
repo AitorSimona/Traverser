@@ -533,7 +533,7 @@ namespace Traverser
                 + aimDirection * maxJumpRadius
                 + transform.forward * controller.capsuleRadius;
 
-            //GameObject.Find("dummy1").transform.position = targetAimPosition;
+            GameObject.Find("dummy1").transform.position = targetAimPosition;
 
             // --- Update hook ---
             TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetPosition, desiredCornerMinDistance);
@@ -563,7 +563,7 @@ namespace Traverser
                     ledgeHook = ledgeGeometry.GetHook(targetAimPosition);
 
                     //ledgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetAimPosition, desiredCornerMinDistance);
-                    Vector3 matchPosition = ledgeGeometry.GetPosition(ledgeHook);
+                    Vector3 matchPosition = ledgeGeometry.GetPositionAtDistance(ledgeHook.index, 0.5f);
                     matchPosition -= Vector3.up * (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
                     matchPosition -= transform.forward * controller.capsuleRadius;
 

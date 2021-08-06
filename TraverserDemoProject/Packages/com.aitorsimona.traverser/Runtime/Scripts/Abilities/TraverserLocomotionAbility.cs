@@ -323,7 +323,8 @@ namespace Traverser
                     }
                 }
                 else if (collision.isGrounded && collision.ground && controller.previous.ground == null 
-                    && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) < controller.capsuleHeight)
+                    && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) < controller.capsuleHeight
+                    && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) > controller.capsuleHeight*0.5f)
                 {
                     // --- We are falling and the simulation has found a new ground ---
                     

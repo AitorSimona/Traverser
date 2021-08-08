@@ -528,12 +528,13 @@ namespace Traverser
                 + transform.up * TraverserInputLayer.capture.leftStickVertical;
             aimDirection.Normalize();
 
-            targetAimPosition = transform.position 
-                + transform.up * controller.capsuleHeight 
-                + aimDirection * maxJumpRadius
+            Vector3 rayOrigin = transform.position
+                + transform.up * controller.capsuleHeight * 0.75f
                 + transform.forward * controller.capsuleRadius;
 
-            GameObject.Find("dummy1").transform.position = targetAimPosition;
+            targetAimPosition = rayOrigin + aimDirection * maxJumpRadius * TraverserInputLayer.GetMoveIntensity(); 
+
+            //GameObject.Find("dummy1").transform.position = rayOrigin;
 
             // --- Update hook ---
             TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetPosition, desiredCornerMinDistance);
@@ -550,10 +551,12 @@ namespace Traverser
 
             RaycastHit hit;
 
+            bool collided = Physics.SphereCast(rayOrigin, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius * TraverserInputLayer.GetMoveIntensity(), TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+
+            //collided = Physics.Raycast(targetAimPosition, transform.forward, out hit, maxJumpRadius, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+
             // --- Trigger a ledge to ledge transition if required by player ---
-            if ((TraverserInputLayer.capture.leftStickVertical > 0.1f
-                || TraverserInputLayer.capture.leftStickHorizontal > 0.1f)
-                && Physics.SphereCast(targetAimPosition - aimDirection * maxJumpRadius, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
+            if (TraverserInputLayer.GetMoveIntensity() > 0.1f && collided)
             {
                 // --- Check if collided object is climbable ---
                 if (hit.transform.GetComponent<TraverserClimbingObject>())
@@ -597,7 +600,7 @@ namespace Traverser
                     }
 
 
-                    Debug.Log(angle);
+                    //Debug.Log(angle);
 
 
                     if (success)
@@ -799,6 +802,14 @@ namespace Traverser
                 return;
 
             Gizmos.color = Color.cyan;
+
+    //        Vector3 aimDirection = transform.right * TraverserInputLayer.capture.leftStickHorizontal
+    //+ transform.up * TraverserInputLayer.capture.leftStickVertical;
+    //        aimDirection.Normalize();
+
+    //        Gizmos.DrawRay(rayOrigin, aimDirection * TraverserInputLayer.GetMoveIntensity());
+    //        Gizmos.DrawRay(targetAimPosition, transform.forward*maxJumpRadius);
+
             Gizmos.DrawWireSphere(targetAimPosition, aimDebugSphereRadius);
 
         }

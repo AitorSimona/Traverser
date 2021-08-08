@@ -18,7 +18,7 @@ namespace Traverser
             {
                 if (ms_EnvironmentCollisionMask < 0)
                 {
-                    string[] layerNames = new string[] { "Default", "Wall", "Ledge", "Platform", "Table" };
+                    string[] layerNames = new string[] { "Default" };
                     ms_EnvironmentCollisionMask = LayerMask.GetMask(layerNames);
                 }
 

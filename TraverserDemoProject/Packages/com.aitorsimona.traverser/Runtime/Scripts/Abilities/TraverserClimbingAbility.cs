@@ -563,7 +563,9 @@ namespace Traverser
                 {
                     // --- Trigger a transition and change state ---
                     ledgeGeometry.Initialize(hit.collider as BoxCollider);
-                    ledgeHook = ledgeGeometry.GetHook(targetAimPosition);
+
+                    // --- Adjust the aim position so we don't end in another ledge edge ---
+                    ledgeHook = ledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
 
                     //ledgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetAimPosition, desiredCornerMinDistance);
                     Vector3 matchPosition = ledgeGeometry.GetPositionAtDistance(ledgeHook.index, 0.5f);

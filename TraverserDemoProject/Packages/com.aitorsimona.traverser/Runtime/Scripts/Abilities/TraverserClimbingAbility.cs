@@ -202,57 +202,88 @@ namespace Traverser
         {
             bool ret = false;
 
-            if (TraverserInputLayer.capture.mountButton)
+            //---If we make contact with a climbable surface and player issues climb order, mount ---         
+            BoxCollider collider = controller.current.collider as BoxCollider;
+
+            if (TraverserInputLayer.capture.mountButton
+                && IsState(ClimbingAbilityState.Suspended)
+                && collider != null
+                && controller.isGrounded             // --- Ensure we are not falling ---
+                && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
             {
-                //---If we make contact with a climbable surface and player issues climb order, mount ---         
-                if (IsState(ClimbingAbilityState.Suspended))
+
+                // --- Fill auxiliary ledge to prevent mounting too close to a corner ---
+                auxledgeGeometry.Initialize(collider);
+                TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
+                float distance = 0.0f;
+                auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxHook, ref distance);
+
+                // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
+                if (!collider.Equals(controller.current.ground as BoxCollider) && distance > 0.25)
                 {
-                    BoxCollider collider = controller.current.collider as BoxCollider;
+                    // --- We want to reach the pre climb position and then activate the animation ---
+                    ledgeGeometry.Initialize(collider);
+                    ledgeHook = ledgeGeometry.GetHook(transform.position);
+                    Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                    Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
 
-                    // --- Ensure we are not falling ---
-                    if (collider != null && controller.isGrounded)
+                    Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius;
+                    targetPosition.y = hookPosition.y -
+                        (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
+                    TraverserTransform hangedTransform = TraverserTransform.Get(targetPosition, hookRotation);
+
+                    float transitionOffset = 1.0f;
+                    contactTransform.t -= transform.forward * transitionOffset;
+
+                    // --- Require a transition ---
+                    ret = animationController.transition.StartTransition("WalkTransition", "Mount",
+                        "WalkTransitionTrigger", "MountTrigger", ref contactTransform, ref hangedTransform);
+
+                    // --- If transition start is successful, change state ---
+                    if (ret)
                     {
-                        if (collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
-                        {
-                            // --- Fill auxiliary ledge to prevent mounting too close to a corner ---
-                            auxledgeGeometry.Initialize(collider);
-                            TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
-                            float distance = 0.0f;
-                            auxledgeGeometry.ClosestPointDistance(contactTransform.t, auxHook, ref distance);
+                        SetState(ClimbingAbilityState.Mounting);
 
-                            // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
-                            if (!collider.Equals(controller.current.ground as BoxCollider) && distance > 0.25)
-                            {
-                                // --- We want to reach the pre climb position and then activate the animation ---
-                                ledgeGeometry.Initialize(collider);
-                                ledgeHook = ledgeGeometry.GetHook(transform.position);
-                                Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
-                                Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
-
-                                Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius;
-                                targetPosition.y = hookPosition.y -
-                                    (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
-                                TraverserTransform hangedTransform = TraverserTransform.Get(targetPosition, hookRotation);
-
-                                float transitionOffset = 1.0f;
-                                contactTransform.t -= transform.forward * transitionOffset;
-           
-                                // --- Require a transition ---
-                                ret = animationController.transition.StartTransition("WalkTransition", "Mount",
-                                    "WalkTransitionTrigger", "MountTrigger", ref contactTransform, ref hangedTransform);
-
-                                // --- If transition start is successful, change state ---
-                                if (ret)
-                                {
-                                    SetState(ClimbingAbilityState.Mounting);
-
-                                    // --- Turn off/on controller ---
-                                    controller.ConfigureController(false);
-                                }
-                            }
-                        }
+                        // --- Turn off/on controller ---
+                        controller.ConfigureController(false);
                     }
                 }
+
+
+            }
+            else if (locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling
+                && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
+            {
+                // ---  We are falling and colliding against a ledge
+                ledgeGeometry.Initialize(collider);
+                ledgeHook = ledgeGeometry.GetHook(transform.position);
+                Vector3 hookPosition = ledgeGeometry.GetPosition(ledgeHook);
+                Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
+                
+                Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius;
+                targetPosition.y = hookPosition.y -
+                    (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
+                TraverserTransform hangedTransform = TraverserTransform.Get(targetPosition, hookRotation);
+                
+                float transitionOffset = 1.0f;
+                contactTransform.t -= transform.forward * transitionOffset;
+
+                animationController.animator.Play("FallTransition", 0, 0.0f);
+
+                // --- Require a transition ---
+                ret = animationController.transition.StartTransition("FallTransition", "JumpHang",
+                            "ClimbTransitionTrigger", "JumpHangTrigger", ref contactTransform, ref hangedTransform, true, true);
+
+
+                // --- If transition start is successful, change state ---
+                if (ret)
+                {
+                    SetState(ClimbingAbilityState.LedgeToLedge);
+                
+                    // --- Turn off/on controller ---
+                    controller.ConfigureController(false);
+                }
+                
             }
 
             return ret;

@@ -214,9 +214,9 @@ namespace Traverser
             ForceMove(finalPosition);
             state.currentCollision.velocity = characterController.velocity / stepping;
 
-            // --- Cast ground probe (ground collision detection) ---
             if (characterController.detectCollisions)
             {
+                // --- Cast ground probe (ground collision detection) ---
                 CheckGroundCollision();
             }
 
@@ -233,7 +233,31 @@ namespace Traverser
 
         // --------------------------------
 
-        // --- Utility methids ---
+        // --- Utility methods ---
+
+        public bool CheckForwardCollision(Vector3 origin, float maxRayDistance)
+        {
+            // --- Overrides the controller's collision data with a possible forward ray collision (not affected by gravity) ---
+
+            RaycastHit hit;
+            bool ret = Physics.Raycast(origin, transform.forward, out hit, maxRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+
+            // --- Fill collider data ---
+            if (ret)
+            {
+                contactNormal = hit.normal;
+                contactTransform.t = hit.point;
+                contactTransform.t.y = hit.collider.bounds.center.y + hit.collider.bounds.extents.y;
+                contactTransform.q = Quaternion.LookRotation((contactTransform.t - contactNormal * contactSize) - contactTransform.t, hit.transform.up);
+                current.collider = hit.collider;
+                current.colliderContactNormal = hit.normal;
+                current.colliderContactPoint = hit.point;
+                current.isColliding = true;
+            }
+
+            return ret;
+        }
+
 
         // --- Disables controller functionality ---
         public void ConfigureController(bool active)

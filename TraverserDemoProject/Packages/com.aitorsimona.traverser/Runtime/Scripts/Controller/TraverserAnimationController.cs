@@ -220,7 +220,15 @@ namespace Traverser
                 Vector3 desiredDisplacement = validPosition - currentPosition;
 
                 if (warpY)
+                {
                     desiredDisplacement.y = targetYWarp;
+
+                    if (Mathf.Abs(targetYWarp) < 0.1f)
+                    {
+                        forceSuccess = true;
+                    }
+
+                }
                 else
                     matchPosition.y = currentPosition.y;
 

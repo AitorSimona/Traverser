@@ -163,26 +163,6 @@ namespace Traverser
             if (animationController.transition.isON)
             {
                 animationController.transition.UpdateTransition();
-
-                //if (state == LocomotionAbilityState.Landing)
-                //{
-                //    state = LocomotionAbilityState.Moving;
-                //    Vector3 newTransform = animationController.skeleton.transform.position;
-                //    newTransform.y -= controller.capsuleHeight / 2.0f;
-                //    controller.TeleportTo(transform.position);
-                //    transform.rotation = animationController.skeleton.transform.rotation;
-                //}
-            }
-            else
-            {
-                //if (state == LocomotionAbilityState.Landing)
-                //{
-                //    state = LocomotionAbilityState.Moving;
-                //    Vector3 newTransform = animationController.skeleton.transform.position;
-                //    newTransform.y -= controller.capsuleHeight / 2.0f;
-                //    controller.TeleportTo(newTransform);
-                //    transform.rotation = animationController.skeleton.transform.rotation;
-                //}
             }
 
             return ret;
@@ -306,6 +286,28 @@ namespace Traverser
 
                     attemptTransition = false; // make sure we do not react to another collision
                 }
+                else if (state == LocomotionAbilityState.Falling && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.75f, contactDistanceMax))
+                {
+                    // --- Check forward collision for possible ledge contact and inform abilities ---
+
+                    // --- We are falling and we have found a forward collision ---             
+                    TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
+
+                    if (contactAbility == null)
+                    {
+                        foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
+                        {
+                            // --- If any ability reacts to the collision, break ---
+                            if (ability.IsAbilityEnabled() && ability.OnContact(contactTransform, deltaTime))
+                            {
+                                contactAbility = ability;
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                }
                 else if (!collision.isGrounded || (collision.ground && controller.previous.ground && (collision.ground.GetInstanceID() != controller.previous.ground.GetInstanceID()))) // we are dropping/falling down and found ground
                 {
                     // --- Let other abilities take control on drop ---
@@ -326,21 +328,19 @@ namespace Traverser
                     && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) < controller.capsuleHeight
                     && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) > controller.capsuleHeight*0.5f)
                 {
-                    // --- We are falling and the simulation has found a new ground ---
-                    
-                    TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation/*Quaternion.LookRotation(-Vector3.forward, Vector3.up)*/);
-                    TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position) + transform.forward * 5.0f + Vector3.up, // roll animation offset
-                        /*Quaternion.LookRotation(-Vector3.forward, Vector3.up)*/ transform.rotation );
+                    // --- We are falling and the simulation has found a new ground ---             
+                    TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
+                    TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position) 
+                        + transform.forward * 5.0f + Vector3.up, // roll animation offset
+                        transform.rotation );
 
-                    GameObject.Find("dummy1").transform.position = targetTransform.t;
-                    GameObject.Find("dummy1").transform.rotation = targetTransform.q;
-
-                    bool success;
+                    //GameObject.Find("dummy1").transform.position = targetTransform.t;
+                    //GameObject.Find("dummy1").transform.rotation = targetTransform.q;
 
                     animationController.animator.Play("FallTransition", 0, 0.0f);
 
                     // --- We pass an existing transition trigger that won't do anything, we are already in falling animation ---
-                    success = animationController.transition.StartTransition("FallTransition", "FallToRoll",
+                    bool success = animationController.transition.StartTransition("FallTransition", "FallToRoll",
                             "ClimbTransitionTrigger", "FallToRollTrigger", ref contactTransform, ref targetTransform, true, true);
 
                     // --- Trigger a landing transition ---
@@ -350,9 +350,9 @@ namespace Traverser
                     break;
                 }
 
-                // TODO: Add case for colliding against another wall
+                // TODO: Add case for colliding against another wall/ledge
 
-                // TODO: Add case for falling without finding new ground 
+                // TODO: Add case for falling without finding new ground - ? needed??
             }
 
             ResetRotation();
@@ -392,6 +392,11 @@ namespace Traverser
         public void SetLocomotionState(LocomotionAbilityState newState)
         {
             state = newState;
+        }
+
+        public LocomotionAbilityState GetLocomotionState()
+        {
+            return state;
         }
 
         private float GetDesiredSpeed(float deltaTime)        

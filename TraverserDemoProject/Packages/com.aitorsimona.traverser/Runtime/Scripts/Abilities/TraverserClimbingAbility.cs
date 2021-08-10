@@ -261,8 +261,7 @@ namespace Traverser
                 Quaternion hookRotation = Quaternion.LookRotation(ledgeGeometry.GetNormal(ledgeHook), transform.up);
                 
                 Vector3 targetPosition = hookPosition - ledgeGeometry.GetNormal(ledgeHook) * controller.capsuleRadius;
-                targetPosition.y = hookPosition.y -
-                    (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
+                targetPosition.y = hookPosition.y - (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
                 TraverserTransform hangedTransform = TraverserTransform.Get(targetPosition, hookRotation);
                 
                 float transitionOffset = 1.0f;

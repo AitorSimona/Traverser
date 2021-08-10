@@ -369,7 +369,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 169064604}
-  m_LocalRotation: {x: 0.08510991, y: -0.70780694, z: 0.0865666, w: 0.69589645}
+  m_LocalRotation: {x: 0.085109934, y: -0.70780694, z: 0.08656662, w: 0.69589645}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2407,7 +2407,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 778502423}
-  m_LocalRotation: {x: 0.10853202, y: 0.000000029898544, z: -0.0000000032642309, w: 0.994093}
+  m_LocalRotation: {x: 0.108532034, y: 0.000000029898544, z: -0.0000000032642313, w: 0.994093}
   m_LocalPosition: {x: 34.127, y: 12.911149, z: -15.089365}
   m_LocalScale: {x: 0.10000003, y: 0.09999999, z: 0.10000003}
   m_Children: []
@@ -3808,7 +3808,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5654321407401618868, guid: c3e8d8e458c449c4986e9f6d78b7a9bb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 27.75
+      value: 28.87
       objectReference: {fileID: 0}
     - target: {fileID: 5654321407401618868, guid: c3e8d8e458c449c4986e9f6d78b7a9bb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3816,7 +3816,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5654321407401618868, guid: c3e8d8e458c449c4986e9f6d78b7a9bb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.87
+      value: -10.68
       objectReference: {fileID: 0}
     - target: {fileID: 5654321407401618868, guid: c3e8d8e458c449c4986e9f6d78b7a9bb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4635,6 +4635,10 @@ PrefabInstance:
       propertyPath: camera
       value: 
       objectReference: {fileID: 778502428}
+    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: contactDistanceMax
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137952, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0

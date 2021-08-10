@@ -30,8 +30,11 @@ namespace Traverser
         // --- The desired animation to play on reaching the desired location ---
         private string targetAnimation;
 
-        // --- The desired animator trigger to activate for transition / target animations ---
-        private string triggerAnimation;
+        // --- The desired animator trigger to activate for transition animations ---
+        private string triggerTransitionAnim;
+
+        // --- The desired animator trigger to activate for target animations ---
+        private string triggerTargetAnim;
 
         // --- Transform in space we have to reach playing transitionAnimation ---
         private TraverserTransform contactTransform;
@@ -59,9 +62,11 @@ namespace Traverser
             isTargetAnimationON = false;
             transitionAnimation = "";
             targetAnimation = "";
-            triggerAnimation = "";
+            triggerTargetAnim = "";
             animationController.SetRootMotion(false);
             forceTargetAnimation = false;
+            animationController.animator.ResetTrigger(triggerTransitionAnim);
+            animationController.animator.ResetTrigger(triggerTargetAnim);
         }
 
         public TraverserTransition(TraverserAnimationController _animationController, ref TraverserCharacterController _controller)
@@ -97,8 +102,11 @@ namespace Traverser
                 isWarpOn = true;
                 transitionAnimation = transitionAnim;
                 targetAnimation = targetAnim;
-                triggerAnimation = triggerTargetAnim;
+                this.triggerTargetAnim = triggerTargetAnim;
+                this.triggerTransitionAnim = triggerTransitionAnim;
+
                 animationController.animator.SetTrigger(triggerTransitionAnim);
+
                 isTransitionAnimationON = true;
                 this.targetTransform = targetTransform;
                 this.contactTransform = contactTransform;
@@ -166,7 +174,7 @@ namespace Traverser
                             isTargetAnimationON = true;
                             isWarpOn = true;
                             controller.TeleportTo(animationController.transform.position);
-                            animationController.animator.SetTrigger(triggerAnimation);
+                            animationController.animator.SetTrigger(triggerTargetAnim);
                         }
 
                         ret = true;

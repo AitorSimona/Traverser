@@ -1018,9 +1018,6 @@ AnimatorStateMachine:
     m_State: {fileID: 7259956274577438887}
     m_Position: {x: 470, y: 860, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 4292909910488581482}
-    m_Position: {x: 0, y: 0, z: 0}
-  - serializedVersion: 1
     m_State: {fileID: 274574195213238721}
     m_Position: {x: 600, y: 770, z: 0}
   m_ChildStateMachines: []
@@ -3888,32 +3885,6 @@ AnimatorState:
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 1827226128182048838, guid: 9e82bb1e0763b8249a140b6c39c95034, type: 3}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!1102 &4292909910488581482
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: FallLoop 0
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 0a09209f484450b4592a0dd5360d656b, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

@@ -105,7 +105,7 @@ namespace Traverser
 
         private void LateUpdate()
         {
-            // --- Ensure the skeleton does not get separated from the controller (forcing in-place animation) ---
+            // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
             if (!transition.isON && !fakeTransition)
                 skeleton.transform.position = skeletonRef.transform.position;
             else
@@ -223,7 +223,8 @@ namespace Traverser
                 {
                     desiredDisplacement.y = targetYWarp;
 
-                    if (Mathf.Abs(targetYWarp) < 0.1f)
+                    // --- If remaining YWarp is small enough, end warping ---
+                    if (Mathf.Abs(targetYWarp) < warpingValidDistance)
                     {
                         forceSuccess = true;
                     }

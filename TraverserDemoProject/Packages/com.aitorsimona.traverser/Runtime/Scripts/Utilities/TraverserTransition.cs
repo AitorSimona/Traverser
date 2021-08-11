@@ -211,6 +211,14 @@ namespace Traverser
             return ret;
         }
 
+        public void DebugDraw(float contactDebugSphereRadius)
+        {
+            // --- Draw transition contact and target point ---
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(contactTransform.t, contactDebugSphereRadius);
+            Gizmos.DrawWireSphere(targetTransform.t, contactDebugSphereRadius);
+        }
+
         // --------------------------------
     }
 }

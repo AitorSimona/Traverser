@@ -807,7 +807,7 @@ namespace Traverser
             if (!debugDraw || abilityController == null)
                 return;
 
-            Gizmos.color = Color.cyan;
+            Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(targetAimPosition, aimDebugSphereRadius);
         }
 

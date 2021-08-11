@@ -38,7 +38,7 @@ namespace Traverser
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show debug geometry.")]
         public bool debugDraw = false;
 
-        [Tooltip("The radius of the spheres used to debug draw.")]
+        [Tooltip("The radius of the spheres used to debug draw contact and target transforms.")]
         [Range(0.1f, 1.0f)]
         public float contactDebugSphereRadius = 0.5f;
 
@@ -58,9 +58,6 @@ namespace Traverser
 
         // --- Motion that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Vector3 currentdeltaPosition;
-
-        // --- Used to store last matchPosition, debug draw purposes ---
-        private Vector3 lastWarpPosition;
 
         // --- Rotation that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Quaternion currentdeltaRotation;
@@ -84,7 +81,6 @@ namespace Traverser
         private void Awake()
         {
             currentdeltaPosition = Vector3.zero;
-            lastWarpPosition = Vector3.zero;
 
             controller = GetComponent<TraverserCharacterController>();
         }
@@ -154,9 +150,6 @@ namespace Traverser
         public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, bool warpY = true, bool forceSuccess = false)
         {
             bool ret = true;
-
-            // --- Warp position and rotation to match matchPosition and matchRotation ---  
-            lastWarpPosition = matchPosition;
 
             // --- Check whether we are in a transition or target animation ---
             bool loop = animator.GetCurrentAnimatorStateInfo(0).loop;
@@ -280,8 +273,7 @@ namespace Traverser
                 return;
 
             // --- Draw transition contact and target point ---
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(lastWarpPosition, contactDebugSphereRadius);
+            transition.DebugDraw(contactDebugSphereRadius);
         }
 
         // --------------------------------

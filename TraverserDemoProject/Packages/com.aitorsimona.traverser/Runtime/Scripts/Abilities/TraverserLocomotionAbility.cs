@@ -260,11 +260,12 @@ namespace Traverser
 
                 ref TraverserCharacterController.TraverserCollision collision = ref controller.current; // current state of the controller (after a tick is issued)
 
-                // --- If a collision occurs, call each ability's onContact callback ---
+                // --- After performing movement, evaluate results and trigger a reaction, or let other abilities react ---
 
+                // --- If a collision occurs, call each ability's onContact callback ---
                 if (collision.isColliding && attemptTransition)
                 {
-                    ref TraverserTransform contactTransform = ref controller.contactTransform /*TraverserAffineTransform.Create(contactPoint, q)*/;
+                    ref TraverserTransform contactTransform = ref controller.contactTransform;
 
                     float angle = Vector3.SignedAngle(controller.contactNormal, -transform.forward, Vector3.up);
 
@@ -290,7 +291,7 @@ namespace Traverser
 
                     attemptTransition = false; // make sure we do not react to another collision
                 }
-                else if (/*!collision.isGrounded &&*/ state == LocomotionAbilityState.Falling 
+                else if (state == LocomotionAbilityState.Falling
                     && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.9f, contactDistanceMax))
                 {
                     // --- Check forward collision for possible ledge contact and inform abilities ---
@@ -313,7 +314,8 @@ namespace Traverser
 
                     //break;
                 }
-                else if (!collision.isGrounded || (collision.ground && controller.previous.ground && (collision.ground.GetInstanceID() != controller.previous.ground.GetInstanceID()))) // we are dropping/falling down and found ground
+                else if (!collision.isGrounded 
+                    || (collision.ground && controller.previous.ground && (collision.ground.GetInstanceID() != controller.previous.ground.GetInstanceID()))) // we are dropping/falling down and found ground
                 {
                     // --- Let other abilities take control on drop ---
                     if (contactAbility == null)
@@ -331,14 +333,10 @@ namespace Traverser
                 }
 
 
+                // --- We are falling and the simulation has found a new ground, we may activate a landing transition ---             
                 if (collision.isGrounded && collision.ground && controller.previous.ground == null
                     && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) < controller.capsuleHeight)
                 {
-                    // --- We are falling and the simulation has found a new ground ---             
-
-                    //GameObject.Find("dummy1").transform.position = targetTransform.t;
-                    //GameObject.Find("dummy1").transform.rotation = targetTransform.q;
-
                     bool success;
 
                     // --- Activate a landing roll transition ---
@@ -355,7 +353,7 @@ namespace Traverser
                         success = animationController.transition.StartTransition("FallTransition", "FallToRoll",
                                 "ClimbTransitionTrigger", "FallToRollTrigger", ref contactTransform, ref targetTransform, true, true);
                     }
-                    else
+                    else // TODO: Activate a hard landing transition
                         success = true; // activate a regular transition
 
                     // --- Trigger a landing transition ---
@@ -365,9 +363,6 @@ namespace Traverser
                     break;
                 }
 
-                // TODO: Add case for colliding against another wall/ledge
-
-                // TODO: Add case for falling without finding new ground - ? needed??
             }
 
             ResetRotation();
@@ -416,7 +411,7 @@ namespace Traverser
 
         private float GetDesiredSpeed(float deltaTime)        
         {
-            float desiredSpeed = 0.0f;
+            float desiredSpeed;
             float moveIntensity = GetDesiredMovementIntensity(deltaTime);
 
             // --- Sprinting, Accelerate/Decelerate to movementSpeedFast or movementSpeedSlow ---

@@ -12,7 +12,7 @@ namespace Traverser
         [Header("Movement settings")]
 
         [Tooltip("A reference to the character's camera to adapt movement.")]
-        public Transform camera;
+        public Transform cameraTransform;
 
         [Tooltip("If below this value, do not update velocity as this would stop the character immediately.")]
         [Range(0.0f, 0.1f)]
@@ -220,8 +220,8 @@ namespace Traverser
                 speed *= movementSpeedDampingOnTurn;
 
             // --- Compute desired velocity given camera transform ---
-            Vector3 camForward = camera.forward;
-            Vector3 camRight = camera.right;
+            Vector3 camForward = cameraTransform.forward;
+            Vector3 camRight = cameraTransform.right;
             camForward.y = 0.0f;
 
             Vector3 inputDirection;

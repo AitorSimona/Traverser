@@ -91,6 +91,10 @@ namespace Traverser
         [Range(0.0f, 1.0f)]
         public float footHeight = 1.0f;
 
+        [Header("Debug")]
+        [Tooltip("If active, debug utilities will be shown (information/geometry draw). Selecting the object may be required to show debug geometry.")]
+        public bool debugDraw = false;
+
 
         // -------------------------------------------------
 
@@ -287,7 +291,7 @@ namespace Traverser
                     attemptTransition = false; // make sure we do not react to another collision
                 }
                 else if (/*!collision.isGrounded &&*/ state == LocomotionAbilityState.Falling 
-                    && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.75f, contactDistanceMax))
+                    && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.9f, contactDistanceMax))
                 {
                     // --- Check forward collision for possible ledge contact and inform abilities ---
 
@@ -551,6 +555,17 @@ namespace Traverser
                 animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
                 animationController.animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.RightFoot));
             }
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!debugDraw || abilityController == null)
+                return;
+
+            Gizmos.color = Color.cyan;
+
+            // --- Draw forward collision ray ---
+            Gizmos.DrawRay(transform.position + Vector3.up * controller.capsuleHeight * 0.9f, transform.forward*contactDistanceMax);
         }
 
         // -------------------------------------------------

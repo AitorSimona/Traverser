@@ -61,12 +61,13 @@ namespace Traverser
             isTransitionAnimationON = false;
             isTargetAnimationON = false;
             transitionAnimation = "";
+            animationController.animator.ResetTrigger(triggerTransitionAnim);
+            animationController.animator.ResetTrigger(triggerTargetAnim);
             targetAnimation = "";
             triggerTargetAnim = "";
             animationController.SetRootMotion(false);
             forceTargetAnimation = false;
-            animationController.animator.ResetTrigger(triggerTransitionAnim);
-            animationController.animator.ResetTrigger(triggerTargetAnim);
+    
         }
 
         public TraverserTransition(TraverserAnimationController _animationController, ref TraverserCharacterController _controller)
@@ -93,8 +94,7 @@ namespace Traverser
                 Debug.LogWarning("TraverserTransition - StartTransition - Could not find one or more animation states/parameters in the given animator.");
                 return false;
             }
-
-            if (!isTransitionAnimationON && !isTargetAnimationON && !animationController.animator.IsInTransition(0))
+            else if (!isTransitionAnimationON && !isTargetAnimationON && !animationController.animator.IsInTransition(0))
             {
                 // --- If we are in a transition activate root motion and disable controller ---
                 //animationController.SetRootMotion(true);

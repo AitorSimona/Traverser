@@ -286,7 +286,8 @@ namespace Traverser
 
                     attemptTransition = false; // make sure we do not react to another collision
                 }
-                else if (state == LocomotionAbilityState.Falling && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.75f, contactDistanceMax))
+                else if (/*!collision.isGrounded &&*/ state == LocomotionAbilityState.Falling 
+                    && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.75f, contactDistanceMax))
                 {
                     // --- Check forward collision for possible ledge contact and inform abilities ---
 
@@ -306,7 +307,7 @@ namespace Traverser
                         }
                     }
 
-                    break;
+                    //break;
                 }
                 else if (!collision.isGrounded || (collision.ground && controller.previous.ground && (collision.ground.GetInstanceID() != controller.previous.ground.GetInstanceID()))) // we are dropping/falling down and found ground
                 {
@@ -324,24 +325,34 @@ namespace Traverser
                         }
                     }
                 }
-                else if (collision.isGrounded && collision.ground && controller.previous.ground == null 
-                    && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) < controller.capsuleHeight
-                    && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) > controller.capsuleHeight*0.5f)
+
+
+                if (collision.isGrounded && collision.ground && controller.previous.ground == null
+                    && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) < controller.capsuleHeight)
                 {
                     // --- We are falling and the simulation has found a new ground ---             
-                    TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
-                    TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position) 
-                        + transform.forward * 5.0f + Vector3.up, // roll animation offset
-                        transform.rotation );
 
                     //GameObject.Find("dummy1").transform.position = targetTransform.t;
                     //GameObject.Find("dummy1").transform.rotation = targetTransform.q;
 
-                    animationController.animator.Play("FallTransition", 0, 0.0f);
+                    bool success;
 
-                    // --- We pass an existing transition trigger that won't do anything, we are already in falling animation ---
-                    bool success = animationController.transition.StartTransition("FallTransition", "FallToRoll",
-                            "ClimbTransitionTrigger", "FallToRollTrigger", ref contactTransform, ref targetTransform, true, true);
+                    // --- Activate a landing roll transition ---
+                    if (Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) > controller.capsuleHeight * 0.5f)
+                    {
+                        animationController.animator.Play("FallTransition", 0, 0.0f);
+
+                        TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
+                        TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position)
+                            + transform.forward * 5.0f + Vector3.up, // roll animation offset
+                            transform.rotation);
+
+                        // --- We pass an existing transition trigger that won't do anything, we are already in falling animation ---
+                        success = animationController.transition.StartTransition("FallTransition", "FallToRoll",
+                                "ClimbTransitionTrigger", "FallToRollTrigger", ref contactTransform, ref targetTransform, true, true);
+                    }
+                    else
+                        success = true; // activate a regular transition
 
                     // --- Trigger a landing transition ---
                     if (success)

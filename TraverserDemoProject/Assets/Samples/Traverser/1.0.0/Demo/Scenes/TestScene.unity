@@ -1184,11 +1184,6 @@ Transform:
   m_Father: {fileID: 1913470703}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &436397524 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-  m_PrefabInstance: {fileID: 1839912810}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &489964706
 GameObject:
   m_ObjectHideFlags: 0
@@ -2554,196 +2549,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &834688075
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 834688076}
-  m_Layer: 0
-  m_Name: PARENT
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &834688076
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 834688075}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 33.5, y: 10.66, z: -12}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 436397524}
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &919081851 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6740730751872137753, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-  m_PrefabInstance: {fileID: 1839912810}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &919081852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919081851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aba105fc4bebd3c4d8f400ee02f28793, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &919081853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919081851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: aedfa8fe0dd6602478ea2a13f7d07084, type: 3}
-  m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 919081852}
-        m_TargetAssemblyTypeName: Traverser.TraverserInputController, aitorsimona.traverser
-        m_MethodName: OnMovement
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 8992906c-9df9-4e11-af83-b8aab0375317
-    m_ActionName: Player Controls/Movement[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/XInputControllerWindows/leftStick,/XInputControllerWindows/rightStick]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 919081852}
-        m_TargetAssemblyTypeName: Traverser.TraverserInputController, aitorsimona.traverser
-        m_MethodName: OnLook
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 4b3f2b30-fbd8-4797-bc3b-4e91fcfbe7b8
-    m_ActionName: Player Controls/Look[/Mouse/delta,/XInputControllerWindows/rightStick]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 919081852}
-        m_TargetAssemblyTypeName: Traverser.TraverserInputController, aitorsimona.traverser
-        m_MethodName: OnRunButton
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 7aeacb1a-bc00-4cbf-831c-f9fb68a73eb3
-    m_ActionName: Player Controls/Run[/Keyboard/leftShift]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 919081852}
-        m_TargetAssemblyTypeName: Traverser.TraverserInputController, aitorsimona.traverser
-        m_MethodName: OnWestButton
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: dbada5d5-9714-49ab-b8f5-f9e34eaa870f
-    m_ActionName: Player Controls/WestButton[/Keyboard/q]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 919081852}
-        m_TargetAssemblyTypeName: Traverser.TraverserInputController, aitorsimona.traverser
-        m_MethodName: OnNorthButton
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 519d0ae4-6304-4530-87cd-d84f6721d4d5
-    m_ActionName: Player Controls/NorthButton[/Keyboard/r]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 919081852}
-        m_TargetAssemblyTypeName: Traverser.TraverserInputController, aitorsimona.traverser
-        m_MethodName: OnEastButton
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 18b91a24-689e-49ab-8d0c-cfa1c55f53a3
-    m_ActionName: Player Controls/EastButton[/Keyboard/f]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 919081852}
-        m_TargetAssemblyTypeName: Traverser.TraverserInputController, aitorsimona.traverser
-        m_MethodName: OnSouthButton
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 6c4315c2-4fa4-4a9a-983e-10ed7fe56b5d
-    m_ActionName: Player Controls/SouthButton[/Keyboard/c]
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player Controls
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!1 &937386016
 GameObject:
   m_ObjectHideFlags: 0
@@ -4648,39 +4453,27 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 834688076}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1489611529, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.62699944
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489611529, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.0000018747523
-      objectReference: {fileID: 0}
-    - target: {fileID: 1784888620, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: maxJumpRadius
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1784888620, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: aimDebugSphereRadius
-      value: 0.25
+    - target: {fileID: 919081853, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: Gamepad
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 33.5
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 10.66
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -12
       objectReference: {fileID: 0}
     - target: {fileID: 6251051581523075235, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4714,38 +4507,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 'TraverserAgent '
       objectReference: {fileID: 0}
-    - target: {fileID: 6740730751872137753, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6740730751872137757, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: warpingValidDistance
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: camera
-      value: 
-      objectReference: {fileID: 778502428}
-    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: debugDraw
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 778502428}
-    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: contactDistanceMax
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6740730751872137952, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6740730751872137954, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
-      propertyPath: characterCollisionMask.m_Bits
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
 --- !u!4 &1839912811 stripped

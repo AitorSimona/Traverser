@@ -32,18 +32,6 @@ namespace Traverser
             inputInteraction = InputInteraction.None;
         }
 
-        //private void LateUpdate()
-        //{
-        //    // Reset input
-        //    //inputMovement = Vector2.zero;
-        //    //inputLook = Vector2.zero;
-        //    //inputInteraction &= InputInteraction.WestButton 
-        //    //    | InputInteraction.NorthButton 
-        //    //    | InputInteraction.EastButton
-        //    //    | InputInteraction.SouthButton; // just set to none!!!
-
-        //}
-
         // --------------------------------
 
         // --- Getters (names based on gamepad bindings) ---
@@ -103,27 +91,6 @@ namespace Traverser
         {
             inputLook = value.ReadValue<Vector2>();
         }
-
-        //public void OnInteraction(InputAction.CallbackContext value)
-        //{
-        //    // Found no way to compare ids or indices, so had to use the names....
-
-        //    switch (value.control.name)
-        //    {
-        //        case "buttonWest":
-        //            inputInteraction |= value.performed ? InputInteraction.WestButton : 0;
-        //            break;
-        //        case "buttonNorth":
-        //            inputInteraction |= value.performed ? InputInteraction.NorthButton : 0;
-        //            break;
-        //        case "buttonEast":
-        //            inputInteraction |= value.performed ? InputInteraction.EastButton : 0;
-        //            break;
-        //        case "buttonSouth":
-        //            inputInteraction |= value.performed ? InputInteraction.SouthButton : 0;
-        //            break;
-        //    }
-        //}
 
         public void OnWestButton(InputAction.CallbackContext value)
         {

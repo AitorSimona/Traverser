@@ -129,11 +129,6 @@ namespace Traverser
         // --------------------------------
 
         // --- Ability class methods ---
-        public void OnInputUpdate()
-        {
-            TraverserInputLayer.capture.UpdateClimbing();
-        }
-
         public TraverserAbility OnUpdate(float deltaTime)
         {
             if (animationController.transition.isON)
@@ -205,7 +200,7 @@ namespace Traverser
             //---If we make contact with a climbable surface and player issues climb order, mount ---         
             BoxCollider collider = controller.current.collider as BoxCollider;
 
-            if (TraverserInputLayer.capture.mountButton
+            if (abilityController.inputController.GetInputButtonEast()
                 && IsState(ClimbingAbilityState.Suspended)
                 && collider != null
                 && controller.isGrounded             // --- Ensure we are not falling ---
@@ -272,7 +267,7 @@ namespace Traverser
         {
             bool ret = false;
 
-            if (TraverserInputLayer.capture.dropDownButton)
+            if (abilityController.inputController.GetInputButtonSouth())
             {
                 BoxCollider collider = controller.previous.ground as BoxCollider;
 
@@ -505,14 +500,14 @@ namespace Traverser
             pullupPosition += transform.forward * 0.5f;
 
             // --- React to pull up/dismount ---
-            if (TraverserInputLayer.capture.leftStickVertical > 0.5f &&
+            if (abilityController.inputController.GetInputMovement().y > 0.5f &&
                 state != ClimbingAbilityState.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
             {
                 animationController.animator.Play("PullUp", 0, 0.0f);
                 animationController.fakeTransition = true;
                 SetState(ClimbingAbilityState.PullUp);
             }
-            else if (closeToDrop && TraverserInputLayer.capture.dismountButton)
+            else if (closeToDrop && abilityController.inputController.GetInputButtonEast())
             {
                 animationController.animator.Play("Dismount", 0, 0.0f);
                 animationController.fakeTransition = true;
@@ -525,21 +520,20 @@ namespace Traverser
             bool ret = false;
 
             // --- Given input, compute target position ---
-            Vector2 leftStickInput;
-            leftStickInput.x = TraverserInputLayer.capture.leftStickHorizontal;
-            leftStickInput.y = TraverserInputLayer.capture.leftStickVertical;
+            Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
+            //leftStickInput.x = TraverserInputLayer.capture.leftStickHorizontal;
+            //leftStickInput.y = TraverserInputLayer.capture.leftStickVertical;
             Vector3 targetPosition = transform.position + transform.right * leftStickInput.x * desiredSpeedLedge * deltaTime;
 
             // --- Given input, compute target aim Position (used to trigger ledge to ledge transitions) ---
-            Vector3 aimDirection = transform.right * TraverserInputLayer.capture.leftStickHorizontal
-                + transform.up * TraverserInputLayer.capture.leftStickVertical;
+            Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
             aimDirection.Normalize();
 
             Vector3 rayOrigin = transform.position
                 + transform.up * controller.capsuleHeight * 0.75f
                 + transform.forward * controller.capsuleRadius;
 
-            targetAimPosition = rayOrigin + aimDirection * maxJumpRadius * TraverserInputLayer.GetMoveIntensity(); 
+            targetAimPosition = rayOrigin + aimDirection * maxJumpRadius * abilityController.inputController.GetMoveIntensity(); 
 
             // --- Update hook ---
             TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetPosition, desiredCornerMinDistance);
@@ -556,10 +550,11 @@ namespace Traverser
 
             RaycastHit hit;
 
-            bool collided = Physics.SphereCast(rayOrigin, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius * TraverserInputLayer.GetMoveIntensity(), TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+            float moveIntensity = abilityController.inputController.GetMoveIntensity();
+            bool collided = Physics.SphereCast(rayOrigin, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius * moveIntensity, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
 
             // --- Trigger a ledge to ledge transition if required by player ---
-            if (TraverserInputLayer.GetMoveIntensity() > 0.1f && collided)
+            if (moveIntensity > 0.1f && collided)
             {
                 // --- Check if collided object is climbable ---
                 if (hit.transform.GetComponent<TraverserClimbingObject>())
@@ -615,7 +610,7 @@ namespace Traverser
             }
 
             // --- Trigger a jump back transition if required by player ---
-            if(TraverserInputLayer.capture.pullUpButton)
+            if(abilityController.inputController.GetInputButtonSouth())
             {
                 SetState(ClimbingAbilityState.JumpBack);
                 // --- Turn off/on controller ---
@@ -689,9 +684,9 @@ namespace Traverser
         
         ClimbingState GetDesiredClimbingState() 
         {
-            Vector2 stickInput;
-            stickInput.x = TraverserInputLayer.capture.leftStickHorizontal;
-            stickInput.y = TraverserInputLayer.capture.leftStickVertical;
+            Vector2 stickInput = abilityController.inputController.GetInputMovement();
+            //stickInput.x = TraverserInputLayer.capture.leftStickHorizontal;
+            //stickInput.y = TraverserInputLayer.capture.leftStickVertical;
 
             // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
             float distance = 0.0f;

@@ -149,16 +149,11 @@ namespace Traverser
             abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
-            TraverserInputLayer.capture.movementDirection = Vector3.zero;
         }
 
         // -------------------------------------------------
 
         // --- Ability class methods ---
-        public void OnInputUpdate()
-        {
-            TraverserInputLayer.capture.UpdateLocomotion();
-        }
 
         public TraverserAbility OnUpdate(float deltaTime)
         {
@@ -224,16 +219,16 @@ namespace Traverser
             Vector3 camRight = cameraTransform.right;
             camForward.y = 0.0f;
 
-            Vector3 inputDirection;
-            inputDirection.x = TraverserInputLayer.capture.leftStickHorizontal;
-            inputDirection.y = 0.0f;
-            inputDirection.z = TraverserInputLayer.capture.leftStickVertical;
+            Vector2 inputDirection = abilityController.inputController.GetInputMovement();
+            //inputDirection.x = TraverserInputLayer.capture.leftStickHorizontal;
+            //inputDirection.y = 0.0f;
+            //inputDirection.z = TraverserInputLayer.capture.leftStickVertical;
 
             // --- If stick is released, do not update velocity as this would stop the character immediately ---
             if (inputDirection.magnitude > minimumInputIntensity)
             {
                 currentVelocity = inputDirection.x * camRight
-                        + inputDirection.z * camForward;
+                        + inputDirection.y * camForward;
             }
 
             // --- Compute desired displacement ---
@@ -415,9 +410,9 @@ namespace Traverser
             float moveIntensity = GetDesiredMovementIntensity(deltaTime);
 
             // --- Sprinting, Accelerate/Decelerate to movementSpeedFast or movementSpeedSlow ---
-            if (TraverserInputLayer.capture.run && desiredLinearSpeed < runSpeed)
+            if (abilityController.inputController.GetInputButtonRun() && desiredLinearSpeed < runSpeed)
                 desiredLinearSpeed += (runSpeed - jogSpeed) * deltaTime * runSpeedTime;
-            else if (desiredLinearSpeed > jogSpeed && TraverserInputLayer.GetMoveIntensity() > 0.0f)
+            else if (desiredLinearSpeed > jogSpeed && abilityController.inputController.GetMoveIntensity() > 0.0f)
                 desiredLinearSpeed += (jogSpeed - runSpeed) * deltaTime * runSpeedTime;
 
             // --- Increase timer ---
@@ -442,7 +437,7 @@ namespace Traverser
         private float GetDesiredMovementIntensity(float deltaTime)
         {
             // --- Compute desired movement intensity given input and timer ---
-            float moveIntensity = TraverserInputLayer.GetMoveIntensity();
+            float moveIntensity = abilityController.inputController.GetMoveIntensity();
 
             // --- Cap timer, reset previous movement intensity ---
             if (movementDecelerationTimer < 0.0f)

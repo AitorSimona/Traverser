@@ -3,9 +3,6 @@
     // --- All abilities derive from this base interface ---
     public interface TraverserAbility
     {
-        // --- Called every frame by AbilityController to let abilities poll for relevant input --- 
-        void OnInputUpdate();
-
         // --- Called every frame by AbilityController ---
         TraverserAbility OnUpdate(float deltaTime);
 

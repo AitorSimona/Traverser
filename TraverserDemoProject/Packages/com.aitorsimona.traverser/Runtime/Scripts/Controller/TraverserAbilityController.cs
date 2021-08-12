@@ -8,17 +8,21 @@ namespace Traverser
     {
         // --- Private Variables ---
 
-        private TraverserAbility currentAbility;
+        [HideInInspector]
+        public TraverserInputController inputController;
+
         private TraverserCharacterController controller;
         private TraverserAnimationController animationController;
         private TraverserAnimationController.AnimatorParameters animatorParameters;
         private TraverserAbility[] abilities;
+        private TraverserAbility currentAbility;
 
         // --------------------------------
 
         // --- Basic methods ---
         public void Start()
         {
+            inputController = GetComponent<TraverserInputController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
             abilities = GetComponents<TraverserAbility>();
@@ -36,15 +40,6 @@ namespace Traverser
         {
             if (!controller.isActiveAndEnabled)
                 return;
-
-            // --- Let abilities poll for input ---
-            foreach (TraverserAbility ability in abilities)
-            {
-                if (!ability.IsAbilityEnabled())
-                    continue;
-
-                ability.OnInputUpdate();
-            }
 
             // --- Keep updating our current ability ---
             bool isEnabled = currentAbility == null ? false : currentAbility.IsAbilityEnabled();
@@ -74,7 +69,7 @@ namespace Traverser
             // --- Send updated animator parameters to animation controller ---
             if (animationController.isActiveAndEnabled)
             {
-                animatorParameters.Move = TraverserInputLayer.GetMoveIntensity() > 0.0f;
+                animatorParameters.Move = inputController.GetMoveIntensity() > 0.0f;
 
                 // --- We are not interested in Y speed, since then gravity would make us run in the animator! ---
                 Vector2 speed;
@@ -93,8 +88,6 @@ namespace Traverser
             {
                 controller.ForceMove(Vector3.Lerp(transform.position, transform.position + controller.targetDisplacement, Time.deltaTime / Time.fixedDeltaTime));
                 controller.ForceRotate(Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.AngleAxis(controller.targetHeading, Vector3.up), Time.deltaTime / Time.fixedDeltaTime));
-
-                //Debug.Log(Time.deltaTime / Time.fixedDeltaTime);
             }
         }
 
@@ -111,6 +104,7 @@ namespace Traverser
             // --- Keep updating our current ability ---
             if (currentAbility != null && isEnabled)
                 currentAbility = currentAbility.OnFixedUpdate(Time.fixedDeltaTime);
+
             // --- If no ability is in control, look for one ---
             if (currentAbility == null || !isEnabled)
             {

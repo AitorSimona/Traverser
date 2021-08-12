@@ -50,10 +50,6 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Ability class methods ---
-        public void OnInputUpdate()
-        {
-            TraverserInputLayer.capture.UpdateParkour();
-        }
 
         public TraverserAbility OnUpdate(float deltaTime)
         {
@@ -72,7 +68,7 @@ namespace Traverser
         {
             bool ret = false;
 
-            if (TraverserInputLayer.capture.parkourButton && !animationController.transition.isON)
+            if (abilityController.inputController.GetInputButtonSouth() && !animationController.transition.isON)
             {
                 ref Collider collider = ref controller.current.collider;
 
@@ -89,7 +85,7 @@ namespace Traverser
         {
             bool ret = false;
 
-            if (TraverserInputLayer.capture.parkourDropDownButton
+            if (abilityController.inputController.GetInputButtonEast()
                 && controller.previous.isGrounded
                 && controller.previous.ground != null
                 && !animationController.transition.isON)

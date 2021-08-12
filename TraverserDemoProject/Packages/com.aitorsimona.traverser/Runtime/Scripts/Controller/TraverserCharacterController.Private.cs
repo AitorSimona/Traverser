@@ -207,9 +207,9 @@ namespace Traverser
 
         // --- Collisions ---
 
-        void CheckGroundCollision()
+        private void CheckGroundCollision()
         {
-            int colliderIndex = TraverserCollisionLayer.CastGroundProbe(position, groundProbeRadius, ref hitColliders, characterCollisionMask);
+            int colliderIndex = CastGroundProbe();
 
             if (colliderIndex != -1)
             {   
@@ -265,6 +265,29 @@ namespace Traverser
                 if (debugDraw)
                     Debug.DrawRay(groundRay.origin, groundRay.direction * groundSnapRayDistance);
             }
+        }
+
+        private int CastGroundProbe()
+        {
+            // --- Ground collision check ---
+            int chosenGround = -1;
+            Vector3 colliderPosition;
+            int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+            if (numColliders > 0)
+            {
+                float minDistance = groundProbeRadius * 2.0f;
+
+                for (int i = 0; i < numColliders; ++i)
+                {
+                    colliderPosition = hitColliders[i].ClosestPoint(position);
+
+                    if (Mathf.Abs(colliderPosition.y - position.y) < minDistance)
+                        chosenGround = i;
+                }
+            }
+
+            return chosenGround;
         }
 
         // --------------------------------

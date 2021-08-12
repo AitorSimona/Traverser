@@ -40,28 +40,28 @@ namespace Traverser
         //}
 
         // --- Return the collider we are grounded to (index of hitColliders), -1 if no ground found --
-        public static int CastGroundProbe(Vector3 position, float groundProbeRadius, ref Collider[] hitColliders, int layerMask)
-        {
-            // --- Ground collision check ---
-            int chosenGround = -1;
-            Vector3 colliderPosition;
-            int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, layerMask, QueryTriggerInteraction.Ignore);
+        //public static int CastGroundProbe(Vector3 position, float groundProbeRadius, ref Collider[] hitColliders, int layerMask)
+        //{
+        //    // --- Ground collision check ---
+        //    int chosenGround = -1;
+        //    Vector3 colliderPosition;
+        //    int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, layerMask, QueryTriggerInteraction.Ignore);
 
-            if (numColliders > 0)
-            {
-                float minDistance = groundProbeRadius * 2.0f;
+        //    if (numColliders > 0)
+        //    {
+        //        float minDistance = groundProbeRadius * 2.0f;
 
-                for (int i = 0; i < numColliders; ++i)
-                {
-                    colliderPosition = hitColliders[i].ClosestPoint(position);
+        //        for (int i = 0; i < numColliders; ++i)
+        //        {
+        //            colliderPosition = hitColliders[i].ClosestPoint(position);
 
-                    if (Mathf.Abs(colliderPosition.y - position.y) < minDistance)
-                        chosenGround = i;
-                }
-            }
+        //            if (Mathf.Abs(colliderPosition.y - position.y) < minDistance)
+        //                chosenGround = i;
+        //        }
+        //    }
 
-            return chosenGround;
-        }
+        //    return chosenGround;
+        //}
 
         // --------------------------------
     }

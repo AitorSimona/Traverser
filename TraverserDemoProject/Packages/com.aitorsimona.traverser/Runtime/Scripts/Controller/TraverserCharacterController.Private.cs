@@ -209,7 +209,7 @@ namespace Traverser
 
         void CheckGroundCollision()
         {
-            int colliderIndex = TraverserCollisionLayer.CastGroundProbe(position, groundProbeRadius, ref hitColliders, TraverserCollisionLayer.EnvironmentCollisionMask);
+            int colliderIndex = TraverserCollisionLayer.CastGroundProbe(position, groundProbeRadius, ref hitColliders, characterCollisionMask);
 
             if (colliderIndex != -1)
             {   
@@ -240,7 +240,7 @@ namespace Traverser
                 groundRay.direction = -Vector3.up;
 
                 if (state.previousCollision.ground != null 
-                    && !Physics.Raycast(groundRay.origin, groundRay.direction, groundSnapRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore))
+                    && !Physics.Raycast(groundRay.origin, groundRay.direction, groundSnapRayDistance, characterCollisionMask, QueryTriggerInteraction.Ignore))
                 {
                     // --- We want to slide along the edge of the collider, not get trapped on it, so we need to properly adjust the trajectory ---
 

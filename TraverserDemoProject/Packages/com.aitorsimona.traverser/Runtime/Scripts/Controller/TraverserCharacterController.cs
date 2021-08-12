@@ -16,6 +16,10 @@ namespace Traverser
 
 
         [Header("Collision")]
+
+        [Tooltip("Mask used in collision checks, character will only collide against objects of assigned layers.")]
+        public LayerMask characterCollisionMask;
+
         [Tooltip("Radius of the ground collision check sphere.")]
         [Range(0.1f, 1.0f)]
         public float groundProbeRadius = 0.25f;
@@ -240,7 +244,7 @@ namespace Traverser
             // --- Overrides the controller's collision data with a possible forward ray collision (not affected by gravity) ---
 
             RaycastHit hit;
-            bool ret = Physics.Raycast(origin, transform.forward, out hit, maxRayDistance, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+            bool ret = Physics.Raycast(origin, transform.forward, out hit, maxRayDistance, characterCollisionMask, QueryTriggerInteraction.Ignore);
 
             // --- Fill collider data ---
             if (ret)

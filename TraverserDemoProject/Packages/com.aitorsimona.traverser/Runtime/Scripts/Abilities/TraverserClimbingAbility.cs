@@ -289,7 +289,7 @@ namespace Traverser
                     TraverserTransform hangedTransform = GetHangedSkeletonTransform();
          
                     // --- If capsule collides against any relevant collider, do not start the dropDown transition ---
-                    if (!Physics.CheckCapsule(hangedTransform.t, hangedTransform.t + Vector3.up * controller.capsuleHeight, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask))
+                    if (!Physics.CheckCapsule(hangedTransform.t, hangedTransform.t + Vector3.up * controller.capsuleHeight, controller.capsuleRadius, controller.characterCollisionMask))
                     {
                         hangedTransform.q = hookRotation;
 
@@ -489,7 +489,7 @@ namespace Traverser
                 SetClimbingState(desiredState);
             }
 
-            bool closeToDrop = Physics.Raycast(transform.position, Vector3.down, maxClimbableHeight - controller.capsuleHeight, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+            bool closeToDrop = Physics.Raycast(transform.position, Vector3.down, maxClimbableHeight - controller.capsuleHeight, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
 
             if(debugDraw)
                 Debug.DrawRay(transform.position, Vector3.down * (maxClimbableHeight - controller.capsuleHeight), Color.yellow);
@@ -551,7 +551,7 @@ namespace Traverser
             RaycastHit hit;
 
             float moveIntensity = abilityController.inputController.GetMoveIntensity();
-            bool collided = Physics.SphereCast(rayOrigin, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius * moveIntensity, TraverserCollisionLayer.EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+            bool collided = Physics.SphereCast(rayOrigin, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius * moveIntensity, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
 
             // --- Trigger a ledge to ledge transition if required by player ---
             if (moveIntensity > 0.1f && collided)
@@ -640,7 +640,7 @@ namespace Traverser
             end.y += controller.capsuleHeight;
 
             // --- Cast a capsule and return whether there has been a collision or not ---
-            return Physics.CheckCapsule(start, end, controller.capsuleRadius, TraverserCollisionLayer.EnvironmentCollisionMask);        
+            return Physics.CheckCapsule(start, end, controller.capsuleRadius, controller.characterCollisionMask);        
         }
 
         private TraverserTransform GetHangedTransform()

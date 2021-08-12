@@ -7,37 +7,37 @@ namespace Traverser
     public static class TraverserCollisionLayer
     {
         // --- Attributes ---
-        private static int ms_EnvironmentCollisionMask = -1;
+        //private static int ms_EnvironmentCollisionMask = -1;
 
         // --- All object layers our character can collide with ---
 
         // TODO : Remove unused layers
-        public static int EnvironmentCollisionMask
-        {
-            get
-            {
-                if (ms_EnvironmentCollisionMask < 0)
-                {
-                    string[] layerNames = new string[] { "Default" };
-                    ms_EnvironmentCollisionMask = LayerMask.GetMask(layerNames);
-                }
+        //public static int EnvironmentCollisionMask
+        //{
+        //    get
+        //    {
+        //        if (ms_EnvironmentCollisionMask < 0)
+        //        {
+        //            string[] layerNames = new string[] { "Default" };
+        //            ms_EnvironmentCollisionMask = LayerMask.GetMask(layerNames);
+        //        }
 
-                return ms_EnvironmentCollisionMask;
-            }
-        }
+        //        return ms_EnvironmentCollisionMask;
+        //    }
+        //}
 
         // --------------------------------
 
         // --- Utilities ---
 
         // --- Return whether given capsule collider is colliding with any object in given layers ---
-        public static bool IsCharacterCapsuleColliding(Vector3 rootPosition, Vector3 center, float height, float radius)
-        {
-            Vector3 capsuleCenter = rootPosition + center;
-            Vector3 capsuleOffset = Vector3.up * (height * 0.5f - radius);
+        //public static bool IsCharacterCapsuleColliding(Vector3 rootPosition, Vector3 center, float height, float radius)
+        //{
+        //    Vector3 capsuleCenter = rootPosition + center;
+        //    Vector3 capsuleOffset = Vector3.up * (height * 0.5f - radius);
 
-            return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, radius - 0.1f, EnvironmentCollisionMask);
-        }
+        //    return Physics.CheckCapsule(capsuleCenter - capsuleOffset, capsuleCenter + capsuleOffset, radius - 0.1f, EnvironmentCollisionMask);
+        //}
 
         // --- Return the collider we are grounded to (index of hitColliders), -1 if no ground found --
         public static int CastGroundProbe(Vector3 position, float groundProbeRadius, ref Collider[] hitColliders, int layerMask)
@@ -45,7 +45,7 @@ namespace Traverser
             // --- Ground collision check ---
             int chosenGround = -1;
             Vector3 colliderPosition;
-            int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, EnvironmentCollisionMask, QueryTriggerInteraction.Ignore);
+            int numColliders = Physics.OverlapSphereNonAlloc(position, groundProbeRadius, hitColliders, layerMask, QueryTriggerInteraction.Ignore);
 
             if (numColliders > 0)
             {

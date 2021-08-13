@@ -338,6 +338,7 @@ namespace Traverser
                 newTransform.y -= controller.capsuleHeight / 2.0f;
                 controller.TeleportTo(newTransform);
                 locomotionAbility.ResetLocomotion();
+
                 animationController.animator.Play("LocomotionON", 0, 0.0f);
             }
         }
@@ -521,8 +522,6 @@ namespace Traverser
 
             // --- Given input, compute target position ---
             Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
-            //leftStickInput.x = TraverserInputLayer.capture.leftStickHorizontal;
-            //leftStickInput.y = TraverserInputLayer.capture.leftStickVertical;
             Vector3 targetPosition = transform.position + transform.right * leftStickInput.x * desiredSpeedLedge * deltaTime;
 
             // --- Given input, compute target aim Position (used to trigger ledge to ledge transitions) ---
@@ -685,8 +684,6 @@ namespace Traverser
         ClimbingState GetDesiredClimbingState() 
         {
             Vector2 stickInput = abilityController.inputController.GetInputMovement();
-            //stickInput.x = TraverserInputLayer.capture.leftStickHorizontal;
-            //stickInput.y = TraverserInputLayer.capture.leftStickVertical;
 
             // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
             float distance = 0.0f;

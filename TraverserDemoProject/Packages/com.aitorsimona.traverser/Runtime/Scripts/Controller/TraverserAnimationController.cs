@@ -217,10 +217,10 @@ namespace Traverser
                     desiredDisplacement.y = targetYWarp;
 
                     // --- If remaining YWarp is small enough, end warping ---
-                    if (Mathf.Abs(targetYWarp) < warpingValidDistance)
-                    {
-                        forceSuccess = true;
-                    }
+                    //if (Mathf.Abs(targetYWarp) < warpingValidDistance)
+                    //{
+                    //    forceSuccess = true;
+                    //}
 
                 }
                 else

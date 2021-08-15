@@ -1,9 +1,38 @@
+using System;
 using UnityEngine;
 
 namespace Traverser
 {
     public class TraverserTransition 
     {
+        [Serializable]
+        public struct TraverserTransitionData
+        {
+            [Tooltip("The name of the animator state to play in order to reach the contactTransform.")]
+            public string transitionAnim;
+
+            [Tooltip("The name of the animator state to play in order to reach the targetTransform after reaching the contactTransform.")]
+            public string targetAnim;
+
+            [Tooltip("The name of the aniamtor trigger to activate in order to play the transitionAnim.")]
+            public string triggerTransitionAnim;
+
+            [Tooltip("The name of the aniamtor trigger to activate in order to play the targetAnim.")]
+            public string triggerTargetAnim;
+
+            [Tooltip("The multiplier to apply to a direction specified by the user that offsets the contactTransform. Useful if you want, for example, to start the target animation before reaching the contact point.")]
+            public float contactOffset;
+
+            [Tooltip("The multiplier to apply to a direction specified by the user that offsets the targetTransform. Useful if you want, for example, to end the target animation further from the original target.")]
+            public float targetOffset;
+
+            [Tooltip("Indicates if the motion warper should apply warping in Y direction. Use if you want to cover any height. The warper will cover X and Z by default.")]
+            public bool warpY;
+
+            [Tooltip("Use if you want to force the target animation, thus skipping warp to contactTransform. Use if you only need a single animation transition.")]
+            public bool forceTarget;
+        }
+
         // --- Attributes ---
         private TraverserAnimationController animationController;
         private TraverserCharacterController controller;

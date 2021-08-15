@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 367ea2cd9327bc94eb30537f4350cbfe, type: 3}
+  m_Name: AgentClimbingData
+  m_EditorClassIdentifier: 
+  mountTransitionData:
+    transitionAnim: WalkTransition
+    targetAnim: Mount
+    triggerTransitionAnim: WalkTransitionTrigger
+    triggerTargetAnim: MountTrigger
+    contactOffset: 1
+    targetOffset: 0
+    warpY: 1
+    forceTarget: 0
+  jumpHangTransitionData:
+    transitionAnim: FallTransition
+    targetAnim: JumpHang
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: JumpHangTrigger
+    contactOffset: 0
+    targetOffset: 0
+    warpY: 1
+    forceTarget: 1
+  dropDownTransitionData:
+    transitionAnim: WalkTransition
+    targetAnim: DropDown
+    triggerTransitionAnim: WalkTransitionTrigger
+    triggerTargetAnim: DropDownTrigger
+    contactOffset: 0.5
+    targetOffset: 0
+    warpY: 1
+    forceTarget: 0
+  HopUpTransitionData:
+    transitionAnim: ClimbTransition
+    targetAnim: HopUp
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: HopUpTrigger
+    contactOffset: 0
+    targetOffset: 0
+    warpY: 1
+    forceTarget: 0
+  HopRightTransitionData:
+    transitionAnim: ClimbTransition
+    targetAnim: HopRight
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: HopRightTrigger
+    contactOffset: 0
+    targetOffset: 0
+    warpY: 1
+    forceTarget: 0
+  HopLeftTransitionData:
+    transitionAnim: ClimbTransition
+    targetAnim: HopLeft
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: HopLeftTrigger
+    contactOffset: 0
+    targetOffset: 0
+    warpY: 1
+    forceTarget: 0
+  HopDownTransitionData:
+    transitionAnim: ClimbTransition
+    targetAnim: HopDown
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: HopDownTrigger
+    contactOffset: 0
+    targetOffset: 0
+    warpY: 1
+    forceTarget: 0
+  fallTransitionAnimation: FallTransition
+  locomotionOnAnimation: LocomotionON
+  ledgeIdleAnimation: LedgeIdle
+  fallLoopAnimation: FallLoop
+  ledgeRightAnimation: LedgeRight
+  ledgeLeftAnimation: LedgeLeft
+  ledgeCornerRightAnimation: LedgeCornerRight
+  ledgeCornerLeftAnimation: LedgeCornerLeft
+  pullUpAnimation: PullUp
+  dismountAnimation: Dismount
+  JumpBackAnimation: JumpBack

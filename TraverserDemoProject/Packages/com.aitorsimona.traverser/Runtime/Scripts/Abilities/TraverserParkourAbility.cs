@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Traverser
 {
@@ -9,6 +10,11 @@ namespace Traverser
     public class TraverserParkourAbility : MonoBehaviour, TraverserAbility
     {
         // --- Attributes ---
+
+        [Header("Animation")]
+        [Tooltip("A reference to the parkour ability's dataset (scriptable object asset).")]
+        public TraverserParkourData parkourData;
+
         [Header("Feet IK settings")]
         [Tooltip("Activates or deactivates foot IK placement for the climbing ability.")]
         public bool fIKOn = true;
@@ -40,6 +46,7 @@ namespace Traverser
 
         public void Start()
         {
+            Debug.Assert(parkourData);
             IKRay = new Ray();
             abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
@@ -205,15 +212,9 @@ namespace Traverser
 
             // --- Check if we are jogging or running and play appropriate transition ---
             if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
-            {
-                ret = StartTransition("JogTransition", "VaultTableJog", "JogTransitionTrigger",
-                    "TableTrigger", 1.0f, 1.0f, ref contactTransform, ref targetTransform);
-            }
+                ret = StartTransition(ref parkourData.vaultTableJogTransitionData, ref contactTransform, ref targetTransform);
             else if (speed > locomotionAbility.jogSpeed + epsilon)
-            {
-                ret = StartTransition("RunTransition", "VaultTableRun", "RunTransitionTrigger",
-                    "TableTrigger", 1.75f, 1.0f, ref contactTransform, ref targetTransform);
-            }
+                ret = StartTransition(ref parkourData.vaultTableRunTransitionData ,ref contactTransform, ref targetTransform);
 
             return ret;
         }
@@ -246,43 +247,31 @@ namespace Traverser
             if (speed <= locomotionAbility.walkSpeed)
             {
                 if (!isDrop)
-                {
-                    ret = StartTransition("WalkTransition", "ClimbPlatformWalk", "WalkTransitionTrigger",
-                        "PlatformClimbTrigger", 1.0f, 0.1f, ref contactTransform, ref targetTransform);
-                }
+                    ret = StartTransition(ref parkourData.climbPlatformWalkTransitionData ,ref contactTransform, ref targetTransform);
                 else
                 {
                     contactTransform = targetTransform;
-                    ret = StartTransition("WalkTransition", "DropPlatformWalk", "WalkTransitionTrigger",
-                        "PlatformDropTrigger", 1.0f, 0.1f, ref contactTransform, ref targetTransform);
+                    ret = StartTransition(ref parkourData.dropPlatformWalkTransitionData ,ref contactTransform, ref targetTransform);
                 }
             }
             else if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
             {
                 if (!isDrop)
-                {
-                    ret = StartTransition("JogTransition", "ClimbPlatformJog", "JogTransitionTrigger",
-                        "PlatformClimbTrigger", 1.0f, 0.1f, ref contactTransform, ref targetTransform);
-                }
+                    ret = StartTransition(ref parkourData.climbPlatformJogTransitionData ,ref contactTransform, ref targetTransform);
                 else
                 {
                     contactTransform = targetTransform;
-                    ret = StartTransition("JogTransition", "DropPlatformJog", "JogTransitionTrigger",
-                        "PlatformDropTrigger", 1.0f, 0.1f, ref contactTransform, ref targetTransform);
+                    ret = StartTransition(ref parkourData.dropPlatformJogTransitionData ,ref contactTransform, ref targetTransform);
                 }
             }
             else
             {
                 if (!isDrop)
-                {
-                    ret = StartTransition("RunTransition", "ClimbPlatformRun", "RunTransitionTrigger",
-                        "PlatformClimbTrigger", 1.0f, 0.1f, ref contactTransform, ref targetTransform);
-                }
+                    ret = StartTransition(ref parkourData.climbPlatformRunTransitionData ,ref contactTransform, ref targetTransform);
                 else
                 {
                     contactTransform = targetTransform;
-                    ret = StartTransition("RunTransition", "DropPlatformRun", "RunTransitionTrigger",
-                        "PlatformDropTrigger", 1.5f, 0.1f, ref contactTransform, ref targetTransform);
+                    ret = StartTransition(ref parkourData.dropPlatformRunTransitionData ,ref contactTransform, ref targetTransform);
                 }
             }
 
@@ -298,20 +287,11 @@ namespace Traverser
 
             // --- Check if we are walking, jogging or running and play appropriate transition ---
             if (speed <= locomotionAbility.walkSpeed)
-            {
-                ret = StartTransition("WalkTransition", "VaultLedgeWalk", "WalkTransitionTrigger",
-                    "LedgeTrigger", 0.75f, 0.5f, ref contactTransform, ref targetTransform);
-            }
+                ret = StartTransition(ref parkourData.vaultLedgeWalkTransitionData ,ref contactTransform, ref targetTransform);
             else if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
-            {
-                ret = StartTransition("JogTransition", "VaultLedgeJog", "JogTransitionTrigger",
-                    "LedgeTrigger", 1.0f, 0.25f, ref contactTransform, ref targetTransform);
-            }
+                ret = StartTransition(ref parkourData.vaultLedgeJogTransitionData ,ref contactTransform, ref targetTransform);
             else
-            {
-                ret = StartTransition("RunTransition", "VaultLedgeRun", "RunTransitionTrigger",
-                    "LedgeTrigger", 1.0f, 0.5f, ref contactTransform, ref targetTransform);
-            }
+                ret = StartTransition(ref parkourData.vaultLedgeRunTransitionData ,ref contactTransform, ref targetTransform);
 
             return ret;
         }
@@ -329,28 +309,20 @@ namespace Traverser
 
             // --- Check if we are jogging or running and play appropriate transition ---
             if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
-            {
-                ret = StartTransition("JogTransition", "SlideTunnelJog", "JogTransitionTrigger",
-                    "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform, false);
-            }
+                ret = StartTransition(ref parkourData.slideTunnelJogTransitionData, ref contactTransform, ref targetTransform);
             else if (speed > locomotionAbility.jogSpeed + epsilon)
-            {
-                ret = StartTransition("RunTransition", "SlideTunnelRun", "RunTransitionTrigger",
-                    "TunnelTrigger", 1.75f, 0.5f, ref contactTransform, ref targetTransform, false);
-            }
+                ret = StartTransition(ref parkourData.slideTunnelRunTransitionData, ref contactTransform, ref targetTransform);
 
             return ret;
         }
 
-        private bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim, 
-            float contactOffset, float targetOffset, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform, bool warpY = true)
+        private bool StartTransition(ref TraverserTransition.TraverserTransitionData transitionData, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
         {
             // --- Apply offsets to warp points ---
-            contactTransform.t -= (transform.forward * contactOffset);
-            targetTransform.t += (transform.forward * targetOffset);
+            contactTransform.t -= (transform.forward * transitionData.contactOffset);
+            targetTransform.t += (transform.forward * transitionData.targetOffset);
 
-            return animationController.transition.StartTransition(transitionAnim, targetAnim, triggerTransitionAnim, triggerTargetAnim, 
-                ref contactTransform, ref targetTransform, warpY);
+            return animationController.transition.StartTransition(ref transitionData, ref contactTransform, ref targetTransform);
         }
 
         // -------------------------------------------------

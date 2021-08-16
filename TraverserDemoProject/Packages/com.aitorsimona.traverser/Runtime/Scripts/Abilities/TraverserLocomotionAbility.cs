@@ -9,6 +9,10 @@ namespace Traverser
     public class TraverserLocomotionAbility : MonoBehaviour, TraverserAbility 
     {
         // --- Attributes ---
+        [Header("Animation")]
+        [Tooltip("A reference to the locomotion ability's dataset (scriptable object asset).")]
+        public TraverserLocomotionData locomotionData;
+
         [Header("Movement settings")]
 
         [Tooltip("A reference to the character's camera to adapt movement.")]
@@ -220,9 +224,6 @@ namespace Traverser
             camForward.y = 0.0f;
 
             Vector2 inputDirection = abilityController.inputController.GetInputMovement();
-            //inputDirection.x = TraverserInputLayer.capture.leftStickHorizontal;
-            //inputDirection.y = 0.0f;
-            //inputDirection.z = TraverserInputLayer.capture.leftStickVertical;
 
             // --- If stick is released, do not update velocity as this would stop the character immediately ---
             if (inputDirection.magnitude > minimumInputIntensity)
@@ -341,12 +342,11 @@ namespace Traverser
 
                         TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
                         TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position)
-                            + transform.forward * 5.0f + Vector3.up, // roll animation offset
+                            + transform.forward * locomotionData.FallToRollTransitionData.targetOffset + Vector3.up, // roll animation offset
                             transform.rotation);
 
                         // --- We pass an existing transition trigger that won't do anything, we are already in falling animation ---
-                        success = animationController.transition.StartTransition("FallTransition", "FallToRoll",
-                                "ClimbTransitionTrigger", "FallToRollTrigger", ref contactTransform, ref targetTransform, true, true);
+                        success = animationController.transition.StartTransition(ref locomotionData.FallToRollTransitionData, ref contactTransform, ref targetTransform);
                     }
                     else // TODO: Activate a hard landing transition
                         success = true; // activate a regular transition

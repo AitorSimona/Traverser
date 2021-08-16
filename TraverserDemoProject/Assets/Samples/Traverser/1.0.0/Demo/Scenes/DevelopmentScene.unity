@@ -1533,15 +1533,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177370943352971, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.10853205
+      value: 0.10853204
       objectReference: {fileID: 0}
     - target: {fileID: 5452177370943352971, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000009433511
+      value: 0.000000012704942
       objectReference: {fileID: 0}
     - target: {fileID: 5452177370943352971, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000001029922
+      value: -0.0000000013870868
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371026187803, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1621,7 +1621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371420739849, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.085109934
+      value: 0.08510991
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371420739849, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1629,7 +1629,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371420739849, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.08656662
+      value: 0.0865666
       objectReference: {fileID: 0}
     - target: {fileID: 7301835085647520708, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_RootOrder
@@ -3521,6 +3521,10 @@ PrefabInstance:
       value: -0.0000019939616
       objectReference: {fileID: 0}
     - target: {fileID: 1784888620, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: climbingData
+      value: 
+      objectReference: {fileID: 11400000, guid: b678b7f44b1c9824fadc2b58a3fd82d6, type: 2}
+    - target: {fileID: 1784888620, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: desiredSpeedLedge
       value: 1
       objectReference: {fileID: 0}
@@ -3572,6 +3576,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: TraverserAgent
       objectReference: {fileID: 0}
+    - target: {fileID: 6740730751872137758, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: parkourData
+      value: 
+      objectReference: {fileID: 11400000, guid: 57b0340850686c540a5b0716d5285217, type: 2}
+    - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
+      propertyPath: locomotionData
+      value: 
+      objectReference: {fileID: 11400000, guid: c7c06b04f0fb89449b4c1601b6c22310, type: 2}
     - target: {fileID: 6740730751872137759, guid: ad8c7773854835b47a5aa4898452e6a1, type: 3}
       propertyPath: cameraTransform
       value: 

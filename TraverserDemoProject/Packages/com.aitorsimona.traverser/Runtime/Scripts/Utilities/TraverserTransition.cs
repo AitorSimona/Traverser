@@ -34,10 +34,6 @@ namespace Traverser
         }
 
         // --- Attributes ---
-        private TraverserAnimationController animationController;
-        private TraverserCharacterController controller;
-
-        // --------------------------------
 
         // --- Indicates if transition handler is currently playing ---
         public bool isON { get => isTransitionAnimationON || isTargetAnimationON; }
@@ -45,7 +41,12 @@ namespace Traverser
         // --- Indicates if transition handler is currently warping ---
         public bool isWarping { get => isWarpOn; }
 
+        // --------------------------------
+
         // --- Private Variables ---
+
+        private TraverserAnimationController animationController;
+        private TraverserCharacterController controller;
 
         // --- Indicates if we are playing the specified transitionAnimation ---
         private bool isTransitionAnimationON = false;
@@ -53,31 +54,17 @@ namespace Traverser
         // --- Indicates if we are playing the specified targetAnimation ---
         private bool isTargetAnimationON = false;
 
-        // --- The desired transition animation to play to reach the desired location ---
-        private string transitionAnimation;
+        // --- Indicates if transition handler is currently warping ---
+        private bool isWarpOn = false;
 
-        // --- The desired animation to play on reaching the desired location ---
-        private string targetAnimation;
-
-        // --- The desired animator trigger to activate for transition animations ---
-        private string triggerTransitionAnim;
-
-        // --- The desired animator trigger to activate for target animations ---
-        private string triggerTargetAnim;
+        // --- Contains current transition information ---
+        private TraverserTransitionData transitionData;
 
         // --- Transform in space we have to reach playing transitionAnimation ---
         private TraverserTransform contactTransform;
 
         // --- Transform in space we have to reach playing targetAnimation ---
         private TraverserTransform targetTransform;
-
-        // --- Indicates if transition handler is currently warping ---
-        private bool isWarpOn = false;
-
-        // --- Whether or not the warper will cover Y distances ---
-        private bool warpY = true;
-
-        private bool forceTargetAnimation = false;
 
         // --------------------------------
 
@@ -89,14 +76,15 @@ namespace Traverser
             isWarpOn = false;
             isTransitionAnimationON = false;
             isTargetAnimationON = false;
-            transitionAnimation = "";
-            animationController.animator.ResetTrigger(triggerTransitionAnim);
-            animationController.animator.ResetTrigger(triggerTargetAnim);
-            targetAnimation = "";
-            triggerTargetAnim = "";
+            transitionData.transitionAnim = "";
+            transitionData.targetAnim = "";
+            animationController.animator.ResetTrigger(transitionData.triggerTransitionAnim);
+            animationController.animator.ResetTrigger(transitionData.triggerTargetAnim);
+            transitionData.triggerTransitionAnim = "";
+            transitionData.triggerTargetAnim = "";
             animationController.SetRootMotion(false);
-            forceTargetAnimation = false;
-    
+            transitionData.forceTarget = false;
+   
         }
 
         public TraverserTransition(TraverserAnimationController _animationController, ref TraverserCharacterController _controller)
@@ -109,16 +97,15 @@ namespace Traverser
 
         // --- Utility Methods ---
 
-        public bool StartTransition(string transitionAnim, string targetAnim, string triggerTransitionAnim, string triggerTargetAnim,
-            ref TraverserTransform contactTransform, ref TraverserTransform targetTransform, bool warpY = true, bool forceTarget = false)
+        public bool StartTransition(ref TraverserTransitionData transitionDataset ,ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
         {
             // --- TransitionAnim and targetAnim must exists as states in the animator ---
             // --- TriggerAnim must exist as trigger in transitions between current state to transitionAnim to targetAnim ---
 
-            if(!animationController.animator.HasState(0, Animator.StringToHash(transitionAnim))
-                || !animationController.animator.HasState(0, Animator.StringToHash(targetAnim))
-                || !animationController.animatorParameters.ContainsKey(triggerTransitionAnim)
-                || !animationController.animatorParameters.ContainsKey(triggerTargetAnim))
+            if(!animationController.animator.HasState(0, Animator.StringToHash(transitionDataset.transitionAnim))
+                || !animationController.animator.HasState(0, Animator.StringToHash(transitionDataset.targetAnim))
+                || !animationController.animatorParameters.ContainsKey(transitionDataset.triggerTransitionAnim)
+                || !animationController.animatorParameters.ContainsKey(transitionDataset.triggerTargetAnim))
             {
                 Debug.LogWarning("TraverserTransition - StartTransition - Could not find one or more animation states/parameters in the given animator.");
                 return false;
@@ -129,18 +116,18 @@ namespace Traverser
                 //animationController.SetRootMotion(true);
                 controller.ConfigureController(false);
                 isWarpOn = true;
-                transitionAnimation = transitionAnim;
-                targetAnimation = targetAnim;
-                this.triggerTargetAnim = triggerTargetAnim;
-                this.triggerTransitionAnim = triggerTransitionAnim;
+                transitionData.transitionAnim = transitionDataset.transitionAnim;
+                transitionData.targetAnim = transitionDataset.targetAnim;
+                transitionData.triggerTargetAnim = transitionDataset.triggerTargetAnim;
+                transitionData.triggerTransitionAnim = transitionDataset.triggerTransitionAnim;
 
-                animationController.animator.SetTrigger(triggerTransitionAnim);
+                animationController.animator.SetTrigger(transitionDataset.triggerTransitionAnim);
 
                 isTransitionAnimationON = true;
                 this.targetTransform = targetTransform;
                 this.contactTransform = contactTransform;
-                this.warpY = warpY;
-                this.forceTargetAnimation = forceTarget;
+                transitionData.warpY = transitionDataset.warpY;
+                transitionData.forceTarget = transitionDataset.forceTarget;
 
                 return true;
             }
@@ -159,7 +146,7 @@ namespace Traverser
                 if (animationController.animator.IsInTransition(0))
                 {
                     // --- Target animation has finished playing, we can give control back to the controller ---
-                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation)
+                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionData.targetAnim)
                         && isTargetAnimationON)
                     {
                         // TODO: We may end up here before warping is complete, one mistake may be not using the exit transition time's
@@ -192,8 +179,8 @@ namespace Traverser
                     if (isTransitionAnimationON)
                     {
                         // --- Use target matching (motion warping) to reach the contact transform as the transitionAnimation plays ---
-                        if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionAnimation))
-                            isTransitionAnimationON = animationController.WarpToTarget(contactTransform.t, contactTransform.q, true, forceTargetAnimation);
+                        if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionData.transitionAnim))
+                            isTransitionAnimationON = animationController.WarpToTarget(contactTransform.t, contactTransform.q, true, transitionData.forceTarget);
 
                         // --- When we reach the contact point, activate targetAnimation ---
                         if (!isTransitionAnimationON)
@@ -203,7 +190,7 @@ namespace Traverser
                             isTargetAnimationON = true;
                             isWarpOn = true;
                             controller.TeleportTo(animationController.transform.position);
-                            animationController.animator.SetTrigger(triggerTargetAnim);
+                            animationController.animator.SetTrigger(transitionData.triggerTargetAnim);
                         }
 
                         ret = true;
@@ -212,8 +199,8 @@ namespace Traverser
                     else if (isTargetAnimationON)
                     {
                         // --- Use motion warping to reach the target transform as the targetAnimation plays ---
-                        if (isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(targetAnimation))
-                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, warpY);
+                        if (isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionData.targetAnim))
+                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, transitionData.warpY);
 
                         // --- If current state does not have a valid exit transition, return control ---
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)

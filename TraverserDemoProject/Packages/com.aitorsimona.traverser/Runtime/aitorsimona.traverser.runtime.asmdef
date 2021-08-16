@@ -2,7 +2,8 @@
     "name": "aitorsimona.traverser",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:9f68cd3018dbead4898598adc90b8f90"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

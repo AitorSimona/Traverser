@@ -9,6 +9,10 @@ namespace Traverser
     {
         // --- Attributes ---
 
+        [Header("Animation")]
+        [Tooltip("A reference to the locomotion ability's dataset (scriptable object asset).")]
+        public TraverserClimbingData climbingData;
+
         [Header("Ledge traversal settings")]
         [Tooltip("Desired speed in meters per second for ledge climbing.")]
         [Range(0.0f, 10.0f)]
@@ -220,12 +224,10 @@ namespace Traverser
                     TraverserTransform hangedTransform = GetHangedSkeletonTransform();
 
                     // --- Offset contact transform ---
-                    float transitionOffset = 1.0f;
-                    contactTransform.t -= transform.forward * transitionOffset;
+                    contactTransform.t -= transform.forward * climbingData.mountTransitionData.contactOffset;
 
                     // --- Require a transition ---
-                    ret = animationController.transition.StartTransition("WalkTransition", "Mount",
-                        "WalkTransitionTrigger", "MountTrigger", ref contactTransform, ref hangedTransform);
+                    ret = animationController.transition.StartTransition(ref climbingData.mountTransitionData, ref contactTransform, ref hangedTransform);
 
                     // --- If transition start is successful, change state ---
                     if (ret)
@@ -246,8 +248,7 @@ namespace Traverser
 
                 // --- Require a transition ---
                 animationController.animator.Play("FallTransition", 0, 0.0f);
-                ret = animationController.transition.StartTransition("FallTransition", "JumpHang",
-                            "ClimbTransitionTrigger", "JumpHangTrigger", ref contactTransform, ref hangedTransform, true, true);
+                ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData ,ref contactTransform, ref hangedTransform);
 
                 // --- If transition start is successful, change state ---
                 if (ret)
@@ -281,9 +282,8 @@ namespace Traverser
                     hookPosition.y += (animationController.skeleton.position.y - transform.position.y);
                     Quaternion hookRotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ledgeHook), transform.up);
 
-                    float transitionOffset = 0.5f;
                     TraverserTransform contactTransform = TraverserTransform.Get(hookPosition, hookRotation);
-                    contactTransform.t -= transform.forward * transitionOffset;
+                    contactTransform.t -= transform.forward * climbingData.dropDownTransitionData.contactOffset;
 
                     // --- Get target transform ---
                     TraverserTransform hangedTransform = GetHangedSkeletonTransform();
@@ -294,8 +294,7 @@ namespace Traverser
                         hangedTransform.q = hookRotation;
 
                         // --- Require a transition ---
-                        ret = animationController.transition.StartTransition("WalkTransition", "DropDown",
-                            "WalkTransitionTrigger", "DropDownTrigger", ref contactTransform, ref hangedTransform, false);
+                        ret = animationController.transition.StartTransition(ref climbingData.dropDownTransitionData ,ref contactTransform, ref hangedTransform);
 
                         if (ret)
                         {
@@ -578,23 +577,19 @@ namespace Traverser
 
                     if (Mathf.Abs(angle) < 45.0f)
                     {
-                        success = animationController.transition.StartTransition("ClimbTransition", "HopUp",
-                            "ClimbTransitionTrigger", "HopUpTrigger", ref contactTransform, ref targetTransform);
+                        success = animationController.transition.StartTransition(ref climbingData.HopUpTransitionData ,ref contactTransform, ref targetTransform);
                     }
                     else if (angle >= 45.0f && angle <= 90.0f)
                     {
-                        success = animationController.transition.StartTransition("ClimbTransition", "HopRight",
-                            "ClimbTransitionTrigger", "HopRightTrigger", ref contactTransform, ref targetTransform);
+                        success = animationController.transition.StartTransition(ref climbingData.HopRightTransitionData, ref contactTransform, ref targetTransform);
                     }
                     else if (angle <= -45.0f && angle >= -90.0f)
                     {
-                        success = animationController.transition.StartTransition("ClimbTransition", "HopLeft",
-                            "ClimbTransitionTrigger", "HopLeftTrigger", ref contactTransform, ref targetTransform);
+                        success = animationController.transition.StartTransition(ref climbingData.HopLeftTransitionData, ref contactTransform, ref targetTransform);
                     }
                     else
                     {
-                        success = animationController.transition.StartTransition("ClimbTransition", "HopDown",
-                            "ClimbTransitionTrigger", "HopDownTrigger", ref contactTransform, ref targetTransform);
+                        success = animationController.transition.StartTransition(ref climbingData.HopDownTransitionData, ref contactTransform, ref targetTransform);
                     }
 
                     // --- Trigger ledge to ledge transition ---

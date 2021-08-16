@@ -12,7 +12,7 @@ namespace Traverser
         public TraverserTransition.TraverserTransitionData FallToRollTransitionData;
 
         [Header("Animations")]
-        public string fallTransitionAnimation;
+        public TraverserAnimationController.AnimationData fallTransitionAnimation;
 
     }
 }

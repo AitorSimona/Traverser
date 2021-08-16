@@ -21,4 +21,6 @@ MonoBehaviour:
     targetOffset: 5
     warpY: 1
     forceTarget: 1
-  fallTransitionAnimation: FallTransition
+  fallTransitionAnimation:
+    animationStateName: FallTransition
+    transitionDuration: 0.25

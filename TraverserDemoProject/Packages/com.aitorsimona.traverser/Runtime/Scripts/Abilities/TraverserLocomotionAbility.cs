@@ -338,7 +338,7 @@ namespace Traverser
                     // --- Activate a landing roll transition ---
                     if (Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) > controller.capsuleHeight * 0.5f)
                     {
-                        animationController.animator.CrossFade(locomotionData.fallTransitionAnimation, animationController.manualTransitionDuration, 0);
+                        animationController.animator.CrossFade(locomotionData.fallTransitionAnimation.animationStateName, locomotionData.fallTransitionAnimation.transitionDuration, 0);
 
                         TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
                         TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position)

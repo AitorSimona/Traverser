@@ -75,14 +75,36 @@ MonoBehaviour:
     targetOffset: 0
     warpY: 1
     forceTarget: 0
-  fallTransitionAnimation: FallTransition
-  locomotionOnAnimation: LocomotionON
-  ledgeIdleAnimation: LedgeIdle
-  fallLoopAnimation: FallLoop
-  ledgeRightAnimation: LedgeRight
-  ledgeLeftAnimation: LedgeLeft
-  ledgeCornerRightAnimation: LedgeCornerRight
-  ledgeCornerLeftAnimation: LedgeCornerLeft
-  pullUpAnimation: PullUp
-  dismountAnimation: Dismount
-  JumpBackAnimation: JumpBack
+  fallTransitionAnimation:
+    animationStateName: FallTransition
+    transitionDuration: 0.25
+  locomotionOnAnimation:
+    animationStateName: LocomotionON
+    transitionDuration: 0.25
+  ledgeIdleAnimation:
+    animationStateName: LedgeIdle
+    transitionDuration: 0.1
+  fallLoopAnimation:
+    animationStateName: FallLoop
+    transitionDuration: 0.25
+  ledgeRightAnimation:
+    animationStateName: LedgeRight
+    transitionDuration: 0.1
+  ledgeLeftAnimation:
+    animationStateName: LedgeLeft
+    transitionDuration: 0.1
+  ledgeCornerRightAnimation:
+    animationStateName: LedgeCornerRight
+    transitionDuration: 0.15
+  ledgeCornerLeftAnimation:
+    animationStateName: LedgeCornerLeft
+    transitionDuration: 0.15
+  pullUpAnimation:
+    animationStateName: PullUp
+    transitionDuration: 0.15
+  dismountAnimation:
+    animationStateName: Dismount
+    transitionDuration: 0.15
+  jumpBackAnimation:
+    animationStateName: JumpBack
+    transitionDuration: 0.15

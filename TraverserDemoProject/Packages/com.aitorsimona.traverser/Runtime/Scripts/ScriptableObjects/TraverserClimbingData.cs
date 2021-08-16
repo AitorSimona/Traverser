@@ -18,17 +18,17 @@ namespace Traverser
         public TraverserTransition.TraverserTransitionData HopDownTransitionData;
 
         [Header("Animations")]
-        public string fallTransitionAnimation;
-        public string locomotionOnAnimation;
-        public string ledgeIdleAnimation;
-        public string fallLoopAnimation;
-        public string ledgeRightAnimation;
-        public string ledgeLeftAnimation;
-        public string ledgeCornerRightAnimation;
-        public string ledgeCornerLeftAnimation;
-        public string pullUpAnimation;
-        public string dismountAnimation;
-        public string JumpBackAnimation;
 
+        public TraverserAnimationController.AnimationData fallTransitionAnimation;
+        public TraverserAnimationController.AnimationData locomotionOnAnimation;
+        public TraverserAnimationController.AnimationData ledgeIdleAnimation;
+        public TraverserAnimationController.AnimationData fallLoopAnimation;
+        public TraverserAnimationController.AnimationData ledgeRightAnimation;
+        public TraverserAnimationController.AnimationData ledgeLeftAnimation;
+        public TraverserAnimationController.AnimationData ledgeCornerRightAnimation;
+        public TraverserAnimationController.AnimationData ledgeCornerLeftAnimation;
+        public TraverserAnimationController.AnimationData pullUpAnimation;
+        public TraverserAnimationController.AnimationData dismountAnimation;
+        public TraverserAnimationController.AnimationData jumpBackAnimation;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,16 +24,22 @@ namespace Traverser
             public int HeadingID;
         }
 
+        [Serializable]
+        public struct AnimationData
+        {
+            [Tooltip("The animation state name (Animator state not animation name!).")]
+            public string animationStateName;
+
+            [Tooltip("Time in seconds manual animation states transitions will take.")]
+            public float transitionDuration;
+        }
+
         [Header("Animation")]
         [Tooltip("Reference to the skeleton's parent. The controller positions the skeleton at the skeletonRef's position. Used to kill animation's root motion.")]
         public Transform skeleton;
 
         [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
         public Transform skeletonRef;
-
-        [Tooltip("Time in seconds manual animation states transitions will take.")]
-        [Range(0.1f, 0.35f)]
-        public float manualTransitionDuration = 0.25f;
 
         [Header("Warping")]
         [Tooltip("The distance at which the character has to be within for warping success.")]

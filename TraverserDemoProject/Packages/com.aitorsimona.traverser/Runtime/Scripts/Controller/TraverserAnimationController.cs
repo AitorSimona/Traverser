@@ -91,12 +91,14 @@ namespace Traverser
         // --- The distance in Y we need to warp --- 
         private float targetYWarp;
 
+        //private Vector3 absoluteDelta;
 
         // --------------------------------
 
         private void Awake()
         {
             currentdeltaPosition = Vector3.zero;
+            //absoluteDelta = Vector3.zero;
 
             controller = GetComponent<TraverserCharacterController>();
         }
@@ -114,6 +116,12 @@ namespace Traverser
         }
 
         // --- Basic Methods ---
+
+        //public void AddDelta(Vector3 newDelta)
+        //{
+        //    absoluteDelta += newDelta;
+        //    controller.targetDisplacement = absoluteDelta;
+        //}
 
         private void LateUpdate()
         {
@@ -135,9 +143,17 @@ namespace Traverser
                     targetWarpTime = Mathf.Max(targetWarpTime, 0.1f);
                 }
 
-         
-                controller.targetHeading = 0.0f;
-                controller.targetDisplacement = Vector3.zero;
+                if (fakeTransition)
+                {
+                    //transform.position = Vector3.Lerp(transform.position, transform.position + absoluteDelta, Time.deltaTime / Time.fixedDeltaTime);
+                    //transform.position += currentDelta;
+                    //absoluteDelta = Vector3.zero;
+                }
+                else
+                {
+                    controller.targetHeading = 0.0f;
+                    controller.targetDisplacement = Vector3.zero;
+                }
             }
         }
 

@@ -441,6 +441,7 @@ namespace Traverser
             // --- Handle ledge climbing/movement direction ---
             if (!IsClimbingState(desiredState))
             {
+                animationController.fakeTransition = true;
 
                 if (desiredState == ClimbingState.Idle)
                     animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
@@ -467,6 +468,7 @@ namespace Traverser
                     {
                         animationController.animator.CrossFade(climbingData.ledgeCornerRightAnimation.animationStateName, climbingData.ledgeCornerRightAnimation.transitionDuration, 0);
                         animationController.fakeTransition = true;
+                        controller.targetDisplacement = Vector3.zero;
                     }
                 }
                 else if (desiredState == ClimbingState.CornerLeft)
@@ -486,6 +488,7 @@ namespace Traverser
                     {
                         animationController.animator.CrossFade(climbingData.ledgeCornerLeftAnimation.animationStateName, climbingData.ledgeCornerLeftAnimation.transitionDuration, 0);
                         animationController.fakeTransition = true;
+                        controller.targetDisplacement = Vector3.zero;
                     }
 
                 }
@@ -529,7 +532,10 @@ namespace Traverser
 
             // --- Given input, compute target position ---
             Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
-            Vector3 targetPosition = transform.position + transform.right * leftStickInput.x * desiredSpeedLedge * deltaTime;
+            Vector3 delta = transform.right * leftStickInput.x * desiredSpeedLedge * deltaTime;
+            Vector3 targetPosition = transform.position + delta;
+
+            //animationController.AddDelta(delta);
 
             // --- Given input, compute target aim Position (used to trigger ledge to ledge transitions) ---
             Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
@@ -604,6 +610,9 @@ namespace Traverser
                     if (success)
                     {
                         SetState(ClimbingAbilityState.LedgeToLedge);
+
+                        animationController.fakeTransition = false;
+
 
                         // --- Turn off/on controller ---
                         controller.ConfigureController(false);

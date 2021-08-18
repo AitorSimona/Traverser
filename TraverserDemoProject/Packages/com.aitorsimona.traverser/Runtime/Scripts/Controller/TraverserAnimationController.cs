@@ -267,13 +267,19 @@ namespace Traverser
             animator.applyRootMotion = rootMotion;
         }
 
+        public bool IsTransitionFinished()
+        {
+            // ALERT!: Call only if your state has linked transitions
+            return !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f;
+        }
+
         public void GetPositionAtTime(float normalizedTime, out Vector3 position)
         {
             // --- Samples current animation at the given normalized time (0.0f - 1.0f) ---
             // --- Useful to know at what position will an animation end ---
 
             SetRootMotion(true);
-            animator.SetTarget(AvatarTarget.Body, 1.0f);
+            animator.SetTarget(AvatarTarget.Body, normalizedTime);
             animator.Update(0);
             position = animator.targetPosition;
             SetRootMotion(false);

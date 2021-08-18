@@ -247,7 +247,9 @@ namespace Traverser
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform();
 
                 // --- Require a transition ---
-                animationController.animator.CrossFade(climbingData.fallTransitionAnimation.animationStateName, climbingData.fallTransitionAnimation.transitionDuration, 0);
+                //animationController.animator.CrossFade(climbingData.fallTransitionAnimation.animationStateName, climbingData.fallTransitionAnimation.transitionDuration, 0);
+                animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
+
                 ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData ,ref contactTransform, ref hangedTransform);
 
                 // --- If transition start is successful, change state ---
@@ -327,7 +329,7 @@ namespace Traverser
 
         void HandleDismountState()
         {
-            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            if (animationController.IsTransitionFinished())
             {
                 animationController.fakeTransition = false;
                 SetState(ClimbingAbilityState.Suspended);
@@ -344,7 +346,7 @@ namespace Traverser
 
         void HandlePullUpState()
         {
-            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            if (animationController.IsTransitionFinished())
             {
                 animationController.fakeTransition = false;
                 SetState(ClimbingAbilityState.Suspended);
@@ -391,11 +393,13 @@ namespace Traverser
 
         void HandleJumpBackState()
         {
-            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            if (animationController.IsTransitionFinished())
             {
                 animationController.fakeTransition = false;
                 SetState(ClimbingAbilityState.Suspended);
-                animationController.animator.CrossFade(climbingData.fallLoopAnimation.animationStateName, climbingData.fallLoopAnimation.transitionDuration, 0);
+                //animationController.animator.CrossFade(climbingData.fallLoopAnimation.animationStateName, climbingData.fallLoopAnimation.transitionDuration, 0);
+                animationController.animator.Play(climbingData.fallLoopAnimation.animationStateName, 0);
+
                 Vector3 newTransform = animationController.skeleton.position;
                 newTransform.y -= controller.capsuleHeight / 2.0f;
                 controller.TeleportTo(newTransform);
@@ -412,7 +416,7 @@ namespace Traverser
                 || climbingState == ClimbingState.CornerLeft
                 )
             {
-                if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=  1.0f)
+                if (animationController.IsTransitionFinished())
                 {
                     animationController.fakeTransition = false;
                     SetClimbingState(ClimbingState.None);
@@ -500,8 +504,8 @@ namespace Traverser
             pullupPosition += transform.forward * 0.5f;
 
 
-            Debug.Log(abilityController.inputController.GetInputMovement());
-            GameObject.Find("dummy1").transform.position = pullupPosition;
+            //Debug.Log(abilityController.inputController.GetInputMovement());
+            //GameObject.Find("dummy1").transform.position = pullupPosition;
 
             // --- React to pull up/dismount ---
             if (abilityController.inputController.GetInputMovement().y > 0.5f &&

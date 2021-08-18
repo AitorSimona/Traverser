@@ -441,6 +441,7 @@ namespace Traverser
             // --- Handle ledge climbing/movement direction ---
             if (!IsClimbingState(desiredState))
             {
+                // --- Enable usage of baked root motion --- 
                 animationController.fakeTransition = true;
 
                 if (desiredState == ClimbingState.Idle)
@@ -467,7 +468,6 @@ namespace Traverser
                     else
                     {
                         animationController.animator.CrossFade(climbingData.ledgeCornerRightAnimation.animationStateName, climbingData.ledgeCornerRightAnimation.transitionDuration, 0);
-                        animationController.fakeTransition = true;
                         controller.targetDisplacement = Vector3.zero;
                     }
                 }
@@ -487,7 +487,6 @@ namespace Traverser
                     else
                     {
                         animationController.animator.CrossFade(climbingData.ledgeCornerLeftAnimation.animationStateName, climbingData.ledgeCornerLeftAnimation.transitionDuration, 0);
-                        animationController.fakeTransition = true;
                         controller.targetDisplacement = Vector3.zero;
                     }
 
@@ -505,10 +504,6 @@ namespace Traverser
             Vector3 pullupPosition = transform.position;
             pullupPosition += transform.up * controller.capsuleHeight * 1.35f;
             pullupPosition += transform.forward * 0.5f;
-
-
-            //Debug.Log(abilityController.inputController.GetInputMovement());
-            //GameObject.Find("dummy1").transform.position = pullupPosition;
 
             // --- React to pull up/dismount ---
             if (abilityController.inputController.GetInputMovement().y > 0.5f &&
@@ -534,8 +529,6 @@ namespace Traverser
             Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
             Vector3 delta = transform.right * leftStickInput.x * desiredSpeedLedge * deltaTime;
             Vector3 targetPosition = transform.position + delta;
-
-            //animationController.AddDelta(delta);
 
             // --- Given input, compute target aim Position (used to trigger ledge to ledge transitions) ---
             Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
@@ -610,9 +603,7 @@ namespace Traverser
                     if (success)
                     {
                         SetState(ClimbingAbilityState.LedgeToLedge);
-
                         animationController.fakeTransition = false;
-
 
                         // --- Turn off/on controller ---
                         controller.ConfigureController(false);

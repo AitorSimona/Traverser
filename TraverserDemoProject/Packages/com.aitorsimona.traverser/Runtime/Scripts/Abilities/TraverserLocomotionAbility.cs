@@ -233,8 +233,11 @@ namespace Traverser
                         + inputDirection.y * camForward;
             }
 
+            // --- Modify controller functionality ---
             if (state == LocomotionAbilityState.Ledge)
                 controller.groundSnap = true;
+            else
+                controller.groundSnap = false;
 
 
             // --- Compute desired displacement ---
@@ -294,7 +297,7 @@ namespace Traverser
                 }
                 else if ((state == LocomotionAbilityState.Falling
                     && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.9f, contactDistanceMax)) 
-                    || controller.CheckForwardCollision(transform.position, contactDistanceMax))
+                    || controller.CheckForwardCollision(transform.position - Vector3.up * 0.25f, contactDistanceMax))
                 {
                     // --- Check forward collision for possible ledge contact and inform abilities ---
 

@@ -246,9 +246,16 @@ namespace Traverser
             RaycastHit hit;
             bool ret = Physics.Raycast(origin, transform.forward, out hit, maxRayDistance, characterCollisionMask, QueryTriggerInteraction.Ignore);
 
+       
+
             // --- Fill collider data ---
             if (ret)
             {
+
+                // --- Make sure we do not activate a collision against our current ground ---
+                if (state.previousCollision.ground != null && hit.collider.Equals(state.previousCollision.ground))
+                    return false;
+
                 contactNormal = hit.normal;
                 contactTransform.t = hit.point;
                 contactTransform.t.y = hit.collider.bounds.center.y + hit.collider.bounds.extents.y;

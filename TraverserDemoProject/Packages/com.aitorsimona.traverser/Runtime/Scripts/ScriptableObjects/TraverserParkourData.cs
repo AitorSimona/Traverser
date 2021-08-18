@@ -26,5 +26,8 @@ namespace Traverser
 
         public TraverserTransition.TraverserTransitionData slideTunnelJogTransitionData;
         public TraverserTransition.TraverserTransitionData slideTunnelRunTransitionData;
+
+        public TraverserTransition.TraverserTransitionData ledgeToLedgeTransitionData;
+
     }
 }

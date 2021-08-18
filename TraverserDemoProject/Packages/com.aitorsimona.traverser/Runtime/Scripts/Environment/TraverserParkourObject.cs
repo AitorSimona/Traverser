@@ -12,7 +12,8 @@ namespace Traverser
             Table,
             Platform,
             Ledge,
-            Tunnel
+            Tunnel,
+            LedgeToLedge
         };
 
         public TraverserParkourType type = TraverserParkourType.Ledge;

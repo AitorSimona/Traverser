@@ -113,7 +113,8 @@ namespace Traverser
         {
             Moving,
             Falling,
-            Landing
+            Landing,
+            Ledge
         }
 
         // --- Character's target movement speed ---
@@ -232,6 +233,10 @@ namespace Traverser
                         + inputDirection.y * camForward;
             }
 
+            if (state == LocomotionAbilityState.Ledge)
+                controller.groundSnap = true;
+
+
             // --- Compute desired displacement ---
             Vector3 finalDisplacement = currentVelocity.normalized * speed;
             finalDisplacement *= deltaTime;
@@ -287,8 +292,9 @@ namespace Traverser
 
                     attemptTransition = false; // make sure we do not react to another collision
                 }
-                else if (state == LocomotionAbilityState.Falling
-                    && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.9f, contactDistanceMax))
+                else if ((state == LocomotionAbilityState.Falling
+                    && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.9f, contactDistanceMax)) 
+                    || controller.CheckForwardCollision(transform.position, contactDistanceMax))
                 {
                     // --- Check forward collision for possible ledge contact and inform abilities ---
 

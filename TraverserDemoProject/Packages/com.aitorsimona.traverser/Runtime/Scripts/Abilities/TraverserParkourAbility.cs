@@ -146,6 +146,9 @@ namespace Traverser
                 case TraverserParkourObject.TraverserParkourType.Tunnel:
                     ret = HandleTunnelTransition(ref contactTransform, ref targetTransform);
                     break;
+                case TraverserParkourObject.TraverserParkourType.LedgeToLedge:
+                    ret = HandleLedgeToLedgeTransition(ref contactTransform, ref targetTransform);
+                    break;
 
                 default:
                     break;
@@ -316,11 +319,30 @@ namespace Traverser
             return ret;
         }
 
+        private bool HandleLedgeToLedgeTransition(ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
+        {
+            bool ret = false;
+
+            // --- Get speed from controller ---
+            //targetTransform.t -= (targetTransform.t - contactTransform.t)*0.5f;
+            targetTransform.t = contactTransform.t;
+            targetTransform.t.y += controller.capsuleHeight * 0.25f;
+            contactTransform.t = animationController.skeleton.position;
+
+            ret = StartTransition(ref parkourData.ledgeToLedgeTransitionData, ref contactTransform, ref targetTransform);
+
+            if (ret)
+                locomotionAbility.SetLocomotionState(TraverserLocomotionAbility.LocomotionAbilityState.Ledge);
+
+            return ret;
+        }
+
         private bool StartTransition(ref TraverserTransition.TraverserTransitionData transitionData, ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
         {
             // --- Apply offsets to warp points ---
             contactTransform.t -= (transform.forward * transitionData.contactOffset);
             targetTransform.t += (transform.forward * transitionData.targetOffset);
+          
 
             return animationController.transition.StartTransition(ref transitionData, ref contactTransform, ref targetTransform);
         }

@@ -69,7 +69,10 @@ namespace Traverser
             // --- Send updated animator parameters to animation controller ---
             if (animationController.isActiveAndEnabled)
             {
-                animatorParameters.Move = inputController.GetMoveIntensity() > 0.0f;
+                // --- We must prevent the animator from activating a transition to another state while we are trying to trigger another ---
+                // --- Only one transition can be active at once!!! ---
+                if(!animationController.transition.isON)
+                    animatorParameters.Move = inputController.GetMoveIntensity() > 0.0f;
 
                 // --- We are not interested in Y speed, since then gravity would make us run in the animator! ---
                 Vector2 speed;

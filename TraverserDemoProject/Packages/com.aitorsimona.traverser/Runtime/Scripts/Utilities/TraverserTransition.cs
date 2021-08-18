@@ -231,6 +231,7 @@ namespace Traverser
             // --- Draw transition contact and target point ---
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(contactTransform.t, contactDebugSphereRadius);
+            Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(targetTransform.t, contactDebugSphereRadius);
         }
 

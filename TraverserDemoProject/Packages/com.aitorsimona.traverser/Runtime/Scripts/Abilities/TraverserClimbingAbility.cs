@@ -270,7 +270,7 @@ namespace Traverser
         {
             bool ret = false;
 
-            if (abilityController.inputController.GetInputButtonSouth())
+            if (abilityController.inputController.GetInputButtonEast())
             {
                 BoxCollider collider = controller.previous.ground as BoxCollider;
 

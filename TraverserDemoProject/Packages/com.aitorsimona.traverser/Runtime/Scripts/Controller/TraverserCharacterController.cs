@@ -257,6 +257,17 @@ namespace Traverser
                 current.colliderContactNormal = hit.normal;
                 current.colliderContactPoint = hit.point;
                 current.isColliding = true;
+
+                Vector3 right = transform.InverseTransformDirection(hit.transform.right);
+                Vector3 forward = transform.InverseTransformDirection(hit.transform.forward);
+
+                float angle = Vector3.SignedAngle(hit.normal, right, Vector3.up);
+                float angle2 = Vector3.SignedAngle(hit.normal, forward, Vector3.up);
+
+                if (Mathf.Abs(angle2) < Mathf.Abs(angle))
+                    contactSize = hit.collider.bounds.size.z;
+                else
+                    contactSize = hit.collider.bounds.size.x;
             }
 
             return ret;

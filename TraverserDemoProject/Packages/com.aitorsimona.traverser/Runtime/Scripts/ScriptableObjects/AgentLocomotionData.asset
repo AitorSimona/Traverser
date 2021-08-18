@@ -23,4 +23,4 @@ MonoBehaviour:
     forceTarget: 1
   fallTransitionAnimation:
     animationStateName: FallTransition
-    transitionDuration: 0.25
+    transitionDuration: 0

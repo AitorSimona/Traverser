@@ -330,7 +330,7 @@ namespace Traverser
 
 
                 // --- We are falling and the simulation has found a new ground, we may activate a landing transition ---             
-                if (state == LocomotionAbilityState.Falling && collision.isGrounded && collision.ground && controller.previous.ground == null
+                if (state == LocomotionAbilityState.Falling && collision.isGrounded && collision.ground /*&& controller.previous.ground == null*/
                     && Mathf.Abs(collision.ground.transform.position.y - tmp.t.y) < controller.capsuleHeight)
                 {
                     bool success;

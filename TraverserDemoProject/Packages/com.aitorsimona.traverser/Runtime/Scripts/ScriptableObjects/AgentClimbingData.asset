@@ -17,7 +17,7 @@ MonoBehaviour:
     targetAnim: Mount
     triggerTransitionAnim: WalkTransitionTrigger
     triggerTargetAnim: MountTrigger
-    contactOffset: 1.25
+    contactOffset: 1.5
     targetOffset: 0
     warpY: 1
     forceTarget: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
     forceTarget: 0
   fallTransitionAnimation:
     animationStateName: FallTransition
-    transitionDuration: 0.25
+    transitionDuration: 0.05
   locomotionOnAnimation:
     animationStateName: LocomotionON
     transitionDuration: 0.25
@@ -86,7 +86,7 @@ MonoBehaviour:
     transitionDuration: 0.1
   fallLoopAnimation:
     animationStateName: FallLoop
-    transitionDuration: 0.25
+    transitionDuration: 0.05
   ledgeRightAnimation:
     animationStateName: LedgeRight
     transitionDuration: 0.1

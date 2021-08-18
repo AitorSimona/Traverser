@@ -46,6 +46,10 @@ namespace Traverser
         [Range(0.1f, 0.3f)]
         public float warpingValidDistance = 0.1f;
 
+        [Tooltip("The bigger the speed the more influence the warper will have over motion.")]
+        [Range(1.0f, 10.0f)]
+        public float warpingSpeed = 3.0f;
+
         [Header("Debug")]
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show debug geometry.")]
         public bool debugDraw = false;
@@ -122,7 +126,7 @@ namespace Traverser
                 if (transition.isWarping)
                 {
                     float previousY = transform.position.y;
-                    transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
+                    transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime * warpingSpeed);
                     transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
 
                     // --- Update time and Y warping ---

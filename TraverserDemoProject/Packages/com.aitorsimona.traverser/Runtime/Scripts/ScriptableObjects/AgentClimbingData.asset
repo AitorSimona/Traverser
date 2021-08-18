@@ -17,7 +17,7 @@ MonoBehaviour:
     targetAnim: Mount
     triggerTransitionAnim: WalkTransitionTrigger
     triggerTargetAnim: MountTrigger
-    contactOffset: 0.7
+    contactOffset: 1
     targetOffset: 0
     warpY: 1
     forceTarget: 0

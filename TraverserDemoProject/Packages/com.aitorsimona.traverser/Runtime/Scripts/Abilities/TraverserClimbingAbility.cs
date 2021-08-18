@@ -225,11 +225,6 @@ namespace Traverser
 
                     // --- Offset contact transform ---
                     contactTransform.t -= transform.forward * climbingData.mountTransitionData.contactOffset;
-                    contactTransform.t.y = transform.position.y;
-
-                    //GameObject.Find("dummy1").transform.position = contactTransform.t;
-                    GameObject.Find("dummy2").transform.position = hangedTransform.t;
-
 
                     // --- Require a transition ---
                     ret = animationController.transition.StartTransition(ref climbingData.mountTransitionData, ref contactTransform, ref hangedTransform);
@@ -332,7 +327,7 @@ namespace Traverser
 
         void HandleDismountState()
         {
-            if (animationController.IsTransitionFinished())
+            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
                 animationController.fakeTransition = false;
                 SetState(ClimbingAbilityState.Suspended);
@@ -349,7 +344,7 @@ namespace Traverser
 
         void HandlePullUpState()
         {
-            if (animationController.IsTransitionFinished())
+            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
                 animationController.fakeTransition = false;
                 SetState(ClimbingAbilityState.Suspended);
@@ -396,7 +391,7 @@ namespace Traverser
 
         void HandleJumpBackState()
         {
-            if (animationController.IsTransitionFinished())
+            if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
             {
                 animationController.fakeTransition = false;
                 SetState(ClimbingAbilityState.Suspended);
@@ -417,7 +412,7 @@ namespace Traverser
                 || climbingState == ClimbingState.CornerLeft
                 )
             {
-                if (animationController.IsTransitionFinished())
+                if (animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=  1.0f)
                 {
                     animationController.fakeTransition = false;
                     SetClimbingState(ClimbingState.None);
@@ -503,6 +498,10 @@ namespace Traverser
             Vector3 pullupPosition = transform.position;
             pullupPosition += transform.up * controller.capsuleHeight * 1.35f;
             pullupPosition += transform.forward * 0.5f;
+
+
+            Debug.Log(abilityController.inputController.GetInputMovement());
+            GameObject.Find("dummy1").transform.position = pullupPosition;
 
             // --- React to pull up/dismount ---
             if (abilityController.inputController.GetInputMovement().y > 0.5f &&
@@ -657,7 +656,7 @@ namespace Traverser
         {
             // --- Compute the character's skeleton position and rotation when hanging on a ledge ---
             TraverserTransform skeletonTransform = GetHangedTransform();
-            skeletonTransform.t.y += controller.capsuleHeight * 0.35f;
+            skeletonTransform.t.y += controller.capsuleHeight * 0.5f;
             return skeletonTransform;
         }
 

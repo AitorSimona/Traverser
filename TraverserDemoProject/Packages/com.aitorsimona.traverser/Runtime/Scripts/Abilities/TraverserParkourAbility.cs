@@ -284,6 +284,7 @@ namespace Traverser
 
             // --- Get speed from controller ---
             float speed = Vector3.Magnitude(controller.targetVelocity);
+            contactTransform.t.y = transform.position.y;
 
             // --- Check if we are walking, jogging or running and play appropriate transition ---
             if (speed <= locomotionAbility.walkSpeed)

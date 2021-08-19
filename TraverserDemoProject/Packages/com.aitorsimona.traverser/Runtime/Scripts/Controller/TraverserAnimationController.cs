@@ -64,10 +64,6 @@ namespace Traverser
 
         // --------------------------------
 
-        // --- Use in case you do not want the skeleton to be adjusted to the reference in a custom transition ---
-        [HideInInspector]
-        public bool fakeTransition = false;
-
         // --- Private Variables ---
 
         private TraverserCharacterController controller;
@@ -80,8 +76,10 @@ namespace Traverser
 
         // --- Simple way of making sure to only compute bodyEndPosition and targetWarpTime once  (at the beginning of target animation warping) ---
         private bool warpStart = true;
-        public  bool transitionEnd = false;
         private Vector3 previousMatchPosition;
+
+        // --- Use in case you do not want the skeleton to be adjusted to the reference in a custom transition ---
+        private bool adjustSkeleton = false;
 
         // --- The position at which the skeleton will arrive at the end of the current animation (root motion) --- 
         private Vector3 bodyEndPosition;
@@ -97,7 +95,6 @@ namespace Traverser
         private void Awake()
         {
             currentdeltaPosition = Vector3.zero;
-
             controller = GetComponent<TraverserCharacterController>();
         }
 
@@ -117,13 +114,13 @@ namespace Traverser
 
         private void LateUpdate()
         {
-            // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
-            if (transitionEnd)
+            if (adjustSkeleton)
             {
+                // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
                 skeleton.transform.position = skeletonRef.transform.position;
 
                 if (!animator.IsInTransition(0))
-                    transitionEnd = false;
+                    adjustSkeleton = false;
             }
             if (transition.isON)
             {
@@ -281,6 +278,14 @@ namespace Traverser
         public void SetRootMotion(bool rootMotion)
         {
             animator.applyRootMotion = rootMotion;
+        }
+
+        public void AdjustSkeleton()
+        {
+            // --- Since we use baked motion in many animations (mount / pull up / dismount etc) we need to keep
+            // --- the skeleton in place during the end of a transition, or else it will move to, for example, the ledge idle
+            // --- animation's original position. We want to end a mount and transition to ledge idle at the same position ---
+            adjustSkeleton = true;
         }
 
         public bool IsTransitionFinished()

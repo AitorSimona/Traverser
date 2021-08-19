@@ -337,7 +337,7 @@ namespace Traverser
         {
             if (animationController.IsTransitionFinished())
             {
-                animationController.transitionEnd = true;
+                animationController.AdjustSkeleton();
                 SetState(ClimbingAbilityState.Suspended);
 
                 // --- Get skeleton's current position and teleport controller ---
@@ -354,7 +354,7 @@ namespace Traverser
         {
             if (animationController.IsTransitionFinished())
             {
-                animationController.transitionEnd = true;
+                animationController.AdjustSkeleton();
                 SetState(ClimbingAbilityState.Suspended);
 
                 // --- Get skeleton's current position and teleport controller ---
@@ -423,7 +423,7 @@ namespace Traverser
             {
                 if (animationController.IsTransitionFinished())
                 {
-                    animationController.transitionEnd = true;
+                    animationController.AdjustSkeleton();
                     SetClimbingState(ClimbingState.None);
                     animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
 
@@ -471,7 +471,6 @@ namespace Traverser
                     {
                         animationController.animator.CrossFade(climbingData.ledgeCornerRightAnimation.animationStateName, climbingData.ledgeCornerRightAnimation.transitionDuration, 0);
                         controller.targetDisplacement = Vector3.zero; // prevent controller from moving
-                        animationController.fakeTransition = true;
                     }
                 }
                 else if (desiredState == ClimbingState.CornerLeft)
@@ -491,7 +490,6 @@ namespace Traverser
                     {
                         animationController.animator.CrossFade(climbingData.ledgeCornerLeftAnimation.animationStateName, climbingData.ledgeCornerLeftAnimation.transitionDuration, 0);
                         controller.targetDisplacement = Vector3.zero; // prevent controller from moving
-                        animationController.fakeTransition = true;
                     }
 
                 }
@@ -514,13 +512,11 @@ namespace Traverser
                 state != ClimbingAbilityState.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
             {
                 animationController.animator.CrossFade(climbingData.pullUpAnimation.animationStateName, climbingData.pullUpAnimation.transitionDuration, 0);
-                animationController.fakeTransition = true;
                 SetState(ClimbingAbilityState.PullUp);
             }
             else if (closeToDrop && abilityController.inputController.GetInputButtonEast())
             {
                 animationController.animator.CrossFade(climbingData.dismountAnimation.animationStateName, climbingData.dismountAnimation.transitionDuration, 0);
-                animationController.fakeTransition = true;
                 SetState(ClimbingAbilityState.Dismount);
             }
         }
@@ -625,7 +621,6 @@ namespace Traverser
                 controller.ConfigureController(false);
 
                 animationController.animator.CrossFade(climbingData.jumpBackAnimation.animationStateName, climbingData.jumpBackAnimation.transitionDuration, 0);
-                animationController.fakeTransition = true;
             }
 
             // --- Draw ledge geometry and hook ---

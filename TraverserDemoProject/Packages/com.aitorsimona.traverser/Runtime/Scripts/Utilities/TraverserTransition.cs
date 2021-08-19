@@ -160,7 +160,7 @@ namespace Traverser
                         newTransform.y -= controller.capsuleHeight/2.0f;
                         controller.TeleportTo(newTransform);
 
-                        animationController.transitionEnd = true;
+                        animationController.AdjustSkeleton();
 
                         // --- Reenable controller and give back control ---
                         controller.ConfigureController(true);
@@ -211,7 +211,7 @@ namespace Traverser
                             Vector3 newTransform = targetTransform.t/*animationController.skeleton.transform.position*/;
                             newTransform.y -= controller.capsuleHeight / 2.0f;
                             controller.TeleportTo(newTransform);
-                            animationController.transitionEnd = true;
+                            animationController.AdjustSkeleton();
 
                             // --- Reenable controller and give back control ---
                             controller.ConfigureController(true);

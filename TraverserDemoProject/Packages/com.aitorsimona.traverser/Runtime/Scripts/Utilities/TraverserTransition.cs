@@ -160,6 +160,10 @@ namespace Traverser
                         newTransform.y -= controller.capsuleHeight/2.0f;
                         controller.TeleportTo(newTransform);
 
+                        animationController.transitionEnd = true;
+                        GameObject.Find("dummy1").transform.position = newTransform;
+                        GameObject.Find("dummy2").transform.position = animationController.skeleton.position;
+
                         // --- Reenable controller and give back control ---
                         controller.ConfigureController(true);
                         ret = false;
@@ -208,9 +212,10 @@ namespace Traverser
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
                         {
                             // --- Get skeleton's current position and teleport controller ---
-                            Vector3 newTransform = animationController.skeleton.transform.position;
+                            Vector3 newTransform = targetTransform.t/*animationController.skeleton.transform.position*/;
                             newTransform.y -= controller.capsuleHeight / 2.0f;
                             controller.TeleportTo(newTransform);
+                            animationController.transitionEnd = true;
 
                             // --- Reenable controller and give back control ---
                             controller.ConfigureController(true);

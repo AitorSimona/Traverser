@@ -351,7 +351,7 @@ namespace Traverser
 
                         TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
                         TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonRef.transform.position)
-                            + transform.forward * locomotionData.FallToRollTransitionData.targetOffset + Vector3.up, // roll animation offset
+                            + transform.forward * locomotionData.FallToRollTransitionData.targetOffset + Vector3.up*controller.capsuleHeight/2.0f, // roll animation offset
                             transform.rotation);
 
                         // --- We pass an existing transition trigger that won't do anything, we are already in falling animation ---

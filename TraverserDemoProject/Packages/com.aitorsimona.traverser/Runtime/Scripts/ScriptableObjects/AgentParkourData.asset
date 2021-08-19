@@ -18,7 +18,7 @@ MonoBehaviour:
     triggerTransitionAnim: JogTransitionTrigger
     triggerTargetAnim: TableTrigger
     contactOffset: 0.5
-    targetOffset: 1
+    targetOffset: 0.75
     warpY: 1
     forceTarget: 0
   vaultTableRunTransitionData:
@@ -26,8 +26,8 @@ MonoBehaviour:
     targetAnim: VaultTableRun
     triggerTransitionAnim: RunTransitionTrigger
     triggerTargetAnim: TableTrigger
-    contactOffset: 1.75
-    targetOffset: 1
+    contactOffset: 0.75
+    targetOffset: 0.75
     warpY: 1
     forceTarget: 0
   climbPlatformWalkTransitionData:
@@ -116,8 +116,8 @@ MonoBehaviour:
     targetAnim: SlideTunnelJog
     triggerTransitionAnim: JogTransitionTrigger
     triggerTargetAnim: TunnelTrigger
-    contactOffset: 0.5
-    targetOffset: 3
+    contactOffset: 0.75
+    targetOffset: 2
     warpY: 1
     forceTarget: 0
   slideTunnelRunTransitionData:
@@ -125,8 +125,8 @@ MonoBehaviour:
     targetAnim: SlideTunnelRun
     triggerTransitionAnim: RunTransitionTrigger
     triggerTargetAnim: TunnelTrigger
-    contactOffset: 0.5
-    targetOffset: 3
+    contactOffset: 0.75
+    targetOffset: 2
     warpY: 1
     forceTarget: 0
   ledgeToLedgeTransitionData:

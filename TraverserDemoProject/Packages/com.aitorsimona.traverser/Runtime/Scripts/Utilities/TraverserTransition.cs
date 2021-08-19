@@ -161,8 +161,6 @@ namespace Traverser
                         controller.TeleportTo(newTransform);
 
                         animationController.transitionEnd = true;
-                        GameObject.Find("dummy1").transform.position = newTransform;
-                        GameObject.Find("dummy2").transform.position = animationController.skeleton.position;
 
                         // --- Reenable controller and give back control ---
                         controller.ConfigureController(true);
@@ -172,8 +170,6 @@ namespace Traverser
                     {
                         if (isWarpOn && !isTargetAnimationON)                               
                             animationController.WarpToTarget(contactTransform.t, contactTransform.q);
-                        //else if (isWarpOn)
-                        //    animationController.WarpToTarget(targetTransform.t, targetTransform.q, targetValidDistance);
 
                         ret = true;
                     }

@@ -325,11 +325,11 @@ namespace Traverser
                 SetState(ClimbingAbilityState.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
 
-                TraverserTransform hangedTransform = GetHangedTransform();
+                //TraverserTransform hangedTransform = GetHangedTransform();
 
-                controller.ConfigureController(false);
-                controller.TeleportTo(hangedTransform.t);
-                transform.rotation = hangedTransform.q;
+                //controller.ConfigureController(false);
+                //controller.TeleportTo(hangedTransform.t);
+                //transform.rotation = hangedTransform.q;
             }
         }
 
@@ -337,7 +337,6 @@ namespace Traverser
         {
             if (animationController.IsTransitionFinished())
             {
-                //animationController.fakeTransition = false;
                 animationController.transitionEnd = true;
                 SetState(ClimbingAbilityState.Suspended);
 
@@ -355,7 +354,6 @@ namespace Traverser
         {
             if (animationController.IsTransitionFinished())
             {
-                //animationController.fakeTransition = false;
                 animationController.transitionEnd = true;
                 SetState(ClimbingAbilityState.Suspended);
 
@@ -403,7 +401,6 @@ namespace Traverser
         {
             if (animationController.IsTransitionFinished())
             {
-                //animationController.fakeTransition = false;
                 SetState(ClimbingAbilityState.Suspended);
                 //animationController.animator.CrossFade(climbingData.fallLoopAnimation.animationStateName, climbingData.fallLoopAnimation.transitionDuration, 0);
                 animationController.animator.Play(climbingData.fallLoopAnimation.animationStateName, 0);
@@ -427,7 +424,6 @@ namespace Traverser
                 if (animationController.IsTransitionFinished())
                 {
                     animationController.transitionEnd = true;
-                    //animationController.fakeTransition = false;
                     SetClimbingState(ClimbingState.None);
                     animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
 
@@ -573,12 +569,12 @@ namespace Traverser
                 if (hit.transform.GetComponent<TraverserClimbingObject>())
                 {
                     // --- Trigger a transition and change state ---
-                    ledgeGeometry.Initialize(hit.collider as BoxCollider);
+                    auxledgeGeometry.Initialize(hit.collider as BoxCollider);
 
                     // --- Adjust the aim position so we don't end in another ledge edge ---
-                    ledgeHook = ledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
+                    TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
 
-                    Vector3 matchPosition = ledgeGeometry.GetPositionAtDistance(ledgeHook.index, 0.5f);
+                    Vector3 matchPosition = auxledgeGeometry.GetPositionAtDistance(auxHook.index, 0.5f);
                     matchPosition -= Vector3.up * (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
                     matchPosition -= transform.forward * controller.capsuleRadius;
 
@@ -611,6 +607,9 @@ namespace Traverser
                     if (success)
                     {
                         SetState(ClimbingAbilityState.LedgeToLedge);
+
+                        ledgeGeometry.Initialize(hit.collider as BoxCollider);
+                        ledgeHook = ledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
 
                         // --- Turn off/on controller ---
                         controller.ConfigureController(false);

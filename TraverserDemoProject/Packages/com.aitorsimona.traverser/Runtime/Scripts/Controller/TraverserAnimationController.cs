@@ -124,8 +124,15 @@ namespace Traverser
                 // --- Apply warping ---
                 if (transition.isWarping)
                 {
+                    float speedMultiplier = 1.0f;
+
+                    // --- Use warping speed only in target animations ---
+                    if (transition.isTargetON)
+                        speedMultiplier = warpingSpeed;
+
+                    // --- Apply deltas ---
                     float previousY = transform.position.y;
-                    transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime * warpingSpeed);
+                    transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime * speedMultiplier);
                     transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
 
                     // --- Update time and Y warping ---

@@ -41,6 +41,9 @@ namespace Traverser
         // --- Indicates if transition handler is currently warping ---
         public bool isWarping { get => isWarpOn; }
 
+        // --- Indicates if transition handler is currently playing target animation ---
+        public bool isTargetON { get => isTargetAnimationON; }
+
         // --------------------------------
 
         // --- Private Variables ---

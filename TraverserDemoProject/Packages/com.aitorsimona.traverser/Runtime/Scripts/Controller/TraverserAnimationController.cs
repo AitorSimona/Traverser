@@ -59,6 +59,7 @@ namespace Traverser
         public float contactDebugSphereRadius = 0.5f;
 
         // --- Animator and animation transition handler ---
+        [HideInInspector]
         public Animator animator;
         public TraverserTransition transition;
 
@@ -100,6 +101,7 @@ namespace Traverser
 
         private void Start()
         {
+            animator = GetComponent<Animator>();
             transition = new TraverserTransition(this, ref controller);
             animatorParameters = new Dictionary<string, int>();
 

@@ -186,6 +186,15 @@ namespace Traverser
                     ret = contactAbility;
             }
 
+            if(fIKOn)
+            {
+                AdjustFeetTarget(ref rightFootPosition, HumanBodyBones.RightFoot);
+                AdjustFeetTarget(ref leftFootPosition, HumanBodyBones.LeftFoot);
+
+                FeetPositionSolver(rightFootPosition, ref rightFootIkPosition, ref rightFootIkRotation);
+                FeetPositionSolver(leftFootPosition, ref leftFootIkPosition, ref leftFootIkRotation);
+            }
+
             return ret;
         }
 
@@ -504,55 +513,153 @@ namespace Traverser
 
         // --- Events ---
 
+        private Vector3 rightFootPosition, leftFootPosition, leftFootIkPosition, rightFootIkPosition;
+        private Quaternion leftFootIkRotation, rightFootIkRotation;
+        private float lastPelvisPositionY, lastRightFootPositionY, lastLeftFootPositionY;
+        [Range(0, 2)] [SerializeField] private float heightFromGroundRaycast = 1.14f;
+        [Range(0, 2)] [SerializeField] private float raycastDownDistance = 1.5f;
+        [SerializeField] private float pelvisOffset = 0.0f;
+        [Range(0, 1)] [SerializeField] private float pelvisUpAndDownSpeed = 0.28f;
+        [Range(0, 1)] [SerializeField] private float feetToIkPositionSpeed = 0.5f;
+
         private void OnAnimatorIK(int layerIndex)
         {
             if (!abilityController.isCurrent(this))
                 return;
 
-            // --- Set weights to 0 and return if IK is off ---
-            if(!fIKOn)
+
+            if (!fIKOn)
+                return;
+
+            MovePelvisHeight();
+
+            animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
+
+            animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+
+            MoveFeetToIkPoint(AvatarIKGoal.RightFoot, rightFootIkPosition, rightFootIkRotation, ref lastRightFootPositionY);
+
+
+            animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
+
+            animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+
+            MoveFeetToIkPoint(AvatarIKGoal.LeftFoot, leftFootIkPosition, leftFootIkRotation, ref lastLeftFootPositionY);
+
+
+            ////---Set weights to 0 and return if IK is off ---
+            //if (!fIKOn)
+            //{
+            //    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
+            //    animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 0.0f);
+            //    animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.0f);
+            //    animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 0.0f);
+            //    return;
+            //}
+
+            //// --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
+
+            //RaycastHit hit;
+
+            //// --- Left foot ---
+            //animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+            //animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+
+            //IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up;
+            //IKRay.direction = Vector3.down;
+
+            //if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+            //{
+            //    Vector3 footPosition = hit.point;
+            //    footPosition.y += footHeight;
+            //    animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
+            //    animationController.animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.LeftFoot));
+            //}
+
+            //// --- Right foot ---
+            //animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+            //animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+
+            //IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up;
+            //IKRay.direction = Vector3.down;
+
+            //if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+            //{
+            //    Vector3 footPosition = hit.point;
+            //    footPosition.y += footHeight;
+            //    ;
+            //    animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
+            //    animationController.animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.RightFoot));
+            //}
+        }
+
+
+
+        void MoveFeetToIkPoint(AvatarIKGoal foot, Vector3 positionIkHolder, Quaternion rotationIkHolder, ref float lastFootPositionY)
+        {
+            Vector3 targetIkPosition = animationController.animator.GetIKPosition(foot);
+
+            if(positionIkHolder != Vector3.zero)
             {
-                animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
-                animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 0.0f);
-                animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.0f);
-                animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 0.0f);
+                targetIkPosition = transform.InverseTransformPoint(targetIkPosition);
+                positionIkHolder = transform.InverseTransformPoint(positionIkHolder);
+
+                float yVariable = Mathf.Lerp(lastFootPositionY, positionIkHolder.y, feetToIkPositionSpeed);
+                targetIkPosition.y += yVariable;
+
+                lastFootPositionY = yVariable;
+
+                targetIkPosition = transform.TransformPoint(targetIkPosition);
+
+                animationController.animator.SetIKRotation(foot, rotationIkHolder);
+            }
+
+            animationController.animator.SetIKPosition(foot, targetIkPosition);
+        }
+
+        private void MovePelvisHeight()
+        {
+            if(rightFootIkPosition == Vector3.zero || leftFootIkPosition == Vector3.zero || lastPelvisPositionY == 0)
+            {
+                lastPelvisPositionY = animationController.animator.bodyPosition.y;
                 return;
             }
 
-            // --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
+            float lOffsetPosition = leftFootIkPosition.y - transform.position.y;
+            float rOffsetPosition = rightFootIkPosition.y - transform.position.y;
 
-            RaycastHit hit;
+            float totalOffset = (lOffsetPosition < rOffsetPosition) ? lOffsetPosition : rOffsetPosition;
 
-            // --- Left foot ---
-            animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
-            animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
+            Vector3 newPelvisPosition = animationController.animator.bodyPosition + Vector3.up * totalOffset;
 
-            IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up;
-            IKRay.direction = Vector3.down;           
+            newPelvisPosition.y = Mathf.Lerp(lastPelvisPositionY, newPelvisPosition.y, pelvisUpAndDownSpeed);
 
-            if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+            animationController.animator.bodyPosition = newPelvisPosition;
+
+            lastPelvisPositionY = animationController.animator.bodyPosition.y;
+        }
+
+        private void FeetPositionSolver(Vector3 fromSkyPosition, ref Vector3 feetIKPositions, ref Quaternion feetIkRotations)
+        {
+            RaycastHit feetOutHit;
+
+            Debug.DrawLine(fromSkyPosition, fromSkyPosition + Vector3.down * (raycastDownDistance + heightFromGroundRaycast), Color.yellow);
+
+            if (Physics.Raycast(fromSkyPosition, Vector3.down, out feetOutHit, raycastDownDistance + heightFromGroundRaycast, controller.characterCollisionMask))
             {
-                Vector3 footPosition = hit.point;
-                footPosition.y += footHeight;
-                animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
-                animationController.animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.LeftFoot));
+                feetIKPositions = fromSkyPosition;
+                feetIKPositions.y = feetOutHit.point.y + pelvisOffset;
+                feetIkRotations = Quaternion.FromToRotation(Vector3.up, feetOutHit.normal) * transform.rotation;
+                return;
             }
 
-            // --- Right foot ---
-            animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
-            animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+            feetIKPositions = Vector3.zero;
+        }
 
-            IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up;
-            IKRay.direction = Vector3.down;
-
-            if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-            {
-                Vector3 footPosition = hit.point;
-                footPosition.y += footHeight;
-;
-                animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
-                animationController.animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.RightFoot));
-            }
+        private void AdjustFeetTarget (ref Vector3 feetPositions, HumanBodyBones foot)
+        {
+            feetPositions = animationController.animator.GetBoneTransform(foot).position;
+            feetPositions.y = transform.position.y + heightFromGroundRaycast;
         }
 
         private void OnDrawGizmosSelected()

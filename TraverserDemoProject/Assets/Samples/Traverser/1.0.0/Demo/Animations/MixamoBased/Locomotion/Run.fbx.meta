@@ -75,15 +75,6 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.21338986
-            value: -0.00068498217
-            inSlope: -0.021801906
-            outSlope: -0.021801906
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.50856006
-            outWeight: 0.33333334
-          - serializedVersion: 3
             time: 0.2912011
             value: 1.0024774
             inSlope: 0.00013405085
@@ -100,15 +91,6 @@ ModelImporter:
             tangentMode: 0
             weightedMode: 0
             inWeight: 0.48019072
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 0.6542953
-            value: 0.00891475
-            inSlope: -0.0031585426
-            outSlope: -0.0031585426
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 1
             outWeight: 0.33333334
           - serializedVersion: 3
             time: 1
@@ -217,15 +199,6 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.21338986
-            value: -0.00068498217
-            inSlope: -0.021801906
-            outSlope: -0.021801906
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.50856006
-            outWeight: 0.33333334
-          - serializedVersion: 3
             time: 0.2912011
             value: 1.0024774
             inSlope: 0.00013405085
@@ -242,15 +215,6 @@ ModelImporter:
             tangentMode: 0
             weightedMode: 0
             inWeight: 0.48019072
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 0.6542953
-            value: 0.00891475
-            inSlope: -0.0031585426
-            outSlope: -0.0031585426
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 1
             outWeight: 0.33333334
           - serializedVersion: 3
             time: 1
@@ -295,15 +259,6 @@ ModelImporter:
             weightedMode: 0
             inWeight: 1
             outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 0.84448344
-            value: 0.9929021
-            inSlope: 0.14213014
-            outSlope: 0.14213014
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 1
           - serializedVersion: 3
             time: 1
             value: 1

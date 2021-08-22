@@ -88,12 +88,18 @@ namespace Traverser
         [Header("Feet IK settings")]
         [Tooltip("Activates or deactivates foot IK placement for the locomotion ability.")]
         public bool fIKOn = true;
+
         [Tooltip("The maximum distance of the ray that enables foot IK, the bigger the ray the further we detect the ground.")]
         [Range(0.0f, 5.0f)]
         public float feetIKGroundDistance = 1.0f;
-        [Tooltip("The character's foot height (size in Y, meters).")]
+
+        [Tooltip("Modifies how fast we adjust pelvis to match feet positions.")]
         [Range(0.0f, 1.0f)]
-        public float footHeight = 1.0f;
+        public float pelvisAdjustmentSpeed = 0.28f;
+
+        [Tooltip("Modifies how fast we adjust feet to match IK transforms.")]
+        [Range(0.0f, 1.0f)]
+        public float feetAdjustmentSpeed = 0.5f;
 
         [Header("Debug")]
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Selecting the object may be required to show debug geometry.")]
@@ -107,6 +113,9 @@ namespace Traverser
         private TraverserAbilityController abilityController;
         private TraverserCharacterController controller;
         private TraverserAnimationController animationController;
+
+        private TraverserTransform leftFootIKTransform, rightFootIKTransform;
+        private float lastPelvisCorrectedY, lastRightFootPositionY, lastLeftFootPositionY;
 
         // --- Ability-level state ---
         public enum LocomotionAbilityState
@@ -154,6 +163,8 @@ namespace Traverser
             abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
+            leftFootIKTransform = TraverserTransform.Get(Vector3.zero, Quaternion.identity);
+            rightFootIKTransform = TraverserTransform.Get(Vector3.zero, Quaternion.identity);
         }
 
         // -------------------------------------------------
@@ -188,11 +199,8 @@ namespace Traverser
 
             if(fIKOn)
             {
-                AdjustFeetTarget(ref rightFootPosition, HumanBodyBones.RightFoot);
-                AdjustFeetTarget(ref leftFootPosition, HumanBodyBones.LeftFoot);
-
-                FeetPositionSolver(rightFootPosition, ref rightFootIkPosition, ref rightFootIkRotation);
-                FeetPositionSolver(leftFootPosition, ref leftFootIkPosition, ref leftFootIkRotation);
+                FindFootIKTarget(animationController.animator.GetBoneTransform(HumanBodyBones.RightFoot).position, ref rightFootIKTransform);
+                FindFootIKTarget(animationController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position, ref leftFootIKTransform);
             }
 
             return ret;
@@ -513,153 +521,95 @@ namespace Traverser
 
         // --- Events ---
 
-        private Vector3 rightFootPosition, leftFootPosition, leftFootIkPosition, rightFootIkPosition;
-        private Quaternion leftFootIkRotation, rightFootIkRotation;
-        private float lastPelvisPositionY, lastRightFootPositionY, lastLeftFootPositionY;
-        [Range(0, 2)] [SerializeField] private float heightFromGroundRaycast = 1.14f;
-        [Range(0, 2)] [SerializeField] private float raycastDownDistance = 1.5f;
-        [SerializeField] private float pelvisOffset = 0.0f;
-        [Range(0, 1)] [SerializeField] private float pelvisUpAndDownSpeed = 0.28f;
-        [Range(0, 1)] [SerializeField] private float feetToIkPositionSpeed = 0.5f;
-
         private void OnAnimatorIK(int layerIndex)
         {
-            if (!abilityController.isCurrent(this))
+            if (!abilityController.isCurrent(this) || !fIKOn)
                 return;
 
+            // --- Adjust pelvis height to allow better feet adjustment ---
+            MatchPelvisToFeet();
 
-            if (!fIKOn)
-                return;
-
-            MovePelvisHeight();
-
+            // --- Set right foot weights (sampling animation curve) and adjust IK target ---
             animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
-
             animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
+            AdjustIkTarget(AvatarIKGoal.RightFoot, ref rightFootIKTransform, ref lastRightFootPositionY);
 
-            MoveFeetToIkPoint(AvatarIKGoal.RightFoot, rightFootIkPosition, rightFootIkRotation, ref lastRightFootPositionY);
-
-
+            // --- Set left foot weights (sampling animation curve) and adjust IK target ---
             animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
-
             animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
-
-            MoveFeetToIkPoint(AvatarIKGoal.LeftFoot, leftFootIkPosition, leftFootIkRotation, ref lastLeftFootPositionY);
-
-
-            ////---Set weights to 0 and return if IK is off ---
-            //if (!fIKOn)
-            //{
-            //    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
-            //    animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 0.0f);
-            //    animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.0f);
-            //    animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 0.0f);
-            //    return;
-            //}
-
-            //// --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
-
-            //RaycastHit hit;
-
-            //// --- Left foot ---
-            //animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
-            //animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
-
-            //IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up;
-            //IKRay.direction = Vector3.down;
-
-            //if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-            //{
-            //    Vector3 footPosition = hit.point;
-            //    footPosition.y += footHeight;
-            //    animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
-            //    animationController.animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.LeftFoot));
-            //}
-
-            //// --- Right foot ---
-            //animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
-            //animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
-
-            //IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up;
-            //IKRay.direction = Vector3.down;
-
-            //if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-            //{
-            //    Vector3 footPosition = hit.point;
-            //    footPosition.y += footHeight;
-            //    ;
-            //    animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
-            //    animationController.animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * animationController.animator.GetIKRotation(AvatarIKGoal.RightFoot));
-            //}
+            AdjustIkTarget(AvatarIKGoal.LeftFoot, ref leftFootIKTransform, ref lastLeftFootPositionY);      
         }
 
-
-
-        void MoveFeetToIkPoint(AvatarIKGoal foot, Vector3 positionIkHolder, Quaternion rotationIkHolder, ref float lastFootPositionY)
+        void AdjustIkTarget(AvatarIKGoal foot, ref TraverserTransform IKTransform, ref float lastFootPositionY)
         {
-            Vector3 targetIkPosition = animationController.animator.GetIKPosition(foot);
+            // --- Get previous IK position ---
+            Vector3 IkPosition = animationController.animator.GetIKPosition(foot);
 
-            if(positionIkHolder != Vector3.zero)
+            if(IKTransform.t != Vector3.zero)
             {
-                targetIkPosition = transform.InverseTransformPoint(targetIkPosition);
-                positionIkHolder = transform.InverseTransformPoint(positionIkHolder);
+                // --- Transform to local coordinates ---
+                IkPosition = transform.InverseTransformPoint(IkPosition);
+                Vector3 modifiedIKPosition = transform.InverseTransformPoint(IKTransform.t);
 
-                float yVariable = Mathf.Lerp(lastFootPositionY, positionIkHolder.y, feetToIkPositionSpeed);
-                targetIkPosition.y += yVariable;
+                float targetYPosition = Mathf.Lerp(lastFootPositionY, modifiedIKPosition.y, feetAdjustmentSpeed);
+                IkPosition.y += targetYPosition;
 
-                lastFootPositionY = yVariable;
+                lastFootPositionY = targetYPosition;
 
-                targetIkPosition = transform.TransformPoint(targetIkPosition);
+                // --- Transform back to world ---
+                IkPosition = transform.TransformPoint(IkPosition);
 
-                animationController.animator.SetIKRotation(foot, rotationIkHolder);
+                // --- Assign IK rotation ---
+                animationController.animator.SetIKRotation(foot, IKTransform.q);
             }
 
-            animationController.animator.SetIKPosition(foot, targetIkPosition);
+            // --- Assign IK position ---
+            animationController.animator.SetIKPosition(foot, IkPosition);
         }
 
-        private void MovePelvisHeight()
+        private void MatchPelvisToFeet()
         {
-            if(rightFootIkPosition == Vector3.zero || leftFootIkPosition == Vector3.zero || lastPelvisPositionY == 0)
+            if (rightFootIKTransform.t == Vector3.zero || leftFootIKTransform.t == Vector3.zero || lastPelvisCorrectedY == 0)
+                lastPelvisCorrectedY = animationController.animator.bodyPosition.y;
+            else
             {
-                lastPelvisPositionY = animationController.animator.bodyPosition.y;
+                // --- Compute offsets between feet and its IK targets ---
+                float leftFootYOffset = leftFootIKTransform.t.y - transform.position.y;
+                float rightFootYOffset = rightFootIKTransform.t.y - transform.position.y;
+
+                // --- Get the maximum offset between both feet and apply it to pelvis ---
+                float totalOffset = (leftFootYOffset < rightFootYOffset) ? leftFootYOffset : rightFootYOffset;
+                Vector3 pelvisCorrectedPosition = animationController.animator.bodyPosition + Vector3.up * totalOffset;
+
+                // --- Apply user defined speed modifier ---
+                pelvisCorrectedPosition.y = Mathf.Lerp(lastPelvisCorrectedY, pelvisCorrectedPosition.y, pelvisAdjustmentSpeed);
+
+                // --- Modify body position ---
+                animationController.animator.bodyPosition = pelvisCorrectedPosition;
+
+                // --- Store last corrected body position ---
+                lastPelvisCorrectedY = pelvisCorrectedPosition.y;
+            }
+        }
+
+        private void FindFootIKTarget(Vector3 footPosition, ref TraverserTransform footCorrectedTransform)
+        {
+            // --- Shoot a ray downwards from a higher position respect the foot, update IK target transform ---
+            RaycastHit hit;
+            footPosition.y = transform.position.y + feetIKGroundDistance*0.5f;
+
+            if(debugDraw)
+                Debug.DrawLine(footPosition, footPosition + Vector3.down * feetIKGroundDistance, Color.yellow);
+
+            if (Physics.Raycast(footPosition, Vector3.down, out hit, feetIKGroundDistance, controller.characterCollisionMask))
+            {
+                footCorrectedTransform.t = footPosition;
+                footCorrectedTransform.t.y = hit.point.y;
+                footCorrectedTransform.q = Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation;
                 return;
             }
 
-            float lOffsetPosition = leftFootIkPosition.y - transform.position.y;
-            float rOffsetPosition = rightFootIkPosition.y - transform.position.y;
-
-            float totalOffset = (lOffsetPosition < rOffsetPosition) ? lOffsetPosition : rOffsetPosition;
-
-            Vector3 newPelvisPosition = animationController.animator.bodyPosition + Vector3.up * totalOffset;
-
-            newPelvisPosition.y = Mathf.Lerp(lastPelvisPositionY, newPelvisPosition.y, pelvisUpAndDownSpeed);
-
-            animationController.animator.bodyPosition = newPelvisPosition;
-
-            lastPelvisPositionY = animationController.animator.bodyPosition.y;
-        }
-
-        private void FeetPositionSolver(Vector3 fromSkyPosition, ref Vector3 feetIKPositions, ref Quaternion feetIkRotations)
-        {
-            RaycastHit feetOutHit;
-
-            Debug.DrawLine(fromSkyPosition, fromSkyPosition + Vector3.down * (raycastDownDistance + heightFromGroundRaycast), Color.yellow);
-
-            if (Physics.Raycast(fromSkyPosition, Vector3.down, out feetOutHit, raycastDownDistance + heightFromGroundRaycast, controller.characterCollisionMask))
-            {
-                feetIKPositions = fromSkyPosition;
-                feetIKPositions.y = feetOutHit.point.y + pelvisOffset;
-                feetIkRotations = Quaternion.FromToRotation(Vector3.up, feetOutHit.normal) * transform.rotation;
-                return;
-            }
-
-            feetIKPositions = Vector3.zero;
-        }
-
-        private void AdjustFeetTarget (ref Vector3 feetPositions, HumanBodyBones foot)
-        {
-            feetPositions = animationController.animator.GetBoneTransform(foot).position;
-            feetPositions.y = transform.position.y + heightFromGroundRaycast;
+            footCorrectedTransform.t = Vector3.zero;
         }
 
         private void OnDrawGizmosSelected()

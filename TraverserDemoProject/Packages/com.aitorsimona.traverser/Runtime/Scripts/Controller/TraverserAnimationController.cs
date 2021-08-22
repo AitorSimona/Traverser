@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace Traverser
 {
@@ -69,6 +70,11 @@ namespace Traverser
 
         private TraverserCharacterController controller;
 
+        private RigBuilder runtimeRigController;
+
+        public TwoBoneIKConstraint leftFootIK;
+        public TwoBoneIKConstraint rightFootIK;
+
         // --- Motion that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Vector3 currentdeltaPosition;
 
@@ -97,6 +103,7 @@ namespace Traverser
         {
             currentdeltaPosition = Vector3.zero;
             controller = GetComponent<TraverserCharacterController>();
+            runtimeRigController = GetComponent<RigBuilder>();
         }
 
         private void Start()
@@ -315,6 +322,28 @@ namespace Traverser
 
             // --- Draw transition contact and target point ---
             transition.DebugDraw(contactDebugSphereRadius);
+        }
+
+        // --------------------------------
+
+        // --- Runtime rigging Methods ---
+
+        public void SetRigActive(string rigName, bool active)
+        {
+            foreach (RigLayer layer in runtimeRigController.layers)
+            {
+                if (layer.name == rigName)
+                    layer.active = active;
+            }
+        }
+
+        public void SetRigWeight(string rigName, float weight)
+        {
+            foreach (RigLayer layer in runtimeRigController.layers)
+            {
+                if (layer.name == rigName)
+                    layer.rig.weight = weight;
+            }
         }
 
         // --------------------------------

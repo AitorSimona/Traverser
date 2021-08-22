@@ -280,6 +280,20 @@ namespace Traverser
             return ret;
         }
 
+        public float GetYDistanceToGround(Vector3 origin)
+        {
+            float distance = -1.0f;
+
+            RaycastHit hit;
+
+            if(Physics.Raycast(origin, Vector3.down, out hit, capsuleHeight * 2.0f, characterCollisionMask, QueryTriggerInteraction.Ignore))
+            {
+                distance = Mathf.Abs(origin.y - hit.point.y);
+            }
+
+
+            return distance;
+        }
 
         // --- Disables controller functionality ---
         public void ConfigureController(bool active)

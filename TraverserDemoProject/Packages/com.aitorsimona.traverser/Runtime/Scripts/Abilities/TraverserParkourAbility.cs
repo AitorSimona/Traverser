@@ -150,8 +150,11 @@ namespace Traverser
                     ret = HandleLedgeToLedgeTransition(ref contactTransform, ref targetTransform);
 
                     // --- If we are jumping back to a regular ledge/wall, notify locomotion ---
-                    if(parkourObject.gameObject.GetComponent<TraverserClimbingObject>())
-                        locomotionAbility.SetLocomotionState(TraverserLocomotionAbility.LocomotionAbilityState.Moving);
+                    if (parkourObject.gameObject.GetComponent<TraverserClimbingObject>())
+                    {
+                        locomotionAbility.ResetLocomotion();
+                        controller.groundSnap = false;
+                    }
 
                     break;
 
@@ -339,7 +342,10 @@ namespace Traverser
             ret = StartTransition(ref parkourData.ledgeToLedgeTransitionData, ref contactTransform, ref targetTransform);
 
             if (ret)
+            {
                 locomotionAbility.SetLocomotionState(TraverserLocomotionAbility.LocomotionAbilityState.Ledge);
+                controller.groundSnap = true;
+            }
 
             return ret;
         }

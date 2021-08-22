@@ -156,7 +156,7 @@ namespace Traverser
                         animationController.ResetWarper();
 
                         // --- Get skeleton's current position and teleport controller ---
-                        Vector3 newTransform = targetTransform.t/*animationController.skeleton.transform.position*/;
+                        Vector3 newTransform = animationController.skeleton.transform.position;
                         newTransform.y -= controller.capsuleHeight/2.0f;
                         controller.TeleportTo(newTransform);
 
@@ -208,7 +208,7 @@ namespace Traverser
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
                         {
                             // --- Get skeleton's current position and teleport controller ---
-                            Vector3 newTransform = targetTransform.t/*animationController.skeleton.transform.position*/;
+                            Vector3 newTransform = animationController.skeleton.transform.position;
                             newTransform.y -= controller.capsuleHeight / 2.0f;
                             controller.TeleportTo(newTransform);
                             animationController.AdjustSkeleton();

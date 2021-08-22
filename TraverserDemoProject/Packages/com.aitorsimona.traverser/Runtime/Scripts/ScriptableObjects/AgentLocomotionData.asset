@@ -12,13 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354cc4a6ba6d5f642ac4096197abe448, type: 3}
   m_Name: AgentLocomotionData
   m_EditorClassIdentifier: 
-  FallToRollTransitionData:
+  fallToRollTransitionData:
     transitionAnim: FallTransition
     targetAnim: FallToRoll
     triggerTransitionAnim: ClimbTransitionTrigger
     triggerTargetAnim: FallToRollTrigger
     contactOffset: 0
     targetOffset: 5
+    warpY: 1
+    forceTarget: 1
+  hardLandingTransitionData:
+    transitionAnim: FallTransition
+    targetAnim: HardLanding
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: HardLandingTrigger
+    contactOffset: 0
+    targetOffset: 0.5
     warpY: 1
     forceTarget: 1
   fallTransitionAnimation:

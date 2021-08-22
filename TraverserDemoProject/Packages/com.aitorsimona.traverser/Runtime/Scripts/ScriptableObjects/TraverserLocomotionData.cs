@@ -9,7 +9,8 @@ namespace Traverser
         // --- Contains all data required by the climbing ability ---
 
         [Header("Transitions")]
-        public TraverserTransition.TraverserTransitionData FallToRollTransitionData;
+        public TraverserTransition.TraverserTransitionData fallToRollTransitionData;
+        public TraverserTransition.TraverserTransitionData hardLandingTransitionData;
 
         [Header("Animations")]
         public TraverserAnimationController.AnimationData fallTransitionAnimation;

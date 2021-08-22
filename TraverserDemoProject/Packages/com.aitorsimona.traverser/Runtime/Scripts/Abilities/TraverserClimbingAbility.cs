@@ -239,7 +239,9 @@ namespace Traverser
                     }
                 }
             }
-            else if (locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling
+            else if ((locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling
+                || (locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Jumping
+                && (contactTransform.t - (transform.position + Vector3.up* controller.capsuleHeight)).magnitude < 0.5f))
                 && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
             {
                 // ---  We are falling and colliding against a ledge
@@ -250,13 +252,19 @@ namespace Traverser
                 //animationController.animator.CrossFade(climbingData.fallTransitionAnimation.animationStateName, climbingData.fallTransitionAnimation.transitionDuration, 0);
                 animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
 
-                ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData ,ref contactTransform, ref hangedTransform);
+                // --- Decide whether to trigger a short or large hang transition ---
+                if((contactTransform.t.y - (transform.position.y + controller.capsuleHeight)) < 0.25f)
+                    ret = animationController.transition.StartTransition(ref climbingData.jumpHangShortTransitionData, ref contactTransform, ref hangedTransform);
+                else
+                    ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);
 
                 // --- If transition start is successful, change state ---
                 if (ret)
                 {
                     SetState(ClimbingAbilityState.LedgeToLedge);
-                
+
+                    locomotionAbility.ResetLocomotion();
+
                     // --- Turn off/on controller ---
                     controller.ConfigureController(false);
                 }

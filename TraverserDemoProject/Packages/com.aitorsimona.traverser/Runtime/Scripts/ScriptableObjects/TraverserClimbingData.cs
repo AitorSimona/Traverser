@@ -11,6 +11,7 @@ namespace Traverser
         [Header("Transitions")]
         public TraverserTransition.TraverserTransitionData mountTransitionData;
         public TraverserTransition.TraverserTransitionData jumpHangTransitionData;
+        public TraverserTransition.TraverserTransitionData jumpHangShortTransitionData;
         public TraverserTransition.TraverserTransitionData dropDownTransitionData;
         public TraverserTransition.TraverserTransitionData HopUpTransitionData;
         public TraverserTransition.TraverserTransitionData HopRightTransitionData;

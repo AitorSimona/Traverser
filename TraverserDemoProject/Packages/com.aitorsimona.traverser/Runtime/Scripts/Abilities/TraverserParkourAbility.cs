@@ -39,6 +39,7 @@ namespace Traverser
 
         // --- Default delta/epsilon used for parkour speed checks ---
         private float epsilon = 0.001f;
+        private float maxYDifference = 0.25f;
 
         // -------------------------------------------------
 
@@ -147,13 +148,18 @@ namespace Traverser
                     ret = HandleTunnelTransition(ref contactTransform, ref targetTransform);
                     break;
                 case TraverserParkourObject.TraverserParkourType.LedgeToLedge:
-                    ret = HandleLedgeToLedgeTransition(ref contactTransform, ref targetTransform);
 
-                    // --- If we are jumping back to a regular ledge/wall, notify locomotion ---
-                    if (parkourObject.gameObject.GetComponent<TraverserClimbingObject>())
+                    // --- We don't want to trigger a ledge to ledge transition when below a wall ---
+                    if (contactTransform.t.y - transform.position.y < maxYDifference)
                     {
-                        locomotionAbility.ResetLocomotion();
-                        controller.groundSnap = false;
+                        ret = HandleLedgeToLedgeTransition(ref contactTransform, ref targetTransform);
+
+                        // --- If we are jumping back to a regular ledge/wall, notify locomotion ---
+                        if (parkourObject.gameObject.GetComponent<TraverserClimbingObject>())
+                        {
+                            locomotionAbility.ResetLocomotion();
+                            controller.groundSnap = false;
+                        }
                     }
 
                     break;

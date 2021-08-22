@@ -30,6 +30,15 @@ MonoBehaviour:
     targetOffset: 0
     warpY: 1
     forceTarget: 1
+  jumpHangShortTransitionData:
+    transitionAnim: FallTransition
+    targetAnim: JumpHangShort
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: JumpHangShortTrigger
+    contactOffset: 0
+    targetOffset: 0
+    warpY: 1
+    forceTarget: 1
   dropDownTransitionData:
     transitionAnim: WalkTransition
     targetAnim: DropDown

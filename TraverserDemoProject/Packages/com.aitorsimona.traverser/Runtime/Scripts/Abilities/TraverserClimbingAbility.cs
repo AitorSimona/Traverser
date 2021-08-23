@@ -41,7 +41,6 @@ namespace Traverser
         [Tooltip("Activates or deactivates hand IK placement for the climbing ability.")]
         public bool hIKOn = true;
         [Tooltip("The Y distance to correct in order to place the hands on the ledge.")]
-        [Range(0.0f, 1.0f)]
         public float handIKYDistance = 1.0f;
         [Tooltip("The character's hand length (size in meters) / correction in forward direction.")]
         [Range(-1.0f, 1.0f)]
@@ -734,8 +733,8 @@ namespace Traverser
                 return;
 
             // --- Ensure IK is not activated during a transition between two differently placed animations (mount-idle bug) ---
-            if (animationController.animator.IsInTransition(0))
-                return;
+            //if (animationController.animator.IsInTransition(0))
+            //    return;
 
             // --- Set weights to 0 and return if IK is off ---
             if (!fIKOn)
@@ -758,6 +757,7 @@ namespace Traverser
                     Vector3 footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot)));
                     footPosition -= transform.forward * footLength;
                     footPosition.y = animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot).y;
+                    Debug.DrawLine(footPosition, footPosition - transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
                 }
 
@@ -770,6 +770,7 @@ namespace Traverser
                     Vector3 footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot)));
                     footPosition -= transform.forward * footLength;
                     footPosition.y = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot).y;
+                    Debug.DrawLine(footPosition, footPosition - transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
                 }
             }
@@ -791,7 +792,8 @@ namespace Traverser
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, weight);
                     Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand)));
                     handPosition -= transform.forward * handLength;
-                    handPosition.y = ledgeGeometry.vertices[0].y + handIKYDistance;
+                    handPosition.y += handIKYDistance;
+                    Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
                 }
 
@@ -803,7 +805,8 @@ namespace Traverser
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, weight);
                     Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightHand)));
                     handPosition -= transform.forward * handLength;
-                    handPosition.y = ledgeGeometry.vertices[0].y + handIKYDistance;
+                    handPosition.y += handIKYDistance;
+                    Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
                 }
             }

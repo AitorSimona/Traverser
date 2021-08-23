@@ -1821,15 +1821,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177370943352971, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.10853201
+      value: 0.10853203
       objectReference: {fileID: 0}
     - target: {fileID: 5452177370943352971, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000036224105
+      value: 0.00000003567926
       objectReference: {fileID: 0}
     - target: {fileID: 5452177370943352971, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000003954836
+      value: -0.000000003895352
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371026187803, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1909,7 +1909,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371420739849, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0851099
+      value: 0.08510992
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371420739849, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1917,7 +1917,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371420739849, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.08656658
+      value: 0.086566605
       objectReference: {fileID: 0}
     - target: {fileID: 7301835085647520708, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_RootOrder
@@ -5581,7 +5581,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1446639887, guid: c3e8d8e458c449c4986e9f6d78b7a9bb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c3e8d8e458c449c4986e9f6d78b7a9bb, type: 3}
 --- !u!4 &1759330917 stripped
 Transform:
@@ -6497,7 +6498,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1034048263089636345, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: fIKOn
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1034048263089636345, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: maxJumpSpeed
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1034048263089636345, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: cameraTransform
@@ -6505,7 +6510,11 @@ PrefabInstance:
       objectReference: {fileID: 468898140}
     - target: {fileID: 1034048263089636345, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: initialJumpSpeed
-      value: 20
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1034048263089636345, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: jumpDeceleration
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1034048263089636345, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: jumpingAcceleration

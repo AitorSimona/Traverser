@@ -189,6 +189,9 @@ namespace Traverser
                 if (IsState(ClimbingAbilityState.Suspended))
                 {
                     ret = null;
+
+                    ledgeGeometry.height = 0.0f; // reset
+
                     SetClimbingState(ClimbingState.None);
 
                     // --- Turn off/on controller ---
@@ -247,7 +250,11 @@ namespace Traverser
                 && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
             {
                 // ---  We are falling and colliding against a ledge
-                ledgeGeometry.Initialize(collider);
+                auxledgeGeometry.Initialize(collider);
+
+                if (ledgeGeometry.height == 0.0f)
+                    ledgeGeometry.Initialize(ref auxledgeGeometry);
+
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform();
 
                 // --- Require a transition ---
@@ -264,6 +271,8 @@ namespace Traverser
                 if (ret)
                 {
                     SetState(ClimbingAbilityState.LedgeToLedge);
+
+
 
                     locomotionAbility.ResetLocomotion();
 
@@ -394,6 +403,10 @@ namespace Traverser
 
         void HandleLedgeToLedgeState()
         {
+            if(animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.35f 
+                && !animationController.animator.IsInTransition(0))
+                ledgeGeometry.Initialize(ref auxledgeGeometry);
+
             if (!animationController.transition.isON)
             {
                 SetState(ClimbingAbilityState.Climbing);
@@ -614,8 +627,10 @@ namespace Traverser
                     {
                         SetState(ClimbingAbilityState.LedgeToLedge);
 
-                        ledgeGeometry.Initialize(hit.collider as BoxCollider);
-                        ledgeHook = ledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
+                        if (ledgeGeometry.height == 0.0f)
+                            ledgeGeometry.Initialize(ref auxledgeGeometry);
+
+                        ledgeHook = auxledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
 
                         // --- Turn off/on controller ---
                         controller.ConfigureController(false);
@@ -729,7 +744,7 @@ namespace Traverser
 
         private void OnAnimatorIK(int layerIndex)
         {
-            if (!abilityController.isCurrent(this) || climbingState == ClimbingState.None)
+            if (!abilityController.isCurrent(this) /*|| climbingState == ClimbingState.None*/)
                 return;
 
             // --- Ensure IK is not activated during a transition between two differently placed animations (mount-idle bug) ---
@@ -756,7 +771,7 @@ namespace Traverser
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, weight);
                     Vector3 footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot)));
                     footPosition -= transform.forward * footLength;
-                    footPosition.y = animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot).y;
+                    footPosition.y = animationController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position.y;
                     Debug.DrawLine(footPosition, footPosition - transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
                 }
@@ -769,7 +784,7 @@ namespace Traverser
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, weight);
                     Vector3 footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot)));
                     footPosition -= transform.forward * footLength;
-                    footPosition.y = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot).y;
+                    footPosition.y = animationController.animator.GetBoneTransform(HumanBodyBones.RightFoot).position.y;
                     Debug.DrawLine(footPosition, footPosition - transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
                 }
@@ -790,11 +805,13 @@ namespace Traverser
                 if (weight > 0.0f)
                 {
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, weight);
+                    animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, weight);
                     Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand)));
                     handPosition -= transform.forward * handLength;
                     handPosition.y += handIKYDistance;
                     Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
+                    animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand, Quaternion.FromToRotation(transform.forward, transform.forward + Vector3.up) * transform.rotation);
                 }
 
                 weight = animationController.animator.GetFloat("IKRightHandWeight");

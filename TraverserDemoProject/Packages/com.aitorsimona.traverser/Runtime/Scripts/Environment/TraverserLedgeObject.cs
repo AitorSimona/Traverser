@@ -64,6 +64,16 @@ namespace Traverser
                 vertices[3] = transform.TransformPoint(center + GetVector3(-size.x, size.y, -size.z) * 0.5f);
             }
 
+            public void Initialize(ref TraverserLedgeGeometry ledgeGeometry)
+            {
+                height = ledgeGeometry.height;
+
+                vertices[0] = ledgeGeometry.vertices[0];
+                vertices[1] = ledgeGeometry.vertices[1];
+                vertices[2] = ledgeGeometry.vertices[2];
+                vertices[3] = ledgeGeometry.vertices[3];
+            }
+
             // -------------------------------------------------
 
             // --- Utilities ---

@@ -38,9 +38,6 @@ namespace Traverser
         [Tooltip("Reference to the skeleton's parent. The controller positions the skeleton at the skeletonRef's position. Used to kill animation's root motion.")]
         public Transform skeleton;
 
-        [Tooltip("Reference to the skeleton's reference position. A transform that follows the controller's object motion, with an offset to the bone position (f.ex hips).")]
-        public Transform skeletonRef;
-
         [Header("Warping")]
         [Tooltip("The distance at which the character has to be within for warping success.")]
         [Range(0.1f, 0.3f)]
@@ -91,10 +88,14 @@ namespace Traverser
         // --- The distance in Y we need to warp --- 
         private float targetYWarp;
 
+        // --- Reference to the body position ---
+        private Vector3 skeletonRef;
+
         // --------------------------------
 
         private void Awake()
         {
+            skeletonRef = Vector3.zero;
             currentdeltaPosition = Vector3.zero;
             controller = GetComponent<TraverserCharacterController>();
         }
@@ -114,16 +115,42 @@ namespace Traverser
 
         // --- Basic Methods ---
 
-        private void LateUpdate()
+        private void Update()
+        {
+            skeletonRef = animator.bodyPosition;
+        }
+
+        private void OnAnimatorMove()
         {
             if (adjustSkeleton)
             {
                 // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
-                skeleton.transform.position = skeletonRef.transform.position;
+                animator.bodyPosition = skeletonRef;
+            }
+        }
+
+        private void OnAnimatorIK(int layerIndex)
+        {
+            if (adjustSkeleton)
+            {
+                // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
+                animator.bodyPosition = skeletonRef;
 
                 if (!animator.IsInTransition(0))
                     adjustSkeleton = false;
             }
+        }
+
+        private void LateUpdate()
+        {
+            //if (adjustSkeleton)
+            //{
+            //    // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
+            //    skeleton.transform.position = skeletonRef.transform.position;
+
+            //    if (!animator.IsInTransition(0))
+            //        adjustSkeleton = false;
+            //}
             if (transition.isON)
             {
                 // --- Apply warping ---

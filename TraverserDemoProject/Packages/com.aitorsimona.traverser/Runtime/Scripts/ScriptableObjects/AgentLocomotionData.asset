@@ -33,3 +33,21 @@ MonoBehaviour:
   fallTransitionAnimation:
     animationStateName: FallTransition
     transitionDuration: 0
+  jumpAnimation:
+    animationStateName: Jump
+    transitionDuration: 0.25
+  jumpForwardAnimation:
+    animationStateName: JumpForward
+    transitionDuration: 0.25
+  locomotionONAnimation:
+    animationStateName: LocomotionON
+    transitionDuration: 0
+  locomotionOFFAnimation:
+    animationStateName: LocomotionOFF
+    transitionDuration: 0
+  fallToLandAnimation:
+    animationStateName: FallToLand
+    transitionDuration: 0.25
+  fallToRunAnimation:
+    animationStateName: LandToRun
+    transitionDuration: 0.25

@@ -226,8 +226,10 @@ namespace Traverser
             return contactAbility;
         }
 
-        float jumpForce = 0.0f;
-        float maxJumpForce = 17.0f;
+        float currentJumpSpeed = 0.0f;
+        public float initialJumpSpeed = 10.0f;
+        public float jumpAcceleration = 2.0f;
+
         bool reachedTop = false;
 
         TraverserAbility SimulatePrediction(ref TraverserCharacterController controller, float deltaTime)
@@ -253,49 +255,54 @@ namespace Traverser
             Vector2 inputDirection = abilityController.inputController.GetInputMovement();
 
 
-            if (state == LocomotionAbilityState.Jumping)
+            if (abilityController.inputController.GetInputButtonSouth() 
+                && state == LocomotionAbilityState.Moving 
+                && (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("LocomotionON")
+                || animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("LocomotionOFF")
+                ) && !animationController.animator.IsInTransition(0))
             {
-
-                bool jumpingAnim = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
-                    animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JumpForward");
-
-                if (( jumpingAnim && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.15f)
-                    && (jumpForce <= maxJumpForce && !reachedTop))
-                {
-                    jumpForce += 1.5f;
-
-                    if (jumpForce >= maxJumpForce)
-                        reachedTop = true;
-                }
-                else if (reachedTop)
-                {
-                    jumpForce -= 1.0f;
-
-                    if (jumpForce <= 0.0f)
-                    {
-                        reachedTop = false;
-                        state = LocomotionAbilityState.Falling;
-                    }
-
-                }
-            }
-            else if (state == LocomotionAbilityState.Falling && controller.GetYDistanceToGround(tmp.t + Vector3.up * 0.1f) < 0.5f)
-            {
-                animationController.animator.Play("FallToLand");
-                state = LocomotionAbilityState.Moving;
-            }
-
-            if (abilityController.inputController.GetInputButtonSouth() && state == LocomotionAbilityState.Moving)
-            {
-                jumpForce = 10.0f;
+                //currentJumpSpeed = initialJumpSpeed;
                 state = LocomotionAbilityState.Jumping;
 
-                if(speed < walkSpeed)
+                if (speed < walkSpeed)
                     animationController.animator.CrossFade("Jump", 0.25f);
                 else
                     animationController.animator.CrossFade("JumpForward", 0.25f);
-
             }
+
+            if (state == LocomotionAbilityState.Jumping)
+            {
+                bool jumpingAnim = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
+                    animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("JumpForward");
+
+                if (jumpingAnim && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.15f)
+                {
+                    currentJumpSpeed = initialJumpSpeed;
+                }
+                else if (currentJumpSpeed > 0.0f)
+                {                       
+                   currentJumpSpeed -= jumpAcceleration;
+
+                   if (currentJumpSpeed <= 0.0f)
+                   {
+                       reachedTop = false;
+                       state = LocomotionAbilityState.Falling;
+                   }                
+                }
+            }
+            else if (state == LocomotionAbilityState.Falling &&  currentJumpSpeed <= 0.0f/*controller.GetYDistanceToGround(tmp.t + Vector3.up * 0.1f) < 0.5f*/)
+            {
+
+                if(speed < walkSpeed)
+                    animationController.animator.CrossFade("FallToLand", 0.25f);
+                else
+                    animationController.animator.CrossFade("LandToRun", 0.25f);
+
+
+                state = LocomotionAbilityState.Moving;
+            }
+
+
 
 
 
@@ -308,22 +315,17 @@ namespace Traverser
             }
 
 
-            if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("FallToLand")
-                )
-            {
-                //currentVelocity.x *= 0.5f;
-                //currentVelocity.z *= 0.5f;
+            if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("FallToLand"))
                 speed = speed * 0.25f;
-            }
             else if(animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
-            {
+                speed = speed * 0.75f;
+            else if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName("LandToRun"))
                 speed = speed * 0.75f;
 
-            }
 
             // --- Compute desired displacement ---
             Vector3 finalDisplacement = currentVelocity.normalized * speed;
-            finalDisplacement += transform.up * jumpForce;
+            finalDisplacement += transform.up * currentJumpSpeed;
             finalDisplacement *= deltaTime;
 
             // --- Update rotation ---
@@ -466,7 +468,7 @@ namespace Traverser
                         state = LocomotionAbilityState.Landing;
                     }
 
-                    //break;
+                    break;
                 }
 
             }
@@ -503,7 +505,7 @@ namespace Traverser
             movementAccelerationTimer = 0.0f;
             currentVelocity = Vector3.zero;
             state = LocomotionAbilityState.Moving;
-            jumpForce = 0.0f;
+            currentJumpSpeed = 0.0f;
         }
 
         public void SetLocomotionState(LocomotionAbilityState newState)

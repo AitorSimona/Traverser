@@ -104,6 +104,9 @@ namespace Traverser
         // --- The position at which we are currently aiming to, determined by maxJumpRadius ---
         private Vector3 targetAimPosition;
 
+        private float maxYDifference = 0.5f;
+
+
         // --------------------------------
 
         // --- World interactable elements ---
@@ -241,7 +244,7 @@ namespace Traverser
             }
             else if ((locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling
                 || (locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Jumping
-                && (contactTransform.t - (transform.position + Vector3.up* controller.capsuleHeight)).magnitude < 0.5f))
+                && (contactTransform.t - (transform.position + Vector3.up* controller.capsuleHeight)).magnitude < maxYDifference))
                 && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
             {
                 // ---  We are falling and colliding against a ledge

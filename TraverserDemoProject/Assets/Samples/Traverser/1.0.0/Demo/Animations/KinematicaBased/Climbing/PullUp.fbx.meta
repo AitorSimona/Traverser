@@ -49,7 +49,7 @@ ModelImporter:
       lastFrame: 72
       wrapMode: 0
       orientationOffsetY: 0
-      level: 0
+      level: -0.15
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
@@ -71,6 +71,15 @@ ModelImporter:
           curve:
           - serializedVersion: 3
             time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 0.39631334
             value: 0
             inSlope: 0
             outSlope: 0
@@ -79,7 +88,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 1
+            time: 0.6267281
             value: 0
             inSlope: 0
             outSlope: 0
@@ -87,8 +96,26 @@ ModelImporter:
             weightedMode: 0
             inWeight: 0
             outWeight: 0
-          preInfinity: 3
-          postInfinity: 3
+          - serializedVersion: 3
+            time: 0.764977
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          preInfinity: 2
+          postInfinity: 2
           rotationOrder: 4
       - name: IKRightFootWeight
         curve:
@@ -96,6 +123,15 @@ ModelImporter:
           curve:
           - serializedVersion: 3
             time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 0.13364056
             value: 0
             inSlope: 0
             outSlope: 0
@@ -104,16 +140,25 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 1
-            value: 0
+            time: 0.4746544
+            value: 1
             inSlope: 0
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
-          preInfinity: 3
-          postInfinity: 3
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          preInfinity: 2
+          postInfinity: 2
           rotationOrder: 4
       - name: IKLeftHandWeight
         curve:
@@ -121,6 +166,15 @@ ModelImporter:
           curve:
           - serializedVersion: 3
             time: 0
+            value: 1
+            inSlope: -2.1919193
+            outSlope: -2.1919193
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.4562212
             value: 0
             inSlope: 0
             outSlope: 0
@@ -129,16 +183,16 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
+            time: 1.0047302
+            value: -0.0022583008
+            inSlope: -0.0041171624
+            outSlope: -0.0041171624
+            tangentMode: 34
             weightedMode: 0
-            inWeight: 0
+            inWeight: 0.33333334
             outWeight: 0
-          preInfinity: 3
-          postInfinity: 3
+          preInfinity: 2
+          postInfinity: 2
           rotationOrder: 4
       - name: IKRightHandWeight
         curve:
@@ -146,6 +200,15 @@ ModelImporter:
           curve:
           - serializedVersion: 3
             time: 0
+            value: 1
+            inSlope: -2.1919193
+            outSlope: -2.1919193
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 0.4562212
             value: 0
             inSlope: 0
             outSlope: 0
@@ -155,15 +218,15 @@ ModelImporter:
             outWeight: 0
           - serializedVersion: 3
             time: 1
-            value: 0
-            inSlope: 0
-            outSlope: 0
-            tangentMode: 0
+            value: 0.0022583008
+            inSlope: 0.004152977
+            outSlope: 0.004152977
+            tangentMode: 34
             weightedMode: 0
-            inWeight: 0
+            inWeight: 0.33333334
             outWeight: 0
-          preInfinity: 3
-          postInfinity: 3
+          preInfinity: 2
+          postInfinity: 2
           rotationOrder: 4
       events: []
       transformMask: []

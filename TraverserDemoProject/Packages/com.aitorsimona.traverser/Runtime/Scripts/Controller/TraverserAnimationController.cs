@@ -115,6 +115,12 @@ namespace Traverser
 
         // --- Basic Methods ---
 
+        //private void OnAnimatorMove()
+        //{
+        //    //Vector3 IkPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
+
+        //}
+
         private void OnAnimatorIK(int layerIndex)
         {
             if (adjustSkeleton)
@@ -126,7 +132,7 @@ namespace Traverser
                     adjustSkeleton = false;
             }
 
-            skeletonRef = animator.bodyPosition;
+            //skeletonRef = animator.bodyPosition;
         }
 
         private void LateUpdate()
@@ -289,12 +295,26 @@ namespace Traverser
             animator.applyRootMotion = rootMotion;
         }
 
+
+        public Vector3 leftFootPosition;
+        public Vector3 rightFootPosition;
+     
+
         public void AdjustSkeleton()
         {
             // --- Since we use baked motion in many animations (mount / pull up / dismount etc) we need to keep
             // --- the skeleton in place during the end of a transition, or else it will move to, for example, the ledge idle
             // --- animation's original position. We want to end a mount and transition to ledge idle at the same position ---
             adjustSkeleton = true;
+
+            skeletonRef = animator.bodyPosition;
+            rightFootPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
+            leftFootPosition = animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
+        }
+
+        public bool IsAdjustingSkeleton()
+        {
+            return adjustSkeleton;
         }
 
         public bool IsTransitionFinished()

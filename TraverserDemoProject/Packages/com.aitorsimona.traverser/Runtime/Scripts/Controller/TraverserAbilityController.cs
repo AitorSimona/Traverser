@@ -129,6 +129,16 @@ namespace Traverser
             }
         }
 
+        //private void OnAnimatorMove()
+        //{
+        //    // --- Perform movement and rotation, interpolate for smoothness ---
+        //    if (!animationController.transition.isON)
+        //    {
+        //        controller.ForceMove(Vector3.Lerp(transform.position, transform.position + controller.targetDisplacement, Time.deltaTime / Time.fixedDeltaTime));
+        //        controller.ForceRotate(Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.AngleAxis(controller.targetHeading, Vector3.up), Time.deltaTime / Time.fixedDeltaTime));
+        //    }
+        //}
+
         // --------------------------------
 
         // --- Utilites ---

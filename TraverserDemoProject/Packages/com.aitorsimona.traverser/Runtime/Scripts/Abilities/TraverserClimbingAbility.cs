@@ -245,8 +245,8 @@ namespace Traverser
                 }
             }
             else if ((locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling
-                || (locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Jumping
-                && (contactTransform.t - (transform.position + Vector3.up* controller.capsuleHeight)).magnitude < maxYDifference))
+                || locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Jumping)
+                && (contactTransform.t - (transform.position + Vector3.up* controller.capsuleHeight)).magnitude < maxYDifference
                 && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
             {
                 // ---  We are falling and colliding against a ledge

@@ -115,20 +115,6 @@ namespace Traverser
 
         // --- Basic Methods ---
 
-        private void Update()
-        {
-            skeletonRef = animator.bodyPosition;
-        }
-
-        private void OnAnimatorMove()
-        {
-            if (adjustSkeleton)
-            {
-                // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
-                animator.bodyPosition = skeletonRef;
-            }
-        }
-
         private void OnAnimatorIK(int layerIndex)
         {
             if (adjustSkeleton)
@@ -139,18 +125,12 @@ namespace Traverser
                 if (!animator.IsInTransition(0))
                     adjustSkeleton = false;
             }
+
+            skeletonRef = animator.bodyPosition;
         }
 
         private void LateUpdate()
         {
-            //if (adjustSkeleton)
-            //{
-            //    // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
-            //    skeleton.transform.position = skeletonRef.transform.position;
-
-            //    if (!animator.IsInTransition(0))
-            //        adjustSkeleton = false;
-            //}
             if (transition.isON)
             {
                 // --- Apply warping ---

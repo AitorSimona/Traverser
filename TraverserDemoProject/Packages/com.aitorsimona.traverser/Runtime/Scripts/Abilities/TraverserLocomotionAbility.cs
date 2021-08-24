@@ -214,12 +214,6 @@ namespace Traverser
 
             if(fIKOn)
             {
-                if (!animationController.IsAdjustingSkeleton())
-                {
-                    animationController.rightFootPosition = animationController.animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
-                    animationController.leftFootPosition = animationController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
-                }
-
                 FindFootIKTarget(animationController.rightFootPosition, ref rightFootIKTransform);
                 FindFootIKTarget(animationController.leftFootPosition, ref leftFootIKTransform);
             }

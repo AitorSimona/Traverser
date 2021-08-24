@@ -158,12 +158,13 @@ namespace Traverser
                         // in warping computation
                         animationController.ResetWarper();
 
+                        animationController.AdjustSkeleton();
+
                         // --- Get skeleton's current position and teleport controller ---
                         Vector3 newTransform = animationController.skeleton.transform.position;
                         newTransform.y -= controller.capsuleHeight/2.0f;
                         controller.TeleportTo(newTransform);
 
-                        animationController.AdjustSkeleton();
 
                         // --- Reenable controller and give back control ---
                         controller.ConfigureController(true);
@@ -210,11 +211,12 @@ namespace Traverser
                         // --- If current state does not have a valid exit transition, return control ---
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
                         {
+                            animationController.AdjustSkeleton();
+
                             // --- Get skeleton's current position and teleport controller ---
                             Vector3 newTransform = animationController.skeleton.transform.position;
                             newTransform.y -= controller.capsuleHeight / 2.0f;
                             controller.TeleportTo(newTransform);
-                            animationController.AdjustSkeleton();
 
                             // --- Reenable controller and give back control ---
                             controller.ConfigureController(true);

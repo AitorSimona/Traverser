@@ -104,7 +104,6 @@ namespace Traverser
         private Vector3 targetAimPosition;
 
         private float maxYDifference = 0.5f;
-        private float extraLeftHandYOffset = 0.015f;
 
         // --------------------------------
 
@@ -340,7 +339,7 @@ namespace Traverser
         void HandleMountingState()
         {
             // --- If transition is over and we were mounting change state to ledge idle ---
-            if(!animationController.transition.isON)
+            if (!animationController.transition.isON)
             {
                 SetState(ClimbingAbilityState.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
@@ -778,6 +777,13 @@ namespace Traverser
 
                     Vector3 footPosition = animationController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
 
+                    if (animationController.IsAdjustingSkeleton())
+                    {
+                        footPosition = animationController.leftFootPosition;
+                        footPosition.x = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(footPosition)).x;
+                        footPosition.z = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(footPosition)).z;
+                    }
+
                     RaycastHit hit;
 
                     if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpAnimation.animationStateName)
@@ -792,7 +798,7 @@ namespace Traverser
                     }
                     else
                     {
-                        footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot)));
+                        //footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot)));
 
                         if (Physics.Raycast(footPosition - transform.forward, transform.forward, out hit, 2.0f, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
                         {
@@ -800,7 +806,7 @@ namespace Traverser
                         }
 
                         footPosition -= transform.forward * footLength;
-                        footPosition.y = animationController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position.y;
+                        //footPosition.y = animationController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position.y;
 
                     }
 
@@ -818,6 +824,13 @@ namespace Traverser
 
                     Vector3 footPosition = animationController.animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
 
+                    if (animationController.IsAdjustingSkeleton())
+                    {
+                        footPosition = animationController.rightFootPosition;
+                        footPosition.x = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(footPosition)).x;
+                        footPosition.z = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(footPosition)).z;
+                    }
+
                     RaycastHit hit;
 
                     if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpAnimation.animationStateName)
@@ -832,7 +845,7 @@ namespace Traverser
                     }
                     else
                     {
-                        footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot)));
+                        //footPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot)));
 
                         if (Physics.Raycast(footPosition - transform.forward, transform.forward, out hit, 2.0f, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
                         {
@@ -840,8 +853,7 @@ namespace Traverser
                         }
 
                         footPosition -= transform.forward * footLength;
-                        footPosition.y = animationController.animator.GetBoneTransform(HumanBodyBones.RightFoot).position.y;
-
+                        //footPosition.y = animationController.animator.GetBoneTransform(HumanBodyBones.RightFoot).position.y;
                     }
 
                     Debug.DrawLine(footPosition, footPosition - transform.forward * 2.0f);
@@ -865,9 +877,17 @@ namespace Traverser
                 {
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, weight);
                     animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, weight);
-                    Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand)));
+
+                    Vector3 IKPosition = animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand);
+
+                    if (animationController.IsAdjustingSkeleton())
+                        IKPosition = animationController.leftHandPosition;
+
+                    Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(IKPosition));
+
                     handPosition -= transform.forward * handLength;
-                    handPosition.y += handIKYDistance + extraLeftHandYOffset;
+                    handPosition.y += handIKYDistance;
+
                     Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
                     animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand, Quaternion.FromToRotation(transform.forward, transform.forward + Vector3.up*1.5f) * transform.rotation);
@@ -879,13 +899,21 @@ namespace Traverser
                 if (weight > 0.0f)
                 {
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, weight);
-                    animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, weight);
-                    Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(animationController.animator.GetIKPosition(AvatarIKGoal.RightHand)));
+                    animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightHand, weight);
+
+                    Vector3 IKPosition = animationController.animator.GetIKPosition(AvatarIKGoal.RightHand);
+
+                    if (animationController.IsAdjustingSkeleton())
+                        IKPosition = animationController.rightHandPosition;
+
+                    Vector3 handPosition = ledgeGeometry.GetPosition(ledgeGeometry.GetHook(IKPosition));
+
                     handPosition -= transform.forward * handLength;
                     handPosition.y += handIKYDistance;
+
                     Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
-                    animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand, Quaternion.FromToRotation(transform.forward, transform.forward + Vector3.up*1.5f) * transform.rotation);
+                    animationController.animator.SetIKRotation(AvatarIKGoal.RightHand, Quaternion.FromToRotation(transform.forward, transform.forward + Vector3.up*1.5f) * transform.rotation);
                 }
             }
         }

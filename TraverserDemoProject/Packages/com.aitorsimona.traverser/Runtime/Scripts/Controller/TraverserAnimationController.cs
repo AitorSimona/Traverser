@@ -115,24 +115,24 @@ namespace Traverser
 
         // --- Basic Methods ---
 
-        //private void OnAnimatorMove()
-        //{
-        //    //Vector3 IkPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
-
-        //}
-
         private void OnAnimatorIK(int layerIndex)
         {
             if (adjustSkeleton)
-            {
+            {            
                 // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
                 animator.bodyPosition = skeletonRef;
 
                 if (!animator.IsInTransition(0))
                     adjustSkeleton = false;
             }
-
-            //skeletonRef = animator.bodyPosition;
+            else
+            {
+                rightFootPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
+                leftFootPosition = animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
+                rightHandPosition = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
+                leftHandPosition = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
+                skeletonRef = animator.bodyPosition;
+            }
         }
 
         private void LateUpdate()
@@ -298,7 +298,8 @@ namespace Traverser
 
         public Vector3 leftFootPosition;
         public Vector3 rightFootPosition;
-     
+        public Vector3 rightHandPosition;
+        public Vector3 leftHandPosition;    
 
         public void AdjustSkeleton()
         {
@@ -306,10 +307,6 @@ namespace Traverser
             // --- the skeleton in place during the end of a transition, or else it will move to, for example, the ledge idle
             // --- animation's original position. We want to end a mount and transition to ledge idle at the same position ---
             adjustSkeleton = true;
-
-            skeletonRef = animator.bodyPosition;
-            rightFootPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
-            leftFootPosition = animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
         }
 
         public bool IsAdjustingSkeleton()

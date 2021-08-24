@@ -552,7 +552,7 @@ namespace Traverser
         public void HandleJump(float speed)
         {
             // --- Enable jumping only if on the ground and in moving state ---
-            if (abilityController.inputController.GetInputButtonSouth() && state == LocomotionAbilityState.Moving
+            if (abilityController.inputController.GetInputButtonNorth() && state == LocomotionAbilityState.Moving
             && (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotionData.locomotionONAnimation.animationStateName) 
                || animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotionData.locomotionOFFAnimation.animationStateName)) 
             && !animationController.animator.IsInTransition(0))

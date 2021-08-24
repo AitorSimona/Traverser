@@ -748,9 +748,13 @@ namespace Traverser
             if (!abilityController.isCurrent(this) /*|| climbingState == ClimbingState.None*/)
                 return;
 
-            // --- Ensure IK is not activated during a transition between two differently placed animations (mount-idle bug) ---
-            //if (animationController.animator.IsInTransition(0))
-            //    return;
+            // --- Ensure IK is not activated during a transition between two different abilities (locomotion - mount) ---
+            if ((!animationController.transition.isTargetON 
+                && animationController.transition.targetAnimName == climbingData.mountTransitionData.targetAnim)
+                ||
+                (animationController.transition.targetAnimName == climbingData.mountTransitionData.targetAnim 
+                &&animationController.animator.IsInTransition(0)))
+                return;
 
             // --- Set weights to 0 and return if IK is off ---
             if (!fIKOn)

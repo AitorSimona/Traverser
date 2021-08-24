@@ -44,6 +44,9 @@ namespace Traverser
         // --- Indicates if transition handler is currently playing target animation ---
         public bool isTargetON { get => isTargetAnimationON; }
 
+        // --- Get the name of the target animation of the current transition ---
+        public string targetAnimName { get => transitionData.targetAnim; }
+
         // --------------------------------
 
         // --- Private Variables ---

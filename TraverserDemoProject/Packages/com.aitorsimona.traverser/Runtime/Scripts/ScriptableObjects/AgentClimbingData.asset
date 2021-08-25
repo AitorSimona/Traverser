@@ -46,7 +46,7 @@ MonoBehaviour:
     triggerTargetAnim: DropDownTrigger
     contactOffset: 0.5
     targetOffset: 0
-    warpY: 1
+    warpY: 0
     forceTarget: 0
   HopUpTransitionData:
     transitionAnim: ClimbTransition

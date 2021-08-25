@@ -129,6 +129,7 @@ namespace Traverser
         // --- Jump ---
         private float currentJumpSpeed = 0.0f;
         private float dampingTime = 0.15f;
+        private bool wasJumping = false;
 
         // --- Ability-level state ---
         public enum LocomotionAbilityState
@@ -342,6 +343,10 @@ namespace Traverser
                             if (ability.IsAbilityEnabled() && ability.OnContact(contactTransform, deltaTime))
                             {
                                 contactAbility = ability;
+
+                                ResetLocomotion();
+
+
                                 break;
                             }
                         }
@@ -378,7 +383,7 @@ namespace Traverser
                     // --- Activate a landing roll transition ---
                     if (state == LocomotionAbilityState.Falling
                         && distanceToGround > controller.capsuleHeight
-                        && distanceToGround < controller.capsuleHeight * 1.5f)
+                        && distanceToGround < controller.capsuleHeight * 1.25f)
                     {
                         animationController.animator.CrossFade(locomotionData.fallTransitionAnimation.animationStateName, locomotionData.fallTransitionAnimation.transitionDuration, 0);
 
@@ -392,7 +397,7 @@ namespace Traverser
                     }
                     else if (state == LocomotionAbilityState.Moving
                         && distanceToGround > controller.capsuleHeight
-                        && distanceToGround < controller.capsuleHeight * 1.5f)
+                        && distanceToGround < controller.capsuleHeight * 1.25f)
                     {
                         animationController.animator.CrossFade(locomotionData.fallTransitionAnimation.animationStateName, locomotionData.fallTransitionAnimation.transitionDuration, 0);
 
@@ -450,6 +455,7 @@ namespace Traverser
             currentVelocity = Vector3.zero;
             state = LocomotionAbilityState.Moving;
             currentJumpSpeed = 0.0f;
+            wasJumping = false;
         }
 
         public void SetLocomotionState(LocomotionAbilityState newState)
@@ -558,6 +564,7 @@ namespace Traverser
             && !animationController.animator.IsInTransition(0))
             {
                 state = LocomotionAbilityState.Jumping;
+                wasJumping = true;
                 fIKOn = false;
 
                 // --- Choose jump animation depending on speed ---
@@ -568,7 +575,9 @@ namespace Traverser
             }
 
             // --- If on jumping state, update jump speed ---
-            if (state == LocomotionAbilityState.Jumping || state == LocomotionAbilityState.Falling)
+            if ((state == LocomotionAbilityState.Jumping 
+                || state == LocomotionAbilityState.Falling)
+                && wasJumping)
             {
                 bool jumpingAnim = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotionData.jumpAnimation.animationStateName) ||
                     animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotionData.jumpForwardAnimation.animationStateName);
@@ -590,7 +599,9 @@ namespace Traverser
             }
 
             // --- Activate landing animation ---
-            if (state == LocomotionAbilityState.Falling && currentJumpSpeed <= 0.0f)
+            if (state == LocomotionAbilityState.Falling 
+                && currentJumpSpeed <= 0.0f
+                && wasJumping)
             {
                 if (speed < walkSpeed)
                     animationController.animator.CrossFade(locomotionData.fallToLandAnimation.animationStateName, locomotionData.fallToLandAnimation.transitionDuration);
@@ -599,6 +610,7 @@ namespace Traverser
 
                 fIKOn = true;
                 state = LocomotionAbilityState.Moving;
+                wasJumping = false;
             }
         }
 

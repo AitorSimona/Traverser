@@ -642,6 +642,7 @@ namespace Traverser
             if(abilityController.inputController.GetInputButtonSouth())
             {
                 SetState(ClimbingAbilityState.JumpBack);
+
                 // --- Turn off/on controller ---
                 controller.ConfigureController(false);
 

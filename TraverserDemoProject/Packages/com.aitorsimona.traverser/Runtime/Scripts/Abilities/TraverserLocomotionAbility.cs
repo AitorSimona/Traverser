@@ -80,6 +80,9 @@ namespace Traverser
         [Tooltip("How fast the character accelerates jump in m/s sq.")]
         public float jumpDeceleration = 2.0f;
 
+        [Tooltip("How much time the character keeps maxJumpSpeed intact (afterwards jumpDeceleration will be applied).")]
+        public float jumpTime = 0.25f;
+
         [Header("Contact settings")]
         [Tooltip("Maximum angle at which the character can contact with the environment in degrees. If above this number the collision won't be considered.")]
         public float contactAngleMax = 30.0f;
@@ -134,6 +137,7 @@ namespace Traverser
         private bool wasJumping = false;
         private bool isApex = false;
         private float groundDistance = 0.1f;
+        private float currentTime = 0.0f;
 
         // --- Ability-level state ---
         public enum LocomotionAbilityState
@@ -571,6 +575,7 @@ namespace Traverser
                 wasJumping = true;
                 fIKOn = false;
                 isApex = false;
+                currentTime = 0.0f;
 
                 // --- Choose jump animation depending on speed ---
                 if (speed < walkSpeed)
@@ -600,8 +605,8 @@ namespace Traverser
                 // --- Progressively decelerate jumping speed over time ---
                 else if (currentJumpSpeed > 0.0f)
                 {
-                    if (currentJumpSpeed < maxJumpSpeed && !isApex)
-                        currentJumpSpeed += jumpDeceleration * Time.deltaTime;
+                    if (currentTime < jumpTime && !isApex)
+                        currentTime += Time.deltaTime; //currentJumpSpeed += jumpDeceleration * Time.deltaTime;
                     else
                     {
                         currentJumpSpeed -= jumpDeceleration * Time.deltaTime;

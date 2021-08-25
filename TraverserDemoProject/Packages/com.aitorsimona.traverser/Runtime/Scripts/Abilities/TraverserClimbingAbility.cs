@@ -259,17 +259,20 @@ namespace Traverser
 
                 // --- Require a transition ---
                 //animationController.animator.CrossFade(climbingData.fallTransitionAnimation.animationStateName, climbingData.fallTransitionAnimation.transitionDuration, 0);
-                animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
 
                 // --- Decide whether to trigger a short or large hang transition ---
 
-                if((contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight)).magnitude > maxYDifference/2.0f
+                if ((contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight)).magnitude > maxYDifference / 2.0f
                     && locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling)
+                {
+                    animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);
-
-                else if ((transform.position.y - (transform.position.y + controller.capsuleHeight)) < 0.25f)
+                }
+                else if ((contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight)).magnitude < maxYDifference / 3.0f)
+                {
+                    animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangShortTransitionData, ref contactTransform, ref hangedTransform);
-
+                }
                 // --- If transition start is successful, change state ---
                 if (ret)
                 {

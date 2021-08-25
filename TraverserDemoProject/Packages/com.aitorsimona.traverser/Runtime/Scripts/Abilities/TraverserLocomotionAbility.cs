@@ -555,10 +555,12 @@ namespace Traverser
             currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, -rotationSpeed, rotationSpeed);
         }
 
+
+        bool isApex = false;
         public void HandleJump(float speed)
         {
             // --- Enable jumping only if on the ground and in moving state ---
-            if (abilityController.inputController.GetInputButtonNorth() && state == LocomotionAbilityState.Moving
+            if (!wasJumping && abilityController.inputController.GetInputButtonNorth() && state == LocomotionAbilityState.Moving
             && (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotionData.locomotionONAnimation.animationStateName) 
                || animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotionData.locomotionOFFAnimation.animationStateName)) 
             && !animationController.animator.IsInTransition(0))
@@ -566,6 +568,7 @@ namespace Traverser
                 state = LocomotionAbilityState.Jumping;
                 wasJumping = true;
                 fIKOn = false;
+                isApex = false;
 
                 // --- Choose jump animation depending on speed ---
                 if (speed < walkSpeed)
@@ -582,20 +585,38 @@ namespace Traverser
                 bool jumpingAnim = animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotionData.jumpAnimation.animationStateName) ||
                     animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotionData.jumpForwardAnimation.animationStateName);
 
+
                 // --- Let the animation play for some time before applying jump speed ---
-                if (jumpingAnim && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > dampingTime)
+                if (jumpingAnim 
+                    && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > dampingTime
+                    && currentJumpSpeed == 0.0f)
                 {
-                    currentJumpSpeed = initialJumpSpeed;
+                    if (currentJumpSpeed == 0.0f)
+                        currentJumpSpeed = 12.0f;
+
                 }
                 // --- Progressively decelerate jumping speed over time ---
                 else if (currentJumpSpeed > 0.0f)
                 {
-                    currentJumpSpeed -= jumpDeceleration * Time.deltaTime;
+                    if (currentJumpSpeed < initialJumpSpeed && !isApex)
+                        currentJumpSpeed += jumpDeceleration * Time.deltaTime;
+                    else
+                    {
+                        currentJumpSpeed -= jumpDeceleration * Time.deltaTime;
+                        isApex = true;
+                    }
 
-                    // --- If jump speed is low enough, activate falling state ---
                     if (currentJumpSpeed <= Mathf.Abs(Physics.gravity.y))
+                    {
                         state = LocomotionAbilityState.Falling;
+
+                        if (controller.GetYDistanceToGround(transform.position) < 0.1f)
+                            currentJumpSpeed = 0.0f;
+                    }
+
                 }
+                // --- If jump speed is low enough, activate falling state ---
+
             }
 
             // --- Activate landing animation ---
@@ -611,6 +632,7 @@ namespace Traverser
                 fIKOn = true;
                 state = LocomotionAbilityState.Moving;
                 wasJumping = false;
+                currentJumpSpeed = 0.0f;
             }
         }
 

@@ -547,11 +547,13 @@ namespace Traverser
             {
                 animationController.animator.CrossFade(climbingData.pullUpAnimation.animationStateName, climbingData.pullUpAnimation.transitionDuration, 0);
                 SetState(ClimbingAbilityState.PullUp);
+                controller.targetDisplacement = Vector3.zero;
             }
             else if (closeToDrop && abilityController.inputController.GetInputButtonEast())
             {
                 animationController.animator.CrossFade(climbingData.dismountAnimation.animationStateName, climbingData.dismountAnimation.transitionDuration, 0);
                 SetState(ClimbingAbilityState.Dismount);
+                controller.targetDisplacement = Vector3.zero;
             }
         }
 
@@ -636,6 +638,8 @@ namespace Traverser
                     // --- Trigger ledge to ledge transition ---
                     if (success)
                     {
+                        controller.targetDisplacement = Vector3.zero;
+
                         SetState(ClimbingAbilityState.LedgeToLedge);
 
                         if (ledgeGeometry.height == 0.0f)

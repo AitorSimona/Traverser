@@ -103,7 +103,8 @@ namespace Traverser
         // --- The position at which we are currently aiming to, determined by maxJumpRadius ---
         private Vector3 targetAimPosition;
 
-        private float maxYDifference = 3.0f;
+        private float maxDistance = 3.0f;
+        private float maxYDifference = 0.25f;
 
         // --------------------------------
 
@@ -246,7 +247,7 @@ namespace Traverser
             }
             else if ((locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling
                 || locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Jumping)
-                && (contactTransform.t - (transform.position + Vector3.up* controller.capsuleHeight)).magnitude < maxYDifference
+                && (contactTransform.t - (transform.position + Vector3.up* controller.capsuleHeight)).magnitude < maxDistance
                 && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
             {
                 // ---  We are falling and colliding against a ledge
@@ -260,15 +261,19 @@ namespace Traverser
                 // --- Require a transition ---
                 //animationController.animator.CrossFade(climbingData.fallTransitionAnimation.animationStateName, climbingData.fallTransitionAnimation.transitionDuration, 0);
 
+                Vector3 difference = (contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight));
+
                 // --- Decide whether to trigger a short or large hang transition ---
 
-                if ((contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight)).magnitude > maxYDifference / 2.0f
+                if (difference.magnitude > maxDistance / 2.0f
+                    && difference.y < maxYDifference
                     && locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling)
                 {
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);
                 }
-                else if ((contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight)).magnitude < maxYDifference / 3.0f)
+                else if (difference.magnitude < maxDistance / 3.0f
+                    && difference.y < maxYDifference)
                 {
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangShortTransitionData, ref contactTransform, ref hangedTransform);

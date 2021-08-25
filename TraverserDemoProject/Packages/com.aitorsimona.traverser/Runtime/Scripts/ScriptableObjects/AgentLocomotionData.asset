@@ -18,7 +18,7 @@ MonoBehaviour:
     triggerTransitionAnim: ClimbTransitionTrigger
     triggerTargetAnim: FallToRollTrigger
     contactOffset: 0
-    targetOffset: 5
+    targetOffset: 3
     warpY: 1
     forceTarget: 1
   hardLandingTransitionData:

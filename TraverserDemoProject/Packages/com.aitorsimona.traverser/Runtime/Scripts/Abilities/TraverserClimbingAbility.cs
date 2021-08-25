@@ -103,7 +103,7 @@ namespace Traverser
         // --- The position at which we are currently aiming to, determined by maxJumpRadius ---
         private Vector3 targetAimPosition;
 
-        private float maxYDifference = 0.5f;
+        private float maxYDifference = 3.0f;
 
         // --------------------------------
 
@@ -262,10 +262,13 @@ namespace Traverser
                 animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
 
                 // --- Decide whether to trigger a short or large hang transition ---
-                if((contactTransform.t.y - (transform.position.y + controller.capsuleHeight)) < 0.25f)
-                    ret = animationController.transition.StartTransition(ref climbingData.jumpHangShortTransitionData, ref contactTransform, ref hangedTransform);
-                else
+
+                if((contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight)).magnitude > maxYDifference/2.0f
+                    && locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling)
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);
+
+                else if ((transform.position.y - (transform.position.y + controller.capsuleHeight)) < 0.25f)
+                    ret = animationController.transition.StartTransition(ref climbingData.jumpHangShortTransitionData, ref contactTransform, ref hangedTransform);
 
                 // --- If transition start is successful, change state ---
                 if (ret)

@@ -246,7 +246,10 @@ namespace Traverser
             RaycastHit hit;
             bool ret = Physics.Raycast(origin, transform.forward, out hit, maxRayDistance, characterCollisionMask, QueryTriggerInteraction.Ignore);
 
-       
+            Debug.DrawRay(origin, transform.forward * maxRayDistance);
+
+            //ret = Physics.CapsuleCastNonAlloc(transform.position, transform.position + Vector3.up * capsuleHeight,
+            //    capsuleRadius, transform.forward, hitColliders);
 
             // --- Fill collider data ---
             if (ret)

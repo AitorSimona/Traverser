@@ -326,21 +326,21 @@ namespace Traverser
 
                     attemptTransition = false; // make sure we do not react to another collision
                 }
-                else if ((state == LocomotionAbilityState.Falling
+                 else if ((state == LocomotionAbilityState.Falling
                     && controller.CheckForwardCollision(transform.position + Vector3.up * controller.capsuleHeight * 0.9f, contactDistanceMax)) 
                     || controller.CheckForwardCollision(transform.position - Vector3.up * 0.25f, contactDistanceMax))
                 {
                     // --- Check forward collision for possible ledge contact and inform abilities ---
 
                     // --- We are falling and we have found a forward collision ---             
-                    TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
+                    //TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
 
                     if (contactAbility == null)
                     {
                         foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
                         {
                             // --- If any ability reacts to the collision, break ---
-                            if (ability.IsAbilityEnabled() && ability.OnContact(contactTransform, deltaTime))
+                            if (ability.IsAbilityEnabled() && ability.OnContact(controller.contactTransform, deltaTime))
                             {
                                 contactAbility = ability;
 

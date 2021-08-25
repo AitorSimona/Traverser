@@ -71,9 +71,11 @@ namespace Traverser
         public float rotationSpeedToTurn = 1.0f;
 
         [Header("Jump settings")]
+        [Tooltip("How fast the character begins jumping in m/s.")]
+        public float initialJumpSpeed = 12.0f;
 
-        [Tooltip("How fast the character jumps in m/s.")]
-        public float initialJumpSpeed = 10.0f;
+        [Tooltip("How fast the character ends up jumping in m/s.")]
+        public float maxJumpSpeed = 15.0f;
 
         [Tooltip("How fast the character accelerates jump in m/s sq.")]
         public float jumpDeceleration = 2.0f;
@@ -130,6 +132,8 @@ namespace Traverser
         private float currentJumpSpeed = 0.0f;
         private float dampingTime = 0.15f;
         private bool wasJumping = false;
+        private bool isApex = false;
+        private float groundDistance = 0.1f;
 
         // --- Ability-level state ---
         public enum LocomotionAbilityState
@@ -555,8 +559,6 @@ namespace Traverser
             currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, -rotationSpeed, rotationSpeed);
         }
 
-
-        bool isApex = false;
         public void HandleJump(float speed)
         {
             // --- Enable jumping only if on the ground and in moving state ---
@@ -592,13 +594,13 @@ namespace Traverser
                     && currentJumpSpeed == 0.0f)
                 {
                     if (currentJumpSpeed == 0.0f)
-                        currentJumpSpeed = 12.0f;
+                        currentJumpSpeed = initialJumpSpeed;
 
                 }
                 // --- Progressively decelerate jumping speed over time ---
                 else if (currentJumpSpeed > 0.0f)
                 {
-                    if (currentJumpSpeed < initialJumpSpeed && !isApex)
+                    if (currentJumpSpeed < maxJumpSpeed && !isApex)
                         currentJumpSpeed += jumpDeceleration * Time.deltaTime;
                     else
                     {
@@ -606,16 +608,16 @@ namespace Traverser
                         isApex = true;
                     }
 
+                    // --- If jump speed is low enough, activate falling state ---
                     if (currentJumpSpeed <= Mathf.Abs(Physics.gravity.y))
                     {
                         state = LocomotionAbilityState.Falling;
 
-                        if (controller.GetYDistanceToGround(transform.position) < 0.1f)
+                        if (controller.GetYDistanceToGround(transform.position) < groundDistance)
                             currentJumpSpeed = 0.0f;
                     }
 
                 }
-                // --- If jump speed is low enough, activate falling state ---
 
             }
 

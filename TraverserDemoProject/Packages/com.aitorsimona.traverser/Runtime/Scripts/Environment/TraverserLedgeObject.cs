@@ -64,6 +64,15 @@ namespace Traverser
                 vertices[3] = transform.TransformPoint(center + GetVector3(-size.x, size.y, -size.z) * 0.5f);
             }
 
+            public bool IsEqual(ref TraverserLedgeGeometry ledgeGeometry)
+            {
+                return height == ledgeGeometry.height
+                && vertices[0] == ledgeGeometry.vertices[0]
+                && vertices[1] == ledgeGeometry.vertices[1]
+                && vertices[2] == ledgeGeometry.vertices[2]
+                && vertices[3] == ledgeGeometry.vertices[3];
+            }
+
             public void Initialize(ref TraverserLedgeGeometry ledgeGeometry)
             {
                 height = ledgeGeometry.height;
@@ -212,12 +221,12 @@ namespace Traverser
                     }
                 }
 
-                result.distance = Mathf.Clamp(result.distance, 0.0f, GetLength(result.index));
+                result.distance = Mathf.Clamp(result.distance, 0.05f, GetLength(result.index));
 
                 return result;
             }
 
-            public TraverserLedgeHook UpdateHook(TraverserLedgeHook hook, Vector3 position, float cornerMinDistance)
+            public TraverserLedgeHook UpdateHook(TraverserLedgeHook hook, Vector3 position, bool movingLeft)
             {
                 // --- Get current and next edge index ---
                 int a = hook.index;
@@ -226,6 +235,7 @@ namespace Traverser
                 // --- Use vector rejection to get the closest point in current edge from given position ---
                 Vector3 closestPoint = ClosestPoint(position, vertices[a], vertices[b]);
 
+
                 TraverserLedgeHook result;
 
                 // --- Compute edge length and distance from edge's pointP1 (start) and closestPoint ---
@@ -233,7 +243,7 @@ namespace Traverser
                 float distance = Vector3.Magnitude(closestPoint - vertices[a]);
 
                 // --- If over edge length, move anchor to next edge ---
-                if (distance > length - cornerMinDistance)
+                if (distance >= length && movingLeft)
                 {
                     result.distance = distance - length;
                     result.index = GetNextEdgeIndex(hook.index);
@@ -241,7 +251,7 @@ namespace Traverser
                     return result;
                 }
                 // --- If below edge start, move anchor to previous edge ---
-                else if (distance < cornerMinDistance)
+                else if (distance <= 0.0f && !movingLeft)
                 {
                     result.index = GetPreviousEdgeIndex(hook.index);
                     result.distance = GetLength(result.index) + distance;

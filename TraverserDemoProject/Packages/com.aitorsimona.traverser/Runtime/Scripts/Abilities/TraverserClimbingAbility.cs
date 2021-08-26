@@ -451,24 +451,24 @@ namespace Traverser
         void HandleClimbingState(float deltaTime)
         {
             // --- Handle special corner transitions ---
-            if (climbingState == ClimbingState.CornerRight
-                || climbingState == ClimbingState.CornerLeft
-                )
-            {
-                if (animationController.IsTransitionFinished())
-                {
-                    animationController.AdjustSkeleton();
-                    SetClimbingState(ClimbingState.None);
-                    animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
+            //if (climbingState == ClimbingState.CornerRight
+            //    || climbingState == ClimbingState.CornerLeft
+            //    )
+            //{
+            //    if (animationController.IsTransitionFinished())
+            //    {
+            //        animationController.AdjustSkeleton();
+            //        SetClimbingState(ClimbingState.None);
+            //        animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
 
-                    TraverserTransform hangedTransform = GetHangedTransform();
+            //        TraverserTransform hangedTransform = GetHangedTransform();
 
-                    controller.TeleportTo(hangedTransform.t);
-                    transform.rotation = hangedTransform.q;
-                }
+            //        controller.TeleportTo(hangedTransform.t);
+            //        transform.rotation = hangedTransform.q;
+            //    }
 
-                return;
-            }
+            //    return;
+            //}
 
             bool canMove = UpdateClimbing(deltaTime);
 
@@ -486,47 +486,47 @@ namespace Traverser
                     animationController.animator.CrossFade(climbingData.ledgeRightAnimation.animationStateName, climbingData.ledgeRightAnimation.transitionDuration, 0);
                 else if (desiredState == ClimbingState.Left)
                     animationController.animator.CrossFade(climbingData.ledgeLeftAnimation.animationStateName, climbingData.ledgeLeftAnimation.transitionDuration, 0);
-                else if (desiredState == ClimbingState.CornerRight)
-                {
-                    // TODO: USE ANIMATION CONTROLLER'S NEW FUNCTIONALITY (end position)
+                //else if (desiredState == ClimbingState.CornerRight)
+                //{
+                //    // TODO: USE ANIMATION CONTROLLER'S NEW FUNCTIONALITY (end position)
 
-                    // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
-                    Vector3 position = transform.position;
-                    position += transform.right * 0.75f;
-                    position += transform.forward * 0.5f;
+                //    // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
+                //    Vector3 position = transform.position;
+                //    position += transform.right * 0.75f;
+                //    position += transform.forward * 0.5f;
 
-                    // --- If it collides against any relevant collider, do not start the corner transition ---
-                    if (IsCapsuleColliding(ref position))
-                    {
-                        desiredState = ClimbingState.Idle;
-                        animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
-                    }
-                    else
-                    {
-                        animationController.animator.CrossFade(climbingData.ledgeCornerRightAnimation.animationStateName, climbingData.ledgeCornerRightAnimation.transitionDuration, 0);
-                        controller.targetDisplacement = Vector3.zero; // prevent controller from moving
-                    }
-                }
-                else if (desiredState == ClimbingState.CornerLeft)
-                {
-                    // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
-                    Vector3 position = transform.position;
-                    position -= transform.right * 0.75f;
-                    position += transform.forward * 0.5f;
+                //    // --- If it collides against any relevant collider, do not start the corner transition ---
+                //    if (IsCapsuleColliding(ref position))
+                //    {
+                //        desiredState = ClimbingState.Idle;
+                //        animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
+                //    }
+                //    else
+                //    {
+                //        animationController.animator.CrossFade(climbingData.ledgeCornerRightAnimation.animationStateName, climbingData.ledgeCornerRightAnimation.transitionDuration, 0);
+                //        controller.targetDisplacement = Vector3.zero; // prevent controller from moving
+                //    }
+                //}
+                //else if (desiredState == ClimbingState.CornerLeft)
+                //{
+                //    // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
+                //    Vector3 position = transform.position;
+                //    position -= transform.right * 0.75f;
+                //    position += transform.forward * 0.5f;
 
-                    // --- If it collides against any relevant collider, do not start the corner transition ---
-                    if (IsCapsuleColliding(ref position))
-                    {
-                        desiredState = ClimbingState.Idle;
-                        animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
-                    }
-                    else
-                    {
-                        animationController.animator.CrossFade(climbingData.ledgeCornerLeftAnimation.animationStateName, climbingData.ledgeCornerLeftAnimation.transitionDuration, 0);
-                        controller.targetDisplacement = Vector3.zero; // prevent controller from moving
-                    }
+                //    // --- If it collides against any relevant collider, do not start the corner transition ---
+                //    if (IsCapsuleColliding(ref position))
+                //    {
+                //        desiredState = ClimbingState.Idle;
+                //        animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
+                //    }
+                //    else
+                //    {
+                //        animationController.animator.CrossFade(climbingData.ledgeCornerLeftAnimation.animationStateName, climbingData.ledgeCornerLeftAnimation.transitionDuration, 0);
+                //        controller.targetDisplacement = Vector3.zero; // prevent controller from moving
+                //    }
 
-                }
+                //}
 
                 SetClimbingState(desiredState);
             }
@@ -557,13 +557,32 @@ namespace Traverser
             }
         }
 
+        Vector3 previousNormal;
+        float lerpValue = 0.0f;
+        public float cornerSpeed = 1.0f;
+        private bool movingLeft = false;
+
         bool UpdateClimbing(float deltaTime)
         {
             bool ret = false;
 
             // --- Given input, compute target position ---
             Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
-            Vector3 delta = transform.right * leftStickInput.x * desiredSpeedLedge * deltaTime;
+
+            if (leftStickInput.x != 0.0f)
+                movingLeft = leftStickInput.x < 0.0f;
+
+            Vector3 direction = transform.right + transform.forward - ledgeGeometry.GetNormal(ledgeHook) /*ledgeGeometry.GetNormal(ledgeHook) - transform.right*/;
+
+            Debug.DrawLine(ledgeGeometry.GetPosition(ledgeHook), ledgeGeometry.GetPosition(ledgeHook) + direction * 5.0f);
+
+
+            Vector3 lookDirection = transform.forward + ledgeGeometry.GetNormal(ledgeHook);
+            lookDirection.Normalize();
+            Debug.DrawLine(ledgeGeometry.GetPosition(ledgeHook), ledgeGeometry.GetPosition(ledgeHook) + lookDirection * 5.0f);
+
+
+            Vector3 delta = direction * leftStickInput.x * desiredSpeedLedge * deltaTime;
             Vector3 targetPosition = transform.position + delta;
 
             // --- Given input, compute target aim Position (used to trigger ledge to ledge transitions) ---
@@ -577,7 +596,7 @@ namespace Traverser
             targetAimPosition = rayOrigin + aimDirection * maxJumpRadius * abilityController.inputController.GetMoveIntensity(); 
 
             // --- Update hook ---
-            TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetPosition, desiredCornerMinDistance);
+            TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetPosition, movingLeft);
 
             // --- Update current hook if it is still on the ledge ---
             if (desiredLedgeHook.index == ledgeHook.index)
@@ -585,10 +604,24 @@ namespace Traverser
                 ret = true;
                 ledgeHook = desiredLedgeHook;
                 controller.targetDisplacement = targetPosition - transform.position;
+
+                // --- The more displacement, the greater the rotation change ---
+                lerpValue += controller.targetDisplacement.magnitude * cornerSpeed; 
+
+                // --- Lerp towards the newly desired direction ---
+                lookDirection = Vector3.Lerp(previousNormal, lookDirection, lerpValue);
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation*Quaternion.FromToRotation(transform.forward, lookDirection), 1.0f);
             }
             else
-                controller.targetDisplacement = Vector3.zero;
-
+            {
+                lerpValue = 0.25f;
+                previousNormal = ledgeGeometry.GetNormal(ledgeHook);
+                ret = true;
+                ledgeHook = desiredLedgeHook;
+                //targetPosition = transform.position + delta + transform.forward * leftStickInput.x * desiredSpeedLedge * deltaTime;
+                controller.targetDisplacement = targetPosition - transform.position;
+            }
             RaycastHit hit;
 
             float moveIntensity = abilityController.inputController.GetMoveIntensity();
@@ -598,57 +631,61 @@ namespace Traverser
             if (moveIntensity > 0.1f && collided)
             {
                 // --- Check if collided object is climbable ---
-                if (hit.transform.GetComponent<TraverserClimbingObject>())
+                if (hit.transform.GetComponent<TraverserClimbingObject>()
+                    )
                 {
                     // --- Trigger a transition and change state ---
                     auxledgeGeometry.Initialize(hit.collider as BoxCollider);
 
-                    // --- Adjust the aim position so we don't end in another ledge edge ---
-                    TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
-
-                    Vector3 matchPosition = auxledgeGeometry.GetPositionAtDistance(auxHook.index, 0.5f);
-                    matchPosition -= Vector3.up * (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
-                    matchPosition -= transform.forward * controller.capsuleRadius;
-
-                    TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeleton.transform.position, transform.rotation);
-                    TraverserTransform targetTransform = TraverserTransform.Get(matchPosition, transform.rotation);
-
-                    // --- Compute aim angle and decide which transition has to be triggered ---
-                    float angle = Vector3.SignedAngle(transform.up, aimDirection, -transform.forward);
-
-                    bool success;
-
-                    if (Mathf.Abs(angle) < 45.0f)
+                    if (!auxledgeGeometry.IsEqual(ref ledgeGeometry))
                     {
-                        success = animationController.transition.StartTransition(ref climbingData.HopUpTransitionData ,ref contactTransform, ref targetTransform);
-                    }
-                    else if (angle >= 45.0f && angle <= 90.0f)
-                    {
-                        success = animationController.transition.StartTransition(ref climbingData.HopRightTransitionData, ref contactTransform, ref targetTransform);
-                    }
-                    else if (angle <= -45.0f && angle >= -90.0f)
-                    {
-                        success = animationController.transition.StartTransition(ref climbingData.HopLeftTransitionData, ref contactTransform, ref targetTransform);
-                    }
-                    else
-                    {
-                        success = animationController.transition.StartTransition(ref climbingData.HopDownTransitionData, ref contactTransform, ref targetTransform);
-                    }
+                        // --- Adjust the aim position so we don't end in another ledge edge ---
+                        TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
 
-                    // --- Trigger ledge to ledge transition ---
-                    if (success)
-                    {
-                        controller.targetDisplacement = Vector3.zero;
+                        Vector3 matchPosition = auxledgeGeometry.GetPositionAtDistance(auxHook.index, 0.5f);
+                        matchPosition -= Vector3.up * (controller.capsuleHeight - (animationController.skeleton.transform.position.y - transform.position.y));
+                        matchPosition -= transform.forward * controller.capsuleRadius;
 
-                        SetState(ClimbingAbilityState.LedgeToLedge);
+                        TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeleton.transform.position, transform.rotation);
+                        TraverserTransform targetTransform = TraverserTransform.Get(matchPosition, transform.rotation);
 
-                        if (ledgeGeometry.height == 0.0f)
-                            ledgeGeometry.Initialize(ref auxledgeGeometry);
+                        // --- Compute aim angle and decide which transition has to be triggered ---
+                        float angle = Vector3.SignedAngle(transform.up, aimDirection, -transform.forward);
 
-                        ledgeHook = auxledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
+                        bool success;
 
-                        // --- Turn off/on controller ---
-                        controller.ConfigureController(false);
+                        if (Mathf.Abs(angle) < 45.0f)
+                        {
+                            success = animationController.transition.StartTransition(ref climbingData.HopUpTransitionData, ref contactTransform, ref targetTransform);
+                        }
+                        else if (angle >= 45.0f && angle <= 90.0f)
+                        {
+                            success = animationController.transition.StartTransition(ref climbingData.HopRightTransitionData, ref contactTransform, ref targetTransform);
+                        }
+                        else if (angle <= -45.0f && angle >= -90.0f)
+                        {
+                            success = animationController.transition.StartTransition(ref climbingData.HopLeftTransitionData, ref contactTransform, ref targetTransform);
+                        }
+                        else
+                        {
+                            success = animationController.transition.StartTransition(ref climbingData.HopDownTransitionData, ref contactTransform, ref targetTransform);
+                        }
+
+                        // --- Trigger ledge to ledge transition ---
+                        if (success)
+                        {
+                            controller.targetDisplacement = Vector3.zero;
+
+                            SetState(ClimbingAbilityState.LedgeToLedge);
+
+                            if (ledgeGeometry.height == 0.0f)
+                                ledgeGeometry.Initialize(ref auxledgeGeometry);
+
+                            ledgeHook = auxledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection);
+
+                            // --- Turn off/on controller ---
+                            controller.ConfigureController(false);
+                        }
                     }
                 }
             }

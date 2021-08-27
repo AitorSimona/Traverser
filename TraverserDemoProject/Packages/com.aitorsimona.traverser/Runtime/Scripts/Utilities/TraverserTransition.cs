@@ -152,18 +152,19 @@ namespace Traverser
                 {
                     // --- Target animation has finished playing, we can give control back to the controller ---
                     if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionData.targetAnim)
-                        && isTargetAnimationON)
+                        && isTargetAnimationON
+                        && !isWarpOn)
                     {
                         // TODO: We may end up here before warping is complete, one mistake may be not using the exit transition time's
                         // in warping computation
                         animationController.ResetWarper();
 
-                        animationController.AdjustSkeleton();
+                        //animationController.AdjustSkeleton();
 
                         // --- Get skeleton's current position and teleport controller ---
-                        Vector3 newTransform = animationController.skeleton.transform.position;
-                        newTransform.y -= controller.capsuleHeight/2.0f;
-                        controller.TeleportTo(newTransform);
+                        //Vector3 newTransform = animationController.skeleton.transform.position;
+                        //newTransform.y -= controller.capsuleHeight/2.0f;
+                        //controller.TeleportTo(newTransform);
 
 
                         // --- Reenable controller and give back control ---
@@ -174,6 +175,8 @@ namespace Traverser
                     {
                         if (isWarpOn && !isTargetAnimationON)                               
                             animationController.WarpToTarget(contactTransform.t, contactTransform.q);
+                        if (isWarpOn && isTargetAnimationON)
+                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q);
 
                         ret = true;
                     }
@@ -196,6 +199,12 @@ namespace Traverser
                             isTargetAnimationON = true;
                             isWarpOn = true;
                             controller.TeleportTo(animationController.transform.position);
+
+                            animationController.animator.Play(transitionData.targetAnim);
+                            animationController.CreateCurve(targetTransform.t);
+                            animationController.animator.Play(transitionData.transitionAnim);
+
+
                             animationController.animator.SetTrigger(transitionData.triggerTargetAnim);
                         }
 
@@ -211,12 +220,12 @@ namespace Traverser
                         // --- If current state does not have a valid exit transition, return control ---
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
                         {
-                            animationController.AdjustSkeleton();
+                            //animationController.AdjustSkeleton();
 
                             // --- Get skeleton's current position and teleport controller ---
-                            Vector3 newTransform = animationController.skeleton.transform.position;
-                            newTransform.y -= controller.capsuleHeight / 2.0f;
-                            controller.TeleportTo(newTransform);
+                            //Vector3 newTransform = animationController.skeleton.transform.position;
+                            //newTransform.y -= controller.capsuleHeight / 2.0f;
+                            //controller.TeleportTo(newTransform);
 
                             // --- Reenable controller and give back control ---
                             controller.ConfigureController(true);

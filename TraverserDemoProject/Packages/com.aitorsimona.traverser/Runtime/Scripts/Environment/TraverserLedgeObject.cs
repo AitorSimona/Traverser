@@ -95,7 +95,17 @@ namespace Traverser
                 return tmp;
             }
 
-            Vector3 ClosestPoint(Vector3 position, Vector3 pointP1, Vector3 pointP2)
+            public bool IsOutOfBounds(ref TraverserLedgeHook ledgeHook, float offset)
+            {
+                bool ret = false;
+
+                if (ledgeHook.distance <= offset || ledgeHook.distance >= GetLength(ledgeHook.index) - offset)
+                    ret = true;
+
+                return ret;
+            }
+
+            public Vector3 ClosestPoint(Vector3 position, Vector3 pointP1, Vector3 pointP2)
             {
                 Vector3 edge = pointP2 - pointP1;
 

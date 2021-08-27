@@ -116,6 +116,8 @@ namespace Traverser
         private float cornerLerpInitialValue = 0.25f;
         private bool movingLeft = false;
 
+        private float minLedgeDistance = 1.0f;
+
         // --------------------------------
 
         // --- World interactable elements ---
@@ -567,6 +569,8 @@ namespace Traverser
             }
         }
 
+        Vector3 ledgeCollisionPosition = Vector3.zero;
+
         bool UpdateClimbing(float deltaTime)
         {
             bool ret = false;
@@ -604,37 +608,105 @@ namespace Traverser
             // --- Update hook ---
             TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook = ledgeGeometry.UpdateHook(ledgeHook, targetPosition, movingLeft);
 
+            // --- Check for ledge  ---
+            RaycastHit hit;
+
+            Vector3 dire = movingLeft ? -transform.right : transform.right;
+            bool collided = Physics.SphereCast(ledgeGeometry.GetPosition(ledgeHook), aimDebugSphereRadius,
+                movingLeft ? -transform.right : transform.right
+                , out hit, minLedgeDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+            ledgeCollisionPosition = ledgeGeometry.GetPosition(ledgeHook) + dire * minLedgeDistance;
+
+            float distanceToCorner = 0.0f;
+
+            if (collided)
+            {
+                ledgeGeometry.ClosestPointDistance(hit.point, ledgeHook, ref distanceToCorner);
+                Debug.Log(distanceToCorner);
+            }
+
             // --- Update current hook if it is still on the ledge ---
             if (desiredLedgeHook.index == ledgeHook.index)
             {
-                ret = true;
-                ledgeHook = desiredLedgeHook;
-                controller.targetDisplacement = targetPosition - transform.position;
+                // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
+                Vector3 position = transform.position;
+                position += movingLeft ? -transform.right * 0.75f : transform.right * 0.75f;
+                //position += transform.forward * 0.5f;
 
-                // --- The more displacement, the greater the rotation change ---
-                cornerRotationLerpValue += controller.targetDisplacement.magnitude * ledgeCornerSpeed; 
 
-                // --- Lerp towards the newly desired direction ---
-                lookDirection = Vector3.Lerp(previousHookNormal, lookDirection, cornerRotationLerpValue);
-                transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation*Quaternion.FromToRotation(transform.forward, lookDirection), 1.0f);
+                // --- If it collides against any relevant collider, do not start the corner transition ---
+                if (collided
+                    && ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f)
+                    && distanceToCorner > minLedgeDistance)
+                {
+
+                    controller.targetDisplacement = Vector3.zero;
+                    ret = false;
+                }
+                else
+                {
+                    ret = true;
+                    ledgeHook = desiredLedgeHook;
+                    controller.targetDisplacement = targetPosition - transform.position;
+
+                    // --- The more displacement, the greater the rotation change ---
+                    cornerRotationLerpValue += controller.targetDisplacement.magnitude * ledgeCornerSpeed;
+
+                    // --- Lerp towards the newly desired direction ---
+                    lookDirection = Vector3.Lerp(previousHookNormal, lookDirection, cornerRotationLerpValue);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.FromToRotation(transform.forward, lookDirection), 1.0f);
+                }
             }
             else
             {
-                // ---  Store current hook normal and give an initial value to lerp value ---
-                cornerRotationLerpValue = cornerLerpInitialValue;
-                previousHookNormal = ledgeGeometry.GetNormal(ledgeHook);
+                // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
+                Vector3 position = transform.position;
+                position += movingLeft ? -transform.right * 0.75f : transform.right * 0.75f;
+                //position += transform.forward * 0.5f;
 
-                ret = true;
-                ledgeHook = desiredLedgeHook;
-                controller.targetDisplacement = targetPosition - transform.position;
+                // --- If it collides against any relevant collider, do not start the corner transition ---
+                if (collided
+                && ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f))
+                {
+                    if (distanceToCorner < minLedgeDistance
+                        && hit.transform.GetComponent<TraverserClimbingObject>())
+                    {
+                        controller.targetDisplacement = targetPosition - transform.position;
+                        ledgeGeometry.Initialize(hit.collider as BoxCollider);
+                        ret = true;
+                    }
+                    else
+                    {
+                        controller.targetDisplacement = Vector3.zero;
+                        ret = false;
+                    }
+                }
+                else
+                {
+                    // ---  Store current hook normal and give an initial value to lerp value ---
+                    cornerRotationLerpValue = cornerLerpInitialValue;
+                    previousHookNormal = ledgeGeometry.GetNormal(ledgeHook);
+
+                    ret = true;
+                    ledgeHook = desiredLedgeHook;
+                    controller.targetDisplacement = targetPosition - transform.position;
+                }
             }
-            RaycastHit hit;
 
             float moveIntensity = abilityController.inputController.GetMoveIntensity();
-            bool collided = Physics.SphereCast(rayOrigin, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius * moveIntensity, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+            collided = Physics.SphereCast(rayOrigin, aimDebugSphereRadius, aimDirection, out hit, maxJumpRadius * moveIntensity, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+            
+            if (collided)
+            {
+                ledgeGeometry.ClosestPointDistance(hit.point, ledgeHook, ref distanceToCorner);
+                Debug.Log(distanceToCorner);
+            }
 
             // --- Trigger a ledge to ledge transition if required by player ---
-            if (moveIntensity > 0.1f && collided)
+            if (moveIntensity > 0.1f && collided 
+                && distanceToCorner > minLedgeDistance)
             {
                 // --- Check if collided object is climbable ---
                 if (hit.transform.GetComponent<TraverserClimbingObject>()
@@ -984,6 +1056,9 @@ namespace Traverser
 
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(targetAimPosition, aimDebugSphereRadius);
+
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(ledgeCollisionPosition, aimDebugSphereRadius);
         }
 
         // -------------------------------------------------

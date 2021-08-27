@@ -18,6 +18,9 @@ namespace Traverser
         [Range(0.0f, 10.0f)]
         public float desiredSpeedLedge;
 
+        [Tooltip("Desired speed for ledge corner traversal.")]
+        public float ledgeCornerSpeed = 1.0f;
+
         [Tooltip("The closest the character will be able to get to a ledge corner, in meters.")]
         [Range(0.0f, 0.5f)]
         public float desiredCornerMinDistance;
@@ -103,8 +106,15 @@ namespace Traverser
         // --- The position at which we are currently aiming to, determined by maxJumpRadius ---
         private Vector3 targetAimPosition;
 
+        // --- Jump hangs ---
         private float maxDistance = 3.0f;
         private float maxYDifference = 0.25f;
+
+        // --- Procedural corners ---
+        private Vector3 previousHookNormal;
+        private float cornerRotationLerpValue = 0.0f;
+        private float cornerLerpInitialValue = 0.25f;
+        private bool movingLeft = false;
 
         // --------------------------------
 
@@ -557,11 +567,6 @@ namespace Traverser
             }
         }
 
-        Vector3 previousNormal;
-        float lerpValue = 0.0f;
-        public float cornerSpeed = 1.0f;
-        private bool movingLeft = false;
-
         bool UpdateClimbing(float deltaTime)
         {
             bool ret = false;
@@ -579,6 +584,7 @@ namespace Traverser
 
             Vector3 lookDirection = transform.forward + ledgeGeometry.GetNormal(ledgeHook);
             lookDirection.Normalize();
+
             Debug.DrawLine(ledgeGeometry.GetPosition(ledgeHook), ledgeGeometry.GetPosition(ledgeHook) + lookDirection * 5.0f);
 
 
@@ -606,20 +612,20 @@ namespace Traverser
                 controller.targetDisplacement = targetPosition - transform.position;
 
                 // --- The more displacement, the greater the rotation change ---
-                lerpValue += controller.targetDisplacement.magnitude * cornerSpeed; 
+                cornerRotationLerpValue += controller.targetDisplacement.magnitude * ledgeCornerSpeed; 
 
                 // --- Lerp towards the newly desired direction ---
-                lookDirection = Vector3.Lerp(previousNormal, lookDirection, lerpValue);
-
+                lookDirection = Vector3.Lerp(previousHookNormal, lookDirection, cornerRotationLerpValue);
                 transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation*Quaternion.FromToRotation(transform.forward, lookDirection), 1.0f);
             }
             else
             {
-                lerpValue = 0.25f;
-                previousNormal = ledgeGeometry.GetNormal(ledgeHook);
+                // ---  Store current hook normal and give an initial value to lerp value ---
+                cornerRotationLerpValue = cornerLerpInitialValue;
+                previousHookNormal = ledgeGeometry.GetNormal(ledgeHook);
+
                 ret = true;
                 ledgeHook = desiredLedgeHook;
-                //targetPosition = transform.position + delta + transform.forward * leftStickInput.x * desiredSpeedLedge * deltaTime;
                 controller.targetDisplacement = targetPosition - transform.position;
             }
             RaycastHit hit;

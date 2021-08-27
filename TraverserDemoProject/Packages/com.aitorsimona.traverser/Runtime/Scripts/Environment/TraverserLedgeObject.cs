@@ -124,7 +124,7 @@ namespace Traverser
                 return closestPoint;
             }
 
-            public bool ClosestPointDistance(Vector3 position, TraverserLedgeHook hook, ref float distance)
+            public bool ClosestPointDistance(Vector3 position, ref TraverserLedgeHook hook, ref float distance)
             {
                 // --- Returns true if left vertex is the closest, false otherwise ---
 
@@ -173,7 +173,7 @@ namespace Traverser
                 return Vector3.Normalize(pointP2 - pointP1);
             }
 
-            public Vector3 GetNormal(TraverserLedgeHook hook)
+            public Vector3 GetNormal(ref TraverserLedgeHook hook)
             {
                 // --- Returns the normal of the given hook's current edge ---
                 return -Vector3.Cross(GetNormalizedEdge(hook.index), Vector3.up).normalized;
@@ -188,7 +188,7 @@ namespace Traverser
                 return Vector3.Magnitude(b - a);
             }
 
-            public Vector3 GetPosition(TraverserLedgeHook hook)
+            public Vector3 GetPosition(ref TraverserLedgeHook hook)
             {
                 // --- Get 3D position from given ledge 1D hook point ---
                 return vertices[hook.index] + GetNormalizedEdge(hook.index) * hook.distance;
@@ -236,7 +236,7 @@ namespace Traverser
                 return result;
             }
 
-            public TraverserLedgeHook UpdateHook(TraverserLedgeHook hook, Vector3 position, bool movingLeft)
+            public TraverserLedgeHook UpdateHook(ref TraverserLedgeHook hook, Vector3 position, bool movingLeft)
             {
                 // --- Get current and next edge index ---
                 int a = hook.index;
@@ -302,8 +302,8 @@ namespace Traverser
             public void DebugDraw(ref TraverserLedgeHook hook)
             {
                 // --- Draw hook ---
-                Vector3 position = GetPosition(hook);
-                Vector3 normal = GetNormal(hook);
+                Vector3 position = GetPosition(ref hook);
+                Vector3 normal = GetNormal(ref hook);
 
                 Debug.DrawLine(position, position + normal * 0.3f, Color.red);
             }

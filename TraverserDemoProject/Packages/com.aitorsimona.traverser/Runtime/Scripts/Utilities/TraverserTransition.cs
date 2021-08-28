@@ -197,7 +197,7 @@ namespace Traverser
                             controller.TeleportTo(animationController.transform.position);
 
                             animationController.animator.Play(transitionData.targetAnim);
-                            animationController.CreateCurve(targetTransform.t);
+                            animationController.CreateCurve(targetTransform.t, 0.0f);
                             animationController.animator.Play(transitionData.transitionAnim);
 
 
@@ -238,6 +238,11 @@ namespace Traverser
                 Initialize();
 
             return ret;
+        }
+
+        public void SetDestination(ref TraverserTransform destination)
+        {
+            targetTransform = destination;
         }
 
         public void DebugDraw(float contactDebugSphereRadius)

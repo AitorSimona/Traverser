@@ -401,13 +401,13 @@ namespace Traverser
         Vector3[] points;
         Vector3[] warpedPoints;
 
-        int steps = 10;
+        int steps = 11;
         float stepping = 0.1f;
 
-        public void CreateCurve(Vector3 targetPosition)
+        public void CreateCurve(Vector3 targetPosition, float initialStepping)
         {
 
-            float currentStepping = stepping;
+            float currentStepping = initialStepping;
 
             Vector3 originalSkeletonPos = skeleton.position;
             Vector3 originalDisplacement = Vector3.zero;
@@ -429,7 +429,7 @@ namespace Traverser
 
             Vector3 previousdiff = points[1] - points[0];
             Vector3 backupDiff;
-            points[0] = originalSkeletonPos;
+            //points[0] = originalSkeletonPos;
 
             for (int it = 1; it < steps - 1; ++it)
             {
@@ -456,11 +456,9 @@ namespace Traverser
                 linearWarpZ = true;
 
 
-            currentStepping = stepping;
+            currentStepping = initialStepping;
 
             Vector3 accumulatedWeight = Vector3.zero;
-
-
 
             for (int it = 0; it < steps - 1; ++it)
             {
@@ -512,9 +510,6 @@ namespace Traverser
             warpedPoints[steps - 1] = targetPosition;
 
             skeleton.position = originalSkeletonPos;
-
-            int a = 2;
-            a++;
         }
     }
 }

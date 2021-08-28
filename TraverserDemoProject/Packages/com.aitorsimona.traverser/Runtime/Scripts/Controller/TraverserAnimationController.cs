@@ -193,7 +193,7 @@ namespace Traverser
 
         int currentPoint = 0;
 
-        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, bool warpY = true, bool forceSuccess = false)
+        public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, bool forceSuccess = false)
         {
             bool ret = true;
 

@@ -86,8 +86,8 @@ namespace Traverser
             DownRight,
             UpLeft,
             DownLeft,
-            CornerRight, 
-            CornerLeft, 
+            //CornerRight, 
+            //CornerLeft, 
             None
         }
 
@@ -116,7 +116,7 @@ namespace Traverser
         private float cornerLerpInitialValue = 0.25f;
         private bool movingLeft = false;
 
-        private float minLedgeDistance = 1.0f;
+        private float minLedgeDistance = 0.5f;
 
         // --------------------------------
 
@@ -230,11 +230,9 @@ namespace Traverser
                 // --- Fill auxiliary ledge to prevent mounting too close to a corner ---
                 auxledgeGeometry.Initialize(collider);
                 TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
-                float distance = 0.0f;
-                auxledgeGeometry.ClosestPointDistance(contactTransform.t, ref auxHook, ref distance);
 
                 // --- Make sure we are not too close to the corner (We may trigger an unwanted transition afterwards) ---
-                if (!collider.Equals(controller.current.ground as BoxCollider) && distance > 0.25)
+                if (!collider.Equals(controller.current.ground as BoxCollider))
                 {
                     // --- We want to reach the pre climb position and then activate the animation ---
                     ledgeGeometry.Initialize(collider);
@@ -462,26 +460,6 @@ namespace Traverser
 
         void HandleClimbingState(float deltaTime)
         {
-            // --- Handle special corner transitions ---
-            //if (climbingState == ClimbingState.CornerRight
-            //    || climbingState == ClimbingState.CornerLeft
-            //    )
-            //{
-            //    if (animationController.IsTransitionFinished())
-            //    {
-            //        animationController.AdjustSkeleton();
-            //        SetClimbingState(ClimbingState.None);
-            //        animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
-
-            //        TraverserTransform hangedTransform = GetHangedTransform();
-
-            //        controller.TeleportTo(hangedTransform.t);
-            //        transform.rotation = hangedTransform.q;
-            //    }
-
-            //    return;
-            //}
-
             bool canMove = UpdateClimbing(deltaTime);
 
             ClimbingState desiredState = GetDesiredClimbingState();
@@ -498,47 +476,6 @@ namespace Traverser
                     animationController.animator.CrossFade(climbingData.ledgeRightAnimation.animationStateName, climbingData.ledgeRightAnimation.transitionDuration, 0);
                 else if (desiredState == ClimbingState.Left)
                     animationController.animator.CrossFade(climbingData.ledgeLeftAnimation.animationStateName, climbingData.ledgeLeftAnimation.transitionDuration, 0);
-                //else if (desiredState == ClimbingState.CornerRight)
-                //{
-                //    // TODO: USE ANIMATION CONTROLLER'S NEW FUNCTIONALITY (end position)
-
-                //    // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
-                //    Vector3 position = transform.position;
-                //    position += transform.right * 0.75f;
-                //    position += transform.forward * 0.5f;
-
-                //    // --- If it collides against any relevant collider, do not start the corner transition ---
-                //    if (IsCapsuleColliding(ref position))
-                //    {
-                //        desiredState = ClimbingState.Idle;
-                //        animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
-                //    }
-                //    else
-                //    {
-                //        animationController.animator.CrossFade(climbingData.ledgeCornerRightAnimation.animationStateName, climbingData.ledgeCornerRightAnimation.transitionDuration, 0);
-                //        controller.targetDisplacement = Vector3.zero; // prevent controller from moving
-                //    }
-                //}
-                //else if (desiredState == ClimbingState.CornerLeft)
-                //{
-                //    // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
-                //    Vector3 position = transform.position;
-                //    position -= transform.right * 0.75f;
-                //    position += transform.forward * 0.5f;
-
-                //    // --- If it collides against any relevant collider, do not start the corner transition ---
-                //    if (IsCapsuleColliding(ref position))
-                //    {
-                //        desiredState = ClimbingState.Idle;
-                //        animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
-                //    }
-                //    else
-                //    {
-                //        animationController.animator.CrossFade(climbingData.ledgeCornerLeftAnimation.animationStateName, climbingData.ledgeCornerLeftAnimation.transitionDuration, 0);
-                //        controller.targetDisplacement = Vector3.zero; // prevent controller from moving
-                //    }
-
-                //}
 
                 SetClimbingState(desiredState);
             }
@@ -622,7 +559,7 @@ namespace Traverser
 
             if (collided)
             {
-                ledgeGeometry.ClosestPointDistance(hit.point, ref ledgeHook, ref distanceToCorner);
+                ledgeGeometry.ClosestPointPlaneDistance(hit.point, ref ledgeHook, ref distanceToCorner);
                 //Debug.Log(distanceToCorner);
             }
 
@@ -857,21 +794,21 @@ namespace Traverser
             Vector2 stickInput = abilityController.inputController.GetInputMovement();
 
             // --- Use ledge definition to determine how close we are to the edges of the wall, also at which side the vertex is (bool left) ---
-            float distance = 0.0f;
-            bool left = ledgeGeometry.ClosestPointDistance(transform.position, ref ledgeHook, ref distance);
+            //float distance = 0.0f;
+            //bool left = ledgeGeometry.ClosestPointDistance(transform.position, ref ledgeHook, ref distance);
 
             if (stickInput.x > 0.5f)
             {
-                if (!left && distance <= desiredCornerMinDistance)
-                    return ClimbingState.CornerRight;
+                //if (!left && distance <= desiredCornerMinDistance)
+                //    return ClimbingState.CornerRight;
 
                 return ClimbingState.Right;
             }
 
             else if (stickInput.x < -0.5f)
             {
-                if (left && distance <= desiredCornerMinDistance)
-                    return ClimbingState.CornerLeft;
+                //if (left && distance <= desiredCornerMinDistance)
+                //    return ClimbingState.CornerLeft;
 
                 return ClimbingState.Left;
             }

@@ -26,8 +26,6 @@ namespace Traverser
         public TraverserAnimationController.AnimationData fallLoopAnimation;
         public TraverserAnimationController.AnimationData ledgeRightAnimation;
         public TraverserAnimationController.AnimationData ledgeLeftAnimation;
-        public TraverserAnimationController.AnimationData ledgeCornerRightAnimation;
-        public TraverserAnimationController.AnimationData ledgeCornerLeftAnimation;
         public TraverserAnimationController.AnimationData pullUpAnimation;
         public TraverserAnimationController.AnimationData dismountAnimation;
         public TraverserAnimationController.AnimationData jumpBackAnimation;

@@ -116,6 +116,8 @@ namespace Traverser
         private float cornerLerpInitialValue = 0.25f;
         private bool movingLeft = false;
 
+
+
         private float minLedgeDistance = 0.5f;
 
         // --------------------------------
@@ -414,10 +416,12 @@ namespace Traverser
                 SetClimbingState(ClimbingState.Idle);
                 animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
 
+                ResetClimbing();
+
                 TraverserTransform hangedTransform = GetHangedTransform();
 
                 controller.ConfigureController(false);
-                controller.TeleportTo(hangedTransform.t);
+                //controller.TeleportTo(hangedTransform.t);
                 transform.rotation = hangedTransform.q;
             }
         }
@@ -771,6 +775,13 @@ namespace Traverser
         // --------------------------------
 
         // --- Utilities ---    
+
+        public void ResetClimbing()
+        {
+            movingLeft = false;
+            previousHookNormal = ledgeGeometry.GetNormal(ref ledgeHook);
+            cornerRotationLerpValue = 1.0f;
+        }
 
         private bool IsCapsuleColliding(ref Vector3 start)
         {

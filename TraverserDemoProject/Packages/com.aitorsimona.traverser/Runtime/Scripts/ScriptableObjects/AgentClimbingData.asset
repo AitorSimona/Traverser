@@ -90,7 +90,7 @@ MonoBehaviour:
     triggerTransitionAnim: ClimbTransitionTrigger
     triggerTargetAnim: PullUpTrigger
     contactOffset: 0
-    targetOffset: 0.5
+    targetOffset: 0.25
     forceTarget: 1
   fallTransitionAnimation:
     animationStateName: FallTransition

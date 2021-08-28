@@ -118,27 +118,7 @@ namespace Traverser
 
         // --- Basic Methods ---
 
-        private void OnAnimatorIK(int layerIndex)
-        {
-            //if (adjustSkeleton)
-            //{            
-            //    // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
-            //    animator.bodyPosition = skeletonRef;
-
-            //    if (!animator.IsInTransition(0))
-            //        adjustSkeleton = false;
-            //}
-            //else
-            //{
-            //    rightFootPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
-            //    leftFootPosition = animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
-            //    rightHandPosition = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
-            //    leftHandPosition = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
-            //    skeletonRef = animator.bodyPosition;
-            //}
-        }
-
-        private void LateUpdate()
+        private void OnAnimatorMove()
         {
             if (transition.isON)
             {
@@ -163,8 +143,30 @@ namespace Traverser
                 }
 
                 controller.targetHeading = 0.0f;
-                controller.targetDisplacement = Vector3.zero;               
+                controller.targetDisplacement = Vector3.zero;
             }
+
+        }
+
+
+        private void OnAnimatorIK(int layerIndex)
+        {
+            //if (adjustSkeleton)
+            //{            
+            //    // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
+            //    animator.bodyPosition = skeletonRef;
+
+            //    if (!animator.IsInTransition(0))
+            //        adjustSkeleton = false;
+            //}
+            //else
+            //{
+            //    rightFootPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
+            //    leftFootPosition = animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
+            //    rightHandPosition = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
+            //    leftHandPosition = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
+            //    skeletonRef = animator.bodyPosition;
+            //}
         }
 
         // --------------------------------
@@ -403,6 +405,7 @@ namespace Traverser
 
             float currentStepping = stepping;
 
+            Vector3 originalSkeletonPos = skeleton.position;
             Vector3 originalDisplacement;
 
             // --- We need to store the relative movement --- 
@@ -412,6 +415,21 @@ namespace Traverser
                 //originalDisplacement +=  points[it] - animator.bodyPosition
                 currentStepping += stepping;
             }
+
+            Vector3 previousdiff = points[1] - points[0];
+            Vector3 backupDiff;
+            points[0] = originalSkeletonPos;
+
+            for (int it = 1; it < steps - 1; ++it)
+            {
+                backupDiff = points[it + 1] - points[it];
+                points[it] = points[it-1] + previousdiff;
+                previousdiff = backupDiff;
+                currentStepping += stepping;
+            }
+
+            points[steps - 1] = points[steps - 2] + previousdiff;
+
 
             Vector3 warpTotalDisplacement = targetPosition - points[steps - 1];
 
@@ -423,6 +441,8 @@ namespace Traverser
 
                 currentStepping += stepping;
             }
+
+            skeleton.position = originalSkeletonPos;
 
             int a = 2;
             a++;

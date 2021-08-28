@@ -19,7 +19,6 @@ MonoBehaviour:
     triggerTargetAnim: MountTrigger
     contactOffset: 1.5
     targetOffset: 0.1
-    warpY: 1
     forceTarget: 0
   jumpHangTransitionData:
     transitionAnim: FallTransition
@@ -28,7 +27,6 @@ MonoBehaviour:
     triggerTargetAnim: JumpHangTrigger
     contactOffset: 0
     targetOffset: 0
-    warpY: 1
     forceTarget: 1
   jumpHangShortTransitionData:
     transitionAnim: FallTransition
@@ -37,7 +35,6 @@ MonoBehaviour:
     triggerTargetAnim: JumpHangShortTrigger
     contactOffset: 0
     targetOffset: 0
-    warpY: 1
     forceTarget: 1
   dropDownTransitionData:
     transitionAnim: WalkTransition
@@ -46,7 +43,6 @@ MonoBehaviour:
     triggerTargetAnim: DropDownTrigger
     contactOffset: 0.5
     targetOffset: 0
-    warpY: 0
     forceTarget: 0
   HopUpTransitionData:
     transitionAnim: ClimbTransition
@@ -55,7 +51,6 @@ MonoBehaviour:
     triggerTargetAnim: HopUpTrigger
     contactOffset: 0
     targetOffset: 0
-    warpY: 1
     forceTarget: 0
   HopRightTransitionData:
     transitionAnim: ClimbTransition
@@ -64,7 +59,6 @@ MonoBehaviour:
     triggerTargetAnim: HopRightTrigger
     contactOffset: 0
     targetOffset: 0
-    warpY: 1
     forceTarget: 0
   HopLeftTransitionData:
     transitionAnim: ClimbTransition
@@ -73,7 +67,6 @@ MonoBehaviour:
     triggerTargetAnim: HopLeftTrigger
     contactOffset: 0
     targetOffset: 0
-    warpY: 1
     forceTarget: 0
   HopDownTransitionData:
     transitionAnim: ClimbTransition
@@ -82,8 +75,23 @@ MonoBehaviour:
     triggerTargetAnim: HopDownTrigger
     contactOffset: 0
     targetOffset: 0
-    warpY: 1
     forceTarget: 0
+  dismountTransitionData:
+    transitionAnim: ClimbTransition
+    targetAnim: Dismount
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: DismountTrigger
+    contactOffset: 0
+    targetOffset: 0.35
+    forceTarget: 1
+  pullUpTransitionData:
+    transitionAnim: ClimbTransition
+    targetAnim: PullUp
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: PullUpTrigger
+    contactOffset: 0
+    targetOffset: 0.5
+    forceTarget: 1
   fallTransitionAnimation:
     animationStateName: FallTransition
     transitionDuration: 0.05
@@ -102,18 +110,6 @@ MonoBehaviour:
   ledgeLeftAnimation:
     animationStateName: LedgeLeft
     transitionDuration: 0.1
-  ledgeCornerRightAnimation:
-    animationStateName: LedgeCornerRight
-    transitionDuration: 0.15
-  ledgeCornerLeftAnimation:
-    animationStateName: LedgeCornerLeft
-    transitionDuration: 0.15
-  pullUpAnimation:
-    animationStateName: PullUp
-    transitionDuration: 0.15
-  dismountAnimation:
-    animationStateName: Dismount
-    transitionDuration: 0.15
   jumpBackAnimation:
     animationStateName: JumpBack
     transitionDuration: 0.15

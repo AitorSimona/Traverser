@@ -26,9 +26,6 @@ namespace Traverser
             [Tooltip("The multiplier to apply to a direction specified by the user that offsets the targetTransform. Useful if you want, for example, to end the target animation further from the original target.")]
             public float targetOffset;
 
-            [Tooltip("Indicates if the motion warper should apply warping in Y direction. Use if you want to cover any height. The warper will cover X and Z by default.")]
-            public bool warpY;
-
             [Tooltip("Use if you want to force the target animation, thus skipping warp to contactTransform. Use if you only need a single animation transition.")]
             public bool forceTarget;
         }
@@ -131,7 +128,6 @@ namespace Traverser
                 isTransitionAnimationON = true;
                 this.targetTransform = targetTransform;
                 this.contactTransform = contactTransform;
-                transitionData.warpY = transitionDataset.warpY;
                 transitionData.forceTarget = transitionDataset.forceTarget;
 
                 return true;
@@ -174,7 +170,7 @@ namespace Traverser
                     else
                     {
                         if (isWarpOn && !isTargetAnimationON)                               
-                            animationController.WarpToTarget(contactTransform.t, contactTransform.q);
+                            animationController.WarpToTarget(contactTransform.t, contactTransform.q, transitionData.forceTarget);
                         if (isWarpOn && isTargetAnimationON)
                             isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q);
 
@@ -189,7 +185,7 @@ namespace Traverser
                     {
                         // --- Use target matching (motion warping) to reach the contact transform as the transitionAnimation plays ---
                         if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionData.transitionAnim))
-                            isTransitionAnimationON = animationController.WarpToTarget(contactTransform.t, contactTransform.q, true, transitionData.forceTarget);
+                            isTransitionAnimationON = animationController.WarpToTarget(contactTransform.t, contactTransform.q, transitionData.forceTarget);
 
                         // --- When we reach the contact point, activate targetAnimation ---
                         if (!isTransitionAnimationON)
@@ -215,7 +211,7 @@ namespace Traverser
                     {
                         // --- Use motion warping to reach the target transform as the targetAnimation plays ---
                         if (isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionData.targetAnim))
-                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q, transitionData.warpY);
+                            isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q);
 
                         // --- If current state does not have a valid exit transition, return control ---
                         if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)

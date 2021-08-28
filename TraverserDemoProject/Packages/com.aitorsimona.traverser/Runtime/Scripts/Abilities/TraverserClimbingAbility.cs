@@ -365,25 +365,25 @@ namespace Traverser
                 SetState(ClimbingAbilityState.Climbing); 
                 SetClimbingState(ClimbingState.Idle);
 
-                TraverserTransform hangedTransform = GetHangedTransform();
+                //TraverserTransform hangedTransform = GetHangedTransform();
 
                 controller.ConfigureController(false);
-                controller.TeleportTo(hangedTransform.t);
-                transform.rotation = hangedTransform.q;
+                //controller.TeleportTo(hangedTransform.t);
+                //transform.rotation = hangedTransform.q;
             }
         }
 
         void HandleDismountState()
         {
-            if (animationController.IsTransitionFinished())
+            if (!animationController.transition.isON)
             {
-                animationController.AdjustSkeleton();
+                //animationController.AdjustSkeleton();
                 SetState(ClimbingAbilityState.Suspended);
 
                 // --- Get skeleton's current position and teleport controller ---
-                Vector3 newTransform = animationController.skeleton.position;
-                newTransform.y -= controller.capsuleHeight / 2.0f;
-                controller.TeleportTo(newTransform);
+                //Vector3 newTransform = animationController.skeleton.position;
+                //newTransform.y -= controller.capsuleHeight / 2.0f;
+                //controller.TeleportTo(newTransform);
                 locomotionAbility.ResetLocomotion();
 
                 animationController.animator.CrossFade(climbingData.locomotionOnAnimation.animationStateName, climbingData.locomotionOnAnimation.transitionDuration, 0);
@@ -394,13 +394,13 @@ namespace Traverser
         {
             if (animationController.IsTransitionFinished())
             {
-                animationController.AdjustSkeleton();
+                //animationController.AdjustSkeleton();
                 SetState(ClimbingAbilityState.Suspended);
 
                 // --- Get skeleton's current position and teleport controller ---
-                Vector3 newTransform = animationController.skeleton.position;
-                newTransform.y -= controller.capsuleHeight / 2.0f;
-                controller.TeleportTo(newTransform);
+                //Vector3 newTransform = animationController.skeleton.position;
+                //newTransform.y -= controller.capsuleHeight / 2.0f;
+                //controller.TeleportTo(newTransform);
                 locomotionAbility.ResetLocomotion();
                 animationController.animator.CrossFade(climbingData.locomotionOnAnimation.animationStateName, climbingData.locomotionOnAnimation.transitionDuration, 0);
             }
@@ -480,29 +480,60 @@ namespace Traverser
                 SetClimbingState(desiredState);
             }
 
-            bool closeToDrop = Physics.Raycast(transform.position, Vector3.down, maxClimbableHeight - controller.capsuleHeight, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+            RaycastHit hit;
+
+            bool closeToDrop = Physics.Raycast(transform.position, Vector3.down, out hit ,maxClimbableHeight - controller.capsuleHeight, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
 
             if(debugDraw)
                 Debug.DrawRay(transform.position, Vector3.down * (maxClimbableHeight - controller.capsuleHeight), Color.yellow);
 
             // --- The position at which we perform a capsule check to prevent pulling up into a wall --- 
-            Vector3 pullupPosition = transform.position;
-            pullupPosition += transform.up * controller.capsuleHeight * 1.35f;
-            pullupPosition += transform.forward * 0.5f;
+            Vector3 pullupPosition = ledgeGeometry.GetPosition(ref ledgeHook);
+            pullupPosition += Vector3.up * controller.capsuleHeight / 2.0f;
+            pullupPosition += transform.forward * climbingData.pullUpTransitionData.targetOffset;
 
             // --- React to pull up/dismount ---
             if (abilityController.inputController.GetInputMovement().y > 0.5f &&
                 state != ClimbingAbilityState.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
             {
-                animationController.animator.CrossFade(climbingData.pullUpAnimation.animationStateName, climbingData.pullUpAnimation.transitionDuration, 0);
-                SetState(ClimbingAbilityState.PullUp);
-                controller.targetDisplacement = Vector3.zero;
+                bool ret;
+
+                TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
+
+                // --- Offset target transform ---
+                TraverserTransform targetTransform = contactTransform;
+                targetTransform.t = pullupPosition;
+
+                // --- Require a transition ---
+                ret = animationController.transition.StartTransition(ref climbingData.pullUpTransitionData, ref contactTransform, ref targetTransform);
+
+                // --- If transition start is successful, change state ---
+                if (ret)
+                {
+                    SetState(ClimbingAbilityState.PullUp);
+                    controller.targetDisplacement = Vector3.zero;
+                }
             }
             else if (closeToDrop && abilityController.inputController.GetInputButtonEast())
             {
-                animationController.animator.CrossFade(climbingData.dismountAnimation.animationStateName, climbingData.dismountAnimation.transitionDuration, 0);
-                SetState(ClimbingAbilityState.Dismount);
-                controller.targetDisplacement = Vector3.zero;
+                bool ret;
+
+                TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
+
+                // --- Offset target transform ---
+                TraverserTransform targetTransform = contactTransform;
+                targetTransform.t.y = hit.point.y + controller.capsuleHeight/2.0f;
+                targetTransform.t -= transform.forward * climbingData.dismountTransitionData.targetOffset;
+                
+                // --- Require a transition ---
+                ret = animationController.transition.StartTransition(ref climbingData.dismountTransitionData, ref contactTransform, ref targetTransform);
+
+                // --- If transition start is successful, change state ---
+                if (ret)
+                {
+                    SetState(ClimbingAbilityState.Dismount);
+                    controller.targetDisplacement = Vector3.zero;
+                }
             }
         }
 
@@ -866,7 +897,7 @@ namespace Traverser
 
                     RaycastHit hit;
 
-                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpAnimation.animationStateName)
+                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpTransitionData.targetAnim)
                         && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.3f)
                     {
                         if (Physics.Raycast(footPosition + Vector3.up - transform.forward*0.25f, Vector3.down, out hit, 2.0f, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
@@ -914,7 +945,7 @@ namespace Traverser
 
                     RaycastHit hit;
 
-                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpAnimation.animationStateName)
+                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpTransitionData.targetAnim)
                         && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.3f)
                     {
                         if (Physics.Raycast(footPosition + Vector3.up - transform.forward * 0.25f, Vector3.down, out hit, 2.0f, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))

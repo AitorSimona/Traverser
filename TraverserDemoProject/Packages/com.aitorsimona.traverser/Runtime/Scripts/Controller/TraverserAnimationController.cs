@@ -418,7 +418,11 @@ namespace Traverser
                 GetPositionAtTime(currentStepping, out points[it], AvatarTarget.Body);
 
                 if (it > 0)
-                    originalDisplacement += points[it] - points[it - 1];
+                {
+                    originalDisplacement.x += Mathf.Abs(points[it].x - points[it - 1].x);
+                    originalDisplacement.y += Mathf.Abs(points[it].y - points[it - 1].y);
+                    originalDisplacement.z += Mathf.Abs(points[it].z - points[it - 1].z);
+                }
 
                 currentStepping += stepping;
             }
@@ -454,27 +458,54 @@ namespace Traverser
 
             currentStepping = stepping;
 
+            Vector3 accumulatedWeight = Vector3.zero;
+
+
+
             for (int it = 0; it < steps - 1; ++it)
             {
 
-                //Vector3 weight = points[it + 1] - points[it];
+                Vector3 weight = points[it + 1] - points[it];
+                weight.x = Mathf.Abs(weight.x);
+                weight.y = Mathf.Abs(weight.y);
+                weight.z = Mathf.Abs(weight.z);
 
-                //if(!linearWarpX)
-                //    weight.x /= originalDisplacement.x;
-                //else
-                //{
-                //    weight.x = warpTotalDisplacement.x / (steps - it);
-                //}
 
-                //weight.y /= originalDisplacement.y;
+                if (!linearWarpX)
+                    weight.x /= originalDisplacement.x;
+                else
+                {
+                    weight.x = warpTotalDisplacement.x * currentStepping;
+                }
 
-                //weight.z /= originalDisplacement.z;
+                if (!linearWarpY)
+                    weight.y /= originalDisplacement.y;
+                else
+                {
+                    weight.y = warpTotalDisplacement.y * currentStepping;
+                }
 
-                //weight.Scale(warpTotalDisplacement);
-                //warpedPoints[it] = points[it] + weight; 
+                // --- Apply weighted warp ---
+                if (!linearWarpZ)
+                    weight.z /= originalDisplacement.z;
+                else
+                {
+                    // --- Apply linear warp ---
+                    weight.z = warpTotalDisplacement.z * currentStepping;
+                }
 
+                weight.Scale(warpTotalDisplacement);
+                accumulatedWeight += weight;
+                warpedPoints[it] = points[it] + accumulatedWeight;
+
+                // old formula, faster at the end
                 //warpedPoints[it] = points[it] + (warpTotalDisplacement / (steps - it));
-                warpedPoints[it] = points[it] + (warpTotalDisplacement * currentStepping);
+
+                // linear warping, really good for straight transitions, bad for others
+                //warpedPoints[it] = points[it] + (warpTotalDisplacement * currentStepping);
+
+
+
                 currentStepping += stepping;
             }
 

@@ -91,6 +91,9 @@ namespace Traverser
         // --- Reference to the body position ---
         private Vector3 skeletonRef;
 
+        // --- If we have less than this time to reach the next point, teleport. Keep it small to avoid hiccups ---
+        private float warperMinimumTime = 0.025f;
+
         // --------------------------------
 
         private void Awake()
@@ -258,7 +261,7 @@ namespace Traverser
       
 
                 // --- In our target animation, we cover the Y distance ---
-                Vector3 currentPosition = skeleton.transform.position;
+                Vector3 currentPosition = skeleton.position;
 
                 if (Vector3.Magnitude(warpedPoints[currentPoint] - currentPosition) < warpingValidDistance)
                 {
@@ -272,21 +275,22 @@ namespace Traverser
                 if (animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName(transition.targetAnimName))
                     currentTime = animator.GetNextAnimatorStateInfo(0).normalizedTime;
 
-                currentTime += 0.05f;
+                //currentTime += 0.05f;
 
                 Vector3 nextPoint = warpedPoints[currentPoint];
 
-                Vector3 desiredDisplacement = nextPoint - skeleton.transform.position;
+                Vector3 desiredDisplacement = nextPoint - skeleton.position;
 
                 float expectedTime = (float)(currentPoint + 1) / steps;
 
                 float timeAvailable = expectedTime - currentTime;
 
 
-                if (timeAvailable <= 0.0f || 1.0f - currentTime < Time.deltaTime)
+                if (timeAvailable <= warperMinimumTime /*|| 1.0f - currentTime < Time.deltaTime*/)
                 {
                     transform.position = nextPoint + (transform.position - skeleton.position);
                     currentdeltaPosition = Vector3.zero;
+                    currentPosition = skeleton.position;
                 }
                 else
                     currentdeltaPosition = desiredDisplacement / timeAvailable;
@@ -406,13 +410,16 @@ namespace Traverser
             float currentStepping = stepping;
 
             Vector3 originalSkeletonPos = skeleton.position;
-            Vector3 originalDisplacement;
+            Vector3 originalDisplacement = Vector3.zero;
 
             // --- We need to store the relative movement --- 
             for (int it = 0; it < steps; ++it)
             {
                 GetPositionAtTime(currentStepping, out points[it], AvatarTarget.Body);
-                //originalDisplacement +=  points[it] - animator.bodyPosition
+
+                if (it > 0)
+                    originalDisplacement += points[it] - points[it - 1];
+
                 currentStepping += stepping;
             }
 
@@ -425,22 +432,53 @@ namespace Traverser
                 backupDiff = points[it + 1] - points[it];
                 points[it] = points[it-1] + previousdiff;
                 previousdiff = backupDiff;
-                currentStepping += stepping;
             }
 
             points[steps - 1] = points[steps - 2] + previousdiff;
 
 
             Vector3 warpTotalDisplacement = targetPosition - points[steps - 1];
+            //Vector3 originalDelta = Vector3.zero/*points[steps - 1] - transform.position*/;
+
+            bool linearWarpX = false;
+            bool linearWarpY = false;
+            bool linearWarpZ = false;
+
+            if (Mathf.Approximately(originalDisplacement.x, 0.0f))
+                linearWarpX = true;
+            if (Mathf.Approximately(originalDisplacement.y, 0.0f))
+                linearWarpY = true;
+            if (Mathf.Approximately(originalDisplacement.z, 0.0f))
+                linearWarpZ = true;
 
 
-            for (int it = 0; it < steps; ++it)
+            currentStepping = stepping;
+
+            for (int it = 0; it < steps - 1; ++it)
             {
 
-                    warpedPoints[it] = points[it] + (warpTotalDisplacement / (steps - it));
+                //Vector3 weight = points[it + 1] - points[it];
 
+                //if(!linearWarpX)
+                //    weight.x /= originalDisplacement.x;
+                //else
+                //{
+                //    weight.x = warpTotalDisplacement.x / (steps - it);
+                //}
+
+                //weight.y /= originalDisplacement.y;
+
+                //weight.z /= originalDisplacement.z;
+
+                //weight.Scale(warpTotalDisplacement);
+                //warpedPoints[it] = points[it] + weight; 
+
+                //warpedPoints[it] = points[it] + (warpTotalDisplacement / (steps - it));
+                warpedPoints[it] = points[it] + (warpTotalDisplacement * currentStepping);
                 currentStepping += stepping;
             }
+
+            warpedPoints[steps - 1] = targetPosition;
 
             skeleton.position = originalSkeletonPos;
 

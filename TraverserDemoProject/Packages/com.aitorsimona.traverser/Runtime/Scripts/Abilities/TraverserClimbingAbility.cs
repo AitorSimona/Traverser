@@ -157,9 +157,23 @@ namespace Traverser
             return this;
         }
 
+        private void LateUpdate()
+        {
+            // --- Keep character on ledge if it moves ---
+            controller.TeleportTo(transform.position + ledgeGeometry.UpdateLedge());
+
+            // --- Draw ledge geometry ---
+            if (debugDraw)
+            {
+                ledgeGeometry.DebugDraw();
+                ledgeGeometry.DebugDraw(ref ledgeHook);
+            }
+        }
+
         public TraverserAbility OnFixedUpdate(float deltaTime)
         {
             TraverserAbility ret = this;
+
 
             // --- If character is not falling ---
             if (!IsState(ClimbingAbilityState.Suspended))
@@ -211,6 +225,9 @@ namespace Traverser
                     // --- Turn off/on controller ---
                     controller.ConfigureController(true);
                 }
+
+                // --- Keep character on ledge if it moves ---
+                //transform.position += ledgeGeometry.UpdateLedge();
             }
 
             return ret;
@@ -763,11 +780,11 @@ namespace Traverser
             }
 
             // --- Draw ledge geometry and hook ---
-            if (debugDraw)
-            {
-                ledgeGeometry.DebugDraw();
-                ledgeGeometry.DebugDraw(ref ledgeHook);
-            }
+            //if (debugDraw)
+            //{
+            //    ledgeGeometry.DebugDraw();
+            //    ledgeGeometry.DebugDraw(ref ledgeHook);
+            //}
 
             return ret;
         }        

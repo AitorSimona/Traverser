@@ -86,12 +86,12 @@ namespace Traverser
                 animationController.UpdateAnimator(ref animatorParameters);
             }
 
-            // --- Perform movement and rotation, interpolate for smoothness ---
-            if (!animationController.transition.isON)
-            {
-                controller.ForceMove(Vector3.Lerp(transform.position, transform.position + controller.targetDisplacement, Time.deltaTime / Time.fixedDeltaTime));
-                controller.ForceRotate(Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.AngleAxis(controller.targetHeading, Vector3.up), Time.deltaTime / Time.fixedDeltaTime));
-            }
+            //// --- Perform movement and rotation, interpolate for smoothness ---
+            //if (!animationController.transition.isON)
+            //{
+            //    controller.ForceMove(Vector3.Lerp(transform.position, transform.position + controller.targetDisplacement, Time.deltaTime / Time.fixedDeltaTime));
+            //    controller.ForceRotate(Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.AngleAxis(controller.targetHeading, Vector3.up), Time.deltaTime / Time.fixedDeltaTime));
+            //}
         }
 
         // MYTODO: If order of update is important, it would be wise to add a priority to abilities,
@@ -129,15 +129,15 @@ namespace Traverser
             }
         }
 
-        //private void OnAnimatorMove()
-        //{
-        //    // --- Perform movement and rotation, interpolate for smoothness ---
-        //    if (!animationController.transition.isON)
-        //    {
-        //        controller.ForceMove(Vector3.Lerp(transform.position, transform.position + controller.targetDisplacement, Time.deltaTime / Time.fixedDeltaTime));
-        //        controller.ForceRotate(Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.AngleAxis(controller.targetHeading, Vector3.up), Time.deltaTime / Time.fixedDeltaTime));
-        //    }
-        //}
+        private void OnAnimatorMove()
+        {
+            // --- Perform movement and rotation, interpolate for smoothness ---
+            if (!animationController.transition.isON)
+            {
+                controller.ForceMove(Vector3.Lerp(transform.position, transform.position + controller.targetDisplacement, Time.deltaTime / Time.fixedDeltaTime));
+                controller.ForceRotate(Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.AngleAxis(controller.targetHeading, Vector3.up), Time.deltaTime / Time.fixedDeltaTime));
+            }
+        }
 
         // --------------------------------
 

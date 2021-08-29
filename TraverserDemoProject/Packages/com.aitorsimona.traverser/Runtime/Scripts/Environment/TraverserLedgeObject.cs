@@ -39,42 +39,79 @@ namespace Traverser
             // --- Attributes ---
             public Vector3[] vertices; // Array of 4 vertices that build the ledge's edges
             public float height;
+            public Vector3 originalPosition;
+            public BoxCollider originalCollider;
 
             // --- Basic Methods ---
             public static TraverserLedgeGeometry Create()
             {
                 TraverserLedgeGeometry ledge = new TraverserLedgeGeometry();
                 ledge.vertices = new Vector3[4];
-                ledge.height = 0.0f;
+                ledge.height = 0.0f;       
                 return ledge;
             }
 
             public void Initialize(BoxCollider collider)
             {
-                // --- Create ledge geometry from box collider ---
-                Transform transform = collider.transform;
-                height = collider.bounds.size.y;
 
-                Vector3 center = collider.center;
-                Vector3 size = collider.size;
-              
-                vertices[0] = transform.TransformPoint(center + GetVector3(-size.x, size.y, size.z) * 0.5f);
-                vertices[1] = transform.TransformPoint(center + GetVector3(size.x, size.y, size.z) * 0.5f);
-                vertices[2] = transform.TransformPoint(center + GetVector3(size.x, size.y, -size.z) * 0.5f);
-                vertices[3] = transform.TransformPoint(center + GetVector3(-size.x, size.y, -size.z) * 0.5f);
+                if (collider != null)
+                {
+                    // --- Create ledge geometry from box collider ---
+                    originalPosition = collider.transform.position;
+                    originalCollider = collider;
+                    height = collider.bounds.size.y;
+
+                    Vector3 center = collider.center;
+                    Vector3 size = collider.size;
+
+                    vertices[0] = collider.transform.TransformPoint(center + GetVector3(-size.x, size.y, size.z) * 0.5f);
+                    vertices[1] = collider.transform.TransformPoint(center + GetVector3(size.x, size.y, size.z) * 0.5f);
+                    vertices[2] = collider.transform.TransformPoint(center + GetVector3(size.x, size.y, -size.z) * 0.5f);
+                    vertices[3] = collider.transform.TransformPoint(center + GetVector3(-size.x, size.y, -size.z) * 0.5f);
+                }
+            }
+
+            public Vector3 UpdateLedge()
+            {
+                Vector3 displacement;
+
+                if (originalCollider != null)
+                {
+                    height = originalCollider.bounds.size.y;
+
+                    vertices[0] += originalCollider.transform.position - originalPosition;
+                    vertices[1] += originalCollider.transform.position - originalPosition;
+                    vertices[2] += originalCollider.transform.position - originalPosition;
+                    vertices[3] += originalCollider.transform.position - originalPosition;
+                    displacement = originalCollider.transform.position - originalPosition;
+                    originalPosition = originalCollider.transform.position;
+                }
+                else
+                    displacement = Vector3.zero;
+
+                if(displacement != Vector3.zero)
+                {
+                    Debug.Log("AA");
+                }
+
+                return displacement;
             }
 
             public bool IsEqual(ref TraverserLedgeGeometry ledgeGeometry)
             {
-                return height == ledgeGeometry.height
-                && vertices[0] == ledgeGeometry.vertices[0]
-                && vertices[1] == ledgeGeometry.vertices[1]
-                && vertices[2] == ledgeGeometry.vertices[2]
-                && vertices[3] == ledgeGeometry.vertices[3];
+                return ledgeGeometry.originalCollider.Equals(originalCollider);
+
+                //height == ledgeGeometry.height
+                //&& vertices[0] == ledgeGeometry.vertices[0]
+                //&& vertices[1] == ledgeGeometry.vertices[1]
+                //&& vertices[2] == ledgeGeometry.vertices[2]
+                //&& vertices[3] == ledgeGeometry.vertices[3]
             }
 
             public void Initialize(ref TraverserLedgeGeometry ledgeGeometry)
             {
+                originalPosition = ledgeGeometry.originalPosition;
+                originalCollider = ledgeGeometry.originalCollider;
                 height = ledgeGeometry.height;
 
                 vertices[0] = ledgeGeometry.vertices[0];

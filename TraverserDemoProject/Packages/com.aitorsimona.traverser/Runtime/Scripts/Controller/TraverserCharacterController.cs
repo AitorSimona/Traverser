@@ -164,13 +164,17 @@ namespace Traverser
 
         public void TeleportTo(Vector3 desiredPosition)
         {
-            // --- Disables controller, teleport object and adjust internal position variables ---
-            characterController.enabled = false;
-            targetDisplacement = Vector3.zero;
-            transform.position = desiredPosition;
-            position = transform.position;
+            if (desiredPosition != transform.position)
+            {
 
-            characterController.enabled = true;
+                // --- Disables controller, teleport object and adjust internal position variables ---
+                characterController.enabled = false;
+                targetDisplacement = Vector3.zero;
+                transform.position = desiredPosition;
+                position = transform.position;
+
+                characterController.enabled = true;
+            }
         }
 
         public void Tick(float deltaTime)

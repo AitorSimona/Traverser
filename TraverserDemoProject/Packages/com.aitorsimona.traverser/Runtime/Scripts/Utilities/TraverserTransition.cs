@@ -242,7 +242,7 @@ namespace Traverser
 
         public void SetDestination(ref TraverserTransform destination)
         {
-            targetTransform = destination;
+            targetTransform = destination;        
         }
 
         public void DebugDraw(float contactDebugSphereRadius)

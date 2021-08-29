@@ -258,7 +258,6 @@ namespace Traverser
             }
             else
             {
-      
 
                 // --- In our target animation, we cover the Y distance ---
                 Vector3 currentPosition = skeleton.position;
@@ -274,6 +273,9 @@ namespace Traverser
 
                 if (animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName(transition.targetAnimName))
                     currentTime = animator.GetNextAnimatorStateInfo(0).normalizedTime;
+
+                //CreateCurve(matchPosition, currentTime);
+
 
                 //currentTime += 0.05f;
 

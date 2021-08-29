@@ -160,6 +160,12 @@ namespace Traverser
         private void LateUpdate()
         {
             // --- Keep character on ledge if it moves ---
+            //if (!animationController.transition.isON)
+
+            if (!abilityController.isCurrent(this))
+                return;
+
+
             controller.TeleportTo(transform.position + ledgeGeometry.UpdateLedge());
 
             // --- Draw ledge geometry ---

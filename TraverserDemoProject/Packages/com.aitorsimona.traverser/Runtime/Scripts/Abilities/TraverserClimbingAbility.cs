@@ -165,8 +165,17 @@ namespace Traverser
             if (!abilityController.isCurrent(this))
                 return;
 
+            Vector3 delta;
 
-            controller.TeleportTo(transform.position + ledgeGeometry.UpdateLedge());
+            if (animationController.transition.isON)
+                delta = auxledgeGeometry.UpdateLedge();
+            else
+            {
+                delta = ledgeGeometry.UpdateLedge();
+                controller.TeleportTo(transform.position + delta);
+            }
+
+            animationController.transition.SetDestinationOffset(ref delta);
 
             // --- Draw ledge geometry ---
             if (debugDraw)
@@ -520,7 +529,8 @@ namespace Traverser
             pullupPosition += transform.forward * climbingData.pullUpTransitionData.targetOffset;
 
             // --- React to pull up/dismount ---
-            if (abilityController.inputController.GetInputMovement().y > 0.5f &&
+            if (abilityController.inputController.GetInputButtonNorth() 
+                && abilityController.inputController.GetInputMovement().y > 0.5f &&
                 state != ClimbingAbilityState.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
             {
                 bool ret;

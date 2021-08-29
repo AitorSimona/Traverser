@@ -216,6 +216,8 @@ namespace Traverser
                 warpStart = false;
                 previousMatchPosition = matchPosition;
 
+                currentPoint = 0;
+
                 // --- Compute current target animation's final position (root motion) ---
                 //GetPositionAtTime(1.0f, out bodyEndPosition, AvatarTarget.Body);
 
@@ -252,7 +254,7 @@ namespace Traverser
                 {
                     currentdeltaPosition = Vector3.zero;
                     transform.rotation = matchRotation; // force final rotation
-                    currentdeltaRotation = transform.rotation;                    
+                    currentdeltaRotation = transform.rotation;
                     ret = false;
                 }
             }
@@ -262,19 +264,22 @@ namespace Traverser
                 // --- In our target animation, we cover the Y distance ---
                 Vector3 currentPosition = skeleton.position;
 
-                if (Vector3.Magnitude(warpedPoints[currentPoint] - currentPosition) < warpingValidDistance)
-                {
-                    currentPoint++;
-
-                    currentPoint = Mathf.Clamp(currentPoint, 0, steps - 1);
-                }
-
                 float currentTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
                 if (animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName(transition.targetAnimName))
                     currentTime = animator.GetNextAnimatorStateInfo(0).normalizedTime;
 
                 //CreateCurve(matchPosition, currentTime);
+
+                OffsetCurve(transition.offset);
+                matchPosition = warpedPoints[steps - 1];
+
+                if (Vector3.Magnitude(warpedPoints[currentPoint] - currentPosition) < warpingValidDistance)
+                {
+                    currentPoint++;
+
+                    currentPoint = Mathf.Clamp(currentPoint, 0, steps - 1);
+                }
 
 
                 //currentTime += 0.05f;
@@ -290,11 +295,12 @@ namespace Traverser
 
                 if (timeAvailable <= warperMinimumTime /*|| 1.0f - currentTime < Time.deltaTime*/)
                 {
-                    transform.position = nextPoint + (transform.position - skeleton.position);
-                    currentdeltaPosition = Vector3.zero;
-                    currentPosition = skeleton.position;
+                    timeAvailable = 0.05f;
+                    //transform.position = nextPoint + (transform.position - skeleton.position);
+                    //currentdeltaPosition = Vector3.zero;
+                    //currentPosition = skeleton.position;
                 }
-                else
+                //else
                     currentdeltaPosition = desiredDisplacement / timeAvailable;
 
 
@@ -330,7 +336,6 @@ namespace Traverser
                     currentdeltaPosition = Vector3.zero;
                     transform.rotation = matchRotation; // force final rotation
                     currentdeltaRotation = transform.rotation;
-                    currentPoint = 0;
                     ret = false;
                 }
             }
@@ -355,7 +360,7 @@ namespace Traverser
         public Vector3 leftFootPosition;
         public Vector3 rightFootPosition;
         public Vector3 rightHandPosition;
-        public Vector3 leftHandPosition;    
+        public Vector3 leftHandPosition;
 
         public void AdjustSkeleton()
         {
@@ -408,6 +413,8 @@ namespace Traverser
 
         public void CreateCurve(Vector3 targetPosition, float initialStepping)
         {
+            //if (animator.IsInTransition(0))
+            //    return;
 
             float currentStepping = initialStepping;
 
@@ -436,7 +443,7 @@ namespace Traverser
             for (int it = 1; it < steps - 1; ++it)
             {
                 backupDiff = points[it + 1] - points[it];
-                points[it] = points[it-1] + previousdiff;
+                points[it] = points[it - 1] + previousdiff;
                 previousdiff = backupDiff;
             }
 
@@ -511,7 +518,30 @@ namespace Traverser
 
             warpedPoints[steps - 1] = targetPosition;
 
-            skeleton.position = originalSkeletonPos;
+
+            //GetPositionAtTime(initialStepping, out originalSkeletonPos, AvatarTarget.Body);
+
+            //skeleton.position = originalSkeletonPos;
         }
+
+        public void AdjustMatchPosition(Vector3 newMatchPosition)
+        {
+            previousMatchPosition = newMatchPosition;
+        }
+
+        public void OffsetCurve(Vector3 displacement)
+        {
+            float currentStepping = currentPoint * stepping;
+
+            for (int it = currentPoint; it < steps; ++it)
+            {
+                warpedPoints[it] += displacement * (currentPoint * stepping);
+                currentStepping += stepping;
+
+            }
+
+            transition.SetDestination(warpedPoints[steps - 1]);
+        }
+
     }
 }

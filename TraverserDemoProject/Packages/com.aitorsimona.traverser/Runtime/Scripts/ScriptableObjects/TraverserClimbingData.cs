@@ -19,6 +19,7 @@ namespace Traverser
         public TraverserTransition.TraverserTransitionData HopDownTransitionData;
         public TraverserTransition.TraverserTransitionData dismountTransitionData;
         public TraverserTransition.TraverserTransitionData pullUpTransitionData;
+        public TraverserTransition.TraverserTransitionData jumpBackTransitionData;
 
 
         [Header("Animations")]
@@ -28,6 +29,5 @@ namespace Traverser
         public TraverserAnimationController.AnimationData fallLoopAnimation;
         public TraverserAnimationController.AnimationData ledgeRightAnimation;
         public TraverserAnimationController.AnimationData ledgeLeftAnimation;
-        public TraverserAnimationController.AnimationData jumpBackAnimation;
     }
 }

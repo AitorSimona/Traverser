@@ -447,7 +447,7 @@ namespace Traverser
 
         void HandlePullUpState()
         {
-            if (animationController.IsTransitionFinished())
+            if (!animationController.transition.isON)
             {
                 //animationController.AdjustSkeleton();
                 SetState(ClimbingAbilityState.Suspended);
@@ -500,15 +500,15 @@ namespace Traverser
 
         void HandleJumpBackState()
         {
-            if (animationController.IsTransitionFinished())
+            if (!animationController.transition.isON)
             {
                 SetState(ClimbingAbilityState.Suspended);
                 //animationController.animator.CrossFade(climbingData.fallLoopAnimation.animationStateName, climbingData.fallLoopAnimation.transitionDuration, 0);
                 animationController.animator.Play(climbingData.fallLoopAnimation.animationStateName, 0);
 
-                Vector3 newTransform = animationController.skeleton.position;
-                newTransform.y -= controller.capsuleHeight / 2.0f;
-                controller.TeleportTo(newTransform);
+                //Vector3 newTransform = animationController.skeleton.position;
+                //newTransform.y -= controller.capsuleHeight / 2.0f;
+                //controller.TeleportTo(newTransform);
                 locomotionAbility.ResetLocomotion();
                 locomotionAbility.SetLocomotionState(TraverserLocomotionAbility.LocomotionAbilityState.Falling);
                 transform.rotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ref ledgeHook),Vector3.up);
@@ -808,12 +808,25 @@ namespace Traverser
             // --- Trigger a jump back transition if required by player ---
             if(abilityController.inputController.GetInputButtonSouth())
             {
-                SetState(ClimbingAbilityState.JumpBack);
+                //SetState(ClimbingAbilityState.JumpBack);
 
-                // --- Turn off/on controller ---
-                controller.ConfigureController(false);
+                //animationController.animator.CrossFade(climbingData.jumpBackAnimation.animationStateName, climbingData.jumpBackAnimation.transitionDuration, 0);
 
-                animationController.animator.CrossFade(climbingData.jumpBackAnimation.animationStateName, climbingData.jumpBackAnimation.transitionDuration, 0);
+                TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeleton.position, transform.rotation);
+                // --- Offset target transform ---
+                TraverserTransform targetTransform = contactTransform;
+                targetTransform.t.y += 0.5f;
+                targetTransform.t -= transform.forward * climbingData.jumpBackTransitionData.targetOffset;
+
+                bool success = animationController.transition.StartTransition(ref climbingData.jumpBackTransitionData, ref contactTransform, ref targetTransform);
+
+                if (success)
+                {
+                    SetState(ClimbingAbilityState.JumpBack);
+                    controller.targetDisplacement = Vector3.zero;
+                    // --- Turn off/on controller ---
+                    controller.ConfigureController(false);
+                }        
             }
 
             // --- Draw ledge geometry and hook ---

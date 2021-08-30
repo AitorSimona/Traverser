@@ -406,12 +406,13 @@ namespace Traverser
                 }
 
 
+                float distanceToGround = controller.GetYDistanceToGround(tmp.t + Vector3.up * 0.1f);
 
                 // --- We are falling and the simulation has found a new ground, we may activate a landing transition ---             
-                if (contactAbility == null && collision.isGrounded && collision.ground && controller.previous.ground == null)
+                if (contactAbility == null && collision.isGrounded && collision.ground 
+                    && (controller.previous.ground == null || distanceToGround < 0.15f) )
                 {
                     bool success = false;
-                    float distanceToGround = controller.GetYDistanceToGround(tmp.t + Vector3.up * 0.1f);
 
                     // --- Activate a landing roll transition ---
                     if (state == LocomotionAbilityState.Falling
@@ -428,9 +429,10 @@ namespace Traverser
                         // --- We pass an existing transition trigger that won't do anything, we are already in falling animation ---
                         success = animationController.transition.StartTransition(ref locomotionData.fallToRollTransitionData, ref contactTransform, ref targetTransform);
                     }
-                    else if (state == LocomotionAbilityState.Moving
+                    else if ((state == LocomotionAbilityState.Moving
                         && distanceToGround > controller.capsuleHeight
                         && distanceToGround < controller.capsuleHeight * 1.25f)
+                        || (distanceToGround < 0.15f && state == LocomotionAbilityState.Falling))
                     {
                         animationController.animator.CrossFade(locomotionData.fallTransitionAnimation.animationStateName, locomotionData.fallTransitionAnimation.transitionDuration, 0);
 

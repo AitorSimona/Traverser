@@ -92,6 +92,14 @@ MonoBehaviour:
     contactOffset: 0
     targetOffset: 0.25
     forceTarget: 1
+  jumpBackTransitionData:
+    transitionAnim: ClimbTransition
+    targetAnim: JumpBack
+    triggerTransitionAnim: ClimbTransitionTrigger
+    triggerTargetAnim: JumpBackTrigger
+    contactOffset: 0
+    targetOffset: 1.5
+    forceTarget: 1
   fallTransitionAnimation:
     animationStateName: FallTransition
     transitionDuration: 0.05
@@ -110,6 +118,3 @@ MonoBehaviour:
   ledgeLeftAnimation:
     animationStateName: LedgeLeft
     transitionDuration: 0.1
-  jumpBackAnimation:
-    animationStateName: JumpBack
-    transitionDuration: 0.15

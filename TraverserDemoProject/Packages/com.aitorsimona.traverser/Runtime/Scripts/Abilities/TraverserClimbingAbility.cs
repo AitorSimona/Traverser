@@ -175,6 +175,11 @@ namespace Traverser
                 controller.TeleportTo(transform.position + delta);
             }
 
+            GameObject.Find("dummy1").transform.position += delta;
+
+
+            //delta = delta.normalized * delta.magnitude;
+
             animationController.transition.SetDestinationOffset(ref delta);
 
             // --- Draw ledge geometry ---

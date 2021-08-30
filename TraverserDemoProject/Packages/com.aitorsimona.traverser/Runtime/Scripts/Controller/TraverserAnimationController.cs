@@ -218,6 +218,9 @@ namespace Traverser
 
                 currentPoint = 0;
 
+                GameObject.Find("dummy1").transform.position = matchPosition;
+
+
                 // --- Compute current target animation's final position (root motion) ---
                 //GetPositionAtTime(1.0f, out bodyEndPosition, AvatarTarget.Body);
 
@@ -262,6 +265,8 @@ namespace Traverser
             {
 
                 // --- In our target animation, we cover the Y distance ---
+                skeleton.position = animator.bodyPosition;
+
                 Vector3 currentPosition = skeleton.position;
 
                 float currentTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
@@ -271,8 +276,9 @@ namespace Traverser
 
                 //CreateCurve(matchPosition, currentTime);
 
-                OffsetCurve(transition.offset);
+                OffsetCurve(matchPosition);
                 matchPosition = warpedPoints[steps - 1];
+
 
                 if (Vector3.Magnitude(warpedPoints[currentPoint] - currentPosition) < warpingValidDistance)
                 {
@@ -282,7 +288,6 @@ namespace Traverser
                 }
 
 
-                //currentTime += 0.05f;
 
                 Vector3 nextPoint = warpedPoints[currentPoint];
 
@@ -295,12 +300,12 @@ namespace Traverser
 
                 if (timeAvailable <= warperMinimumTime /*|| 1.0f - currentTime < Time.deltaTime*/)
                 {
-                    timeAvailable = 0.05f;
-                    //transform.position = nextPoint + (transform.position - skeleton.position);
-                    //currentdeltaPosition = Vector3.zero;
-                    //currentPosition = skeleton.position;
+                    //timeAvailable = 0.05f;
+                    transform.position = nextPoint + (transform.position - skeleton.position);
+                    currentdeltaPosition = Vector3.zero;
+                    currentPosition = skeleton.position;
                 }
-                //else
+                else
                     currentdeltaPosition = desiredDisplacement / timeAvailable;
 
 
@@ -526,11 +531,12 @@ namespace Traverser
 
         public void AdjustMatchPosition(Vector3 newMatchPosition)
         {
-            previousMatchPosition = newMatchPosition;
+            previousMatchPosition += newMatchPosition;
         }
 
-        public void OffsetCurve(Vector3 displacement)
+        public void OffsetCurve(Vector3 matchPosition)
         {
+            Vector3 displacement = matchPosition - warpedPoints[steps - 1];
             float currentStepping = currentPoint * stepping;
 
             for (int it = currentPoint; it < steps; ++it)
@@ -540,7 +546,6 @@ namespace Traverser
 
             }
 
-            transition.SetDestination(warpedPoints[steps - 1]);
         }
 
     }

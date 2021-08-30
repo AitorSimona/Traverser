@@ -125,8 +125,6 @@ namespace Traverser
                 transitionData.triggerTransitionAnim = transitionDataset.triggerTransitionAnim;
                 animationController.animator.SetTrigger(transitionDataset.triggerTransitionAnim);
 
-                offset = Vector3.zero;
-
                 isTransitionAnimationON = true;
                 this.targetTransform = targetTransform;
                 this.contactTransform = contactTransform;
@@ -242,18 +240,18 @@ namespace Traverser
             return ret;
         }
 
-        public Vector3 offset = Vector3.zero;
 
-        public void SetDestinationOffset(ref Vector3 destination)
+        public void SetDestinationOffset(ref Vector3 newOffset)
         {
-            offset = destination;
+            targetTransform.t += newOffset;
+            animationController.AdjustMatchPosition(newOffset);
         }
 
-        public void SetDestination(Vector3 newDestination)
-        {
-            targetTransform.t = newDestination;
-            animationController.AdjustMatchPosition(newDestination);
-        }
+        //public void SetDestination(Vector3 newDestination)
+        //{
+        //    targetTransform.t = newDestination;
+        //    animationController.AdjustMatchPosition(newDestination);
+        //}
 
         public void DebugDraw(float contactDebugSphereRadius)
         {

@@ -173,7 +173,8 @@ namespace Traverser
                 &&  
                 (!animationController.animator.IsInTransition(0)
                 || animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > ledgeAdjustmentLimitTime)
-                && !animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpTransitionData.targetAnim))
+                && !animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpTransitionData.targetAnim)
+                && !animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.dropDownTransitionData.targetAnim))
             {
                 ledgeGeometry.UpdateLedge();
                 delta = auxledgeGeometry.UpdateLedge();

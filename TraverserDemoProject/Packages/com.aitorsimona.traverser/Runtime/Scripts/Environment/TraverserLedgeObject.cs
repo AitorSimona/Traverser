@@ -89,11 +89,6 @@ namespace Traverser
                 else
                     displacement = Vector3.zero;
 
-                if(displacement != Vector3.zero)
-                {
-                    Debug.Log("AA");
-                }
-
                 return displacement;
             }
 

@@ -117,6 +117,8 @@ namespace Traverser
         private bool movingLeft = false;
 
 
+        // --- Character will be adjusted to movable ledge if target animation transition is below this normalized time ---
+        private float ledgeAdjustmentLimitTime = 0.25f;
 
         private float minLedgeDistance = 0.5f;
 
@@ -167,20 +169,30 @@ namespace Traverser
 
             Vector3 delta;
 
-            if (animationController.transition.isON)
+            if (animationController.transition.isON 
+                &&  
+                (!animationController.animator.IsInTransition(0)
+                || animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > ledgeAdjustmentLimitTime))
+            {
+                ledgeGeometry.UpdateLedge();
                 delta = auxledgeGeometry.UpdateLedge();
+            }
             else
             {
+                auxledgeGeometry.UpdateLedge();
                 delta = ledgeGeometry.UpdateLedge();
                 controller.TeleportTo(transform.position + delta);
             }
 
-            GameObject.Find("dummy1").transform.position += delta;
 
 
             //delta = delta.normalized * delta.magnitude;
 
-            animationController.transition.SetDestinationOffset(ref delta);
+            if (state != ClimbingAbilityState.Dismount)
+            {
+                animationController.transition.SetDestinationOffset(ref delta);
+                GameObject.Find("dummy1").transform.position += delta;
+            }
 
             // --- Draw ledge geometry ---
             if (debugDraw)
@@ -260,9 +272,11 @@ namespace Traverser
             //---If we make contact with a climbable surface and player issues climb order, mount ---         
             BoxCollider collider = controller.current.collider as BoxCollider;
 
+            if (collider == null)
+                return ret;
+
             if (abilityController.inputController.GetInputButtonEast()
                 && IsState(ClimbingAbilityState.Suspended)
-                && collider != null
                 && controller.isGrounded             // --- Ensure we are not falling ---
                 && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
             {

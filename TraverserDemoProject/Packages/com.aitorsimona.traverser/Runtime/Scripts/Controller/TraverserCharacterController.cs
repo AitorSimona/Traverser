@@ -103,6 +103,8 @@ namespace Traverser
             currentGroundSnap = groundSnap;
             currentGravity = gravityEnabled;
 
+            state.previousCollision.CopyFrom(ref state.currentCollision);
+
             if (characterController.detectCollisions)
                 CheckGroundCollision();
 

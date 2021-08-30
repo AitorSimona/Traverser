@@ -173,6 +173,10 @@ namespace Traverser
 
         private LocomotionAbilityState state;
 
+
+        private Vector3 previousGroundPosition = Vector3.zero;
+        private Transform groundTransform;
+
         // -------------------------------------------------
 
         // --- Basic Methods ---
@@ -190,6 +194,27 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Ability class methods ---
+
+        private void LateUpdate()
+        {
+            if (!abilityController.isCurrent(this))
+                return;
+
+            if(controller.current.ground != null
+                && controller.current.ground.Equals(controller.previous.ground))
+            {
+                if (groundTransform == null || !groundTransform.Equals(controller.current.ground.transform))
+                {
+                    groundTransform = controller.current.ground.transform;
+                    previousGroundPosition = groundTransform.position;
+                }
+
+                Vector3 delta = groundTransform.position - previousGroundPosition;
+                controller.TeleportTo(transform.position + delta);
+
+                previousGroundPosition = groundTransform.position;
+            }
+        }
 
         public TraverserAbility OnUpdate(float deltaTime)
         {

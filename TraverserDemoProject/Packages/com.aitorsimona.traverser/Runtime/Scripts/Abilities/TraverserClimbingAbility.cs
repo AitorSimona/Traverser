@@ -107,7 +107,7 @@ namespace Traverser
         private Vector3 targetAimPosition;
 
         // --- Jump hangs ---
-        private float maxDistance = 2.0f;
+        private float maxDistance = 3.0f;
         private float maxYDifference = 0.25f;
 
         // --- Procedural corners ---
@@ -330,15 +330,15 @@ namespace Traverser
 
                 // --- Decide whether to trigger a short or large hang transition ---
 
-                if (difference.magnitude > maxDistance / 2.0f
+                if (difference.magnitude > maxDistance / 4.0f
                     && difference.y < maxYDifference
                     && locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling)
                 {
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);
                 }
-                else if (difference.magnitude < maxDistance / 4.0f
-                    && difference.y < maxYDifference)
+                else if (difference.y < maxYDifference
+                    && difference.magnitude <= maxDistance / 4.0f)
                 {
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangShortTransitionData, ref contactTransform, ref hangedTransform);

@@ -409,7 +409,7 @@ namespace Traverser
                 float distanceToGround = controller.GetYDistanceToGround(tmp.t + Vector3.up * 0.1f);
 
                 // --- We are falling and the simulation has found a new ground, we may activate a landing transition ---             
-                if (contactAbility == null && collision.isGrounded && collision.ground 
+                if (distanceToGround != -1.0f && contactAbility == null && collision.isGrounded && collision.ground 
                     && (controller.previous.ground == null || distanceToGround < 0.15f) )
                 {
                     bool success = false;

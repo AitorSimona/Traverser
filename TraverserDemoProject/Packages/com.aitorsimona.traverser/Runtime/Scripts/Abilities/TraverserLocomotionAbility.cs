@@ -200,7 +200,7 @@ namespace Traverser
             if (!abilityController.isCurrent(this))
                 return;
 
-            if(controller.current.ground != null
+            if (controller.current.ground != null
                 && controller.current.ground.Equals(controller.previous.ground))
             {
                 if (groundTransform == null || !groundTransform.Equals(controller.current.ground.transform))
@@ -450,11 +450,9 @@ namespace Traverser
                     {
                         ResetLocomotion();
                         state = LocomotionAbilityState.Landing;
+                        break;
                     }
-
-                    break;
                 }
-
             }
 
             ResetRotation();

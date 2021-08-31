@@ -19,7 +19,6 @@ MonoBehaviour:
     triggerTargetAnim: FallToRollTrigger
     contactOffset: 0
     targetOffset: 3
-    warpY: 1
     forceTarget: 1
   hardLandingTransitionData:
     transitionAnim: FallTransition
@@ -28,17 +27,16 @@ MonoBehaviour:
     triggerTargetAnim: HardLandingTrigger
     contactOffset: 0
     targetOffset: 0.5
-    warpY: 1
     forceTarget: 1
   fallTransitionAnimation:
     animationStateName: FallTransition
     transitionDuration: 0
   jumpAnimation:
     animationStateName: Jump
-    transitionDuration: 0.25
+    transitionDuration: 0.1
   jumpForwardAnimation:
     animationStateName: JumpForward
-    transitionDuration: 0.25
+    transitionDuration: 0.1
   locomotionONAnimation:
     animationStateName: LocomotionON
     transitionDuration: 0

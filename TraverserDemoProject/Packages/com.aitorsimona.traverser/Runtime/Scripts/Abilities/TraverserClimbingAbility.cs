@@ -107,7 +107,7 @@ namespace Traverser
         private Vector3 targetAimPosition;
 
         // --- Jump hangs ---
-        private float maxDistance = 3.0f;
+        private float maxDistance = 2.0f;
         private float maxYDifference = 0.25f;
 
         // --- Procedural corners ---
@@ -337,7 +337,7 @@ namespace Traverser
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);
                 }
-                else if (difference.magnitude < maxDistance / 3.0f
+                else if (difference.magnitude < maxDistance / 4.0f
                     && difference.y < maxYDifference)
                 {
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);

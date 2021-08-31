@@ -215,7 +215,7 @@ namespace Traverser
                             isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q);
 
                         // --- If current state does not have a valid exit transition, return control ---
-                        if (!isWarpOn && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
+                        if (!isWarpOn /*&& animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f*/)
                         {
                             //animationController.AdjustSkeleton();
 

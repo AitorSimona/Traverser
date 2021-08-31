@@ -211,7 +211,7 @@ namespace Traverser
                     else if (isTargetAnimationON)
                     {
                         // --- Use motion warping to reach the target transform as the targetAnimation plays ---
-                        if (isWarpOn/* && animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionData.targetAnim)*/)
+                        if (isWarpOn && !animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(transitionData.transitionAnim))
                             isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q);
 
                         // --- If current state does not have a valid exit transition, return control ---

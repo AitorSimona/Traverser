@@ -218,9 +218,6 @@ namespace Traverser
 
                 currentPoint = 0;
 
-                GameObject.Find("dummy1").transform.position = matchPosition;
-
-
                 // --- Compute current target animation's final position (root motion) ---
                 //GetPositionAtTime(1.0f, out bodyEndPosition, AvatarTarget.Body);
 

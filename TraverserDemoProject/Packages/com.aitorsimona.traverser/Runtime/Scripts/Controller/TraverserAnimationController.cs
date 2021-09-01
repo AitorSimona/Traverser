@@ -206,6 +206,12 @@ namespace Traverser
             if (animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName(transition.targetAnimName))
                 loop = animator.GetNextAnimatorStateInfo(0).loop;
 
+            // --- In case we activate another transition before letting the previous one fully end transition ---
+            // --- We would get a loop == false since we are still finishing playing the previous target animation ---
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName(transition.transitionAnimName)
+                && !transition.isTargetON)
+                loop = true;
+
             // --- If a new warp has been issued, reset start variables ---
             if (previousMatchPosition != matchPosition)
                 warpStart = true;

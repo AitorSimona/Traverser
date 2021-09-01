@@ -44,6 +44,9 @@ namespace Traverser
         // --- Get the name of the target animation of the current transition ---
         public string targetAnimName { get => transitionData.targetAnim; }
 
+        // --- Get the name of the transition animation of the current transition ---
+        public string transitionAnimName { get => transitionData.transitionAnim; }
+
         // --------------------------------
 
         // --- Private Variables ---
@@ -195,7 +198,7 @@ namespace Traverser
                             isTransitionAnimationON = false;
                             isTargetAnimationON = true;
                             isWarpOn = true;
-                            controller.TeleportTo(animationController.transform.position);
+                            //controller.TeleportTo(animationController.transform.position);
 
                             animationController.animator.Play(transitionData.targetAnim);
                             animationController.CreateCurve(targetTransform.t, 0.0f);

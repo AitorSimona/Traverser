@@ -484,7 +484,8 @@ namespace Traverser
 
         void HandleLedgeToLedgeState()
         {
-            if(animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.35f 
+            if(animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.35f
+                && animationController.transition.isTargetON
                 && !animationController.animator.IsInTransition(0))
                 ledgeGeometry.Initialize(ref auxledgeGeometry);
 
@@ -793,6 +794,9 @@ namespace Traverser
                         if (success)
                         {
                             controller.targetDisplacement = Vector3.zero;
+
+                            // Could be used to trigger a faster transition, useful for more responsiveness 
+                            //animationController.animator.Play(climbingData.HopUpTransitionData.transitionAnim);
 
                             SetState(ClimbingAbilityState.LedgeToLedge);
 

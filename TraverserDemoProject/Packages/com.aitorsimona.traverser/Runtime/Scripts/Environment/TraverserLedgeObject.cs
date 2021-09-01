@@ -229,10 +229,10 @@ namespace Traverser
                 return Vector3.Normalize(pointP2 - pointP1);
             }
 
-            public Vector3 GetNormal(ref TraverserLedgeHook hook)
+            public Vector3 GetNormal(int index)
             {
                 // --- Returns the normal of the given hook's current edge ---
-                return -Vector3.Cross(GetNormalizedEdge(hook.index), Vector3.up).normalized;
+                return -Vector3.Cross(GetNormalizedEdge(index), Vector3.up).normalized;
             }
 
             public float GetLength(int index)
@@ -367,7 +367,7 @@ namespace Traverser
             {
                 // --- Draw hook ---
                 Vector3 position = GetPosition(ref hook);
-                Vector3 normal = GetNormal(ref hook);
+                Vector3 normal = GetNormal(hook.index);
 
                 Debug.DrawLine(position, position + normal * 0.3f, Color.red);
             }

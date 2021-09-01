@@ -33,6 +33,9 @@ namespace Traverser
         [Range(0.0f, 5.0f)]
         public float maxJumpRadius = 1.0f;
 
+        [Tooltip("The minimum distance at which we trigger a ledge to ledge transition, below this we just move and corner.")]
+        public float minLedgeDistance = 0.5f;
+
         [Header("Feet IK settings")]
         [Tooltip("Activates or deactivates foot IK placement for the climbing ability.")]
         public bool fIKOn = true;
@@ -115,15 +118,12 @@ namespace Traverser
         // --- Procedural corners ---
         private Vector3 previousHookNormal;
         private float cornerRotationLerpValue = 0.0f;
-        private float cornerLerpInitialValue = 0.25f;
+        private float cornerLerpInitialValue = 0.0f;
         private bool movingLeft = false;
 
 
         // --- Character will be adjusted to movable ledge if target animation transition is below this normalized time ---
         private float ledgeAdjustmentLimitTime = 0.25f;
-
-        private float minLedgeDistance = 0.5f;
-
         private float timeToLedgeToLedge = 0.35f;
 
         // --------------------------------
@@ -381,7 +381,7 @@ namespace Traverser
 
                     Vector3 hookPosition = auxledgeGeometry.GetPosition(ref auxHook);
                     hookPosition.y += (animationController.skeleton.position.y - transform.position.y);
-                    Quaternion hookRotation = Quaternion.LookRotation(-auxledgeGeometry.GetNormal(ref auxHook), transform.up);
+                    Quaternion hookRotation = Quaternion.LookRotation(-auxledgeGeometry.GetNormal(auxHook.index), transform.up);
 
                     TraverserTransform contactTransform = TraverserTransform.Get(hookPosition, hookRotation);
                     contactTransform.t -= transform.forward * climbingData.dropDownTransitionData.contactOffset;
@@ -519,7 +519,7 @@ namespace Traverser
                 //controller.TeleportTo(newTransform);
                 locomotionAbility.ResetLocomotion();
                 locomotionAbility.SetLocomotionState(TraverserLocomotionAbility.LocomotionAbilityState.Falling);
-                transform.rotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ref ledgeHook),Vector3.up);
+                transform.rotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ledgeHook.index),Vector3.up);
             }
         }
 
@@ -604,6 +604,9 @@ namespace Traverser
         }
 
         Vector3 ledgeCollisionPosition = Vector3.zero;
+        bool leftIsMax = false;
+
+        Vector3 targetDirection = Vector3.zero;
 
         bool UpdateClimbing(float deltaTime)
         {
@@ -615,18 +618,22 @@ namespace Traverser
             if (leftStickInput.x != 0.0f)
                 movingLeft = leftStickInput.x < 0.0f;
 
-            Vector3 direction = transform.right + transform.forward - ledgeGeometry.GetNormal(ref ledgeHook) /*ledgeGeometry.GetNormal(ledgeHook) - transform.right*/;
+            Vector3 direction = (transform.right * leftStickInput.x) /*+ transform.forward - ledgeGeometry.GetNormal(ledgeHook.index)*/ /*ledgeGeometry.GetNormal(ledgeHook) - transform.right*/;
+            direction.Normalize();
+
 
             Debug.DrawLine(ledgeGeometry.GetPosition(ref ledgeHook), ledgeGeometry.GetPosition(ref ledgeHook) + direction * 5.0f);
 
 
-            Vector3 lookDirection = /*transform.forward +*/ ledgeGeometry.GetNormal(ref ledgeHook);
-            lookDirection.Normalize();
+            //Vector3 lookDirection = /*transform.forward +*/ ledgeGeometry.GetNormal(ledgeHook.index);
+            //lookDirection.Normalize();
 
-            Debug.DrawLine(ledgeGeometry.GetPosition(ref ledgeHook), ledgeGeometry.GetPosition(ref ledgeHook) + lookDirection * 5.0f);
+            //Debug.DrawLine(ledgeGeometry.GetPosition(ref ledgeHook), ledgeGeometry.GetPosition(ref ledgeHook) + lookDirection * 5.0f);
 
 
-            Vector3 delta = direction * leftStickInput.x * desiredSpeedLedge * deltaTime;
+            Vector3 delta = direction * Mathf.Abs(leftStickInput.x) * desiredSpeedLedge * deltaTime;
+
+            Debug.Log(delta);
             Vector3 targetPosition = transform.position + delta;
 
             // --- Given input, compute target aim Position (used to trigger ledge to ledge transitions) ---
@@ -646,98 +653,187 @@ namespace Traverser
             RaycastHit hit;
 
             Vector3 dire = movingLeft ? -transform.right : transform.right;
-            bool collided = Physics.SphereCast(ledgeGeometry.GetPosition(ref ledgeHook), aimDebugSphereRadius,
-                movingLeft ? -transform.right : transform.right
-                , out hit, minLedgeDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+            ledgeCollisionPosition = ledgeGeometry.GetPosition(ref ledgeHook) - transform.forward * aimDebugSphereRadius;
 
-            ledgeCollisionPosition = ledgeGeometry.GetPosition(ref ledgeHook) + dire * minLedgeDistance;
+            bool collided = Physics.SphereCast(ledgeCollisionPosition, aimDebugSphereRadius, dire
+                ,out hit, minLedgeDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+            ledgeCollisionPosition += dire * minLedgeDistance;
 
             float distanceToCorner = 0.0f;
 
             if (collided)
             {
                 ledgeGeometry.ClosestPointPlaneDistance(hit.point, ref ledgeHook, ref distanceToCorner);
-                //Debug.Log(distanceToCorner);
             }
 
-            // --- Update current hook if it is still on the ledge ---
-            if (desiredLedgeHook.index == ledgeHook.index)
+
+            if (!ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f))
             {
-                // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
-                Vector3 position = transform.position;
-                position += movingLeft ? -transform.right * 0.75f : transform.right * 0.75f;
-                //position += transform.forward * 0.5f;
+                ret = true;
+                ledgeHook = desiredLedgeHook;
+                controller.targetDisplacement = targetPosition - transform.position;
+                cornerRotationLerpValue = cornerLerpInitialValue;
 
 
-                // --- If it collides against any relevant collider, do not start the corner transition ---
-                if (collided
-                    && ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f)
-                    && distanceToCorner > minLedgeDistance)
+                // --- Make sure we end up looking towards the ledge ---
+
+                // --- The more displacement, the greater the rotation change ---
+                //cornerRotationLerpValue += controller.targetDisplacement.magnitude * ledgeCornerSpeed;
+
+                //// --- Lerp towards the newly desired direction ---
+                //if (previousHookNormal == Vector3.zero)
+                //    previousHookNormal = lookDirection;
+
+                targetDirection = ledgeGeometry.GetNormal(movingLeft ? ledgeGeometry.GetNextEdgeIndex(ledgeHook.index) : ledgeGeometry.GetPreviousEdgeIndex(ledgeHook.index));
+                previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
+                leftIsMax = movingLeft;
+
+                //lookDirection = Vector3.Lerp(previousHookNormal, lookDirection, 1.0f);
+                //transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.FromToRotation(transform.forward, lookDirection), 1.0f);
+            }
+            else
+            {
+
+
+                if (collided && !ledgeGeometry.originalCollider.Equals(hit.collider))
                 {
+                    cornerRotationLerpValue = cornerLerpInitialValue;
+                    previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
 
-                    controller.targetDisplacement = Vector3.zero;
-                    ret = false;
+                    Vector3 lastPosition = ledgeGeometry.GetPosition(ref ledgeHook);
+                    ledgeGeometry.Initialize(hit.collider as BoxCollider);
+                    ledgeHook = ledgeGeometry.GetHook(lastPosition);
+                    targetDirection = ledgeGeometry.GetNormal(ledgeHook.index);
+
+                    ret = true;
+
                 }
                 else
                 {
+                    if (cornerRotationLerpValue == cornerLerpInitialValue)
+                    {
+                        //targetDirection = ledgeGeometry.GetNormal(movingLeft ? ledgeGeometry.GetNextEdgeIndex(ledgeHook.index) : ledgeGeometry.GetPreviousEdgeIndex(ledgeHook.index));
+                        //previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
+                        //leftIsMax = movingLeft;
+                    }
+
+                    //if(desiredLedgeHook.index != ledgeHook.index)
+                    //{
+                    //    previousHookNormal = ledgeGeometry.GetNormal(ref desiredLedgeHook);
+                    //}
+
                     ret = true;
                     ledgeHook = desiredLedgeHook;
                     controller.targetDisplacement = targetPosition - transform.position;
 
                     // --- The more displacement, the greater the rotation change ---
-                    cornerRotationLerpValue += controller.targetDisplacement.magnitude * ledgeCornerSpeed;
-
-                    // --- Lerp towards the newly desired direction ---
-
-                    if (previousHookNormal == Vector3.zero)
-                        previousHookNormal = lookDirection;
-
-                    lookDirection = Vector3.Lerp(previousHookNormal, lookDirection, cornerRotationLerpValue);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.FromToRotation(transform.forward, lookDirection), 1.0f);
-                }
-            }
-            else
-            {
-                // --- Compute the position of a capsule equal to the character's at the end of the corner transition ---
-                Vector3 position = transform.position;
-                position += movingLeft ? -transform.right * 0.75f : transform.right * 0.75f;
-                //position += transform.forward * 0.5f;
-
-                // --- If it collides against any relevant collider, do not start the corner transition ---
-                if (collided
-                && ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f))
-                {
-                    if (distanceToCorner < minLedgeDistance
-                        && hit.transform.GetComponent<TraverserClimbingObject>())
+                    if (leftIsMax)
                     {
-                        controller.targetDisplacement = targetPosition - transform.position;
-
-
-                        cornerRotationLerpValue = cornerLerpInitialValue;
-                        previousHookNormal = ledgeGeometry.GetNormal(ref ledgeHook);
-
-                        ledgeGeometry.Initialize(hit.collider as BoxCollider);
-                        ledgeHook = ledgeGeometry.GetHook(targetPosition);
-
-                        ret = true;
+                        if (movingLeft)
+                        {
+                            cornerRotationLerpValue += controller.targetDisplacement.magnitude * ledgeCornerSpeed;
+                        }
+                        else
+                        {
+                            cornerRotationLerpValue -= controller.targetDisplacement.magnitude * ledgeCornerSpeed;
+                        }
                     }
                     else
                     {
-                        controller.targetDisplacement = Vector3.zero;
-                        ret = false;
+                        if (movingLeft)
+                        {
+                            cornerRotationLerpValue -= controller.targetDisplacement.magnitude * ledgeCornerSpeed;
+                        }
+                        else
+                        {
+                            cornerRotationLerpValue += controller.targetDisplacement.magnitude * ledgeCornerSpeed;
+                        }
                     }
-                }
-                else
-                {
-                    // ---  Store current hook normal and give an initial value to lerp value ---
-                    cornerRotationLerpValue = cornerLerpInitialValue;
-                    previousHookNormal = ledgeGeometry.GetNormal(ref ledgeHook);
+                    //cornerRotationLerpValue += controller.targetDisplacement.magnitude * ledgeCornerSpeed;
 
-                    ret = true;
-                    ledgeHook = desiredLedgeHook;
-                    controller.targetDisplacement = targetPosition - transform.position;
+                    //// --- Lerp towards the newly desired direction ---
+                    //if (previousHookNormal == Vector3.zero)
+                    //    previousHookNormal = lookDirection;
+
+                    Vector3 lookDirection = Vector3.Lerp(previousHookNormal, targetDirection, cornerRotationLerpValue);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.FromToRotation(transform.forward, lookDirection), 1.0f);
+
+                    //if(cornerRotationLerpValue >= 1.0f)
+                    //{
+                    //    previousHookNormal = lookDirection;
+                    //    cornerRotationLerpValue = 0.0f;
+                    //}
                 }
             }
+
+            // --- Update current hook if it is still on the ledge ---
+            //if (desiredLedgeHook.index == ledgeHook.index)
+            //{
+            //    // --- If it collides against any relevant collider, do not start the corner transition ---
+            //    if (collided
+            //        && ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f)
+            //        && distanceToCorner > minLedgeDistance)
+            //    {
+
+            //        controller.targetDisplacement = Vector3.zero;
+            //        ret = false;
+            //    }
+            //    else
+            //    {
+            //        ret = true;
+            //        ledgeHook = desiredLedgeHook;
+            //        controller.targetDisplacement = targetPosition - transform.position;
+
+            //        // --- The more displacement, the greater the rotation change ---
+            //        cornerRotationLerpValue += controller.targetDisplacement.magnitude * ledgeCornerSpeed;
+
+            //        // --- Lerp towards the newly desired direction ---
+
+            //        if (previousHookNormal == Vector3.zero)
+            //            previousHookNormal = lookDirection;
+
+            //        lookDirection = Vector3.Lerp(previousHookNormal, lookDirection, cornerRotationLerpValue);
+            //        transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.FromToRotation(transform.forward, lookDirection), 1.0f);
+            //    }
+            //}
+            //else
+            //{
+            //    // --- If it collides against any relevant collider, do not start the corner transition ---
+            //    if (collided
+            //    && ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f))
+            //    {
+            //        if (distanceToCorner < minLedgeDistance
+            //            && hit.transform.GetComponent<TraverserClimbingObject>())
+            //        {
+            //            controller.targetDisplacement = targetPosition - transform.position;
+
+
+            //            cornerRotationLerpValue = cornerLerpInitialValue;
+            //            previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
+
+            //            ledgeGeometry.Initialize(hit.collider as BoxCollider);
+            //            ledgeHook = ledgeGeometry.GetHook(targetPosition);
+
+            //            ret = true;
+            //        }
+            //        else
+            //        {
+            //            controller.targetDisplacement = Vector3.zero;
+            //            ret = false;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        // ---  Store current hook normal and give an initial value to lerp value ---
+            //        cornerRotationLerpValue = cornerLerpInitialValue;
+            //        previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
+
+            //        ret = true;
+            //        ledgeHook = desiredLedgeHook;
+            //        controller.targetDisplacement = targetPosition - transform.position;
+            //    }
+            //}
 
             float moveIntensity = abilityController.inputController.GetMoveIntensity();
 
@@ -746,7 +842,6 @@ namespace Traverser
             if (collided)
             {
                 ledgeGeometry.ClosestPointDistance(hit.point, ref ledgeHook, ref distanceToCorner);
-                //Debug.Log(distanceToCorner);
             }
 
             // --- Trigger a ledge to ledge transition if required by player ---
@@ -767,10 +862,10 @@ namespace Traverser
                         TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHookAt(ledgePos, 0.35f);    
                         TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeleton.transform.position, transform.rotation);
 
-                        Vector3 hookPosition = auxledgeGeometry.GetPosition(ref auxHook) - auxledgeGeometry.GetNormal(ref auxHook) * controller.capsuleRadius;
+                        Vector3 hookPosition = auxledgeGeometry.GetPosition(ref auxHook) - auxledgeGeometry.GetNormal(auxHook.index) * controller.capsuleRadius;
                         hookPosition.y -= controller.capsuleHeight * 0.25f;
 
-                        TraverserTransform hangedTransform = TraverserTransform.Get(hookPosition, Quaternion.LookRotation(auxledgeGeometry.GetNormal(ref auxHook), transform.up));;
+                        TraverserTransform hangedTransform = TraverserTransform.Get(hookPosition, Quaternion.LookRotation(auxledgeGeometry.GetNormal(auxHook.index), transform.up));;
 
                         // --- Compute aim angle and decide which transition has to be triggered ---
                         float angle = Vector3.SignedAngle(transform.up, (hookPosition - transform.position + Vector3.up * controller.capsuleHeight).normalized, -transform.forward);
@@ -857,7 +952,7 @@ namespace Traverser
         public void ResetClimbing()
         {
             movingLeft = false;
-            previousHookNormal = ledgeGeometry.GetNormal(ref ledgeHook);
+            previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
             cornerRotationLerpValue = 1.0f;
         }
 
@@ -875,8 +970,8 @@ namespace Traverser
             // --- Compute the character's position and rotation when hanging on a ledge ---
             ledgeHk = ledgeGeom.GetHook(fromPosition);
             Vector3 hookPosition = ledgeGeom.GetPosition(ref ledgeHk);
-            Quaternion hangedRotation = Quaternion.LookRotation(ledgeGeom.GetNormal(ref ledgeHk), transform.up);
-            Vector3 hangedPosition = hookPosition - ledgeGeom.GetNormal(ref ledgeHk) * controller.capsuleRadius;
+            Quaternion hangedRotation = Quaternion.LookRotation(ledgeGeom.GetNormal(ledgeHk.index), transform.up);
+            Vector3 hangedPosition = hookPosition - ledgeGeom.GetNormal(ledgeHk.index) * controller.capsuleRadius;
             hangedPosition.y = hookPosition.y - controller.capsuleHeight;
             return TraverserTransform.Get(hangedPosition, hangedRotation);
         }

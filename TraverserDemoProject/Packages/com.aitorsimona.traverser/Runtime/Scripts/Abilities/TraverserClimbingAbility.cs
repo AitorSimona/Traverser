@@ -740,7 +740,8 @@ namespace Traverser
 
             if (collided 
                 && !hit.collider.Equals(ledgeGeometry.originalCollider) 
-                && abilityController.inputController.GetInputMovement().x != 0.0f)
+                && abilityController.inputController.GetInputMovement().x != 0.0f
+                && hit.transform.GetComponent<TraverserClimbingObject>())
             {
                 ledgeGeometry.ClosestPointPlaneDistance(hit.point, ref ledgeHook, ref distanceToCorner);
                 previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
@@ -797,6 +798,8 @@ namespace Traverser
 
         }
 
+        Vector3 ltlRayOrigin = Vector3.zero;
+        Vector3 ltlRayDestination = Vector3.zero;
         public void OnLedgeToLedge()
         {
             Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
@@ -819,75 +822,93 @@ namespace Traverser
             float distanceToCorner = 0.0f;
 
             if (collided)
-            {
                 ledgeGeometry.ClosestPointDistance(hit.point, ref ledgeHook, ref distanceToCorner);
-            }
 
             // --- Trigger a ledge to ledge transition if required by player ---
             if (moveIntensity > 0.1f && collided
-                && distanceToCorner > minLedgeDistance)
+                && distanceToCorner > minLedgeDistance
+                && hit.transform.GetComponent<TraverserClimbingObject>()) 
             {
-                // --- Check if collided object is climbable ---
-                if (hit.transform.GetComponent<TraverserClimbingObject>()
-                    )
+                auxledgeGeometry.Initialize(hit.collider as BoxCollider);
+
+                if (!auxledgeGeometry.IsEqual(ref ledgeGeometry))
                 {
-                    // --- Trigger a transition and change state ---
-                    auxledgeGeometry.Initialize(hit.collider as BoxCollider);
+                    // --- Adjust the aim position so we don't end in another ledge edge ---
+                    Vector3 ledgePos = hit.collider.bounds.center - transform.forward * hit.collider.bounds.size.magnitude;
+                    TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHookAt(ledgePos, 0.35f);
+                    TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeleton.transform.position, transform.rotation);
 
-                    if (!auxledgeGeometry.IsEqual(ref ledgeGeometry))
+                    Vector3 hookPosition = auxledgeGeometry.GetPosition(ref auxHook) - auxledgeGeometry.GetNormal(auxHook.index) * controller.capsuleRadius;
+                    hookPosition.y -= controller.capsuleHeight * 0.25f;
+
+                    TraverserTransform hangedTransform = TraverserTransform.Get(hookPosition, Quaternion.LookRotation(auxledgeGeometry.GetNormal(auxHook.index), transform.up)); 
+
+                    // Overriding rayOrigin and hit variables from above! 
+                    rayOrigin = transform.position + Vector3.up * controller.capsuleHeight * 0.5f;
+                    Vector3 probeDirection = hangedTransform.t - rayOrigin;
+
+                    ltlRayOrigin = rayOrigin;
+                    ltlRayDestination = ltlRayOrigin + probeDirection;
+
+                    // --- Throw a ray in target direction and if a collider is found prevent ledge to ledge ---
+                    if (Physics.Raycast(ltlRayOrigin, probeDirection.normalized, out hit,probeDirection.magnitude,controller.characterCollisionMask,QueryTriggerInteraction.Ignore))
                     {
-                        // --- Adjust the aim position so we don't end in another ledge edge ---
-                        Vector3 ledgePos = hit.collider.bounds.center - transform.forward * hit.collider.bounds.size.magnitude;
-                        TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHookAt(ledgePos, 0.35f);
-                        TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeleton.transform.position, transform.rotation);
-
-                        Vector3 hookPosition = auxledgeGeometry.GetPosition(ref auxHook) - auxledgeGeometry.GetNormal(auxHook.index) * controller.capsuleRadius;
+                        ledgePos = transform.position;
+                        auxHook = auxledgeGeometry.GetHookAt(ledgePos, 0.35f);
+                        hookPosition = auxledgeGeometry.GetPosition(ref auxHook) - auxledgeGeometry.GetNormal(auxHook.index) * controller.capsuleRadius;
                         hookPosition.y -= controller.capsuleHeight * 0.25f;
+                        hangedTransform = TraverserTransform.Get(hookPosition, Quaternion.LookRotation(auxledgeGeometry.GetNormal(auxHook.index), transform.up));
 
-                        TraverserTransform hangedTransform = TraverserTransform.Get(hookPosition, Quaternion.LookRotation(auxledgeGeometry.GetNormal(auxHook.index), transform.up)); ;
+                        probeDirection = hangedTransform.t - rayOrigin;
+                        ltlRayDestination = ltlRayOrigin + probeDirection;
 
-                        // --- Compute aim angle and decide which transition has to be triggered ---
-                        float angle = Vector3.SignedAngle(transform.up, (hookPosition - transform.position + Vector3.up * controller.capsuleHeight).normalized, -transform.forward);
+                        // --- If there is a collision, try to jump to the previous edge, else prevent ledge to ledge ---
+                        if (Physics.Raycast(ltlRayOrigin, probeDirection.normalized, out hit, probeDirection.magnitude, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+                            return;
+                    }
 
-                        bool success;
+                    // --- Compute aim angle and decide which transition has to be triggered ---
+                    float angle = Vector3.SignedAngle(transform.up, (hookPosition - transform.position + Vector3.up * controller.capsuleHeight).normalized, -transform.forward);
 
-                        if (Mathf.Abs(angle) < 15.0f && leftStickInput.y > 0.0f)
-                        {
-                            success = animationController.transition.StartTransition(ref climbingData.HopUpTransitionData, ref contactTransform, ref hangedTransform);
-                        }
-                        else if (angle >= 15.0f && angle <= 135.0f)
-                        {
-                            success = animationController.transition.StartTransition(ref climbingData.HopRightTransitionData, ref contactTransform, ref hangedTransform);
-                        }
-                        else if (angle <= -15.0f && angle >= -135.0f)
-                        {
-                            success = animationController.transition.StartTransition(ref climbingData.HopLeftTransitionData, ref contactTransform, ref hangedTransform);
-                        }
-                        else
-                        {
-                            success = animationController.transition.StartTransition(ref climbingData.HopDownTransitionData, ref contactTransform, ref hangedTransform);
-                        }
+                    bool success;
 
-                        // --- Trigger ledge to ledge transition ---
-                        if (success)
-                        {
-                            controller.targetDisplacement = Vector3.zero;
+                    if (Mathf.Abs(angle) < 15.0f && leftStickInput.y > 0.0f)
+                    {
+                        success = animationController.transition.StartTransition(ref climbingData.HopUpTransitionData, ref contactTransform, ref hangedTransform);
+                    }
+                    else if (angle >= 15.0f && angle <= 135.0f)
+                    {
+                        success = animationController.transition.StartTransition(ref climbingData.HopRightTransitionData, ref contactTransform, ref hangedTransform);
+                    }
+                    else if (angle <= -15.0f && angle >= -135.0f)
+                    {
+                        success = animationController.transition.StartTransition(ref climbingData.HopLeftTransitionData, ref contactTransform, ref hangedTransform);
+                    }
+                    else
+                    {
+                        success = animationController.transition.StartTransition(ref climbingData.HopDownTransitionData, ref contactTransform, ref hangedTransform);
+                    }
 
-                            // Could be used to trigger a faster transition, useful for more responsiveness 
-                            //animationController.animator.Play(climbingData.HopUpTransitionData.transitionAnim);
+                    // --- Trigger ledge to ledge transition ---
+                    if (success)
+                    {
+                        controller.targetDisplacement = Vector3.zero;
 
-                            SetState(ClimbingAbilityState.LedgeToLedge);
+                        // Could be used to trigger a faster transition, useful for more responsiveness 
+                        //animationController.animator.Play(climbingData.HopUpTransitionData.transitionAnim);
 
-                            if (ledgeGeometry.height == 0.0f)
-                                ledgeGeometry.Initialize(ref auxledgeGeometry);
+                        SetState(ClimbingAbilityState.LedgeToLedge);
 
-                            ledgeHook = auxHook/*auxledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection)*/;
+                        if (ledgeGeometry.height == 0.0f)
+                            ledgeGeometry.Initialize(ref auxledgeGeometry);
 
-                            // --- Turn off/on controller ---
-                            controller.ConfigureController(false);
-                        }
+                        ledgeHook = auxHook/*auxledgeGeometry.GetHook(targetAimPosition - transform.forward * controller.capsuleRadius + aimDirection)*/;
+
+                        // --- Turn off/on controller ---
+                        controller.ConfigureController(false);
                     }
                 }
+                
             }
         }
 
@@ -1175,6 +1196,9 @@ namespace Traverser
 
             Gizmos.color = Color.magenta;
             Gizmos.DrawWireSphere(nearbyLedgeCollisionPosition, aimDebugSphereRadius);
+
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawLine(ltlRayOrigin, ltlRayDestination);
         }
 
         // -------------------------------------------------

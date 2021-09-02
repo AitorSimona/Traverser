@@ -293,8 +293,7 @@ namespace Traverser
                 if (!collider.Equals(controller.current.ground as BoxCollider))
                 {
                     // --- We want to reach the pre climb position and then activate the animation ---
-                    ledgeGeometry.Initialize(collider);
-                    TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeleton.position, ref ledgeGeometry, ref ledgeHook);
+                    TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeleton.position, ref auxledgeGeometry, ref ledgeHook);
 
                     // --- Offset contact transform ---
                     contactTransform.t -= transform.forward * climbingData.mountTransitionData.contactOffset;
@@ -306,6 +305,8 @@ namespace Traverser
                     // --- If transition start is successful, change state ---
                     if (ret)
                     {
+                        ledgeGeometry.Initialize(collider);
+
                         SetState(ClimbingAbilityState.Mounting);
 
                         // --- Turn off/on controller ---
@@ -350,9 +351,6 @@ namespace Traverser
                 if (ret)
                 {
                     SetState(ClimbingAbilityState.LedgeToLedge);
-
-
-
                     locomotionAbility.ResetLocomotion();
 
                     // --- Turn off/on controller ---
@@ -739,7 +737,7 @@ namespace Traverser
 
             if (collided 
                 && !hit.collider.Equals(ledgeGeometry.originalCollider) 
-                /*&& ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f)*/)
+                && abilityController.inputController.GetInputMovement().x != 0.0f)
             {
                 ledgeGeometry.ClosestPointPlaneDistance(hit.point, ref ledgeHook, ref distanceToCorner);
                 previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);

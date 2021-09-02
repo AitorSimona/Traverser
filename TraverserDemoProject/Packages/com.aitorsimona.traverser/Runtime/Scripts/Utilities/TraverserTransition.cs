@@ -8,6 +8,8 @@ namespace Traverser
         [Serializable]
         public struct TraverserTransitionData
         {
+            // --- Keeps information relative to current transition, filled by users through scriptable object ---
+
             [Tooltip("The name of the animator state to play in order to reach the contactTransform.")]
             public string transitionAnim;
 
@@ -88,7 +90,6 @@ namespace Traverser
             animationController.animator.ResetTrigger(transitionData.triggerTargetAnim);
             transitionData.triggerTransitionAnim = "";
             transitionData.triggerTargetAnim = "";
-            animationController.SetRootMotion(false);
             transitionData.forceTarget = false;
         }
 
@@ -158,6 +159,7 @@ namespace Traverser
                     }
                     else
                     {
+                        // --- Warp during transitions ---
                         if (isWarpOn && !isTargetAnimationON)                               
                             animationController.WarpToTarget(contactTransform.t, contactTransform.q, transitionData.forceTarget);
                         if (isWarpOn && isTargetAnimationON)
@@ -215,17 +217,17 @@ namespace Traverser
 
             }
 
+            // --- On transition end, initialize variables ---
             if (!ret)
                 Initialize();
 
             return ret;
         }
 
-
         public void SetDestinationOffset(ref Vector3 newOffset)
         {
             targetTransform.t += newOffset;
-            animationController.AdjustMatchPosition(newOffset);
+            //animationController.AdjustMatchPosition(newOffset);
         }
 
         public void DebugDraw(float contactDebugSphereRadius)

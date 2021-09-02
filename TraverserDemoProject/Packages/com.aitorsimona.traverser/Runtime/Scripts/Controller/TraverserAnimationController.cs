@@ -35,7 +35,7 @@ namespace Traverser
         }
         
         [Header("Warping")]
-        [Tooltip("The distance at which the character has to be within for warping success.")]
+        [Tooltip("The distance at which the character target has to be within for warping success.")]
         [Range(0.01f, 0.1f)]
         public float warpingValidDistance = 0.1f;
 
@@ -69,8 +69,8 @@ namespace Traverser
         private Quaternion currentdeltaRotation;
 
         // --- Simple way of making sure to only compute bodyEndPosition and targetWarpTime once  (at the beginning of target animation warping) ---
-        private bool warpStart = true;
-        private Vector3 previousMatchPosition = Vector3.zero;
+        //private bool warpStart = true;
+        //private Vector3 previousMatchPosition = Vector3.zero;
 
         // --- If we have less than this time to reach the next point, teleport. Keep it small to avoid hiccups ---
         private float warperMinimumTime = 0.025f;
@@ -82,15 +82,22 @@ namespace Traverser
         public Vector3 leftHandPosition = Vector3.zero;
         public Vector3 rightHandPosition = Vector3.zero;
 
+        // --- Curve related private variables ---
+        private Vector3[] points;
+        private Vector3[] warpedPoints;
+        private int steps = 11;
+        private float stepping = 0.1f;
+        private int currentPoint = 0;
+
         // --------------------------------
+
+        // --- Basic Methods ---
 
         private void Awake()
         {
-            currentdeltaPosition = Vector3.zero;
             controller = GetComponent<TraverserCharacterController>();
             points = new Vector3[steps];
             warpedPoints = new Vector3[steps];
-
         }
 
         private void Start()
@@ -105,39 +112,6 @@ namespace Traverser
                 animatorParameters.Add(param.name, param.nameHash);
             }
         }
-
-        // --- Basic Methods ---
-
-        private void OnAnimatorMove()
-        {
-            if (transition.isON)
-            {
-                // --- Apply warping ---
-                if (transition.isWarping)
-                {
-                    // --- Apply deltas ---
-                    transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
-                }
-
-                controller.targetHeading = 0.0f;
-                controller.targetDisplacement = Vector3.zero;
-            }
-        }
-
-        private void OnAnimatorIK(int layerIndex)
-        {
-            // --- Store bone positions to use in next frame ---
-            skeletonPosition = animator.GetBoneTransform(HumanBodyBones.Hips).position;
-            rightFootPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
-            leftFootPosition = animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
-            rightHandPosition = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
-            leftHandPosition = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
-        }
-
-        // --------------------------------
-
-        // --- Utility Methods ---
 
         public void InitializeAnimatorParameters(ref AnimatorParameters parameters)
         {
@@ -157,8 +131,6 @@ namespace Traverser
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
         }
 
-        int currentPoint = 0;
-
         public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, bool forceSuccess = false)
         {
             bool ret = true;
@@ -175,17 +147,16 @@ namespace Traverser
                 && !transition.isTargetON)
                 loop = true;
 
-            // --- If a new warp has been issued, reset start variables ---
-            if (previousMatchPosition != matchPosition)
-                warpStart = true;
+            //// --- If a new warp has been issued, reset start variables ---
+            //if (previousMatchPosition != matchPosition)
+            //    warpStart = true;
 
-            // --- Compute bodyEndPosition and targetWarpTime once at the beginning of warping ---
-            if (!loop && warpStart)
-            {
-                warpStart = false;
-                previousMatchPosition = matchPosition;
-                currentPoint = 0;
-            }
+            //// --- Compute bodyEndPosition and targetWarpTime once at the beginning of warping ---
+            //if (!loop && warpStart)
+            //{
+            //    warpStart = false;
+            //    previousMatchPosition = matchPosition;
+            //}
 
             // --- Compute delta position to be covered ---
             if (loop)
@@ -255,64 +226,13 @@ namespace Traverser
                     currentdeltaPosition = Vector3.zero;
                     transform.rotation = matchRotation; // force final rotation
                     currentdeltaRotation = transform.rotation;
+                    currentPoint = 0;
                     ret = false;
                 }
             }
 
             return ret;
         }
-
-        public void ResetWarper()
-        {
-            currentdeltaPosition = Vector3.zero;
-            currentdeltaRotation = transform.rotation;
-        }
-
-        public void SetRootMotion(bool rootMotion)
-        {
-            animator.applyRootMotion = rootMotion;
-        }
-
-        public Vector3 GetSkeletonPosition()
-        {
-            return skeletonPosition;
-        }
-
-        //public bool IsTransitionFinished()
-        //{
-        //    // ALERT!: Call only if your state has linked transitions
-        //    return !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f;
-        //}
-
-        public void GetPositionAtTime(float normalizedTime, out Vector3 position, AvatarTarget target)
-        {
-            // --- Samples current animation at the given normalized time (0.0f - 1.0f) ---
-            // --- Useful to know at what position will an animation end ---
-
-            SetRootMotion(true);
-            animator.SetTarget(target, normalizedTime);
-            animator.Update(0);
-            position = animator.targetPosition;
-            SetRootMotion(false);
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            if (!debugDraw || controller == null)
-                return;
-
-            // --- Draw transition contact and target point ---
-            transition.DebugDraw(contactDebugSphereRadius);
-        }
-
-        // --------------------------------
-
-
-        Vector3[] points;
-        Vector3[] warpedPoints;
-
-        int steps = 11;
-        float stepping = 0.1f;
 
         public void CreateCurve(Vector3 targetPosition, float initialStepping)
         {
@@ -409,11 +329,6 @@ namespace Traverser
             warpedPoints[steps - 1] = targetPosition;
         }
 
-        public void AdjustMatchPosition(Vector3 newMatchPosition)
-        {
-            previousMatchPosition += newMatchPosition;
-        }
-
         public void OffsetCurve(Vector3 matchPosition)
         {
             Vector3 displacement = matchPosition - warpedPoints[steps - 1];
@@ -426,5 +341,73 @@ namespace Traverser
 
             }
         }
+
+        // --------------------------------
+
+        // --- Utility Methods ---
+
+        public Vector3 GetSkeletonPosition()
+        {
+            return skeletonPosition;
+        }
+
+        public void GetPositionAtTime(float normalizedTime, out Vector3 position, AvatarTarget target)
+        {
+            // --- Samples current animation at the given normalized time (0.0f - 1.0f) ---
+            // --- Useful to know at what position will an animation end ---
+
+            animator.applyRootMotion = true;
+            animator.SetTarget(target, normalizedTime);
+            animator.Update(0);
+            position = animator.targetPosition;
+            animator.applyRootMotion = false;
+        }
+
+        //public void AdjustMatchPosition(Vector3 newMatchPosition)
+        //{
+        //    previousMatchPosition += newMatchPosition;
+        //}
+
+        // --------------------------------
+
+        // --- Events ---
+
+        private void OnAnimatorMove()
+        {
+            if (transition.isON)
+            {
+                // --- Apply warping ---
+                if (transition.isWarping)
+                {
+                    // --- Apply deltas ---
+                    transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
+                }
+
+                controller.targetHeading = 0.0f;
+                controller.targetDisplacement = Vector3.zero;
+            }
+        }
+
+        private void OnAnimatorIK(int layerIndex)
+        {
+            // --- Store bone positions to use in next frame ---
+            skeletonPosition = animator.GetBoneTransform(HumanBodyBones.Hips).position;
+            rightFootPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
+            leftFootPosition = animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
+            rightHandPosition = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
+            leftHandPosition = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!debugDraw || controller == null)
+                return;
+
+            // --- Draw transition contact and target point ---
+            transition.DebugDraw(contactDebugSphereRadius);
+        }
+
+        // --------------------------------
     }
 }

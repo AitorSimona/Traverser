@@ -739,14 +739,20 @@ namespace Traverser
 
             if (collided 
                 && !hit.collider.Equals(ledgeGeometry.originalCollider) 
-                && ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f))
+                /*&& ledgeGeometry.IsOutOfBounds(ref ledgeHook, 0.25f)*/)
             {
                 ledgeGeometry.ClosestPointPlaneDistance(hit.point, ref ledgeHook, ref distanceToCorner);
                 previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
                 ledgeGeometry.Initialize(hit.collider as BoxCollider);
-                ledgeHook = ledgeGeometry.GetHook(transform.position - transform.forward);
+                ledgeHook = ledgeGeometry.GetHook(transform.position);
                 targetDirection = ledgeGeometry.GetNormal(ledgeHook.index);
-                cornerRotationLerpValue = cornerLerpInitialValue;
+
+                if(cornerRotationLerpValue >= 1.0f || cornerRotationLerpValue == 0.0f)
+                    cornerRotationLerpValue = cornerLerpInitialValue;
+                else
+                    cornerRotationLerpValue = 1.0f - cornerRotationLerpValue;
+
+
                 onNearbyLedgeTransition = true;
                 leftIsMax = movingLeft;
             }

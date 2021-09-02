@@ -262,12 +262,13 @@ namespace Traverser
 
             public TraverserLedgeHook GetHook(Vector3 position)
             {
-                // --- Given a 3d position/ root motion transform, return the closer anchor point ---
+                // --- Given a 3d position/ root motion transform, return the closer hook point ---
                 TraverserLedgeHook result;
                 result.index = 0;
 
                 Vector3 closestPoint = ClosestPoint(position, vertices[0], vertices[1]);
-                float minimumDistance = Vector3.Magnitude(closestPoint - position);
+                Vector3 midEdgePoint = (vertices[0] + vertices[1]) * 0.5f;
+                float minimumDistance = Vector3.Magnitude(midEdgePoint - position);
 
                 result.distance = Vector3.Magnitude(closestPoint - vertices[0]); 
 
@@ -276,7 +277,8 @@ namespace Traverser
                 for (int i = 1; i < numEdges; ++i)
                 {
                     closestPoint = ClosestPoint(position, vertices[i], vertices[GetNextEdgeIndex(i)]);
-                    float distance = Vector3.Magnitude(closestPoint - position);
+                    midEdgePoint = (vertices[i] + vertices[GetNextEdgeIndex(i)]) * 0.5f;
+                    float distance = Vector3.Magnitude(midEdgePoint - position);
 
                     if (distance < minimumDistance)
                     {
@@ -293,7 +295,7 @@ namespace Traverser
 
             public TraverserLedgeHook GetHookAt(Vector3 position, float distanceOffset)
             {
-                // --- Given a 3d position/ root motion transform, return the closer anchor point ---
+                // --- Given a 3d position/ root motion transform, return the closer hook point ---
                 TraverserLedgeHook result = GetHook(position);
                 result.distance = Mathf.Clamp(result.distance, distanceOffset, GetLength(result.index) - distanceOffset);
 

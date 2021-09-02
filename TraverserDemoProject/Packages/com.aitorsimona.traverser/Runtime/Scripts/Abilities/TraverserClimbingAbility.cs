@@ -726,7 +726,10 @@ namespace Traverser
             RaycastHit hit;
             Vector3 dire = movingLeft ? -transform.right : transform.right;
 
-            nearbyLedgeCollisionPosition = ledgeGeometry.GetPosition(ref ledgeHook) - transform.forward * aimDebugSphereRadius;
+            Vector3 castOrigin = transform.position + Vector3.up * controller.capsuleHeight * 0.75f;
+            castOrigin += ledgeGeometry.GetPosition(ref ledgeHook) - castOrigin;
+
+            nearbyLedgeCollisionPosition = castOrigin /*+ transform.forward * aimDebugSphereRadius*/;
 
             bool collided = Physics.SphereCast(nearbyLedgeCollisionPosition, aimDebugSphereRadius, dire
                 , out hit, minLedgeDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);

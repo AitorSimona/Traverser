@@ -33,11 +33,7 @@ namespace Traverser
             [Tooltip("Time in seconds manual animation states transitions will take.")]
             public float transitionDuration;
         }
-
-        [Header("Animation")]
-        [Tooltip("Reference to the skeleton's parent. The controller positions the skeleton at the skeletonRef's position. Used to kill animation's root motion.")]
-        public Transform skeleton;
-
+        
         [Header("Warping")]
         [Tooltip("The distance at which the character has to be within for warping success.")]
         [Range(0.1f, 0.3f)]
@@ -67,38 +63,29 @@ namespace Traverser
         private TraverserCharacterController controller;
 
         // --- Motion that has to be warped in the current frame given timeToTarget, pre deltaTime ---
-        private Vector3 currentdeltaPosition;
+        private Vector3 currentdeltaPosition = Vector3.zero;
 
         // --- Rotation that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Quaternion currentdeltaRotation;
 
         // --- Simple way of making sure to only compute bodyEndPosition and targetWarpTime once  (at the beginning of target animation warping) ---
         private bool warpStart = true;
-        private Vector3 previousMatchPosition;
-
-        // --- Use in case you do not want the skeleton to be adjusted to the reference in a custom transition ---
-        private bool adjustSkeleton = false;
-
-        // --- The position at which the skeleton will arrive at the end of the current animation (root motion) --- 
-        //private Vector3 bodyEndPosition;
-
-        // --- Time left until animation end transition, the available time to apply warping ---
-        //private float targetWarpTime;
-
-        // --- The distance in Y we need to warp --- 
-        //private float targetYWarp;
-
-        // --- Reference to the body position ---
-        private Vector3 skeletonRef;
+        private Vector3 previousMatchPosition = Vector3.zero;
 
         // --- If we have less than this time to reach the next point, teleport. Keep it small to avoid hiccups ---
         private float warperMinimumTime = 0.025f;
+
+        // --- Used to store the bone's positions for use in the next frame ---
+        private Vector3 skeletonPosition = Vector3.zero;
+        public Vector3 leftFootPosition = Vector3.zero;
+        public Vector3 rightFootPosition = Vector3.zero;
+        public Vector3 leftHandPosition = Vector3.zero;
+        public Vector3 rightHandPosition = Vector3.zero;
 
         // --------------------------------
 
         private void Awake()
         {
-            skeletonRef = Vector3.zero;
             currentdeltaPosition = Vector3.zero;
             controller = GetComponent<TraverserCharacterController>();
             points = new Vector3[steps];
@@ -128,48 +115,24 @@ namespace Traverser
                 // --- Apply warping ---
                 if (transition.isWarping)
                 {
-                    float speedMultiplier = 1.0f;
-
-                    // --- Use warping speed only in target animations ---
-                    if (transition.isTargetON)
-                        speedMultiplier = warpingSpeed;
-
                     // --- Apply deltas ---
-                    //float previousY = transform.position.y;
                     transform.position = Vector3.Lerp(transform.position, transform.position + currentdeltaPosition, Time.deltaTime);
                     transform.rotation = Quaternion.Slerp(transform.rotation, currentdeltaRotation, Time.deltaTime);
-
-                    // --- Update time and Y warping ---
-                    //targetYWarp -= transform.position.y - previousY;
-                    //targetWarpTime -= Time.deltaTime;
-                    //targetWarpTime = Mathf.Max(targetWarpTime, 0.1f);
                 }
 
                 controller.targetHeading = 0.0f;
                 controller.targetDisplacement = Vector3.zero;
             }
-
         }
-
 
         private void OnAnimatorIK(int layerIndex)
         {
-            //if (adjustSkeleton)
-            //{            
-            //    // --- Ensure the skeleton does not get separated from the controller when not in a transition (forcing in-place animation since root motion is being baked into some animations) ---
-            //    animator.bodyPosition = skeletonRef;
-
-            //    if (!animator.IsInTransition(0))
-            //        adjustSkeleton = false;
-            //}
-            //else
-            //{
-            //    rightFootPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
-            //    leftFootPosition = animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
-            //    rightHandPosition = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
-            //    leftHandPosition = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
-            //    skeletonRef = animator.bodyPosition;
-            //}
+            // --- Store bone positions to use in next frame ---
+            skeletonPosition = animator.GetBoneTransform(HumanBodyBones.Hips).position;
+            rightFootPosition = animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
+            leftFootPosition = animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
+            rightHandPosition = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
+            leftHandPosition = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
         }
 
         // --------------------------------
@@ -221,33 +184,17 @@ namespace Traverser
             {
                 warpStart = false;
                 previousMatchPosition = matchPosition;
-
                 currentPoint = 0;
-
-                // --- Compute current target animation's final position (root motion) ---
-                //GetPositionAtTime(1.0f, out bodyEndPosition, AvatarTarget.Body);
-
-                // --- Compute warping time (time left until animation end) ---
-                //targetWarpTime = animator.GetCurrentAnimatorStateInfo(0).length  // total animation length
-                //    - (animator.GetCurrentAnimatorStateInfo(0).normalizedTime * animator.GetCurrentAnimatorStateInfo(0).length) // start transition time
-                //    ; // end transition time ?
-
-                //targetWarpTime = Mathf.Max(targetWarpTime, 0.001f);
-
-                // --- Compute difference between root motion's target Y and our target Y ---   
-                //targetYWarp = matchPosition.y - bodyEndPosition.y;
-
-                //CreateCurve(matchPosition);
             }
 
             // --- Compute delta position to be covered ---
             if (loop)
             {
-                Vector3 currentPosition = skeleton.transform.position;
+                Vector3 currentPosition = skeletonPosition;
                 // --- Prevent transition animations from warping Y ---
                 matchPosition.y = currentPosition.y;
 
-                // --- A looped animation, one of the transition Animations, no root motion ---
+                // --- A looped animation, one of the transition Animations, no root motion, use current velocity ---
                 Vector3 desiredDisplacement = matchPosition - currentPosition;
                 Vector3 velocity = desiredDisplacement.normalized * Mathf.Max(controller.targetVelocity.magnitude, 1.0f);
                 float time = desiredDisplacement.magnitude / velocity.magnitude;
@@ -266,79 +213,42 @@ namespace Traverser
             }
             else
             {
-
-                // --- In our target animation, we cover the Y distance ---
-                skeleton.position = animator.bodyPosition;
-
-                Vector3 currentPosition = skeleton.position;
-
+                // --- Retrieve target animation's current normalized time ---
                 float currentTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
                 if (animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName(transition.targetAnimName))
                     currentTime = animator.GetNextAnimatorStateInfo(0).normalizedTime;
 
-                //CreateCurve(matchPosition, currentTime);
-
+                // --- Update curve to a possibly changed destination ---
                 OffsetCurve(matchPosition);
                 matchPosition = warpedPoints[steps - 1];
 
-
-                if (Vector3.Magnitude(warpedPoints[currentPoint] - currentPosition) < warpingValidDistance)
+                // --- If we are close enough to the next warp point, aim for the next one ---
+                if (Vector3.Magnitude(warpedPoints[currentPoint] - skeletonPosition) < warpingValidDistance)
                 {
                     currentPoint++;
-
                     currentPoint = Mathf.Clamp(currentPoint, 0, steps - 1);
                 }
 
-
-
+                // --- Compute required displacement to next point ---
                 Vector3 nextPoint = warpedPoints[currentPoint];
+                Vector3 desiredDisplacement = nextPoint - skeletonPosition;
 
-                Vector3 desiredDisplacement = nextPoint - skeleton.position;
-
+                // --- Compute how much time we have to cover the desired displacement ---
                 float expectedTime = (float)(currentPoint + 1) / steps;
-
                 float timeAvailable = expectedTime - currentTime;
 
-
-                if (timeAvailable <= warperMinimumTime /*|| 1.0f - currentTime < Time.deltaTime*/)
+                // --- If we do not have enough time, teleport ourselves to next point, else update current delta ---
+                if (timeAvailable <= warperMinimumTime)
                 {
-                    //timeAvailable = 0.05f;
-                    transform.position = nextPoint + (transform.position - skeleton.position);
+                    transform.position = nextPoint + (transform.position - skeletonPosition);
                     currentdeltaPosition = Vector3.zero;
-                    currentPosition = skeleton.position;
                 }
                 else
                     currentdeltaPosition = desiredDisplacement / timeAvailable;
 
-
-
-                //currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / targetWarpTime);
-
-                // --- A targetAnimation, we want to take profit of the animation's motion ---
-                //Vector3 desiredDisplacement = matchPosition - currentPosition;
-
-                //if (warpY)
-                //{
-                //    desiredDisplacement.y = targetYWarp;
-
-                //    // --- If remaining YWarp is small enough, end warping ---
-                //    if (Mathf.Abs(targetYWarp) < warpingValidDistance)
-                //    {
-                //        desiredDisplacement.y = matchPosition.y - currentPosition.y;
-                //        //forceSuccess = true;
-                //    }
-
-                //}
-                //else
-                //    matchPosition.y = currentPosition.y;
-
-                //currentdeltaPosition = desiredDisplacement / targetWarpTime;             
-                //currentdeltaRotation = Quaternion.SlerpUnclamped(transform.rotation, matchRotation, 1.0f / targetWarpTime);
-
-
-
-                if (Vector3.Magnitude(matchPosition - currentPosition) < warpingValidDistance
+                // --- If close enough to match position, end warping ---
+                if (Vector3.Magnitude(matchPosition - skeletonPosition) < warpingValidDistance
                     || forceSuccess)
                 {
                     currentdeltaPosition = Vector3.zero;
@@ -355,8 +265,6 @@ namespace Traverser
         {
             currentdeltaPosition = Vector3.zero;
             currentdeltaRotation = transform.rotation;
-            //targetWarpTime = 0.001f;
-            //bodyEndPosition = transform.position;
         }
 
         public void SetRootMotion(bool rootMotion)
@@ -364,30 +272,16 @@ namespace Traverser
             animator.applyRootMotion = rootMotion;
         }
 
-
-        public Vector3 leftFootPosition;
-        public Vector3 rightFootPosition;
-        public Vector3 rightHandPosition;
-        public Vector3 leftHandPosition;
-
-        public void AdjustSkeleton()
+        public Vector3 GetSkeletonPosition()
         {
-            // --- Since we use baked motion in many animations (mount / pull up / dismount etc) we need to keep
-            // --- the skeleton in place during the end of a transition, or else it will move to, for example, the ledge idle
-            // --- animation's original position. We want to end a mount and transition to ledge idle at the same position ---
-            adjustSkeleton = true;
+            return skeletonPosition;
         }
 
-        public bool IsAdjustingSkeleton()
-        {
-            return adjustSkeleton;
-        }
-
-        public bool IsTransitionFinished()
-        {
-            // ALERT!: Call only if your state has linked transitions
-            return !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f;
-        }
+        //public bool IsTransitionFinished()
+        //{
+        //    // ALERT!: Call only if your state has linked transitions
+        //    return !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f;
+        //}
 
         public void GetPositionAtTime(float normalizedTime, out Vector3 position, AvatarTarget target)
         {
@@ -421,12 +315,8 @@ namespace Traverser
 
         public void CreateCurve(Vector3 targetPosition, float initialStepping)
         {
-            //if (animator.IsInTransition(0))
-            //    return;
-
             float currentStepping = initialStepping;
 
-            Vector3 originalSkeletonPos = skeleton.position;
             Vector3 originalDisplacement = Vector3.zero;
 
             // --- We need to store the relative movement --- 
@@ -446,7 +336,6 @@ namespace Traverser
 
             Vector3 previousdiff = points[1] - points[0];
             Vector3 backupDiff;
-            //points[0] = originalSkeletonPos;
 
             for (int it = 1; it < steps - 1; ++it)
             {
@@ -457,9 +346,8 @@ namespace Traverser
 
             points[steps - 1] = points[steps - 2] + previousdiff;
 
-
+            // --- Warp motion ---
             Vector3 warpTotalDisplacement = targetPosition - points[steps - 1];
-            //Vector3 originalDelta = Vector3.zero/*points[steps - 1] - transform.position*/;
 
             bool linearWarpX = false;
             bool linearWarpY = false;
@@ -472,9 +360,7 @@ namespace Traverser
             if (Mathf.Approximately(originalDisplacement.z, 0.0f))
                 linearWarpZ = true;
 
-
             currentStepping = initialStepping;
-
             Vector3 accumulatedWeight = Vector3.zero;
 
             for (int it = 0; it < steps - 1; ++it)
@@ -513,23 +399,13 @@ namespace Traverser
                 accumulatedWeight += weight;
                 warpedPoints[it] = points[it] + accumulatedWeight;
 
-                // old formula, faster at the end
-                //warpedPoints[it] = points[it] + (warpTotalDisplacement / (steps - it));
-
                 // linear warping, really good for straight transitions, bad for others
                 //warpedPoints[it] = points[it] + (warpTotalDisplacement * currentStepping);
-
-
 
                 currentStepping += stepping;
             }
 
             warpedPoints[steps - 1] = targetPosition;
-
-
-            //GetPositionAtTime(initialStepping, out originalSkeletonPos, AvatarTarget.Body);
-
-            //skeleton.position = originalSkeletonPos;
         }
 
         public void AdjustMatchPosition(Vector3 newMatchPosition)
@@ -548,8 +424,6 @@ namespace Traverser
                 currentStepping += stepping;
 
             }
-
         }
-
     }
 }

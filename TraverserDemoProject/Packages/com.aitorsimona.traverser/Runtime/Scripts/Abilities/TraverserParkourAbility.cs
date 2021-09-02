@@ -252,12 +252,12 @@ namespace Traverser
             if (!isDrop)
             {
                 targetTransform.t = controller.contactTransform.t;
-                targetTransform.t.y += (animationController.skeleton.transform.position.y - transform.position.y);
+                targetTransform.t.y += (animationController.GetSkeletonPosition().y - transform.position.y);
             }
             else
             {
                 targetTransform.q = transform.rotation;
-                targetTransform.t.y += (animationController.skeleton.transform.position.y - transform.position.y);
+                targetTransform.t.y += (animationController.GetSkeletonPosition().y - transform.position.y);
             }
 
             //targetTransform.t = target;
@@ -324,7 +324,7 @@ namespace Traverser
 
             // --- End warp point should be at skeleton height ---
             targetTransform.t.y = controller.current.ground.ClosestPoint(targetTransform.t).y
-                + (animationController.skeleton.transform.position.y - transform.position.y);
+                + (animationController.GetSkeletonPosition().y - transform.position.y);
 
             // --- Check if we are jogging or running and play appropriate transition ---
             if (speed <= locomotionAbility.jogSpeed + epsilon && speed >= locomotionAbility.walkSpeed)
@@ -343,7 +343,7 @@ namespace Traverser
             //targetTransform.t -= (targetTransform.t - contactTransform.t)*0.5f;
             targetTransform.t = contactTransform.t;
             targetTransform.t.y += controller.capsuleHeight * 0.25f;
-            contactTransform.t = animationController.skeleton.position;
+            contactTransform.t = animationController.GetSkeletonPosition();
 
             ret = StartTransition(ref parkourData.ledgeToLedgeTransitionData, ref contactTransform, ref targetTransform);
 

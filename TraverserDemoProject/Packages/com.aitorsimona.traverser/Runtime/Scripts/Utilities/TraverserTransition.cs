@@ -90,7 +90,6 @@ namespace Traverser
             transitionData.triggerTargetAnim = "";
             animationController.SetRootMotion(false);
             transitionData.forceTarget = false;
-   
         }
 
         public TraverserTransition(TraverserAnimationController _animationController, ref TraverserCharacterController _controller)
@@ -119,7 +118,6 @@ namespace Traverser
             else if (!isTransitionAnimationON && !isTargetAnimationON && !animationController.animator.IsInTransition(0))
             {
                 // --- If we are in a transition activate root motion and disable controller ---
-                //animationController.SetRootMotion(true);
                 controller.ConfigureController(false);
                 isWarpOn = true;
                 transitionData.transitionAnim = transitionDataset.transitionAnim;
@@ -154,18 +152,6 @@ namespace Traverser
                         && isTargetAnimationON
                         && !isWarpOn)
                     {
-                        // TODO: We may end up here before warping is complete, one mistake may be not using the exit transition time's
-                        // in warping computation
-                        animationController.ResetWarper();
-
-                        //animationController.AdjustSkeleton();
-
-                        // --- Get skeleton's current position and teleport controller ---
-                        //Vector3 newTransform = animationController.skeleton.transform.position;
-                        //newTransform.y -= controller.capsuleHeight/2.0f;
-                        //controller.TeleportTo(newTransform);
-
-
                         // --- Reenable controller and give back control ---
                         controller.ConfigureController(true);
                         ret = false;
@@ -193,17 +179,15 @@ namespace Traverser
 
                         // --- When we reach the contact point, activate targetAnimation ---
                         if (!isTransitionAnimationON)
-                        {
-                            
+                        {                        
                             isTransitionAnimationON = false;
                             isTargetAnimationON = true;
                             isWarpOn = true;
-                            //controller.TeleportTo(animationController.transform.position);
 
+                            // --- Create root motion curve ---
                             animationController.animator.Play(transitionData.targetAnim);
                             animationController.CreateCurve(targetTransform.t, 0.0f);
                             animationController.animator.Play(transitionData.transitionAnim);
-
 
                             animationController.animator.SetTrigger(transitionData.triggerTargetAnim);
                         }
@@ -218,15 +202,8 @@ namespace Traverser
                             isWarpOn = animationController.WarpToTarget(targetTransform.t, targetTransform.q);
 
                         // --- If current state does not have a valid exit transition, return control ---
-                        if (!isWarpOn /*&& animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f*/)
+                        if (!isWarpOn)
                         {
-                            //animationController.AdjustSkeleton();
-
-                            // --- Get skeleton's current position and teleport controller ---
-                            //Vector3 newTransform = animationController.skeleton.transform.position;
-                            //newTransform.y -= controller.capsuleHeight / 2.0f;
-                            //controller.TeleportTo(newTransform);
-
                             // --- Reenable controller and give back control ---
                             controller.ConfigureController(true);
                             ret = false;
@@ -250,12 +227,6 @@ namespace Traverser
             targetTransform.t += newOffset;
             animationController.AdjustMatchPosition(newOffset);
         }
-
-        //public void SetDestination(Vector3 newDestination)
-        //{
-        //    targetTransform.t = newDestination;
-        //    animationController.AdjustMatchPosition(newDestination);
-        //}
 
         public void DebugDraw(float contactDebugSphereRadius)
         {

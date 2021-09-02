@@ -125,6 +125,7 @@ namespace Traverser
         // --- Character will be adjusted to movable ledge if target animation transition is below this normalized time ---
         private float ledgeAdjustmentLimitTime = 0.25f;
         private float timeToLedgeToLedge = 0.35f;
+        private float hangedTransformHeightRatio = 0.6f;
 
         // --------------------------------
 
@@ -848,7 +849,7 @@ namespace Traverser
                     TraverserTransform contactTransform = TraverserTransform.Get(animationController.GetSkeletonPosition(), transform.rotation);
 
                     Vector3 hookPosition = auxledgeGeometry.GetPosition(ref auxHook) - auxledgeGeometry.GetNormal(auxHook.index) * controller.capsuleRadius;
-                    hookPosition.y -= controller.capsuleHeight * 0.25f;
+                    hookPosition.y -= controller.capsuleHeight * (1.0f - hangedTransformHeightRatio);
 
                     TraverserTransform hangedTransform = TraverserTransform.Get(hookPosition, Quaternion.LookRotation(auxledgeGeometry.GetNormal(auxHook.index), transform.up)); 
 
@@ -956,7 +957,7 @@ namespace Traverser
         {
             // --- Compute the character's skeleton position and rotation when hanging on a ledge ---
             TraverserTransform skeletonTransform = GetHangedTransform(fromPosition, ref ledgeGeom, ref ledgeHk);
-            skeletonTransform.t.y += controller.capsuleHeight * 0.75f;
+            skeletonTransform.t.y += controller.capsuleHeight * hangedTransformHeightRatio;
             return skeletonTransform;
         }
 

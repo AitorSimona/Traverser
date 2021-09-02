@@ -36,7 +36,7 @@ namespace Traverser
         
         [Header("Warping")]
         [Tooltip("The distance at which the character has to be within for warping success.")]
-        [Range(0.1f, 0.3f)]
+        [Range(0.01f, 0.1f)]
         public float warpingValidDistance = 0.1f;
 
         [Tooltip("The bigger the speed the more influence the warper will have over motion.")]
@@ -248,7 +248,8 @@ namespace Traverser
                     currentdeltaPosition = desiredDisplacement / timeAvailable;
 
                 // --- If close enough to match position, end warping ---
-                if (Vector3.Magnitude(matchPosition - skeletonPosition) < warpingValidDistance
+                if ((Vector3.Magnitude(matchPosition - skeletonPosition) < warpingValidDistance
+                    && currentPoint == steps - 1)
                     || forceSuccess)
                 {
                     currentdeltaPosition = Vector3.zero;

@@ -68,10 +68,6 @@ namespace Traverser
         // --- Rotation that has to be warped in the current frame given timeToTarget, pre deltaTime ---
         private Quaternion currentdeltaRotation;
 
-        // --- Simple way of making sure to only compute bodyEndPosition and targetWarpTime once  (at the beginning of target animation warping) ---
-        //private bool warpStart = true;
-        //private Vector3 previousMatchPosition = Vector3.zero;
-
         // --- If we have less than this time to reach the next point, teleport. Keep it small to avoid hiccups ---
         private float warperMinimumTime = 0.025f;
 
@@ -146,17 +142,6 @@ namespace Traverser
             if (!animator.GetCurrentAnimatorStateInfo(0).IsName(transition.transitionAnimName)
                 && !transition.isTargetON)
                 loop = true;
-
-            //// --- If a new warp has been issued, reset start variables ---
-            //if (previousMatchPosition != matchPosition)
-            //    warpStart = true;
-
-            //// --- Compute bodyEndPosition and targetWarpTime once at the beginning of warping ---
-            //if (!loop && warpStart)
-            //{
-            //    warpStart = false;
-            //    previousMatchPosition = matchPosition;
-            //}
 
             // --- Compute delta position to be covered ---
             if (loop)
@@ -362,11 +347,6 @@ namespace Traverser
             position = animator.targetPosition;
             animator.applyRootMotion = false;
         }
-
-        //public void AdjustMatchPosition(Vector3 newMatchPosition)
-        //{
-        //    previousMatchPosition += newMatchPosition;
-        //}
 
         // --------------------------------
 

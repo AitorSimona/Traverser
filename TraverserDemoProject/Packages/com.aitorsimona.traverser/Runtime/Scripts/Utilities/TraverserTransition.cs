@@ -227,7 +227,6 @@ namespace Traverser
         public void SetDestinationOffset(ref Vector3 newOffset)
         {
             targetTransform.t += newOffset;
-            //animationController.AdjustMatchPosition(newOffset);
         }
 
         public void DebugDraw(float contactDebugSphereRadius)

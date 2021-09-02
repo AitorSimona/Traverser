@@ -15,7 +15,7 @@ namespace Traverser
             // - - - - -
             // -       -
             // -       - 
-            // - - - p - p is at 0.75*distance and at the 2nd line (index)
+            // - - - p - p is at 0.75*distance and at the 3rd line (index 2)
 
             // -------------------------------------------------
 
@@ -37,10 +37,10 @@ namespace Traverser
         public struct TraverserLedgeGeometry
         {
             // --- Attributes ---
-            public Vector3[] vertices; // Array of 4 vertices that build the ledge's edges
-            public float height;
-            public Vector3 originalPosition;
-            public BoxCollider originalCollider;
+            private Vector3[] vertices; // Array of 4 vertices that build the ledge's edges
+            private float height;
+            private Vector3 originalPosition;
+            private BoxCollider originalCollider;
 
             // --- Basic Methods ---
             public static TraverserLedgeGeometry Create()
@@ -51,9 +51,8 @@ namespace Traverser
                 return ledge;
             }
 
-            public void Initialize(BoxCollider collider)
+            public void Initialize(ref BoxCollider collider)
             {
-
                 if (collider != null)
                 {
                     // --- Create ledge geometry from box collider ---
@@ -75,6 +74,8 @@ namespace Traverser
             {
                 Vector3 displacement;
 
+                // --- Update ledge vertices given collider displacement ---
+
                 if (originalCollider != null)
                 {
                     height = originalCollider.bounds.size.y;
@@ -95,12 +96,11 @@ namespace Traverser
             public bool IsEqual(ref TraverserLedgeGeometry ledgeGeometry)
             {
                 return ledgeGeometry.originalCollider.Equals(originalCollider);
+            }
 
-                //height == ledgeGeometry.height
-                //&& vertices[0] == ledgeGeometry.vertices[0]
-                //&& vertices[1] == ledgeGeometry.vertices[1]
-                //&& vertices[2] == ledgeGeometry.vertices[2]
-                //&& vertices[3] == ledgeGeometry.vertices[3]
+            public bool IsEqual(ref BoxCollider ledgeCollider)
+            {
+                return ledgeCollider.Equals(originalCollider);
             }
 
             public void Initialize(ref TraverserLedgeGeometry ledgeGeometry)
@@ -118,6 +118,7 @@ namespace Traverser
             // -------------------------------------------------
 
             // --- Utilities ---
+         
             Vector3 GetVector3(float x, float y, float z)
             {
                 Vector3 tmp;
@@ -127,14 +128,21 @@ namespace Traverser
                 return tmp;
             }
 
+            public void Reset()
+            {
+                height = 0.0f;
+                originalPosition = Vector3.zero;
+                originalCollider = null;
+            }
+
+            public bool IsInitialized()
+            {
+                return height != 0.0f;
+            }
+
             public bool IsOutOfBounds(ref TraverserLedgeHook ledgeHook, float offset)
             {
-                bool ret = false;
-
-                if (ledgeHook.distance <= offset || ledgeHook.distance >= GetLength(ledgeHook.index) - offset)
-                    ret = true;
-
-                return ret;
+                return ledgeHook.distance <= offset || ledgeHook.distance >= GetLength(ledgeHook.index) - offset ? true : false;
             }
 
             public Vector3 ClosestPoint(Vector3 position, Vector3 pointP1, Vector3 pointP2)
@@ -266,10 +274,10 @@ namespace Traverser
                 TraverserLedgeHook result;
                 result.index = 0;
 
+                // --- Compute point at the middle of an edge and its distance to given position ---
                 Vector3 closestPoint = ClosestPoint(position, vertices[0], vertices[1]);
                 Vector3 midEdgePoint = (vertices[0] + vertices[1]) * 0.5f;
                 float minimumDistance = Vector3.Magnitude(midEdgePoint - position);
-
                 result.distance = Vector3.Magnitude(closestPoint - vertices[0]); 
 
                 int numEdges = vertices.Length;
@@ -280,6 +288,7 @@ namespace Traverser
                     midEdgePoint = (vertices[i] + vertices[GetNextEdgeIndex(i)]) * 0.5f;
                     float distance = Vector3.Magnitude(midEdgePoint - position);
 
+                    // --- If the distance to the midEdgePoint is lower than the previous one, change the hook ---
                     if (distance < minimumDistance)
                     {
                         minimumDistance = distance;
@@ -287,8 +296,6 @@ namespace Traverser
                         result.distance = Vector3.Magnitude(closestPoint - vertices[i]);
                     }
                 }
-
-                result.distance = Mathf.Clamp(result.distance, 0.05f, GetLength(result.index));
 
                 return result;
             }

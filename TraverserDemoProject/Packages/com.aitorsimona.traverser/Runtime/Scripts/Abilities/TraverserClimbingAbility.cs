@@ -54,7 +54,7 @@ namespace Traverser
         [Range(-1.0f, 1.0f)]
         public float handLength = 1.0f;
         [Tooltip("Modifies how fast we adjust the hands to match IK transforms.")]
-        [Range(0.0f, 1.0f)]
+        [Range(0.0f, 100.0f)]
         public float handsAdjustmentSpeed = 0.5f;
 
         [Header("Debug")]
@@ -916,6 +916,8 @@ namespace Traverser
 
         Vector3 previousLeftFootPosition = Vector3.zero;
         Vector3 previousRightFootPosition = Vector3.zero;
+        Vector3 previousRightHandPosition = Vector3.zero;
+        Vector3 previousLeftHandPosition = Vector3.zero;
 
         private void OnAnimatorIK(int layerIndex)
         {
@@ -1041,48 +1043,64 @@ namespace Traverser
             {
                 // --- Else, sample hand weight from the animator's parameters, which are set by the animations themselves through curves ---
                 float weight = animationController.animator.GetFloat("IKLeftHandWeight");
+                //weight = 1.0f;
 
                 // --- Left hand ---
-                if (weight > 0.0f)
-                {
-                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, weight);
-                    animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, weight);
+                
+                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f);
+                    animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1.0f);
+
+                    if (previousLeftHandPosition == Vector3.zero)
+                        previousLeftHandPosition = animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand);
+
 
                     Vector3 IKPosition = animationController.animator.GetIKPosition(AvatarIKGoal.LeftHand);
 
                     TraverserLedgeObject.TraverserLedgeHook hook = ledgeGeometry.GetHook(IKPosition);
 
-                    Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
+                    Vector3 handPosition = Vector3.Lerp(previousLeftHandPosition, ledgeGeometry.GetPosition(ref hook) - (transform.forward * handLength + Vector3.up * handIKYDistance), handsAdjustmentSpeed * Time.deltaTime);
+                //handPosition.y += handIKYDistance;
 
-                    handPosition -= transform.forward * handLength;
-                    handPosition.y += handIKYDistance;
+                //Debug.DrawLine(handPosition, handPosition + transform.forward * 2.0f);
+                if (weight != 1.0f)
+                    previousLeftHandPosition = handPosition;
 
-                    //Debug.DrawLine(handPosition, handPosition + transform.forward * 2.0f);
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
                     animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand, Quaternion.FromToRotation(transform.forward, transform.forward + Vector3.up*1.5f) * transform.rotation);
-                }
+                
 
                 weight = animationController.animator.GetFloat("IKRightHandWeight");
+                //weight = 1.0f;
 
                 // --- Right hand ---
-                if (weight > 0.0f)
-                {
-                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, weight);
-                    animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightHand, weight);
+               
+                    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1.0f);
+                    animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1.0f);
 
-                    Vector3 IKPosition = animationController.animator.GetIKPosition(AvatarIKGoal.RightHand);
+                    IKPosition = animationController.animator.GetIKPosition(AvatarIKGoal.RightHand);
 
-                    TraverserLedgeObject.TraverserLedgeHook hook = ledgeGeometry.GetHook(IKPosition);
+                    if (previousRightHandPosition == Vector3.zero)
+                        previousRightHandPosition = animationController.animator.GetIKPosition(AvatarIKGoal.RightHand);
 
-                    Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
+                    hook = ledgeGeometry.GetHook(IKPosition);
 
-                    handPosition -= transform.forward * handLength;
-                    handPosition.y += handIKYDistance;
+                    //Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
+
+                    //handPosition -= transform.forward * handLength;
+                    //handPosition.y += handIKYDistance;
+
+                    handPosition = Vector3.Lerp(previousRightHandPosition, ledgeGeometry.GetPosition(ref hook) - (transform.forward * handLength + Vector3.up * handIKYDistance), handsAdjustmentSpeed * Time.deltaTime);
+
 
                     //Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
+
+                    if(weight != 1.0f)
+                        previousRightHandPosition = handPosition;
+
+
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
                     animationController.animator.SetIKRotation(AvatarIKGoal.RightHand, Quaternion.FromToRotation(transform.forward, transform.forward + Vector3.up*1.5f) * transform.rotation);
-                }
+                
             }
         }
         

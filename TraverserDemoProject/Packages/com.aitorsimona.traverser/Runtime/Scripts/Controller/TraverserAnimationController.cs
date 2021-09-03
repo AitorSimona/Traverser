@@ -205,7 +205,7 @@ namespace Traverser
 
                 // --- If close enough to match position, end warping ---
                 if ((Vector3.Magnitude(matchPosition - skeletonPosition) < warpingValidDistance
-                    && currentPoint == steps - 1)
+                    && currentdeltaPosition.magnitude < warpingValidDistance)
                     || forceSuccess)
                 {
                     currentdeltaPosition = Vector3.zero;

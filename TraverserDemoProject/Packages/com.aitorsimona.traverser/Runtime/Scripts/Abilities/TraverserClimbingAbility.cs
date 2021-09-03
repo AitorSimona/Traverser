@@ -41,6 +41,9 @@ namespace Traverser
         public float footLength = 1.0f;
         [Tooltip("The length of the ray used to detect surfaces to place the feet on.")]
         public float feetRayLength = 2.0f;
+        [Tooltip("Modifies how fast we adjust the feet to match IK transforms.")]
+        [Range(0.0f, 100.0f)]
+        public float feetAdjustmentSpeed = 0.5f;
 
         [Header("Hands IK settings")]
         [Tooltip("Activates or deactivates hand IK placement for the climbing ability.")]
@@ -50,6 +53,9 @@ namespace Traverser
         [Tooltip("The character's hand length (size in meters) / correction in forward direction.")]
         [Range(-1.0f, 1.0f)]
         public float handLength = 1.0f;
+        [Tooltip("Modifies how fast we adjust the hands to match IK transforms.")]
+        [Range(0.0f, 1.0f)]
+        public float handsAdjustmentSpeed = 0.5f;
 
         [Header("Debug")]
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Selecting the object may be required to show debug geometry.")]
@@ -699,6 +705,7 @@ namespace Traverser
             }
         }
 
+        public float cornerSpeed = 1.0f;
         public void UpdateCornerMovement(Vector3 targetPosition)
         {
             controller.targetDisplacement = targetPosition - transform.position;
@@ -707,16 +714,16 @@ namespace Traverser
             if (leftIsMax)
             {
                 if (movingLeft)
-                    cornerRotationLerpValue += controller.targetDisplacement.magnitude;
+                    cornerRotationLerpValue += controller.targetDisplacement.magnitude * cornerSpeed;
                 else
-                    cornerRotationLerpValue -= controller.targetDisplacement.magnitude;
+                    cornerRotationLerpValue -= controller.targetDisplacement.magnitude * cornerSpeed;
             }
             else
             {
                 if (movingLeft)
-                    cornerRotationLerpValue -= controller.targetDisplacement.magnitude;
+                    cornerRotationLerpValue -= controller.targetDisplacement.magnitude * cornerSpeed;
                 else
-                    cornerRotationLerpValue += controller.targetDisplacement.magnitude;
+                    cornerRotationLerpValue += controller.targetDisplacement.magnitude * cornerSpeed;
             }
 
             // --- Update rotation ---
@@ -907,6 +914,9 @@ namespace Traverser
 
         // --- Events ---
 
+        Vector3 previousLeftFootPosition = Vector3.zero;
+        Vector3 previousRightFootPosition = Vector3.zero;
+
         private void OnAnimatorIK(int layerIndex)
         {
             if (!abilityController.isCurrent(this))
@@ -934,41 +944,50 @@ namespace Traverser
 
                 // --- Left foot ---
                 float weight = animationController.animator.GetFloat("IKLeftFootWeight");
+                weight = 1.0f;
 
                 if (weight > 0.0f)
                 {
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, weight);
                     animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, weight);
 
-                    Vector3 footPosition = animationController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position;
+                    if(previousLeftFootPosition == Vector3.zero)
+                        previousLeftFootPosition = animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot);
+
+                    Vector3 footPosition;
 
                     RaycastHit hit;
 
-                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpTransitionData.targetAnim)
-                        && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.3f)
-                    {
-                        if (Physics.Raycast(footPosition + Vector3.up - transform.forward*0.25f, Vector3.down, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-                        {
-                            footPosition = hit.point + Vector3.up *0.15f;
-                        }
+                    //if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpTransitionData.targetAnim)
+                    //    && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.3f)
+                    //{
+                    //    if (Physics.Raycast(animationController.leftFootPosition + Vector3.up - transform.forward*0.25f, Vector3.down, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+                    //    {
+                    //        footPosition = Vector3.Lerp(previousLeftFootPosition, hit.point + Vector3.up *0.15f, feetAdjustmentSpeed*Time.deltaTime);
+                    //    }
 
-                        animationController.animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation);
+                    //    animationController.animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation);
+                    //}
+                    //else
+                    //{
+                    if (Physics.Raycast(animationController.leftFootPosition - transform.forward * 0.25f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+                    {
+                        footPosition = Vector3.Lerp(previousLeftFootPosition, hit.point - transform.forward * footLength, feetAdjustmentSpeed*Time.deltaTime);
                     }
                     else
                     {
-                        if (Physics.Raycast(footPosition, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-                        {
-                            footPosition = hit.point;
-                        }
-
-                        footPosition -= transform.forward * footLength;
+                        footPosition = Vector3.Lerp(previousLeftFootPosition, animationController.leftFootPosition, feetAdjustmentSpeed * Time.deltaTime);
                     }
+                    //}
 
-                    Debug.DrawLine(footPosition, footPosition + transform.forward * feetRayLength);
+                    previousLeftFootPosition = footPosition;
+                    Debug.DrawLine(footPosition - transform.forward * 0.25f, footPosition + transform.forward * feetRayLength);
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
                 }
 
                 weight = animationController.animator.GetFloat("IKRightFootWeight");
+
+                weight = 1.0f;
 
                 // --- Right foot ---
                 if (weight > 0.0f)
@@ -976,30 +995,38 @@ namespace Traverser
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, weight);
                     animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, weight);
 
-                    Vector3 footPosition = animationController.animator.GetBoneTransform(HumanBodyBones.RightFoot).position;
+                    if (previousRightFootPosition == Vector3.zero)
+                        previousRightFootPosition = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot);
+
+                    Vector3 footPosition;
+
                     RaycastHit hit;
 
-                    if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpTransitionData.targetAnim)
-                        && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.3f)
-                    {
-                        if (Physics.Raycast(footPosition + Vector3.up - transform.forward * 0.25f, Vector3.down, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-                        {
-                            footPosition = hit.point + Vector3.up * 0.15f;
-                        }
+                    //if (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.pullUpTransitionData.targetAnim)
+                    //    && animationController.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.3f)
+                    //{
+                    //    if (Physics.Raycast(animationController.rightFootPosition + Vector3.up - transform.forward * 0.25f, Vector3.down, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+                    //    {
+                    //        footPosition = Vector3.Lerp(previousRightFootPosition, hit.point + Vector3.up * 0.15f, feetAdjustmentSpeed * Time.deltaTime);
+                    //    }
 
-                        animationController.animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation);
+                    //    animationController.animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation);
+                    //}
+                    //else
+                    //{
+                    if (Physics.Raycast(animationController.rightFootPosition - transform.forward*0.25f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+                    {
+                        footPosition = Vector3.Lerp(previousRightFootPosition, hit.point - transform.forward * footLength, feetAdjustmentSpeed * Time.deltaTime);
                     }
                     else
                     {
-                        if (Physics.Raycast(footPosition, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-                        {
-                            footPosition = hit.point;
-                        }
+                        footPosition = Vector3.Lerp(previousRightFootPosition, animationController.rightFootPosition, feetAdjustmentSpeed * Time.deltaTime);
 
-                        footPosition -= transform.forward * footLength;
                     }
+                    //}
 
-                    Debug.DrawLine(footPosition, footPosition + transform.forward * feetRayLength);
+                    previousRightFootPosition = footPosition;
+                    Debug.DrawLine(footPosition - transform.forward * 0.25f, footPosition + transform.forward * feetRayLength);
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
                 }
             }

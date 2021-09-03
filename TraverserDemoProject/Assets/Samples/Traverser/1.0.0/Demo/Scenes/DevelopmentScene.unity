@@ -1821,15 +1821,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177370943352971, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.10853203
+      value: 0.10853201
       objectReference: {fileID: 0}
     - target: {fileID: 5452177370943352971, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000003567926
+      value: 0.000000036224105
       objectReference: {fileID: 0}
     - target: {fileID: 5452177370943352971, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000003895352
+      value: -0.000000003954836
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371026187803, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1909,7 +1909,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371420739849, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.08510992
+      value: 0.0851099
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371420739849, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1917,7 +1917,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371420739849, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.086566605
+      value: 0.08656658
       objectReference: {fileID: 0}
     - target: {fileID: 7301835085647520708, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_RootOrder
@@ -6658,8 +6658,12 @@ PrefabInstance:
       value: 0.19
       objectReference: {fileID: 0}
     - target: {fileID: 1034048263089636343, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: handLength
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 1034048263089636343, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: cornerSpeed
-      value: 1
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1034048263089636343, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: feetRayLength
@@ -6674,6 +6678,10 @@ PrefabInstance:
       value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: 1034048263089636343, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: desiredSpeedLedge
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1034048263089636343, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: maxClimbableHeight
       value: 3.5
       objectReference: {fileID: 0}
@@ -6684,6 +6692,10 @@ PrefabInstance:
     - target: {fileID: 1034048263089636343, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: aimDebugSphereRadius
       value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1034048263089636343, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: handsAdjustmentSpeed
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1034048263089636345, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: fIKOn

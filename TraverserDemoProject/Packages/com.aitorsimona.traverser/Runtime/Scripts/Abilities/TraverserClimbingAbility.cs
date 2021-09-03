@@ -916,6 +916,8 @@ namespace Traverser
 
         Vector3 previousLeftFootPosition = Vector3.zero;
         Vector3 previousRightFootPosition = Vector3.zero;
+        Vector3 previousRightHandPosition = Vector3.zero;
+        Vector3 previousLeftHandPosition = Vector3.zero;
 
         private void OnAnimatorIK(int layerIndex)
         {
@@ -944,7 +946,7 @@ namespace Traverser
 
                 // --- Left foot ---
                 float weight = animationController.animator.GetFloat("IKLeftFootWeight");
-                weight = 1.0f;
+                //weight = 1.0f;
 
                 if (weight > 0.0f)
                 {
@@ -987,7 +989,7 @@ namespace Traverser
 
                 weight = animationController.animator.GetFloat("IKRightFootWeight");
 
-                weight = 1.0f;
+                //weight = 1.0f;
 
                 // --- Right foot ---
                 if (weight > 0.0f)
@@ -1052,12 +1054,29 @@ namespace Traverser
 
                     TraverserLedgeObject.TraverserLedgeHook hook = ledgeGeometry.GetHook(IKPosition);
 
+                    if (previousLeftHandPosition == Vector3.zero)
+                        previousLeftHandPosition = IKPosition;
+
+
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
+                    Vector3 rayOrigin = animationController.leftHandPosition;
+                    rayOrigin.y = handPosition.y;
+
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(rayOrigin - transform.forward * 0.25f - Vector3.up * 0.1f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+                    {
+                        float backupY = handPosition.y;
+                        handPosition = hit.point;
+                        handPosition.y = backupY;
+                    }
 
                     handPosition -= transform.forward * handLength;
                     handPosition.y += handIKYDistance;
 
                     //Debug.DrawLine(handPosition, handPosition + transform.forward * 2.0f);
+                    handPosition = Vector3.Lerp(previousLeftHandPosition, handPosition, handsAdjustmentSpeed * Time.deltaTime);
+                    previousLeftHandPosition = handPosition;
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
                     animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand, Quaternion.FromToRotation(transform.forward, transform.forward + Vector3.up*1.5f) * transform.rotation);
                 }
@@ -1074,12 +1093,28 @@ namespace Traverser
 
                     TraverserLedgeObject.TraverserLedgeHook hook = ledgeGeometry.GetHook(IKPosition);
 
+                    if (previousRightHandPosition == Vector3.zero)
+                        previousRightHandPosition = IKPosition;
+
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
+                    Vector3 rayOrigin = animationController.rightHandPosition;
+                    rayOrigin.y = handPosition.y;
+
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(rayOrigin - transform.forward * 0.25f - Vector3.up*0.1f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+                    {
+                        float backupY = handPosition.y;
+                        handPosition = hit.point;
+                        handPosition.y = backupY;
+                    }
 
                     handPosition -= transform.forward * handLength;
                     handPosition.y += handIKYDistance;
 
                     //Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
+                    handPosition = Vector3.Lerp(previousRightHandPosition, handPosition, handsAdjustmentSpeed*Time.deltaTime);
+                    previousRightHandPosition = handPosition;
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
                     animationController.animator.SetIKRotation(AvatarIKGoal.RightHand, Quaternion.FromToRotation(transform.forward, transform.forward + Vector3.up*1.5f) * transform.rotation);
                 }

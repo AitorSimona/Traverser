@@ -656,6 +656,8 @@ namespace Traverser
             }
         }
 
+        public float nearbyLedgeCastDistance = 0.25f;
+
         public void OnNearbyLedgeMovement(ref TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook, Vector3 targetPosition)
         {
             // --- Check for ledge ---
@@ -666,9 +668,9 @@ namespace Traverser
             nearbyLedgeCollisionPosition = castOrigin;
 
             bool collided = Physics.SphereCast(nearbyLedgeCollisionPosition, aimDebugSphereRadius, direction, 
-                out hit, minLedgeDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+                out hit, nearbyLedgeCastDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
 
-            nearbyLedgeCollisionPosition += direction * minLedgeDistance;
+            nearbyLedgeCollisionPosition += direction * nearbyLedgeCastDistance;
 
             BoxCollider hitCollider = hit.collider as BoxCollider;
 

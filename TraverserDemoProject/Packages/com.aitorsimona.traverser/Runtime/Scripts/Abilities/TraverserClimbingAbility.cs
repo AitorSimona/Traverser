@@ -646,6 +646,9 @@ namespace Traverser
             bool ret = false;
 
             Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
+            controller.targetVelocity.x = leftStickInput.x;
+            controller.targetVelocity.y = leftStickInput.y;
+            controller.targetVelocity.z = 0.0f;
 
             // --- Store last given player direction ---
             if (leftStickInput.x != 0.0f)

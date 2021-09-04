@@ -75,14 +75,15 @@ namespace Traverser
                     animatorParameters.Move = inputController.GetMoveIntensity() > 0.0f;
 
                 // --- We are not interested in Y speed, since then gravity would make us run in the animator! ---
-                Vector2 speed;
-                speed.x = controller.targetVelocity.x;
-                speed.y = controller.targetVelocity.z;
+                Vector2 velocity;
+                velocity.x = controller.targetVelocity.x;
+                velocity.y = controller.targetVelocity.z;
 
                 // TODO: Should we interpolate these values?
 
-                animatorParameters.Speed = speed.magnitude;
+                animatorParameters.Speed = velocity.magnitude;
                 animatorParameters.Heading = controller.targetHeading;
+                animatorParameters.DirectionX = velocity.x;
                 animationController.UpdateAnimator(ref animatorParameters);
             }
 

@@ -19,10 +19,12 @@ namespace Traverser
             public bool Move;
             public float Speed;
             public float Heading;
+            public float DirectionX;
 
             public int MoveID;
             public int SpeedID;
             public int HeadingID;
+            public int DirectionXID;
         }
 
         [Serializable]
@@ -138,9 +140,11 @@ namespace Traverser
             parameters.Move = false;
             parameters.Speed = 0.0f;
             parameters.Heading = 0.0f;
+            parameters.DirectionX = 0.0f;
             parameters.MoveID = Animator.StringToHash("Move");
             parameters.SpeedID = Animator.StringToHash("Speed");
             parameters.HeadingID = Animator.StringToHash("Heading");
+            parameters.DirectionXID = Animator.StringToHash("DirectionX");
         }
 
         public void UpdateAnimator(ref AnimatorParameters parameters)
@@ -149,6 +153,7 @@ namespace Traverser
             animator.SetBool(parameters.MoveID, parameters.Move);
             animator.SetFloat(parameters.SpeedID, parameters.Speed);
             animator.SetFloat(parameters.HeadingID, parameters.Heading);
+            animator.SetFloat(parameters.DirectionXID, parameters.DirectionX);
         }
 
         public bool WarpToTarget(Vector3 matchPosition, Quaternion matchRotation, bool forceSuccess = false)

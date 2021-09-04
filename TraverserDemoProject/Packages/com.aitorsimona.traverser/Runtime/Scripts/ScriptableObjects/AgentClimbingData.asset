@@ -107,14 +107,14 @@ MonoBehaviour:
     animationStateName: LocomotionON
     transitionDuration: 0.25
   ledgeIdleAnimation:
-    animationStateName: LedgeIdle
+    animationStateName: LedgeMovement
     transitionDuration: 0.1
   fallLoopAnimation:
     animationStateName: FallLoop
     transitionDuration: 0.05
   ledgeRightAnimation:
-    animationStateName: LedgeRight
+    animationStateName: LedgeMovement
     transitionDuration: 0.1
   ledgeLeftAnimation:
-    animationStateName: LedgeLeft
+    animationStateName: LedgeMovement
     transitionDuration: 0.1

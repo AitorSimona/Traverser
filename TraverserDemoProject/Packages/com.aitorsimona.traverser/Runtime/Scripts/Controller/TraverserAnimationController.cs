@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace Traverser
 {
@@ -71,7 +72,7 @@ namespace Traverser
         // --- If we have less than this time to reach the next point, teleport. Keep it small to avoid hiccups ---
         private float warperMinimumTime = 0.025f;
 
-        // --- Used to store the bone's positions for use in the next frame ---
+        // --- Used to store the bone's positions/rotations for use in the next frame ---
         private Vector3 skeletonPosition = Vector3.zero;
         public Vector3 leftFootPosition = Vector3.zero;
         public Vector3 rightFootPosition = Vector3.zero;
@@ -87,6 +88,23 @@ namespace Traverser
 
         // --------------------------------
 
+        public Rig spineRig;
+        public Rig legsRig;
+        public Rig armsRig;
+
+        public TraverserTransform hipsEffectorOriginalTransform;
+        public TraverserTransform spineEffectorOriginalTransform;
+        public TraverserTransform leftLegEffectorOriginalTransform;
+        public TraverserTransform rightLegEffectorOriginalTransform;
+        public TraverserTransform aimEffectorOriginalTransform;
+
+        public GameObject hipsRigEffector;
+        public GameObject spineRigEffector;
+        public GameObject leftLegRigEffector;
+        public GameObject rightLegRigEffector;
+        public GameObject aimRigEffector;
+
+
         // --- Basic Methods ---
 
         private void Awake()
@@ -101,6 +119,12 @@ namespace Traverser
             animator = GetComponent<Animator>();
             transition = new TraverserTransition(this, ref controller);
             animatorParameters = new Dictionary<string, int>();
+
+            hipsEffectorOriginalTransform = TraverserTransform.Get(hipsRigEffector.transform.localPosition, hipsRigEffector.transform.localRotation);
+            spineEffectorOriginalTransform = TraverserTransform.Get(spineRigEffector.transform.localPosition, spineRigEffector.transform.localRotation);
+            leftLegEffectorOriginalTransform = TraverserTransform.Get(leftLegRigEffector.transform.localPosition, leftLegRigEffector.transform.localRotation);
+            rightLegEffectorOriginalTransform = TraverserTransform.Get(rightLegRigEffector.transform.localPosition, rightLegRigEffector.transform.localRotation);
+            aimEffectorOriginalTransform = TraverserTransform.Get(aimRigEffector.transform.localPosition, aimRigEffector.transform.localRotation);
 
             // --- Save all animator parameter hashes for future reference ---
             foreach (AnimatorControllerParameter param in animator.parameters)

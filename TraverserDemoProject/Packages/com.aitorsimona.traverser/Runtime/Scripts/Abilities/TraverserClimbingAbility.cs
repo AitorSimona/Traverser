@@ -151,6 +151,11 @@ namespace Traverser
         private TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
         private TraverserLedgeObject.TraverserLedgeHook ledgeHook;
 
+        bool rightLegFreeHang = false;
+        bool leftLegFreeHang = false;
+
+        public TraverserFreeHangData freeHangData;
+
         // --------------------------------
 
         // --- Basic Methods ---
@@ -202,6 +207,15 @@ namespace Traverser
                 animationController.transition.SetDestinationOffset(ref delta);
             }
 
+            //if (freeHangData != null && leftLegFreeHang && rightLegFreeHang)
+            //{
+            //    animationController.hipsRef.transform.position = animationController.GetSkeletonPosition();
+            //    animationController.hipsRef.transform.rotation = animationController.skeletonRotation;
+
+            //    animationController.hipsRef.transform.position += freeHangData.hipsPositionOffset;
+            //    animationController.hipsRef.transform.rotation = animationController.hipsRef.transform.rotation * Quaternion.Euler(freeHangData.hipsRotationOffset.x, freeHangData.hipsRotationOffset.y, freeHangData.hipsRotationOffset.z) ;
+            //}
+
             // --- Draw ledge geometry ---
             if (debugDraw)
             {
@@ -212,11 +226,54 @@ namespace Traverser
 
         // --------------------------------
 
+        public float HeadIKIntensity = 1.0f;
+
         // --- Ability class methods ---
         public TraverserAbility OnUpdate(float deltaTime)
         {
             if (animationController.transition.isON)
                 animationController.transition.UpdateTransition();
+
+            // free hang through runtime rigging
+
+            // --- Set rig back to original relative transform ---
+            //animationController.hipsRigEffector.transform.localPosition = animationController.hipsEffectorOriginalTransform.t;
+            //animationController.hipsRigEffector.transform.localRotation = animationController.hipsEffectorOriginalTransform.q;
+
+            //animationController.spineRigEffector.transform.localPosition = animationController.spineEffectorOriginalTransform.t;
+            //animationController.spineRigEffector.transform.localRotation = animationController.spineEffectorOriginalTransform.q;
+
+            //animationController.leftLegRigEffector.transform.localPosition = animationController.leftLegEffectorOriginalTransform.t;
+            //animationController.leftLegRigEffector.transform.localRotation = animationController.leftLegEffectorOriginalTransform.q;
+
+            //animationController.rightLegRigEffector.transform.localPosition = animationController.rightLegEffectorOriginalTransform.t;
+            //animationController.rightLegRigEffector.transform.localRotation = animationController.rightLegEffectorOriginalTransform.q;
+
+            //animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
+            //animationController.aimRigEffector.transform.localRotation = animationController.aimEffectorOriginalTransform.q;
+
+            // --- Apply offsets ---
+            //animationController.hipsRigEffector.transform.localPosition += freeHangData.hipsPositionOffset;
+            //animationController.hipsRigEffector.transform.localRotation = animationController.hipsRigEffector.transform.localRotation * Quaternion.Euler(freeHangData.hipsRotationOffset.x, freeHangData.hipsRotationOffset.y, freeHangData.hipsRotationOffset.z);
+
+            //animationController.spineRigEffector.transform.localPosition += freeHangData.spinePositionOffset;
+
+            //animationController.leftLegRigEffector.transform.localPosition += freeHangData.legsPositionOffset;
+            //animationController.leftLegRigEffector.transform.localRotation = animationController.leftLegRigEffector.transform.localRotation * Quaternion.Euler(freeHangData.legsRotationOffset.x, freeHangData.legsRotationOffset.y, freeHangData.legsRotationOffset.z);
+
+            //animationController.rightLegRigEffector.transform.localPosition += freeHangData.legsPositionOffset;
+            //animationController.rightLegRigEffector.transform.localRotation = animationController.rightLegRigEffector.transform.localRotation * Quaternion.Euler(freeHangData.legsRotationOffset.x, freeHangData.legsRotationOffset.y, freeHangData.legsRotationOffset.z);
+
+            animationController.spineRig.weight = 1.0f;
+
+            Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
+            float moveIntensity = abilityController.inputController.GetMoveIntensity();
+            Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
+            aimDirection.Normalize();
+
+            animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t + aimDirection * moveIntensity * HeadIKIntensity;
+
+            
 
             return this;
         }
@@ -977,10 +1034,14 @@ namespace Traverser
                     if (Physics.Raycast(animationController.leftFootPosition - transform.forward * 0.25f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
                     {
                         footPosition = Vector3.Lerp(previousLeftFootPosition, hit.point - transform.forward * footLength, feetAdjustmentSpeed*Time.deltaTime);
+                        leftLegFreeHang = false;
+
                     }
                     else
                     {
                         footPosition = Vector3.Lerp(previousLeftFootPosition, animationController.leftFootPosition, feetAdjustmentSpeed * Time.deltaTime);
+                        leftLegFreeHang = true;
+
                     }
                     //}
 
@@ -1021,10 +1082,13 @@ namespace Traverser
                     if (Physics.Raycast(animationController.rightFootPosition - transform.forward*0.25f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
                     {
                         footPosition = Vector3.Lerp(previousRightFootPosition, hit.point - transform.forward * footLength, feetAdjustmentSpeed * Time.deltaTime);
+                        rightLegFreeHang = false;
+
                     }
                     else
                     {
                         footPosition = Vector3.Lerp(previousRightFootPosition, animationController.rightFootPosition, feetAdjustmentSpeed * Time.deltaTime);
+                        rightLegFreeHang = true;
 
                     }
                     //}

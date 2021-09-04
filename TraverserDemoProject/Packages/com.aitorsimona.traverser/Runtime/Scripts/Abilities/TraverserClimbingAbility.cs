@@ -53,6 +53,8 @@ namespace Traverser
         [Tooltip("The character's hand length (size in meters) / correction in forward direction.")]
         [Range(-1.0f, 1.0f)]
         public float handLength = 1.0f;
+        [Tooltip("The length of the ray used to detect surfaces to place the hand on.")]
+        public float handRayLength = 1.0f;
         [Tooltip("Modifies how fast we adjust the hands to match IK transforms.")]
         [Range(0.0f, 100.0f)]
         public float handsAdjustmentSpeed = 0.5f;
@@ -268,6 +270,7 @@ namespace Traverser
             if (ledgeDetected)
             {
                 animationController.spineRig.weight = 1.0f;
+                animationController.armsRig.weight = 1.0f;
 
                 Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
                 float moveIntensity = abilityController.inputController.GetMoveIntensity();
@@ -275,6 +278,12 @@ namespace Traverser
                 aimDirection.Normalize();
 
                 animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t + aimDirection * moveIntensity * HeadIKIntensity;
+            }
+            else if (wasLedgeDetected)
+            {
+                animationController.spineRig.weight = 0.0f;
+                animationController.armsRig.weight = 0.0f;
+                animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
             }
             
 
@@ -825,7 +834,8 @@ namespace Traverser
             transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.FromToRotation(transform.forward, lookDirection), 1.0f);
         }
 
-        bool ledgeDetected = false; 
+        bool ledgeDetected = false;
+        bool wasLedgeDetected = false;
 
         public void OnLedgeToLedge()
         {
@@ -853,9 +863,13 @@ namespace Traverser
             {
                 ledgeGeometry.ClosestPointDistance(hit.point, ref ledgeHook, ref distanceToCorner);
                 ledgeDetected = true;
+                wasLedgeDetected = true;
             }
             else
             {
+                if (!ledgeDetected)
+                    wasLedgeDetected = false;
+
                 ledgeDetected = false;
             }
 
@@ -944,6 +958,8 @@ namespace Traverser
 
                         // --- Turn off/on controller ---
                         controller.ConfigureController(false);
+                        wasLedgeDetected = false;
+                        ledgeDetected = false;
                     }
                 }
                 
@@ -1180,11 +1196,13 @@ namespace Traverser
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                     Vector3 rayOrigin = animationController.leftHandPosition;
                     rayOrigin.y = handPosition.y;
-                    Vector3 handDirection = ledgeGeometry.GetNormal(hook.index);
+                    Vector3 handDirection = transform.forward;
 
                     RaycastHit hit;
 
-                    if (Physics.Raycast(rayOrigin - transform.forward * 0.25f - Vector3.up * 0.1f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+                    bool collided = Physics.Raycast(rayOrigin - transform.forward * 0.25f - Vector3.up * 0.1f, transform.forward, out hit, handRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+                    if (collided)
                     {
                         float backupY = handPosition.y;
                         handPosition = hit.point;
@@ -1197,7 +1215,7 @@ namespace Traverser
 
                     Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
 
-                    if (ledgeDetected && leftStickInput.x < 0.0f)
+                    if (!animationController.transition.isON && ledgeDetected && leftStickInput.x < 0.0f)
                     {
                         float moveIntensity = abilityController.inputController.GetMoveIntensity();
                         Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
@@ -1210,7 +1228,7 @@ namespace Traverser
                     //Debug.DrawLine(handPosition, handPosition + transform.forward * 2.0f);
                     handPosition = Vector3.Lerp(previousLeftHandPosition, handPosition, handsAdjustmentSpeed * Time.deltaTime);
                     IKRotation = Quaternion.Slerp(previousLeftHandRotation,
-                        Quaternion.RotateTowards(previousLeftHandRotation, Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), handsAdjustmentSpeed), handsAdjustmentSpeed * Time.deltaTime);
+                        Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), handsAdjustmentSpeed * Time.deltaTime);
 
                     previousLeftHandPosition = handPosition;
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
@@ -1246,12 +1264,14 @@ namespace Traverser
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                     Vector3 rayOrigin = animationController.rightHandPosition;
                     rayOrigin.y = handPosition.y;
-                    Vector3 handDirection = ledgeGeometry.GetNormal(hook.index);
+                    Vector3 handDirection = transform.forward;
 
                     RaycastHit hit;
 
-                    if (Physics.Raycast(rayOrigin - transform.forward * 0.25f - Vector3.up * 0.1f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-                    {
+                    bool collided = Physics.Raycast(rayOrigin - transform.forward * 0.25f - Vector3.up * 0.1f, transform.forward, out hit, handRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+                    if (collided)
+                    { 
                         float backupY = handPosition.y;
                         handPosition = hit.point;
                         handPosition.y = backupY;
@@ -1264,7 +1284,7 @@ namespace Traverser
                     //
                     Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
 
-                    if (ledgeDetected && (leftStickInput.x > 0.0f || (Mathf.Approximately(leftStickInput.x, 0.0f) && abilityController.inputController.GetMoveIntensity() > 0.0f)))
+                    if (!animationController.transition.isON && ledgeDetected && (leftStickInput.x > 0.0f || (Mathf.Approximately(leftStickInput.x, 0.0f) && abilityController.inputController.GetMoveIntensity() > 0.0f)))
                     {
                         float moveIntensity = abilityController.inputController.GetMoveIntensity();
                         Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
@@ -1277,7 +1297,7 @@ namespace Traverser
                     //Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
                     handPosition = Vector3.Lerp(previousRightHandPosition, handPosition, handsAdjustmentSpeed*Time.deltaTime);
                     IKRotation = Quaternion.Slerp(previousRightHandRotation, 
-                        Quaternion.RotateTowards(previousRightHandRotation, Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), handsAdjustmentSpeed), handsAdjustmentSpeed * Time.deltaTime);
+                        Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), handsAdjustmentSpeed * Time.deltaTime);
 
 
                     previousRightHandPosition = handPosition;

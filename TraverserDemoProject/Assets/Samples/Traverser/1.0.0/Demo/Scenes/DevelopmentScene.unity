@@ -6660,6 +6660,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1339607533}
     m_Modifications:
+    - target: {fileID: 187115693344249444, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Weight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 187115693559271464, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: m_Weight
       value: 0
@@ -6789,6 +6793,10 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1034048263089636343, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: handRayLength
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1034048263089636343, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: HeadIKIntensity
       value: 3
       objectReference: {fileID: 0}
@@ -6848,12 +6856,72 @@ PrefabInstance:
       propertyPath: jumpingAcceleration
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 8480285453814994301, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_MaxLimit
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285453814994301, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_MinLimit
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285453814994301, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_SettingsGUIToggle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285453814994301, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_ConstrainedAxes.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454146486707, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_MaxLimit
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454146486707, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_MinLimit
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454146486707, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_ConstrainedAxes.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454647821017, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_MaxLimit
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454647821017, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_MinLimit
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454647821017, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_ConstrainedAxes.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454993536913, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_MaxLimit
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454993536913, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_MinLimit
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454993536913, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_SettingsGUIToggle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480285454993536913, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_Data.m_ConstrainedAxes.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8480285455501219237, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: m_Weight
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8750898013512099556, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
       propertyPath: m_RigLayers.Array.data[0].m_Active
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8750898013512099556, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}
+      propertyPath: m_RigLayers.Array.data[1].m_Active
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8750898013512099556, guid: 8a6d486fc75c09645b5e816db6c2e7f8, type: 3}

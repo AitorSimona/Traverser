@@ -1023,6 +1023,9 @@ namespace Traverser
         Vector3 previousRightHandPosition = Vector3.zero;
         Vector3 previousLeftHandPosition = Vector3.zero;
 
+        Quaternion previousRightHandRotation;
+        Quaternion previousLeftHandRotation;
+
         public float handsIKIntensity = 1.0f;
 
         private void OnAnimatorIK(int layerIndex)
@@ -1171,6 +1174,8 @@ namespace Traverser
                     if (previousLeftHandPosition == Vector3.zero)
                         previousLeftHandPosition = IKPosition;
 
+                    if (previousLeftHandRotation == Quaternion.identity)
+                        previousLeftHandRotation = IKRotation;
 
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                     Vector3 rayOrigin = animationController.leftHandPosition;
@@ -1199,20 +1204,24 @@ namespace Traverser
                         aimDirection.Normalize();
 
                         handPosition += aimDirection * moveIntensity * handsIKIntensity;
+                        handDirection = ((targetAimPosition + transform.forward * 0.25f) - handPosition).normalized;
                     }
 
                     //Debug.DrawLine(handPosition, handPosition + transform.forward * 2.0f);
                     handPosition = Vector3.Lerp(previousLeftHandPosition, handPosition, handsAdjustmentSpeed * Time.deltaTime);
+                    IKRotation = Quaternion.Slerp(previousLeftHandRotation,
+                        Quaternion.RotateTowards(previousLeftHandRotation, Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), handsAdjustmentSpeed), handsAdjustmentSpeed * Time.deltaTime);
 
-      
                     previousLeftHandPosition = handPosition;
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
 
+                    previousLeftHandRotation = IKRotation;
+                    animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand, IKRotation);
 
                     //animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand, Quaternion.FromToRotation(transform.forward, handDirection + Vector3.up * 1.5f) * transform.rotation);
 
-                    animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand,
-                        Quaternion.Slerp(IKRotation, Quaternion.FromToRotation(transform.forward, handDirection + Vector3.up * 1.5f) * transform.rotation, handsAdjustmentSpeed * Time.deltaTime));
+                    //animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand,
+                    //    Quaternion.Slerp(IKRotation, Quaternion.FromToRotation(transform.forward, handDirection + Vector3.up * 1.5f) * transform.rotation, handsAdjustmentSpeed * Time.deltaTime));
                 }
 
                 weight = animationController.animator.GetFloat("IKRightHandWeight");
@@ -1221,7 +1230,7 @@ namespace Traverser
                 if (weight > 0.0f)
                 {
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, weight);
-                    animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightHand, weight);
+                    animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1.0f);
 
                     Vector3 IKPosition = animationController.animator.GetIKPosition(AvatarIKGoal.RightHand);
                     Quaternion IKRotation = animationController.animator.GetIKRotation(AvatarIKGoal.RightHand);
@@ -1230,6 +1239,9 @@ namespace Traverser
 
                     if (previousRightHandPosition == Vector3.zero)
                         previousRightHandPosition = IKPosition;
+
+                    if (previousRightHandRotation == Quaternion.identity)
+                        previousRightHandRotation = IKRotation;
 
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                     Vector3 rayOrigin = animationController.rightHandPosition;
@@ -1259,17 +1271,20 @@ namespace Traverser
                         aimDirection.Normalize();
 
                         handPosition += aimDirection * moveIntensity * handsIKIntensity;
+                        handDirection = ((targetAimPosition + transform.forward*0.25f) - handPosition).normalized;
                     }
 
                     //Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
                     handPosition = Vector3.Lerp(previousRightHandPosition, handPosition, handsAdjustmentSpeed*Time.deltaTime);
+                    IKRotation = Quaternion.Slerp(previousRightHandRotation, 
+                        Quaternion.RotateTowards(previousRightHandRotation, Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), handsAdjustmentSpeed), handsAdjustmentSpeed * Time.deltaTime);
 
- 
+
                     previousRightHandPosition = handPosition;
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
-                    
-                    animationController.animator.SetIKRotation(AvatarIKGoal.RightHand,
-                        Quaternion.Slerp(IKRotation, Quaternion.FromToRotation(transform.forward, handDirection + Vector3.up*1.5f) * transform.rotation, handsAdjustmentSpeed * Time.deltaTime));
+
+                    previousRightHandRotation = IKRotation;
+                    animationController.animator.SetIKRotation(AvatarIKGoal.RightHand, IKRotation);
                 }
             }
         }

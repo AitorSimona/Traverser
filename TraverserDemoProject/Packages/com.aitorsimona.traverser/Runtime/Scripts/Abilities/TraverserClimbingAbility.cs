@@ -229,6 +229,7 @@ namespace Traverser
         // --------------------------------
 
         public float HeadIKIntensity = 1.0f;
+        public float bodyIKSpeed = 1.0f;
 
         // --- Ability class methods ---
         public TraverserAbility OnUpdate(float deltaTime)
@@ -269,8 +270,13 @@ namespace Traverser
 
             if (ledgeDetected)
             {
-                animationController.spineRig.weight = 1.0f;
-                animationController.armsRig.weight = 1.0f;
+                animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
+                animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
+
+                Debug.Log(animationController.armsRig.weight);
+
+                //animationController.spineRig.weight = 1.0f;
+                //animationController.armsRig.weight = 1.0f;
 
                 Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
                 float moveIntensity = abilityController.inputController.GetMoveIntensity();
@@ -701,7 +707,7 @@ namespace Traverser
             OnNearbyLedgeMovement(ref desiredLedgeHook, targetPosition);
 
             // --- Handle ledge to ledge transition, if ledge is detected ---
-            if (!onNearbyLedgeTransition && cornerRotationLerpValue == cornerLerpInitialValue)
+            if (!onNearbyLedgeTransition && cornerRotationLerpValue <= cornerLerpInitialValue)
                 OnLedgeToLedge();
 
             return ret;
@@ -1179,6 +1185,8 @@ namespace Traverser
                 // --- Left hand ---
                 if (weight > 0.0f)
                 {
+                    float speedModifier = handsAdjustmentSpeed;
+
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, weight);
                     animationController.animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, weight);
 
@@ -1221,14 +1229,15 @@ namespace Traverser
                         Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
                         aimDirection.Normalize();
 
-                        handPosition += aimDirection * moveIntensity * handsIKIntensity;
+                        handPosition += aimDirection * moveIntensity;
                         handDirection = ((targetAimPosition + transform.forward * 0.25f) - handPosition).normalized;
+                        speedModifier *= handsIKIntensity;
                     }
 
                     //Debug.DrawLine(handPosition, handPosition + transform.forward * 2.0f);
-                    handPosition = Vector3.Lerp(previousLeftHandPosition, handPosition, handsAdjustmentSpeed * Time.deltaTime);
+                    handPosition = Vector3.Lerp(previousLeftHandPosition, handPosition, speedModifier * Time.deltaTime);
                     IKRotation = Quaternion.Slerp(previousLeftHandRotation,
-                        Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), handsAdjustmentSpeed * Time.deltaTime);
+                        Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), speedModifier * Time.deltaTime);
 
                     previousLeftHandPosition = handPosition;
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
@@ -1247,6 +1256,8 @@ namespace Traverser
                 // --- Right hand ---
                 if (weight > 0.0f)
                 {
+                    float speedModifier = handsAdjustmentSpeed;
+
                     animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, weight);
                     animationController.animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1.0f);
 
@@ -1290,14 +1301,15 @@ namespace Traverser
                         Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
                         aimDirection.Normalize();
 
-                        handPosition += aimDirection * moveIntensity * handsIKIntensity;
+                        handPosition += aimDirection * moveIntensity;
                         handDirection = ((targetAimPosition + transform.forward*0.25f) - handPosition).normalized;
+                        speedModifier *= handsIKIntensity;
                     }
 
                     //Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
-                    handPosition = Vector3.Lerp(previousRightHandPosition, handPosition, handsAdjustmentSpeed*Time.deltaTime);
+                    handPosition = Vector3.Lerp(previousRightHandPosition, handPosition, speedModifier * Time.deltaTime);
                     IKRotation = Quaternion.Slerp(previousRightHandRotation, 
-                        Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), handsAdjustmentSpeed * Time.deltaTime);
+                        Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), speedModifier * Time.deltaTime);
 
 
                     previousRightHandPosition = handPosition;

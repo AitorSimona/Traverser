@@ -209,15 +209,6 @@ namespace Traverser
                 animationController.transition.SetDestinationOffset(ref delta);
             }
 
-            //if (freeHangData != null && leftLegFreeHang && rightLegFreeHang)
-            //{
-            //    animationController.hipsRef.transform.position = animationController.GetSkeletonPosition();
-            //    animationController.hipsRef.transform.rotation = animationController.skeletonRotation;
-
-            //    animationController.hipsRef.transform.position += freeHangData.hipsPositionOffset;
-            //    animationController.hipsRef.transform.rotation = animationController.hipsRef.transform.rotation * Quaternion.Euler(freeHangData.hipsRotationOffset.x, freeHangData.hipsRotationOffset.y, freeHangData.hipsRotationOffset.z) ;
-            //}
-
             // --- Draw ledge geometry ---
             if (debugDraw)
             {
@@ -237,43 +228,10 @@ namespace Traverser
             if (animationController.transition.isON)
                 animationController.transition.UpdateTransition();
 
-            // free hang through runtime rigging
-
-            // --- Set rig back to original relative transform ---
-            //animationController.hipsRigEffector.transform.localPosition = animationController.hipsEffectorOriginalTransform.t;
-            //animationController.hipsRigEffector.transform.localRotation = animationController.hipsEffectorOriginalTransform.q;
-
-            //animationController.spineRigEffector.transform.localPosition = animationController.spineEffectorOriginalTransform.t;
-            //animationController.spineRigEffector.transform.localRotation = animationController.spineEffectorOriginalTransform.q;
-
-            //animationController.leftLegRigEffector.transform.localPosition = animationController.leftLegEffectorOriginalTransform.t;
-            //animationController.leftLegRigEffector.transform.localRotation = animationController.leftLegEffectorOriginalTransform.q;
-
-            //animationController.rightLegRigEffector.transform.localPosition = animationController.rightLegEffectorOriginalTransform.t;
-            //animationController.rightLegRigEffector.transform.localRotation = animationController.rightLegEffectorOriginalTransform.q;
-
-            //animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
-            //animationController.aimRigEffector.transform.localRotation = animationController.aimEffectorOriginalTransform.q;
-
-            // --- Apply offsets ---
-            //animationController.hipsRigEffector.transform.localPosition += freeHangData.hipsPositionOffset;
-            //animationController.hipsRigEffector.transform.localRotation = animationController.hipsRigEffector.transform.localRotation * Quaternion.Euler(freeHangData.hipsRotationOffset.x, freeHangData.hipsRotationOffset.y, freeHangData.hipsRotationOffset.z);
-
-            //animationController.spineRigEffector.transform.localPosition += freeHangData.spinePositionOffset;
-
-            //animationController.leftLegRigEffector.transform.localPosition += freeHangData.legsPositionOffset;
-            //animationController.leftLegRigEffector.transform.localRotation = animationController.leftLegRigEffector.transform.localRotation * Quaternion.Euler(freeHangData.legsRotationOffset.x, freeHangData.legsRotationOffset.y, freeHangData.legsRotationOffset.z);
-
-            //animationController.rightLegRigEffector.transform.localPosition += freeHangData.legsPositionOffset;
-            //animationController.rightLegRigEffector.transform.localRotation = animationController.rightLegRigEffector.transform.localRotation * Quaternion.Euler(freeHangData.legsRotationOffset.x, freeHangData.legsRotationOffset.y, freeHangData.legsRotationOffset.z);
-
-
             if (ledgeDetected)
             {
                 animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
                 animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
-
-                Debug.Log(animationController.armsRig.weight);
 
                 //animationController.spineRig.weight = 1.0f;
                 //animationController.armsRig.weight = 1.0f;
@@ -283,15 +241,25 @@ namespace Traverser
                 Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
                 aimDirection.Normalize();
 
-                animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t + aimDirection * moveIntensity * HeadIKIntensity;
+                if(moveIntensity > 0.1f)
+                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t + aimDirection * moveIntensity * HeadIKIntensity;
             }
-            else if (wasLedgeDetected)
+            //else if (wasLedgeDetected)
+            //{
+
+            //    //animationController.spineRig.weight = 0.0f;
+            //    //animationController.armsRig.weight = 0.0f;
+            //    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
+            //}
+            else
             {
-                animationController.spineRig.weight = 0.0f;
-                animationController.armsRig.weight = 0.0f;
-                animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
+                animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
+                animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
+
+                if (animationController.spineRig.weight < 0.1f)
+                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
             }
-            
+
 
             return this;
         }

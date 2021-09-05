@@ -233,7 +233,7 @@ namespace Traverser
                     freehangWeight = 0.0f;
             }
 
-            
+
 
             // --- Draw ledge geometry ---
             if (debugDraw)
@@ -621,7 +621,7 @@ namespace Traverser
 
             // --- The position at which we perform a capsule check to prevent pulling up into a wall --- 
             Vector3 pullupPosition = ledgeGeometry.GetPosition(ref ledgeHook);
-            pullupPosition += Vector3.up * controller.capsuleHeight / 2.0f;
+            pullupPosition += Vector3.up * controller.capsuleHeight * hangedTransformHeightRatio;
             pullupPosition += transform.forward * climbingData.pullUpTransitionData.targetOffset;
 
             // --- React to pull up/dismount ---

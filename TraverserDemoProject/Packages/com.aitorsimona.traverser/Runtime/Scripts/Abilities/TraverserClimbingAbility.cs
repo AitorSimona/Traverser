@@ -1069,8 +1069,8 @@ namespace Traverser
         Vector3 previousRightHandPosition = Vector3.zero;
         Vector3 previousLeftHandPosition = Vector3.zero;
 
-        Quaternion previousRightHandRotation;
-        Quaternion previousLeftHandRotation;
+        Quaternion previousRightHandRotation = Quaternion.identity;
+        Quaternion previousLeftHandRotation = Quaternion.identity;
 
         public float handsIKIntensity = 1.0f;
 
@@ -1080,11 +1080,10 @@ namespace Traverser
                 return;
 
             // --- Ensure IK is not activated during a transition between two different abilities (locomotion - mount) ---
-            if ((!animationController.transition.isTargetON 
-                && animationController.transition.targetAnimName == climbingData.mountTransitionData.targetAnim)
-                ||
-                (animationController.transition.targetAnimName == climbingData.mountTransitionData.targetAnim 
-                &&animationController.animator.IsInTransition(0)))
+            if ((animationController.animator.IsInTransition(0) 
+                && animationController.animator.GetNextAnimatorStateInfo(0).IsName(climbingData.mountTransitionData.targetAnim))
+                || (animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotionAbility.locomotionData.locomotionONAnimation.animationStateName)
+                || animationController.animator.GetCurrentAnimatorStateInfo(0).IsName(climbingData.mountTransitionData.transitionAnim)))
                 return;
 
             // --- Set weights to 0 and return if IK is off ---
@@ -1128,7 +1127,7 @@ namespace Traverser
                     //else
                     //{
 
-                    Vector3 rayOrigin = animationController.leftFootPosition - transform.forward * 0.25f;
+                    Vector3 rayOrigin = animationController.leftFootPosition - transform.forward * 0.75f;
                     rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
 
                     if (debugDraw)
@@ -1184,7 +1183,7 @@ namespace Traverser
                     //else
                     //{
 
-                    Vector3 rayOrigin = animationController.rightFootPosition - transform.forward * 0.25f;
+                    Vector3 rayOrigin = animationController.rightFootPosition - transform.forward * 0.75f;
                     rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
 
                     if (debugDraw)

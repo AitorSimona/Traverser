@@ -652,7 +652,8 @@ namespace Traverser
                 }
             }
             // --- Trigger a jump back transition if required by player ---
-            else if (abilityController.inputController.GetInputButtonSouth())
+            else if (abilityController.inputController.GetInputButtonSouth()
+                && freehangWeight == 0.0f)
             {
                 TraverserTransform contactTransform = TraverserTransform.Get(animationController.GetSkeletonPosition(), transform.rotation);
                 // --- Offset target transform ---

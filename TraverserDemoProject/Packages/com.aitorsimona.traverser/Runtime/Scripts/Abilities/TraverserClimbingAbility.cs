@@ -925,7 +925,7 @@ namespace Traverser
 
                     bool success;
 
-                    if (Mathf.Abs(angle) < 15.0f && leftStickInput.y > 0.0f)
+                    if (Mathf.Abs(angle) < 15.0f && leftStickInput.y > 0.0f && freehangWeight == 0.0f)
                     {
                         success = animationController.transition.StartTransition(ref climbingData.HopUpTransitionData, ref contactTransform, ref hangedTransform);
                     }

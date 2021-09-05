@@ -149,6 +149,7 @@ namespace Traverser
 
         // --- World interactable elements ---
 
+        private TraverserLedgeObject.TraverserLedgeGeometry previousLedgeGeometry;
         private TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
         private TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
         private TraverserLedgeObject.TraverserLedgeHook ledgeHook;
@@ -171,6 +172,7 @@ namespace Traverser
             state = ClimbingAbilityState.Suspended;
             climbingState = ClimbingState.None;
 
+            previousLedgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
             ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
             auxledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
             ledgeHook = TraverserLedgeObject.TraverserLedgeHook.Create();
@@ -389,6 +391,7 @@ namespace Traverser
                     // --- If transition start is successful, change state ---
                     if (ret)
                     {
+                        previousLedgeGeometry = ledgeGeometry;
                         ledgeGeometry.Initialize(ref collider);
                         SetState(ClimbingAbilityState.Mounting);
 
@@ -406,7 +409,10 @@ namespace Traverser
                 auxledgeGeometry.Initialize(ref collider);
 
                 if (!ledgeGeometry.IsInitialized())
+                {
+                    previousLedgeGeometry = ledgeGeometry;
                     ledgeGeometry.Initialize(ref auxledgeGeometry);
+                }
 
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.GetSkeletonPosition(), ref auxledgeGeometry, ref ledgeHook);
                 Vector3 difference = (contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight));
@@ -475,6 +481,7 @@ namespace Traverser
 
                         if (ret)
                         {
+                            previousLedgeGeometry = ledgeGeometry;
                             ledgeGeometry.Initialize(ref auxledgeGeometry);
                             ledgeHook = auxHook;
 
@@ -547,13 +554,17 @@ namespace Traverser
                 && !animationController.animator.IsInTransition(0)
                 && !ledgeGeometry.IsEqual(ref auxledgeGeometry))
             {
+                previousLedgeGeometry = ledgeGeometry;
                 ledgeGeometry.Initialize(ref auxledgeGeometry);
             }
 
             if (!animationController.transition.isON)
             {
                 if (!ledgeGeometry.IsEqual(ref auxledgeGeometry))
+                {
+                    previousLedgeGeometry = ledgeGeometry;
                     ledgeGeometry.Initialize(ref auxledgeGeometry);
+                }
 
                 SetState(ClimbingAbilityState.Climbing);
                 SetClimbingState(ClimbingState.Idle);
@@ -793,6 +804,7 @@ namespace Traverser
             {
                 // --- If another ledge is found nearby, trigger seamless player controlled transition ---
                 previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
+                previousLedgeGeometry = ledgeGeometry;
                 ledgeGeometry.Initialize(ref hitCollider);
                 ledgeHook = ledgeGeometry.GetHook(transform.position);
                 targetDirection = ledgeGeometry.GetNormal(ledgeHook.index);
@@ -960,7 +972,10 @@ namespace Traverser
                         SetState(ClimbingAbilityState.LedgeToLedge);
 
                         if (!ledgeGeometry.IsInitialized())
+                        {
+                            previousLedgeGeometry = ledgeGeometry;
                             ledgeGeometry.Initialize(ref auxledgeGeometry);
+                        }
 
                         ledgeHook = auxHook;
 
@@ -1232,7 +1247,10 @@ namespace Traverser
                     if (debugDraw)
                         Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * handRayLength);
 
-                    if (collided)
+                    BoxCollider collider = hit.collider as BoxCollider;
+
+                    if (collided 
+                        && (ledgeGeometry.IsEqual(ref collider) || previousLedgeGeometry.IsEqual(ref collider)))
                     {
                         float backupY = handPosition.y;
                         handPosition = hit.point;
@@ -1310,7 +1328,10 @@ namespace Traverser
                     if (debugDraw)
                         Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * handRayLength);
 
-                    if (collided)
+                    BoxCollider collider = hit.collider as BoxCollider;
+
+                    if (collided 
+                        && (ledgeGeometry.IsEqual(ref collider) || previousLedgeGeometry.IsEqual(ref collider)))
                     { 
                         float backupY = handPosition.y;
                         handPosition = hit.point;

@@ -629,7 +629,7 @@ namespace Traverser
                     controller.targetDisplacement = Vector3.zero;
                 }
             }
-            else if (closeToDrop && abilityController.inputController.GetInputButtonEast())
+            else if (closeToDrop && abilityController.inputController.GetInputButtonEast() && freehangWeight == 0.0f)
             {
                 bool ret;
 

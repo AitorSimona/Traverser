@@ -165,18 +165,6 @@ namespace Traverser
         {
             bool ret = true;
 
-            // --- Check whether we are in a transition or target animation ---
-            //bool loop = animator.GetCurrentAnimatorStateInfo(0).loop;
-
-            //if (animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName(transition.targetAnimName))
-            //    loop = animator.GetNextAnimatorStateInfo(0).loop;
-
-            //// --- In case we activate another transition before letting the previous one fully end transition ---
-            //// --- We would get a loop == false since we are still finishing playing the previous target animation ---
-            //if (!animator.GetCurrentAnimatorStateInfo(0).IsName(transition.transitionAnimName)
-            //    && !transition.isTargetON)
-            //    loop = true;
-
             // --- Compute delta position to be covered ---
             if (!transition.isTargetON)
             {
@@ -206,6 +194,7 @@ namespace Traverser
                 // --- Retrieve target animation's current normalized time ---
                 float currentTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
+                // --- We might be transitioning from transition animation to target, if so get normalized time from next state (target) ---
                 if (animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName(transition.targetAnimName))
                     currentTime = animator.GetNextAnimatorStateInfo(0).normalizedTime;
 

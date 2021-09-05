@@ -106,6 +106,9 @@ namespace Traverser
         public GameObject rightLegRigEffector;
         public GameObject aimRigEffector;
 
+        public Transform hipsRef;
+        public Vector3 hipsOriginalLocalPosition;
+
 
         // --- Basic Methods ---
 
@@ -127,6 +130,8 @@ namespace Traverser
             leftLegEffectorOriginalTransform = TraverserTransform.Get(leftLegRigEffector.transform.localPosition, leftLegRigEffector.transform.localRotation);
             rightLegEffectorOriginalTransform = TraverserTransform.Get(rightLegRigEffector.transform.localPosition, rightLegRigEffector.transform.localRotation);
             aimEffectorOriginalTransform = TraverserTransform.Get(aimRigEffector.transform.localPosition, aimRigEffector.transform.localRotation);
+            hipsOriginalLocalPosition = hipsRef.localPosition;
+
 
             // --- Save all animator parameter hashes for future reference ---
             foreach (AnimatorControllerParameter param in animator.parameters)

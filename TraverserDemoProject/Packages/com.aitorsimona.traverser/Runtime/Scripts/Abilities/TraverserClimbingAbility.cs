@@ -209,6 +209,28 @@ namespace Traverser
                 animationController.transition.SetDestinationOffset(ref delta);
             }
 
+            // --- Free hang ---
+
+            int hash;
+            animationController.animatorParameters.TryGetValue("FreeHangWeight", out hash);
+
+            if (hash != 0)
+                animationController.animator.SetFloat(hash, freehangWeight);
+
+            if (leftLegFreeHang && rightLegFreeHang)
+            {
+                freehangWeight = Mathf.Lerp(freehangWeight, 1.0f, freeHangTransitionSpeed * Time.deltaTime);
+                animationController.hipsRef.position = animationController.GetSkeletonPosition() + transform.forward * freeHangForwardOffset * freehangWeight;
+            }
+            else if (freehangWeight > 0.0f)
+            {
+                freehangWeight = Mathf.Lerp(freehangWeight, 0.0f, freeHangTransitionSpeed * Time.deltaTime);
+                animationController.hipsRef.position = animationController.GetSkeletonPosition() + transform.forward * freeHangForwardOffset * freehangWeight;
+
+                if (freehangWeight < 0.05)
+                    freehangWeight = 0.0f;
+            }
+
             // --- Draw ledge geometry ---
             if (debugDraw)
             {
@@ -221,6 +243,12 @@ namespace Traverser
 
         public float HeadIKIntensity = 1.0f;
         public float bodyIKSpeed = 1.0f;
+
+        public float freeHangTransitionSpeed = 1.0f;
+        public float freeHangForwardOffset = 0.25f;
+
+
+        private float freehangWeight = 0.0f;
 
         // --- Ability class methods ---
         public TraverserAbility OnUpdate(float deltaTime)
@@ -259,6 +287,8 @@ namespace Traverser
                 if (animationController.spineRig.weight < 0.1f)
                     animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
             }
+
+
 
 
             return this;
@@ -701,7 +731,6 @@ namespace Traverser
             else         
             {
                 RaycastHit hit;
-                Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
                 Vector3 rayOrigin = ledgeGeometry.GetPosition(ref ledgeHook) - transform.forward*0.1f - Vector3.up * 0.1f;
                 
                 if(movingLeft)
@@ -812,7 +841,6 @@ namespace Traverser
         }
 
         bool ledgeDetected = false;
-        bool wasLedgeDetected = false;
 
         public void OnLedgeToLedge()
         {
@@ -840,13 +868,9 @@ namespace Traverser
             {
                 ledgeGeometry.ClosestPointDistance(hit.point, ref ledgeHook, ref distanceToCorner);
                 ledgeDetected = true;
-                wasLedgeDetected = true;
             }
             else
             {
-                if (!ledgeDetected)
-                    wasLedgeDetected = false;
-
                 ledgeDetected = false;
             }
 
@@ -935,7 +959,6 @@ namespace Traverser
 
                         // --- Turn off/on controller ---
                         controller.ConfigureController(false);
-                        wasLedgeDetected = false;
                         ledgeDetected = false;
                     }
                 }
@@ -1074,7 +1097,14 @@ namespace Traverser
                     //}
                     //else
                     //{
-                    if (Physics.Raycast(animationController.leftFootPosition - transform.forward * 0.25f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+
+                    Vector3 rayOrigin = animationController.leftFootPosition - transform.forward * 0.25f;
+                    rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
+
+                    if (debugDraw)
+                        Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * feetRayLength);
+
+                    if (Physics.Raycast(rayOrigin, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
                     {
                         footPosition = Vector3.Lerp(previousLeftFootPosition, hit.point - transform.forward * footLength, feetAdjustmentSpeed*Time.deltaTime);
                         leftLegFreeHang = false;
@@ -1089,7 +1119,8 @@ namespace Traverser
                     //}
 
                     previousLeftFootPosition = footPosition;
-                    Debug.DrawLine(footPosition - transform.forward * 0.25f, footPosition + transform.forward * feetRayLength);
+                    footPosition -= transform.forward * freeHangForwardOffset * freehangWeight;
+                    //Debug.DrawLine(footPosition - transform.forward * 0.25f, footPosition + transform.forward * feetRayLength);
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
                 }
 
@@ -1122,7 +1153,14 @@ namespace Traverser
                     //}
                     //else
                     //{
-                    if (Physics.Raycast(animationController.rightFootPosition - transform.forward*0.25f, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+
+                    Vector3 rayOrigin = animationController.rightFootPosition - transform.forward * 0.25f;
+                    rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
+
+                    if (debugDraw)
+                        Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * feetRayLength);
+
+                    if (Physics.Raycast(rayOrigin, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
                     {
                         footPosition = Vector3.Lerp(previousRightFootPosition, hit.point - transform.forward * footLength, feetAdjustmentSpeed * Time.deltaTime);
                         rightLegFreeHang = false;
@@ -1137,7 +1175,8 @@ namespace Traverser
                     //}
 
                     previousRightFootPosition = footPosition;
-                    Debug.DrawLine(footPosition - transform.forward * 0.25f, footPosition + transform.forward * feetRayLength);
+                    footPosition -= transform.forward * freeHangForwardOffset * freehangWeight;
+                    //Debug.DrawLine(footPosition - transform.forward * 0.25f, footPosition + transform.forward * feetRayLength);
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
                 }
             }
@@ -1175,11 +1214,16 @@ namespace Traverser
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                     Vector3 rayOrigin = animationController.leftHandPosition;
                     rayOrigin.y = handPosition.y;
+                    rayOrigin += -transform.forward * 0.25f - Vector3.up * 0.1f;
+                    rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
                     Vector3 handDirection = transform.forward;
 
                     RaycastHit hit;
 
-                    bool collided = Physics.Raycast(rayOrigin - transform.forward * 0.25f - Vector3.up * 0.1f, transform.forward, out hit, handRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+                    bool collided = Physics.Raycast(rayOrigin, transform.forward, out hit, handRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+                    if (debugDraw)
+                        Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * handRayLength);
 
                     if (collided)
                     {
@@ -1194,23 +1238,25 @@ namespace Traverser
 
                     Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
 
-                    if (!animationController.transition.isON && ledgeDetected && leftStickInput.x < 0.0f)
-                    {
-                        float moveIntensity = abilityController.inputController.GetMoveIntensity();
-                        Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
-                        aimDirection.Normalize();
+                    //if (!animationController.transition.isON && ledgeDetected && leftStickInput.x < 0.0f)
+                    //{
+                    //    float moveIntensity = abilityController.inputController.GetMoveIntensity();
+                    //    Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
+                    //    aimDirection.Normalize();
 
-                        handPosition += aimDirection * moveIntensity;
-                        handDirection = ((targetAimPosition + transform.forward * 0.25f) - handPosition).normalized;
-                        speedModifier *= handsIKIntensity;
-                    }
+                    //    handPosition += aimDirection * moveIntensity;
+                    //    handDirection = ((targetAimPosition + transform.forward * 0.25f) - handPosition).normalized;
+                    //    speedModifier *= handsIKIntensity;
+                    //}
 
                     //Debug.DrawLine(handPosition, handPosition + transform.forward * 2.0f);
                     handPosition = Vector3.Lerp(previousLeftHandPosition, handPosition, speedModifier * Time.deltaTime);
                     IKRotation = Quaternion.Slerp(previousLeftHandRotation,
                         Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), speedModifier * Time.deltaTime);
 
+
                     previousLeftHandPosition = handPosition;
+                    handPosition -= transform.forward * freeHangForwardOffset * freehangWeight;
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftHand, handPosition);
 
                     previousLeftHandRotation = IKRotation;
@@ -1246,11 +1292,16 @@ namespace Traverser
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                     Vector3 rayOrigin = animationController.rightHandPosition;
                     rayOrigin.y = handPosition.y;
+                    rayOrigin += -transform.forward * 0.25f - Vector3.up * 0.1f;
+                    rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
                     Vector3 handDirection = transform.forward;
 
                     RaycastHit hit;
 
-                    bool collided = Physics.Raycast(rayOrigin - transform.forward * 0.25f - Vector3.up * 0.1f, transform.forward, out hit, handRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+                    bool collided = Physics.Raycast(rayOrigin, transform.forward, out hit, handRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+                    if (debugDraw)
+                        Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * handRayLength);
 
                     if (collided)
                     { 
@@ -1266,24 +1317,24 @@ namespace Traverser
                     //
                     Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
 
-                    if (!animationController.transition.isON && ledgeDetected && (leftStickInput.x > 0.0f || (Mathf.Approximately(leftStickInput.x, 0.0f) && abilityController.inputController.GetMoveIntensity() > 0.0f)))
-                    {
-                        float moveIntensity = abilityController.inputController.GetMoveIntensity();
-                        Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
-                        aimDirection.Normalize();
+                    //if (!animationController.transition.isON && ledgeDetected && (leftStickInput.x > 0.0f || (Mathf.Approximately(leftStickInput.x, 0.0f) && abilityController.inputController.GetMoveIntensity() > 0.0f)))
+                    //{
+                    //    float moveIntensity = abilityController.inputController.GetMoveIntensity();
+                    //    Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
+                    //    aimDirection.Normalize();
 
-                        handPosition += aimDirection * moveIntensity;
-                        handDirection = ((targetAimPosition + transform.forward*0.25f) - handPosition).normalized;
-                        speedModifier *= handsIKIntensity;
-                    }
+                    //    handPosition += aimDirection * moveIntensity;
+                    //    handDirection = ((targetAimPosition + transform.forward*0.25f) - handPosition).normalized;
+                    //    speedModifier *= handsIKIntensity;
+                    //}
 
                     //Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
                     handPosition = Vector3.Lerp(previousRightHandPosition, handPosition, speedModifier * Time.deltaTime);
                     IKRotation = Quaternion.Slerp(previousRightHandRotation, 
                         Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), speedModifier * Time.deltaTime);
 
-
                     previousRightHandPosition = handPosition;
+                    handPosition -= transform.forward * freeHangForwardOffset * freehangWeight;
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightHand, handPosition);
 
                     previousRightHandRotation = IKRotation;

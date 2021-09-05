@@ -399,6 +399,8 @@ namespace Traverser
                         ledgeGeometry.Initialize(ref collider);
                         SetState(ClimbingAbilityState.Mounting);
 
+                        controller.targetVelocity = Vector3.zero;
+
                         // --- Turn off/on controller ---
                         controller.ConfigureController(false);
                     }
@@ -441,6 +443,7 @@ namespace Traverser
                 {
                     SetState(ClimbingAbilityState.LedgeToLedge);
                     locomotionAbility.ResetLocomotion();
+                    controller.targetVelocity = Vector3.zero;
 
                     // --- Turn off/on controller ---
                     controller.ConfigureController(false);
@@ -488,6 +491,7 @@ namespace Traverser
                             previousLedgeGeometry = ledgeGeometry;
                             ledgeGeometry.Initialize(ref auxledgeGeometry);
                             ledgeHook = auxHook;
+                            controller.targetVelocity = Vector3.zero;
 
                             SetState(ClimbingAbilityState.DropDown);
                             // --- Turn off/on controller ---

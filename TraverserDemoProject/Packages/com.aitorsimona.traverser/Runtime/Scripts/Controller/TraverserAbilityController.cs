@@ -83,7 +83,7 @@ namespace Traverser
 
                 animatorParameters.Speed = velocity.magnitude;
                 animatorParameters.Heading = controller.targetHeading;
-                animatorParameters.DirectionX = velocity.x;
+                animatorParameters.DirectionX = velocity.normalized.x;
                 animationController.UpdateAnimator(ref animatorParameters);
             }
 

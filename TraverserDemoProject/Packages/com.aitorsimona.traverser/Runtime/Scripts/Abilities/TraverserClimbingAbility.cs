@@ -233,6 +233,8 @@ namespace Traverser
                     freehangWeight = 0.0f;
             }
 
+            
+
             // --- Draw ledge geometry ---
             if (debugDraw)
             {
@@ -261,10 +263,12 @@ namespace Traverser
             if (ledgeDetected)
             {
                 animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
-                animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
+                //animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
 
                 //animationController.spineRig.weight = 1.0f;
                 //animationController.armsRig.weight = 1.0f;
+
+                
 
                 Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
                 float moveIntensity = abilityController.inputController.GetMoveIntensity();
@@ -284,7 +288,7 @@ namespace Traverser
             else
             {
                 animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
-                animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
+                //animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
 
                 if (animationController.spineRig.weight < 0.1f)
                     animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;

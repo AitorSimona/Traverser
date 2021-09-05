@@ -580,7 +580,10 @@ namespace Traverser
             ClimbingState desiredState = GetDesiredClimbingState();
 
             if (!canMove)
+            {
                 desiredState = ClimbingState.Idle;
+                controller.targetVelocity = Vector3.zero;
+            }
 
             // --- Handle ledge climbing/movement direction ---
             if (!IsClimbingState(desiredState))
@@ -869,7 +872,9 @@ namespace Traverser
             if (collided && hit.transform.GetComponent<TraverserClimbingObject>())
             {
                 ledgeGeometry.ClosestPointDistance(hit.point, ref ledgeHook, ref distanceToCorner);
-                ledgeDetected = true;
+
+                if(distanceToCorner > minLedgeDistance)
+                    ledgeDetected = true;
             }
             else
             {
@@ -1216,7 +1221,7 @@ namespace Traverser
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                     Vector3 rayOrigin = animationController.leftHandPosition;
                     rayOrigin.y = handPosition.y;
-                    rayOrigin += -transform.forward * 0.25f - Vector3.up * 0.1f;
+                    rayOrigin += -transform.forward * handRayLength * 0.5f - Vector3.up * 0.1f;
                     rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
                     Vector3 handDirection = transform.forward;
 
@@ -1294,7 +1299,7 @@ namespace Traverser
                     Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                     Vector3 rayOrigin = animationController.rightHandPosition;
                     rayOrigin.y = handPosition.y;
-                    rayOrigin += -transform.forward * 0.25f - Vector3.up * 0.1f;
+                    rayOrigin += -transform.forward * handRayLength * 0.5f - Vector3.up * 0.1f;
                     rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
                     Vector3 handDirection = transform.forward;
 

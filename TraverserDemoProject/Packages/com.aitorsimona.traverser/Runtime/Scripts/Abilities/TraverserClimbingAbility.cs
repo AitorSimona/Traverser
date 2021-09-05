@@ -259,7 +259,7 @@ namespace Traverser
             if (ledgeDetected)
             {
                 animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
-                //animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
+                animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
 
                 //animationController.spineRig.weight = 1.0f;
                 //animationController.armsRig.weight = 1.0f;
@@ -282,7 +282,7 @@ namespace Traverser
             else
             {
                 animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
-                //animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
+                animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
 
                 if (animationController.spineRig.weight < 0.1f)
                     animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
@@ -1252,7 +1252,7 @@ namespace Traverser
                         aimDirection.Normalize();
 
                         handPosition += aimDirection * moveIntensity;
-                        handDirection = ((targetAimPosition + transform.forward * 0.25f) - handPosition).normalized;
+                        handDirection = ((targetAimPosition + transform.forward * 0.15f) - animationController.leftHandPosition).normalized;
                         speedModifier *= handsIKIntensity;
                     }
 
@@ -1331,7 +1331,7 @@ namespace Traverser
                         aimDirection.Normalize();
 
                         handPosition += aimDirection * moveIntensity;
-                        handDirection = ((targetAimPosition + transform.forward * 0.25f) - handPosition).normalized;
+                        handDirection = ((targetAimPosition + transform.forward * 0.15f) - animationController.rightHandPosition).normalized;
                         speedModifier *= handsIKIntensity;
                     }
 

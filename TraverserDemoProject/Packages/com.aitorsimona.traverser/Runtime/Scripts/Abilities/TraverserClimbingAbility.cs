@@ -609,7 +609,8 @@ namespace Traverser
             // --- React to pull up/dismount ---
             if (abilityController.inputController.GetInputButtonNorth() 
                 && abilityController.inputController.GetInputMovement().y > 0.5f &&
-                state != ClimbingAbilityState.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition))
+                state != ClimbingAbilityState.LedgeToLedge && !IsCapsuleColliding(ref pullupPosition)
+                && freehangWeight == 0.0f)
             {
                 bool ret;
 

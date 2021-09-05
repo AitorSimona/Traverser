@@ -259,7 +259,7 @@ namespace Traverser
             if (ledgeDetected)
             {
                 animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
-                animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
+                //animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
 
                 //animationController.spineRig.weight = 1.0f;
                 //animationController.armsRig.weight = 1.0f;
@@ -282,7 +282,7 @@ namespace Traverser
             else
             {
                 animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
-                animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
+                //animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
 
                 if (animationController.spineRig.weight < 0.1f)
                     animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
@@ -710,7 +710,7 @@ namespace Traverser
             OnNearbyLedgeMovement(ref desiredLedgeHook, targetPosition);
 
             // --- Handle ledge to ledge transition, if ledge is detected ---
-            if (!onNearbyLedgeTransition && cornerRotationLerpValue <= cornerLerpInitialValue)
+            if (!onNearbyLedgeTransition && cornerRotationLerpValue <= cornerLerpInitialValue && freehangWeight == 0.0f)
                 OnLedgeToLedge();
 
             return ret;
@@ -927,7 +927,7 @@ namespace Traverser
 
                     bool success;
 
-                    if (Mathf.Abs(angle) < 15.0f && leftStickInput.y > 0.0f && freehangWeight == 0.0f)
+                    if (Mathf.Abs(angle) < 15.0f && leftStickInput.y > 0.0f)
                     {
                         success = animationController.transition.StartTransition(ref climbingData.HopUpTransitionData, ref contactTransform, ref hangedTransform);
                     }
@@ -1240,16 +1240,16 @@ namespace Traverser
 
                     Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
 
-                    //if (!animationController.transition.isON && ledgeDetected && leftStickInput.x < 0.0f)
-                    //{
-                    //    float moveIntensity = abilityController.inputController.GetMoveIntensity();
-                    //    Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
-                    //    aimDirection.Normalize();
+                    if (!animationController.transition.isON && ledgeDetected && leftStickInput.x < 0.0f)
+                    {
+                        float moveIntensity = abilityController.inputController.GetMoveIntensity();
+                        Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
+                        aimDirection.Normalize();
 
-                    //    handPosition += aimDirection * moveIntensity;
-                    //    handDirection = ((targetAimPosition + transform.forward * 0.25f) - handPosition).normalized;
-                    //    speedModifier *= handsIKIntensity;
-                    //}
+                        handPosition += aimDirection * moveIntensity;
+                        handDirection = ((targetAimPosition + transform.forward * 0.25f) - handPosition).normalized;
+                        speedModifier *= handsIKIntensity;
+                    }
 
                     //Debug.DrawLine(handPosition, handPosition + transform.forward * 2.0f);
                     handPosition = Vector3.Lerp(previousLeftHandPosition, handPosition, speedModifier * Time.deltaTime);
@@ -1319,16 +1319,16 @@ namespace Traverser
                     //
                     Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
 
-                    //if (!animationController.transition.isON && ledgeDetected && (leftStickInput.x > 0.0f || (Mathf.Approximately(leftStickInput.x, 0.0f) && abilityController.inputController.GetMoveIntensity() > 0.0f)))
-                    //{
-                    //    float moveIntensity = abilityController.inputController.GetMoveIntensity();
-                    //    Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
-                    //    aimDirection.Normalize();
+                    if (!animationController.transition.isON && ledgeDetected && (leftStickInput.x > 0.0f || (Mathf.Approximately(leftStickInput.x, 0.0f) && abilityController.inputController.GetMoveIntensity() > 0.0f)))
+                    {
+                        float moveIntensity = abilityController.inputController.GetMoveIntensity();
+                        Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
+                        aimDirection.Normalize();
 
-                    //    handPosition += aimDirection * moveIntensity;
-                    //    handDirection = ((targetAimPosition + transform.forward*0.25f) - handPosition).normalized;
-                    //    speedModifier *= handsIKIntensity;
-                    //}
+                        handPosition += aimDirection * moveIntensity;
+                        handDirection = ((targetAimPosition + transform.forward * 0.25f) - handPosition).normalized;
+                        speedModifier *= handsIKIntensity;
+                    }
 
                     //Debug.DrawLine(handPosition, handPosition - transform.forward * 2.0f);
                     handPosition = Vector3.Lerp(previousRightHandPosition, handPosition, speedModifier * Time.deltaTime);

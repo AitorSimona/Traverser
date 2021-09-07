@@ -607,12 +607,12 @@ namespace Traverser
             // --- Handle ledge climbing/movement direction ---
             if (!IsClimbingState(desiredState))
             {
-                if (desiredState == ClimbingState.Idle)
-                    animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
-                else if (desiredState == ClimbingState.Right)
-                    animationController.animator.CrossFade(climbingData.ledgeRightAnimation.animationStateName, climbingData.ledgeRightAnimation.transitionDuration, 0);
-                else if (desiredState == ClimbingState.Left)
-                    animationController.animator.CrossFade(climbingData.ledgeLeftAnimation.animationStateName, climbingData.ledgeLeftAnimation.transitionDuration, 0);
+                //if (desiredState == ClimbingState.Idle)
+                //    animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
+                //else if (desiredState == ClimbingState.Right)
+                //    animationController.animator.CrossFade(climbingData.ledgeRightAnimation.animationStateName, climbingData.ledgeRightAnimation.transitionDuration, 0);
+                //else if (desiredState == ClimbingState.Left)
+                //    animationController.animator.CrossFade(climbingData.ledgeLeftAnimation.animationStateName, climbingData.ledgeLeftAnimation.transitionDuration, 0);
 
                 SetClimbingState(desiredState);
             }
@@ -695,14 +695,46 @@ namespace Traverser
             }
         }
 
+        public float desiredLedgeAcceleration = 2.0f;
+        private float currentLedgeSpeed = 1.0f;
+        private float currentSpeedLerpValue = 0.0f;
+        private float previousXIntensity= 0.0f;
+
         bool UpdateClimbing(float deltaTime)
         {
             bool ret = false;
 
             Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
-            controller.targetVelocity.x = leftStickInput.x;
-            controller.targetVelocity.y = leftStickInput.y;
-            controller.targetVelocity.z = 0.0f;
+
+            if (Mathf.Abs(leftStickInput.x) >= previousXIntensity && previousXIntensity != 0.0f)
+            {
+                if(movingLeft)
+                    currentSpeedLerpValue -= desiredLedgeAcceleration * Mathf.Abs(leftStickInput.x) * deltaTime;
+                else
+                    currentSpeedLerpValue += desiredLedgeAcceleration * Mathf.Abs(leftStickInput.x) * deltaTime;
+
+                currentSpeedLerpValue = Mathf.Clamp(currentSpeedLerpValue, -1.0f, 1.0f);
+
+                //controller.targetVelocity.x = currentSpeedLerpValue/*Mathf.Lerp(abilityController.GetDirectionX(), leftStickInput.x, currentSpeedLerpValue)*/;
+            }
+            else
+            {
+                currentSpeedLerpValue = Mathf.Lerp(currentSpeedLerpValue, 0.0f, desiredLedgeAcceleration * deltaTime);
+                //previousXIntensity = currentSpeedLerpValue;
+
+                if (Mathf.Abs(currentSpeedLerpValue) < 0.05f)
+                {
+                    currentSpeedLerpValue = 0.0f;
+                    //previousXIntensity = 0.0f;
+                }
+
+                //controller.targetVelocity.x = 1.0f - currentSpeedLerpValue/*Mathf.Lerp(abilityController.GetDirectionX(), 0.0f, 1.0f - currentSpeedLerpValue)*/;
+            }
+
+            controller.targetVelocity.x = currentSpeedLerpValue/*Mathf.Lerp(abilityController.GetDirectionX(), leftStickInput.x, currentSpeedLerpValue)*/;
+            previousXIntensity = Mathf.Abs(leftStickInput.x);
+
+            Debug.Log(currentSpeedLerpValue);
 
             // --- Store last given player direction ---
             if (leftStickInput.x != 0.0f)

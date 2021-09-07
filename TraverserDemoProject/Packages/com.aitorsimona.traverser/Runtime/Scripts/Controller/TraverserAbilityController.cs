@@ -83,7 +83,7 @@ namespace Traverser
 
                 animatorParameters.Speed = velocity.magnitude;
                 animatorParameters.Heading = controller.targetHeading;
-                animatorParameters.DirectionX = velocity.normalized.x;
+                animatorParameters.DirectionX = Mathf.Lerp(animatorParameters.DirectionX, velocity.x, Time.deltaTime / Time.fixedDeltaTime);
                 animationController.UpdateAnimator(ref animatorParameters);
             }
 
@@ -147,6 +147,11 @@ namespace Traverser
         public bool isCurrent(TraverserAbility ability)
         {
             return currentAbility.Equals(ability);
+        }
+
+        public float GetDirectionX()
+        {
+            return animatorParameters.DirectionX;
         }
 
         // --------------------------------

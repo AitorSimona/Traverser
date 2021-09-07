@@ -796,34 +796,51 @@ namespace Traverser
             return ret;
         }
 
-        public float nearbyLedgeCastDistance = 0.25f;
+        public float nearbyLedgeCastDistance = 2.0f;
 
         public void OnNearbyLedgeMovement(ref TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook, Vector3 targetPosition)
         {
             // --- Check for ledge ---
             RaycastHit hit;
             Vector3 direction = movingLeft ? -transform.right : transform.right;
-            Vector3 castOrigin = transform.position + Vector3.up * controller.capsuleHeight * hangedTransformHeightRatio;
-            castOrigin += ledgeGeometry.GetPosition(ref ledgeHook) - castOrigin;
+            Vector3 castOrigin = transform.position + Vector3.up * controller.capsuleHeight * 0.75f;
+            castOrigin += (-transform.forward * controller.capsuleRadius) + direction * 0.5f;
             nearbyLedgeCollisionPosition = castOrigin;
 
-            bool collided = Physics.SphereCast(nearbyLedgeCollisionPosition, aimDebugSphereRadius, direction, 
-                out hit, nearbyLedgeCastDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+            //bool collided = Physics.SphereCast(nearbyLedgeCollisionPosition, aimDebugSphereRadius, direction, 
+            //    out hit, nearbyLedgeCastDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
 
-            nearbyLedgeCollisionPosition += direction * nearbyLedgeCastDistance;
+            bool collided = Physics.Raycast(nearbyLedgeCollisionPosition, transform.forward, out hit, nearbyLedgeCastDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+            Debug.DrawLine(nearbyLedgeCollisionPosition, nearbyLedgeCollisionPosition + transform.forward* nearbyLedgeCastDistance, Color.yellow);
+
+            //nearbyLedgeCollisionPosition += direction * nearbyLedgeCastDistance;
 
             BoxCollider hitCollider = hit.collider as BoxCollider;
+
+            float distanceToCorner = nearbyLedgeCastDistance;
+
+            if(collided)
+                ledgeGeometry.ClosestPointDistance(ledgeGeometry.GetPosition(ref ledgeHook), ref ledgeHook, ref distanceToCorner);
+
 
             if (collided 
                 && !ledgeGeometry.IsEqual(ref hitCollider) 
                 && abilityController.inputController.GetInputMovement().x != 0.0f
+                && distanceToCorner <= 0.25f
                 && hit.transform.GetComponent<TraverserClimbingObject>())
             {
                 // --- If another ledge is found nearby, trigger seamless player controlled transition ---
                 previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
                 previousLedgeGeometry = ledgeGeometry;
                 ledgeGeometry.Initialize(ref hitCollider);
-                ledgeHook = ledgeGeometry.GetHook(transform.position);
+                ledgeHook = ledgeGeometry.GetHook(transform.position + direction);
+
+                if (movingLeft)
+                    ledgeHook.distance = 0.0f;
+                else
+                    ledgeHook.distance = ledgeGeometry.GetLength(ledgeHook.index);
+
                 targetDirection = ledgeGeometry.GetNormal(ledgeHook.index);
 
                 if(cornerRotationLerpValue >= 1.0f || cornerRotationLerpValue == 0.0f)
@@ -885,7 +902,7 @@ namespace Traverser
             Vector3 aimDirection = transform.right * leftStickInput.x + transform.up * leftStickInput.y;
             aimDirection.Normalize();
 
-            Vector3 rayOrigin = transform.position + transform.up * controller.capsuleHeight * hangedTransformHeightRatio
+            Vector3 rayOrigin = transform.position + transform.up * controller.capsuleHeight * 0.75f
                 + transform.forward * controller.capsuleRadius;
 
             targetAimPosition = rayOrigin + aimDirection * maxJumpRadius * moveIntensity;
@@ -896,14 +913,18 @@ namespace Traverser
             bool collided = Physics.SphereCast(rayOrigin, aimDebugSphereRadius, aimDirection, out hit, 
                 maxJumpRadius * moveIntensity, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
             float distanceToCorner = 0.0f;
+            BoxCollider hitCollider = hit.collider as BoxCollider;
 
             // --- Compute distance from edge corner to new ledge hit point ---
-            if (collided && hit.transform.GetComponent<TraverserClimbingObject>())
+            if (collided && !ledgeGeometry.IsEqual(ref hitCollider) && hit.transform.GetComponent<TraverserClimbingObject>())
             {
                 ledgeGeometry.ClosestPointDistance(hit.point, ref ledgeHook, ref distanceToCorner);
 
                 if(distanceToCorner > minLedgeDistance)
                     ledgeDetected = true;
+
+                Debug.Log(distanceToCorner);
+
             }
             else
             {
@@ -916,7 +937,6 @@ namespace Traverser
                 && moveIntensity > 0.1f && collided
                 && distanceToCorner > minLedgeDistance) 
             {
-                BoxCollider hitCollider = hit.collider as BoxCollider;
                 auxledgeGeometry.Initialize(ref hitCollider);
 
                 if (!auxledgeGeometry.IsEqual(ref ledgeGeometry))

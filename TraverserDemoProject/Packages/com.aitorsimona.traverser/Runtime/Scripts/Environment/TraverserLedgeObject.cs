@@ -300,6 +300,46 @@ namespace Traverser
                 return result;
             }
 
+            //public TraverserLedgeHook GetHookGivenDirection(Vector3 position, Vector3 direction)
+            //{
+            //    // --- Given a 3d position/ root motion transform, return the closer hook point ---
+            //    TraverserLedgeHook result;
+            //    result.index = 0;
+
+            //    // --- Compute point at the middle of an edge and its distance to given position ---
+            //    Vector3 closestPoint = ClosestPoint(position, vertices[0], vertices[1]);
+            //    Vector3 midEdgePoint = (vertices[0] + vertices[1]) * 0.5f;
+            //    float minimumDistance = Vector3.Magnitude(midEdgePoint - position);
+            //    result.distance = Vector3.Magnitude(closestPoint - vertices[0]);
+
+            //    Vector3 edge = GetNormalizedEdge(0);
+            //    float angle = Mathf.Abs(Vector3.SignedAngle(direction, edge, Vector3.up));
+            //    float minimumAngle = angle;
+
+            //    int numEdges = vertices.Length;
+
+            //    for (int i = 1; i < numEdges; ++i)
+            //    {
+            //        closestPoint = ClosestPoint(position, vertices[i], vertices[GetNextEdgeIndex(i)]);
+            //        midEdgePoint = (vertices[i] + vertices[GetNextEdgeIndex(i)]) * 0.5f;
+            //        float distance = Vector3.Magnitude(midEdgePoint - position);
+
+            //        edge = GetNormalizedEdge(i);
+            //        angle = Mathf.Abs(Vector3.SignedAngle(direction, edge, Vector3.up));
+
+            //        // --- If the distance to the midEdgePoint is lower than the previous one, change the hook ---
+            //        if (distance < minimumDistance || angle < minimumAngle)
+            //        {
+            //            minimumDistance = distance;
+            //            minimumAngle = angle;
+            //            result.index = i;
+            //            result.distance = Vector3.Magnitude(closestPoint - vertices[i]);
+            //        }
+            //    }
+
+            //    return result;
+            //}
+
             public TraverserLedgeHook GetHookAt(Vector3 position, float distanceOffset)
             {
                 // --- Given a 3d position/ root motion transform, return the closer hook point ---

@@ -268,11 +268,6 @@ namespace Traverser
                 contactNormal = hit.normal;
                 contactTransform.t = hit.point;
                 contactTransform.t.y = hit.collider.bounds.center.y + hit.collider.bounds.extents.y;
-                contactTransform.q = Quaternion.LookRotation((contactTransform.t - contactNormal * contactSize) - contactTransform.t, hit.transform.up);
-                current.collider = hit.collider;
-                current.colliderContactNormal = hit.normal;
-                current.colliderContactPoint = hit.point;
-                current.isColliding = true;
 
                 Vector3 right = transform.InverseTransformDirection(hit.transform.right);
                 Vector3 forward = transform.InverseTransformDirection(hit.transform.forward);
@@ -284,6 +279,14 @@ namespace Traverser
                     contactSize = hit.collider.bounds.size.z;
                 else
                     contactSize = hit.collider.bounds.size.x;
+
+                contactTransform.q = Quaternion.LookRotation((contactTransform.t - contactNormal * contactSize) - contactTransform.t, hit.transform.up);
+                current.collider = hit.collider;
+                current.colliderContactNormal = hit.normal;
+                current.colliderContactPoint = hit.point;
+                current.isColliding = true;
+
+
             }
 
             return ret;

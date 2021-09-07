@@ -688,7 +688,16 @@ namespace Traverser
         private void OnAnimatorIK(int layerIndex)
         {
             if (!abilityController.isCurrent(this) || !fIKOn)
+            {
+                rightFootIKTransform.t = animationController.rightFootPosition;
+                leftFootIKTransform.t = animationController.leftFootPosition;
+
+                lastRightFootPositionY = transform.InverseTransformPoint(rightFootIKTransform.t).y;
+                lastLeftFootPositionY = transform.InverseTransformPoint(leftFootIKTransform.t).y;
+                lastPelvisCorrectedY = animationController.GetSkeletonPosition().y;
+
                 return;
+            }
 
             // --- If we are at the end of a transition, (f.ex pull up to locomotion) update last IK positions to prevent working with outdated data  ---
             //if (animationController.IsAdjustingSkeleton())

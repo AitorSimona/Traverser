@@ -135,7 +135,7 @@ namespace Traverser
         private float timeToLedgeToLedge = 0.35f;
 
         // --- Offsets height of hanged transform to match a new position (upper or lower) --- 
-        private float hangedTransformHeightRatio = 0.6f;
+        private float hangedTransformHeightRatio = 0.55f;
 
         // --- Used in on ledge movement to determine when to trigger corner transitions ---
         private float ledgeBoundsOffset = 0.25f;

@@ -696,7 +696,6 @@ namespace Traverser
         }
 
         public float desiredLedgeAcceleration = 2.0f;
-        private float currentLedgeSpeed = 1.0f;
         private float currentSpeedLerpValue = 0.0f;
         private float previousXIntensity= 0.0f;
 
@@ -708,28 +707,34 @@ namespace Traverser
 
             if (Mathf.Abs(leftStickInput.x) >= previousXIntensity && previousXIntensity != 0.0f)
             {
-                if(movingLeft)
-                    currentSpeedLerpValue -= desiredLedgeAcceleration * Mathf.Abs(leftStickInput.x) * deltaTime;
-                else
-                    currentSpeedLerpValue += desiredLedgeAcceleration * Mathf.Abs(leftStickInput.x) * deltaTime;
+                //if(movingLeft)
+                //    currentSpeedLerpValue -= desiredLedgeAcceleration * Mathf.Abs(leftStickInput.x) * deltaTime;
+                //else
+                //    currentSpeedLerpValue += desiredLedgeAcceleration * Mathf.Abs(leftStickInput.x) * deltaTime;
 
-                currentSpeedLerpValue = Mathf.Clamp(currentSpeedLerpValue, -1.0f, 1.0f);
+                //currentSpeedLerpValue = (leftStickInput.x - currentSpeedLerpValue) * desiredLedgeAcceleration * deltaTime;
+
+                //currentSpeedLerpValue = Mathf.Clamp(currentSpeedLerpValue, -1.0f, 1.0f);
 
                 //controller.targetVelocity.x = currentSpeedLerpValue/*Mathf.Lerp(abilityController.GetDirectionX(), leftStickInput.x, currentSpeedLerpValue)*/;
             }
             else
             {
-                currentSpeedLerpValue = Mathf.Lerp(currentSpeedLerpValue, 0.0f, desiredLedgeAcceleration * deltaTime);
+                //currentSpeedLerpValue = Mathf.Lerp(currentSpeedLerpValue, 0.0f, desiredLedgeAcceleration * deltaTime);
                 //previousXIntensity = currentSpeedLerpValue;
 
-                if (Mathf.Abs(currentSpeedLerpValue) < 0.05f)
-                {
-                    currentSpeedLerpValue = 0.0f;
-                    //previousXIntensity = 0.0f;
-                }
+                //if (Mathf.Abs(currentSpeedLerpValue) < 0.05f)
+                //{
+                //    currentSpeedLerpValue = 0.0f;
+                //    //previousXIntensity = 0.0f;
+                //}
 
                 //controller.targetVelocity.x = 1.0f - currentSpeedLerpValue/*Mathf.Lerp(abilityController.GetDirectionX(), 0.0f, 1.0f - currentSpeedLerpValue)*/;
             }
+
+            currentSpeedLerpValue += (leftStickInput.x - currentSpeedLerpValue) * desiredLedgeAcceleration * deltaTime;
+            currentSpeedLerpValue = Mathf.Clamp(currentSpeedLerpValue, -1.0f, 1.0f);
+
 
             controller.targetVelocity.x = currentSpeedLerpValue/*Mathf.Lerp(abilityController.GetDirectionX(), leftStickInput.x, currentSpeedLerpValue)*/;
             previousXIntensity = Mathf.Abs(leftStickInput.x);
@@ -750,7 +755,7 @@ namespace Traverser
             if(debugDraw)
                 Debug.DrawLine(ledgeGeometry.GetPosition(ref ledgeHook), ledgeGeometry.GetPosition(ref ledgeHook) + direction * 5.0f);
 
-            Vector3 delta = direction * Mathf.Abs(leftStickInput.x) * desiredSpeedLedge * deltaTime;
+            Vector3 delta = direction * Mathf.Abs(leftStickInput.x) * desiredSpeedLedge * Mathf.Abs(currentSpeedLerpValue) * deltaTime;
             Vector3 targetPosition = transform.position + delta;
 
             // --- Update hook ---

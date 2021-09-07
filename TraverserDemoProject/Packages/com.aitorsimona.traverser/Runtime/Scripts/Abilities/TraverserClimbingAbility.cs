@@ -1165,6 +1165,9 @@ namespace Traverser
                     //Debug.DrawLine(footPosition - transform.forward * 0.25f, footPosition + transform.forward * feetRayLength);
                     animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
                 }
+                else
+                    previousLeftFootPosition = animationController.leftFootPosition;
+
 
                 weight = animationController.animator.GetFloat("IKRightFootWeight");
 
@@ -1221,6 +1224,9 @@ namespace Traverser
                     //Debug.DrawLine(footPosition - transform.forward * 0.25f, footPosition + transform.forward * feetRayLength);
                     animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
                 }
+                else
+                    previousRightFootPosition = animationController.rightFootPosition;
+
             }
 
             // --- Set weights to 0 and return if IK is off ---
@@ -1312,6 +1318,12 @@ namespace Traverser
                     //animationController.animator.SetIKRotation(AvatarIKGoal.LeftHand,
                     //    Quaternion.Slerp(IKRotation, Quaternion.FromToRotation(transform.forward, handDirection + Vector3.up * 1.5f) * transform.rotation, handsAdjustmentSpeed * Time.deltaTime));
                 }
+                else
+                {
+                    previousLeftHandPosition = animationController.leftHandPosition;
+                    previousLeftHandRotation = animationController.animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
+                }
+
 
                 weight = animationController.animator.GetFloat("IKRightHandWeight");
 
@@ -1387,6 +1399,11 @@ namespace Traverser
 
                     previousRightHandRotation = IKRotation;
                     animationController.animator.SetIKRotation(AvatarIKGoal.RightHand, IKRotation);
+                }
+                else
+                {
+                    previousRightHandPosition = animationController.rightHandPosition;
+                    previousRightHandRotation = animationController.animator.GetBoneTransform(HumanBodyBones.RightHand).rotation;
                 }
             }
         }

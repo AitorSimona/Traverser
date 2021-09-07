@@ -86,7 +86,7 @@ namespace Traverser
             isTargetAnimationON = false;
             transitionData.transitionAnim = "";
             transitionData.targetAnim = "";
-            animationController.animator.ResetTrigger(transitionData.triggerTransitionAnim);
+            //animationController.animator.ResetTrigger(transitionData.triggerTransitionAnim);
             animationController.animator.ResetTrigger(transitionData.triggerTargetAnim);
             transitionData.triggerTransitionAnim = "";
             transitionData.triggerTargetAnim = "";
@@ -191,6 +191,7 @@ namespace Traverser
                             animationController.CreateCurve(targetTransform.t, 0.0f);
                             animationController.animator.Play(transitionData.transitionAnim);
 
+                            animationController.animator.ResetTrigger(transitionData.triggerTransitionAnim);
                             animationController.animator.SetTrigger(transitionData.triggerTargetAnim);
                         }
 

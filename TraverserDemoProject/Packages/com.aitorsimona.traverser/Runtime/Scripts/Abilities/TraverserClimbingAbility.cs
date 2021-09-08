@@ -3,7 +3,6 @@
 namespace Traverser
 {
     [RequireComponent(typeof(TraverserAbilityController))]
-    [RequireComponent(typeof(TraverserCharacterController))]
 
     public class TraverserClimbingAbility : MonoBehaviour, TraverserAbility
     {
@@ -99,23 +98,6 @@ namespace Traverser
 
         // --------------------------------
 
-        // --- Climbing-level state (directions) ---
-        public enum ClimbingState
-        {
-            Idle,
-            Up,
-            Down,
-            Left,
-            Right,
-            UpRight,
-            DownRight,
-            UpLeft,
-            DownLeft,
-            None
-        }
-
-        // --------------------------------
-
         // --- Private Variables ---
 
         private TraverserAbilityController abilityController;
@@ -124,7 +106,6 @@ namespace Traverser
         private TraverserLocomotionAbility locomotionAbility;
 
         private ClimbingAbilityState state; // Actual Climbing movement/state
-        private ClimbingState climbingState; // Actual Climbing direction
 
         // --- Ledge movement ---
         private float currentLedgeSpeed = 0.0f;
@@ -188,7 +169,6 @@ namespace Traverser
             locomotionAbility = GetComponent<TraverserLocomotionAbility>();
 
             state = ClimbingAbilityState.Suspended;
-            climbingState = ClimbingState.None;
 
             previousLedgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
             ledgeGeometry = TraverserLedgeObject.TraverserLedgeGeometry.Create();
@@ -340,10 +320,8 @@ namespace Traverser
                 if (IsState(ClimbingAbilityState.Suspended))
                 {
                     ret = null;
-
                     ledgeGeometry.Reset();
-
-                    SetClimbingState(ClimbingState.None);
+                    previousLedgeGeometry.Reset();
 
                     // --- Turn off/on controller ---
                     controller.ConfigureController(true);
@@ -509,7 +487,6 @@ namespace Traverser
             if (!animationController.transition.isON)
             {
                 SetState(ClimbingAbilityState.Climbing); 
-                SetClimbingState(ClimbingState.Idle);
                 controller.ConfigureController(false);
             }
         }
@@ -539,7 +516,6 @@ namespace Traverser
             if (!animationController.transition.isON)
             {
                 SetState(ClimbingAbilityState.Climbing);
-                SetClimbingState(ClimbingState.Idle);
                 animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
                 TraverserTransform hangedTransform = GetHangedTransform(animationController.GetSkeletonPosition(), ref ledgeGeometry, ref ledgeHook);
                 controller.ConfigureController(false);
@@ -568,7 +544,6 @@ namespace Traverser
                 }
 
                 SetState(ClimbingAbilityState.Climbing);
-                SetClimbingState(ClimbingState.Idle);
                 controller.ConfigureController(false);
             }
         }
@@ -589,26 +564,10 @@ namespace Traverser
         {
             bool canMove = UpdateClimbing(deltaTime);
 
-            ClimbingState desiredState = GetDesiredClimbingState();
-
             if (!canMove)
-            {
-                desiredState = ClimbingState.Idle;
                 controller.targetVelocity = Vector3.zero;
-            }
 
             // --- Handle ledge climbing/movement direction ---
-            if (!IsClimbingState(desiredState))
-            {
-                //if (desiredState == ClimbingState.Idle)
-                //    animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
-                //else if (desiredState == ClimbingState.Right)
-                //    animationController.animator.CrossFade(climbingData.ledgeRightAnimation.animationStateName, climbingData.ledgeRightAnimation.transitionDuration, 0);
-                //else if (desiredState == ClimbingState.Left)
-                //    animationController.animator.CrossFade(climbingData.ledgeLeftAnimation.animationStateName, climbingData.ledgeLeftAnimation.transitionDuration, 0);
-
-                SetClimbingState(desiredState);
-            }
 
             RaycastHit hit;
             bool closeToDrop = Physics.Raycast(transform.position, Vector3.down, out hit ,maxClimbableHeight - controller.capsuleHeight, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
@@ -831,12 +790,9 @@ namespace Traverser
                 else
                     distanceToCorner = ledgeHook.distance;
 
-
-                //ledgeGeometry.ClosestPointDistance(ledgeGeometry.GetPosition(ref ledgeHook), ref ledgeHook, ref distanceToCorner);
                 ledgeGeometry.ClosestPointDistance(hit.point, ref ledgeHook, ref distanceToLedge);
             }
 
-            Debug.Log(distanceToCorner);
 
             if (collided 
                 && !ledgeGeometry.IsEqual(ref hitCollider) 
@@ -1080,28 +1036,6 @@ namespace Traverser
         public bool IsState(ClimbingAbilityState queryState)
         {
             return state == queryState;
-        }
-
-        public void SetClimbingState(ClimbingState climbingState)
-        {
-            this.climbingState = climbingState;
-        }
-
-        public bool IsClimbingState(ClimbingState climbingState)
-        {
-            return this.climbingState == climbingState;
-        }
-        
-        ClimbingState GetDesiredClimbingState() 
-        {
-            Vector2 stickInput = abilityController.inputController.GetInputMovement();
-
-            if (stickInput.x > 0.1f)
-                return ClimbingState.Right;
-            else if (stickInput.x < -0.1f)
-                return ClimbingState.Left;            
-
-            return ClimbingState.Idle;
         }
 
         // --------------------------------

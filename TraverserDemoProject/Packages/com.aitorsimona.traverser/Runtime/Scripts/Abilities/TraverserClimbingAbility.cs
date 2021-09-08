@@ -37,6 +37,18 @@ namespace Traverser
         [Tooltip("The minimum distance at which we trigger a ledge to ledge transition, below this we just move and corner.")]
         public float minLedgeDistance = 0.5f;
 
+        [Header("Freehang settings")]
+        [Tooltip("How fast the character transitions into freehang.")]
+        public float freeHangTransitionSpeed = 1.0f;
+        [Tooltip("How much we offset the character towards its forward during free hang.")]
+        public float freeHangForwardOffset = 0.25f;
+
+        [Header("Aim IK settings")]
+        [Tooltip("How fast the head rotates towards the target direction. Used in ledge to ledge.")]
+        public float headAimIKSpeed = 1.0f;
+        [Tooltip("How fast the body rotates towards the target direction. Used in ledge to ledge.")]
+        public float bodyAimIKSpeed = 1.0f;
+
         [Header("Feet IK settings")]
         [Tooltip("Activates or deactivates foot IK placement for the climbing ability.")]
         public bool fIKOn = true;
@@ -66,7 +78,6 @@ namespace Traverser
         [Header("Debug")]
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Selecting the object may be required to show debug geometry.")]
         public bool debugDraw = false;
-
         [Tooltip("Indicates the point the character is aiming to, used to trigger a ledge to ledge transition.")]
         [Range(0.0f, 1.0f)]
         public float aimDebugSphereRadius = 0.25f;
@@ -152,6 +163,11 @@ namespace Traverser
         // --- The position at which we are currently aiming to, determined by maxJumpRadius ---
         private Vector3 targetAimPosition;
 
+        // --- Free hang ---
+        private bool rightLegFreeHang = false;
+        private bool leftLegFreeHang = false;
+        private float freehangWeight = 0.0f;
+
         // --------------------------------
 
         // --- World interactable elements ---
@@ -160,11 +176,6 @@ namespace Traverser
         private TraverserLedgeObject.TraverserLedgeGeometry ledgeGeometry;
         private TraverserLedgeObject.TraverserLedgeGeometry auxledgeGeometry;
         private TraverserLedgeObject.TraverserLedgeHook ledgeHook;
-
-        bool rightLegFreeHang = false;
-        bool leftLegFreeHang = false;
-
-        public TraverserFreeHangData freeHangData;
 
         // --------------------------------
 
@@ -191,6 +202,7 @@ namespace Traverser
             if (!abilityController.isCurrent(this))
                 return;
 
+            // --- Adapt to moving ledges ---
             Vector3 delta;
 
             if (animationController.transition.isON
@@ -219,13 +231,13 @@ namespace Traverser
             }
 
             // --- Free hang ---
-
             int hash;
             animationController.animatorParameters.TryGetValue("FreeHangWeight", out hash);
 
             if (hash != 0)
                 animationController.animator.SetFloat(hash, freehangWeight);
 
+            // --- Perform a transition to free hanging if legs cannot find a surface ---
             if (leftLegFreeHang && rightLegFreeHang)
             {
                 freehangWeight = Mathf.Lerp(freehangWeight, 1.0f, freeHangTransitionSpeed * Time.deltaTime);
@@ -233,14 +245,13 @@ namespace Traverser
             }
             else if (freehangWeight > 0.0f)
             {
+                // --- Return to braced hanging ---
                 freehangWeight = Mathf.Lerp(freehangWeight, 0.0f, freeHangTransitionSpeed * Time.deltaTime);
                 animationController.hipsRef.position = animationController.GetSkeletonPosition() + transform.forward * freeHangForwardOffset * freehangWeight;
 
                 if (freehangWeight < 0.05)
                     freehangWeight = 0.0f;
             }
-
-
 
             // --- Draw ledge geometry ---
             if (debugDraw)
@@ -252,30 +263,16 @@ namespace Traverser
 
         // --------------------------------
 
-        public float HeadIKIntensity = 1.0f;
-        public float bodyIKSpeed = 1.0f;
-
-        public float freeHangTransitionSpeed = 1.0f;
-        public float freeHangForwardOffset = 0.25f;
-
-
-        private float freehangWeight = 0.0f;
-
         // --- Ability class methods ---
         public TraverserAbility OnUpdate(float deltaTime)
         {
             if (animationController.transition.isON)
                 animationController.transition.UpdateTransition();
 
+            // --- If a ledge was detected, trigger Aim IK ---
             if (ledgeDetected)
             {
-                animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
-                //animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 1.0f, bodyIKSpeed * Time.deltaTime);
-
-                //animationController.spineRig.weight = 1.0f;
-                //animationController.armsRig.weight = 1.0f;
-
-                
+                animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 1.0f, bodyAimIKSpeed * Time.deltaTime);
 
                 Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
                 float moveIntensity = abilityController.inputController.GetMoveIntensity();
@@ -283,26 +280,16 @@ namespace Traverser
                 aimDirection.Normalize();
 
                 if(moveIntensity > 0.1f)
-                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t + aimDirection * moveIntensity * HeadIKIntensity;
+                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t + aimDirection * moveIntensity * headAimIKSpeed;
             }
-            //else if (wasLedgeDetected)
-            //{
-
-            //    //animationController.spineRig.weight = 0.0f;
-            //    //animationController.armsRig.weight = 0.0f;
-            //    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
-            //}
             else
             {
-                animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
-                //animationController.armsRig.weight = Mathf.Lerp(animationController.armsRig.weight, 0.0f, bodyIKSpeed * Time.deltaTime);
+                // --- Progressively deactivate Aim IK ---
+                animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 0.0f, bodyAimIKSpeed * Time.deltaTime);
 
                 if (animationController.spineRig.weight < 0.1f)
                     animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
             }
-
-
-
 
             return this;
         }

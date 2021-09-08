@@ -337,14 +337,7 @@ namespace Traverser
 
                 // --- Let other abilities handle the situation ---
                 if (IsState(ClimbingState.Suspended))
-                {
                     ret = null;
-                    ledgeGeometry.Reset();
-                    previousLedgeGeometry.Reset();
-
-                    // --- Turn off/on controller ---
-                    controller.ConfigureController(true);
-                }
             }
 
             return ret;
@@ -428,7 +421,6 @@ namespace Traverser
                 if (ret)
                 {
                     SetState(ClimbingState.LedgeToLedge);
-                    locomotionAbility.ResetLocomotion();
                     controller.targetVelocity = Vector3.zero;
                 }
                 
@@ -484,6 +476,26 @@ namespace Traverser
             return ret;
         }
 
+        public void OnEnter()
+        {
+            previousLeftFootPosition = animationController.leftFootPosition;
+            previousRightFootPosition = animationController.rightFootPosition;
+            previousLeftHandPosition = animationController.leftHandPosition;
+            previousRightHandPosition = animationController.rightHandPosition;
+
+            previousLeftHandRotation = animationController.animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
+            previousRightHandRotation = animationController.animator.GetBoneTransform(HumanBodyBones.RightHand).rotation;
+        }
+
+        public void OnExit()
+        {
+            ledgeGeometry.Reset();
+            previousLedgeGeometry.Reset();
+
+            // --- Turn off/on controller ---
+            controller.ConfigureController(true);
+        }
+
         public bool IsAbilityEnabled()
         {
             return isActiveAndEnabled;
@@ -505,7 +517,7 @@ namespace Traverser
             if (!animationController.transition.isON)
             {
                 SetState(ClimbingState.Suspended);
-                locomotionAbility.ResetLocomotion();
+                locomotionAbility.ResetMovement();
                 animationController.animator.CrossFade(climbingData.locomotionOnAnimation.animationStateName, climbingData.locomotionOnAnimation.transitionDuration, 0);
             }
         }
@@ -515,7 +527,7 @@ namespace Traverser
             if (!animationController.transition.isON)
             {
                 SetState(ClimbingState.Suspended);
-                locomotionAbility.ResetLocomotion();
+                locomotionAbility.ResetMovement();
                 animationController.animator.CrossFade(climbingData.locomotionOnAnimation.animationStateName, climbingData.locomotionOnAnimation.transitionDuration, 0);
             }
         }
@@ -562,8 +574,8 @@ namespace Traverser
             if (!animationController.transition.isON)
             {
                 SetState(ClimbingState.Suspended);
+                locomotionAbility.ResetMovement();
                 animationController.animator.Play(climbingData.fallLoopAnimation.animationStateName, 0);
-                locomotionAbility.ResetLocomotion();
                 locomotionAbility.SetLocomotionState(TraverserLocomotionAbility.LocomotionAbilityState.Falling);
                 transform.rotation = Quaternion.LookRotation(-ledgeGeometry.GetNormal(ledgeHook.index),Vector3.up);
             }

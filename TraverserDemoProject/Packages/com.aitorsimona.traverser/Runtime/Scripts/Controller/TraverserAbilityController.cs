@@ -4,7 +4,8 @@ using UnityEngine.Assertions;
 namespace Traverser
 {
     [RequireComponent(typeof(TraverserCharacterController))]
-    public class TraverserAbilityController : MonoBehaviour // Layer to control all of the object's abilities 
+
+    public class TraverserAbilityController : MonoBehaviour // Layer to control all of the character's abilities 
     {
         // --- Private Variables ---
 
@@ -45,7 +46,23 @@ namespace Traverser
             bool isEnabled = currentAbility == null ? false : currentAbility.IsAbilityEnabled();
 
             if (currentAbility != null && isEnabled)
-                currentAbility = currentAbility.OnUpdate(Time.deltaTime);
+            {
+                TraverserAbility result = currentAbility.OnUpdate(Time.deltaTime);
+
+                if (result == null)
+                {
+                    currentAbility = result;
+                }
+                else if (!result.Equals(currentAbility))
+                {
+                    if (currentAbility != null)
+                        currentAbility.OnExit();
+
+                    currentAbility = result;
+                    currentAbility.OnEnter();
+                }
+            }
+
             // --- If no ability is in control, look for one ---
             if (currentAbility == null || !isEnabled)
             {
@@ -60,7 +77,11 @@ namespace Traverser
                     // --- If an ability asks to take control, break ---
                     if (result != null)
                     {
+                        if (currentAbility != null)
+                            currentAbility.OnExit();
+
                         currentAbility = result;
+                        currentAbility.OnEnter();
                         break;
                     }
                 }
@@ -86,13 +107,6 @@ namespace Traverser
                 animatorParameters.DirectionX = Mathf.Lerp(animatorParameters.DirectionX, velocity.x, Time.deltaTime / Time.fixedDeltaTime);
                 animationController.UpdateAnimator(ref animatorParameters);
             }
-
-            //// --- Perform movement and rotation, interpolate for smoothness ---
-            //if (!animationController.transition.isON)
-            //{
-            //    controller.ForceMove(Vector3.Lerp(transform.position, transform.position + controller.targetDisplacement, Time.deltaTime / Time.fixedDeltaTime));
-            //    controller.ForceRotate(Quaternion.Slerp(transform.rotation, transform.rotation * Quaternion.AngleAxis(controller.targetHeading, Vector3.up), Time.deltaTime / Time.fixedDeltaTime));
-            //}
         }
 
         // MYTODO: If order of update is important, it would be wise to add a priority to abilities,
@@ -107,7 +121,22 @@ namespace Traverser
 
             // --- Keep updating our current ability ---
             if (currentAbility != null && isEnabled)
-                currentAbility = currentAbility.OnFixedUpdate(Time.fixedDeltaTime);
+            {
+                TraverserAbility result = currentAbility.OnFixedUpdate(Time.fixedDeltaTime);
+
+                if(result == null)
+                {
+                    currentAbility = result;
+                }
+                else if (!result.Equals(currentAbility))
+                {
+                    if (currentAbility != null)
+                        currentAbility.OnExit();
+
+                    currentAbility = result;
+                    currentAbility.OnEnter();
+                }
+            }
 
             // --- If no ability is in control, look for one ---
             if (currentAbility == null || !isEnabled)
@@ -123,7 +152,12 @@ namespace Traverser
                     // --- If an ability asks to take control, break ---
                     if (result != null)
                     {
+                        if(currentAbility != null)
+                            currentAbility.OnExit();
+
                         currentAbility = result;
+                        currentAbility.OnEnter();
+
                         break;
                     }
                 }

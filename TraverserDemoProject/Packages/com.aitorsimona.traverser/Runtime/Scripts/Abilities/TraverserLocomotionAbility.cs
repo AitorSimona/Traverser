@@ -375,10 +375,6 @@ namespace Traverser
                             if (ability.IsAbilityEnabled() && ability.OnContact(controller.contactTransform, deltaTime))
                             {
                                 contactAbility = ability;
-
-                                ResetLocomotion();
-
-
                                 break;
                             }
                         }
@@ -403,7 +399,6 @@ namespace Traverser
                         }
                     }
                 }
-
 
                 float distanceToGround = controller.GetYDistanceToGround(tmp.t + Vector3.up * 0.1f);
 
@@ -447,7 +442,8 @@ namespace Traverser
                     // --- Trigger a landing transition ---
                     if (success)
                     {
-                        ResetLocomotion();
+                        currentJumpSpeed = 0.0f;
+                        wasJumping = false;
                         state = LocomotionAbilityState.Landing;
                         break;
                     }
@@ -469,6 +465,38 @@ namespace Traverser
             return false;
         }
 
+        public void ResetMovement()
+        {
+            controller.ResetController();
+            movementDecelerationTimer = 0.0f;
+            previousMovementIntensity = 0.0f;
+            movementAccelerationTimer = 0.0f;
+            currentVelocity = Vector3.zero;
+            state = LocomotionAbilityState.Moving;
+        }
+
+        public void OnEnter()
+        {
+            currentJumpSpeed = 0.0f;
+            wasJumping = false;
+
+            FindFootIKTarget(animationController.rightFootPosition, ref rightFootIKTransform);
+            FindFootIKTarget(animationController.leftFootPosition, ref leftFootIKTransform);
+
+            // --- Update last IK positions to prevent working with outdated data ---
+            rightFootIKTransform.t = animationController.rightFootPosition;
+            leftFootIKTransform.t = animationController.leftFootPosition;
+
+            lastRightFootPositionY = transform.InverseTransformPoint(rightFootIKTransform.t).y;
+            lastLeftFootPositionY = transform.InverseTransformPoint(leftFootIKTransform.t).y;
+            lastPelvisCorrectedY = animationController.GetSkeletonPosition().y;
+        }
+
+        public void OnExit()
+        {
+
+        }
+
         public bool IsAbilityEnabled()
         {
             return isActiveAndEnabled;
@@ -477,18 +505,6 @@ namespace Traverser
         // -------------------------------------------------
 
         // --- Movement ---
-
-        public void ResetLocomotion()
-        {
-            controller.Reset();
-            movementDecelerationTimer = 0.0f;
-            previousMovementIntensity = 0.0f;
-            movementAccelerationTimer = 0.0f;
-            currentVelocity = Vector3.zero;
-            state = LocomotionAbilityState.Moving;
-            currentJumpSpeed = 0.0f;
-            wasJumping = false;
-        }
 
         public void SetLocomotionState(LocomotionAbilityState newState)
         {
@@ -688,23 +704,16 @@ namespace Traverser
         {
             if (!abilityController.isCurrent(this) || !fIKOn)
             {
-                rightFootIKTransform.t = animationController.rightFootPosition;
-                leftFootIKTransform.t = animationController.leftFootPosition;
+                //// --- Update last IK positions to prevent working with outdated data ---
+                //rightFootIKTransform.t = animationController.rightFootPosition;
+                //leftFootIKTransform.t = animationController.leftFootPosition;
 
-                lastRightFootPositionY = transform.InverseTransformPoint(rightFootIKTransform.t).y;
-                lastLeftFootPositionY = transform.InverseTransformPoint(leftFootIKTransform.t).y;
-                lastPelvisCorrectedY = animationController.GetSkeletonPosition().y;
+                //lastRightFootPositionY = transform.InverseTransformPoint(rightFootIKTransform.t).y;
+                //lastLeftFootPositionY = transform.InverseTransformPoint(leftFootIKTransform.t).y;
+                //lastPelvisCorrectedY = animationController.GetSkeletonPosition().y;
 
                 return;
             }
-
-            // --- If we are at the end of a transition, (f.ex pull up to locomotion) update last IK positions to prevent working with outdated data  ---
-            //if (animationController.IsAdjustingSkeleton())
-            //{
-            //    lastPelvisCorrectedY = animationController.animator.bodyPosition.y;
-            //    lastLeftFootPositionY = transform.InverseTransformPoint(leftFootIKTransform.t).y;
-            //    lastRightFootPositionY = transform.InverseTransformPoint(rightFootIKTransform.t).y;
-            //}
 
             // --- Adjust pelvis height to allow better feet adjustment ---
             MatchPelvisToFeet();
@@ -724,9 +733,6 @@ namespace Traverser
         {
             // --- Get previous IK position ---
             Vector3 IkPosition = animationController.animator.GetIKPosition(foot);
-
-            //if (animationController.IsAdjustingSkeleton())
-            //    IkPosition = IKTransform.t;
 
             if (IKTransform.t != Vector3.zero)
             {

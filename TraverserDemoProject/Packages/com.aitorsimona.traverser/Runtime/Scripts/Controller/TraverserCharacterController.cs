@@ -315,7 +315,7 @@ namespace Traverser
             currentGravity = active;
         }
 
-        public void Reset()
+        public void ResetController()
         {
             targetDisplacement = Vector3.zero;
             targetVelocity = Vector3.zero;

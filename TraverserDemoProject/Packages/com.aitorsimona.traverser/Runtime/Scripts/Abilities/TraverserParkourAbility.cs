@@ -61,7 +61,10 @@ namespace Traverser
 
         public TraverserAbility OnUpdate(float deltaTime)
         {
-            return animationController.transition.UpdateTransition() ? this : null;
+            if (animationController.transition.isON)
+                animationController.transition.UpdateTransition();
+
+            return this;
         }
 
         public TraverserAbility OnFixedUpdate(float deltaTime)
@@ -112,6 +115,16 @@ namespace Traverser
             return ret;
         }
 
+        public void OnEnter()
+        {
+
+        }
+
+        public void OnExit()
+        {
+
+        }
+
         public bool IsAbilityEnabled()
         {
             return isActiveAndEnabled;
@@ -157,7 +170,6 @@ namespace Traverser
                         // --- If we are jumping back to a regular ledge/wall, notify locomotion ---
                         if (parkourObject.gameObject.GetComponent<TraverserClimbingObject>())
                         {
-                            locomotionAbility.ResetLocomotion();
                             controller.groundSnap = false;
                         }
                     }
@@ -168,8 +180,6 @@ namespace Traverser
                     break;
             }
             
-
-
             return ret;
         }
 

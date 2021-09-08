@@ -145,7 +145,6 @@ namespace Traverser
             Moving,
             Falling,
             Landing,
-            Ledge,
             Jumping
         }
 

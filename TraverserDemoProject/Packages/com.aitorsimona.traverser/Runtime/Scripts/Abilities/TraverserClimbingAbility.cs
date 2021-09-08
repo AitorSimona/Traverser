@@ -298,7 +298,6 @@ namespace Traverser
         {
             TraverserAbility ret = this;
 
-
             // --- If character is not falling ---
             if (!IsState(ClimbingAbilityState.Suspended))
             {
@@ -784,6 +783,7 @@ namespace Traverser
         }
 
         public float nearbyLedgeCastDistance = 2.0f;
+        public float nearbyLedgeMaxDistance = 0.3f;
 
         public void OnNearbyLedgeMovement(ref TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook, Vector3 targetPosition)
         {
@@ -798,30 +798,58 @@ namespace Traverser
             //    out hit, nearbyLedgeCastDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
 
             bool collided = Physics.Raycast(nearbyLedgeCollisionPosition, transform.forward, out hit, nearbyLedgeCastDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
-
-            Debug.DrawLine(nearbyLedgeCollisionPosition, nearbyLedgeCollisionPosition + transform.forward* nearbyLedgeCastDistance, Color.yellow);
-
-            //nearbyLedgeCollisionPosition += direction * nearbyLedgeCastDistance;
+            
+            if (debugDraw)
+                Debug.DrawLine(nearbyLedgeCollisionPosition, nearbyLedgeCollisionPosition + transform.forward * nearbyLedgeCastDistance, Color.yellow);
 
             BoxCollider hitCollider = hit.collider as BoxCollider;
 
-            float distanceToCorner = nearbyLedgeCastDistance;
+            if ((collided && ledgeGeometry.IsEqual(ref hitCollider)) || !collided)
+            {
+                castOrigin -= direction * 0.5f;
 
-            if(collided)
-                ledgeGeometry.ClosestPointDistance(ledgeGeometry.GetPosition(ref ledgeHook), ref ledgeHook, ref distanceToCorner);
+                collided = Physics.Raycast(castOrigin, direction, out hit, nearbyLedgeCastDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
 
+                hitCollider = hit.collider as BoxCollider;
+
+                if (debugDraw)
+                    Debug.DrawLine(castOrigin, castOrigin + direction * nearbyLedgeCastDistance, Color.yellow);
+
+            }
+
+    
+            //nearbyLedgeCollisionPosition += direction * nearbyLedgeCastDistance;
+
+
+            float distanceToCorner = ledgeHook.distance;
+            float distanceToLedge = minLedgeDistance;
+
+            if (collided)
+            {
+                if (movingLeft)
+                    distanceToCorner = ledgeGeometry.GetLength(ledgeHook.index) - ledgeHook.distance;
+                else
+                    distanceToCorner = ledgeHook.distance;
+
+
+                //ledgeGeometry.ClosestPointDistance(ledgeGeometry.GetPosition(ref ledgeHook), ref ledgeHook, ref distanceToCorner);
+                ledgeGeometry.ClosestPointDistance(hit.point, ref ledgeHook, ref distanceToLedge);
+            }
+
+            Debug.Log(distanceToCorner);
 
             if (collided 
                 && !ledgeGeometry.IsEqual(ref hitCollider) 
                 && abilityController.inputController.GetInputMovement().x != 0.0f
-                && distanceToCorner <= 0.25f
+                && distanceToCorner <= 0.35f
+                && distanceToLedge < nearbyLedgeMaxDistance
                 && hit.transform.GetComponent<TraverserClimbingObject>())
             {
                 // --- If another ledge is found nearby, trigger seamless player controlled transition ---
                 previousHookNormal = ledgeGeometry.GetNormal(ledgeHook.index);
                 previousLedgeGeometry = ledgeGeometry;
                 ledgeGeometry.Initialize(ref hitCollider);
-                ledgeHook = ledgeGeometry.GetHook(transform.position + direction);
+                ledgeHook = ledgeGeometry.GetHook(transform.position + direction - transform.forward * 0.5f);
 
                 if (movingLeft)
                     ledgeHook.distance = 0.0f;
@@ -910,7 +938,7 @@ namespace Traverser
                 if(distanceToCorner > minLedgeDistance)
                     ledgeDetected = true;
 
-                Debug.Log(distanceToCorner);
+                //Debug.Log(distanceToCorner);
 
             }
             else
@@ -1423,8 +1451,8 @@ namespace Traverser
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(targetAimPosition, aimDebugSphereRadius);
 
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(nearbyLedgeCollisionPosition, aimDebugSphereRadius);
+            //Gizmos.color = Color.magenta;
+            //Gizmos.DrawWireSphere(nearbyLedgeCollisionPosition, aimDebugSphereRadius);
 
             Gizmos.color = Color.magenta;
             Gizmos.DrawLine(ltlRayOrigin, ltlRayDestination);

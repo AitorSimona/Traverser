@@ -262,12 +262,12 @@ namespace Traverser
             if (!isDrop)
             {
                 targetTransform.t = controller.contactTransform.t;
-                targetTransform.t.y += (animationController.GetSkeletonPosition().y - transform.position.y);
+                targetTransform.t.y += controller.capsuleHeight * 0.55f;
             }
             else
             {
                 targetTransform.q = transform.rotation;
-                targetTransform.t.y += (animationController.GetSkeletonPosition().y - transform.position.y);
+                targetTransform.t.y += controller.capsuleHeight * 0.55f;
             }
 
             //targetTransform.t = target;

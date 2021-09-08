@@ -33,7 +33,7 @@ MonoBehaviour:
     targetAnim: ClimbPlatformWalk
     triggerTransitionAnim: WalkTransitionTrigger
     triggerTargetAnim: PlatformClimbTrigger
-    contactOffset: 1
+    contactOffset: 0.1
     targetOffset: 0.25
     forceTarget: 0
   climbPlatformJogTransitionData:
@@ -41,7 +41,7 @@ MonoBehaviour:
     targetAnim: ClimbPlatformJog
     triggerTransitionAnim: JogTransitionTrigger
     triggerTargetAnim: PlatformClimbTrigger
-    contactOffset: 0.5
+    contactOffset: 0.25
     targetOffset: 0.25
     forceTarget: 0
   climbPlatformRunTransitionData:
@@ -49,7 +49,7 @@ MonoBehaviour:
     targetAnim: ClimbPlatformRun
     triggerTransitionAnim: RunTransitionTrigger
     triggerTargetAnim: PlatformClimbTrigger
-    contactOffset: 1
+    contactOffset: 0.25
     targetOffset: 0.25
     forceTarget: 0
   dropPlatformWalkTransitionData:

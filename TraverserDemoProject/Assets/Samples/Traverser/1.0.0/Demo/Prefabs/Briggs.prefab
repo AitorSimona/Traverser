@@ -321,7 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Effectors: []
 --- !u!1 &187115693418619219
 GameObject:
@@ -431,7 +431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Effectors: []
 --- !u!1 &187115693581496043
 GameObject:
@@ -457,7 +457,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 187115693581496043}
   m_LocalRotation: {x: 0.0000015608964, y: 0.0000048678485, z: -0.000150018, w: 1}
-  m_LocalPosition: {x: 0.000018000603, y: 0.9415405, z: 0.983}
+  m_LocalPosition: {x: -0.029, y: 1.7, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8480285455501219236}
@@ -847,7 +847,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1034048263089636336}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.74, y: 0.05000019, z: -1.11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -894,11 +894,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RigLayers:
   - m_Rig: {fileID: 8480285455501219237}
-    m_Active: 0
+    m_Active: 1
   - m_Rig: {fileID: 187115693344249444}
-    m_Active: 0
+    m_Active: 1
   - m_Rig: {fileID: 187115693559271464}
-    m_Active: 0
+    m_Active: 1
   m_Effectors: []
 --- !u!114 &1034048263089636341
 MonoBehaviour:
@@ -1113,13 +1113,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a06f00b5bdec4ef4299c0317e68bc837, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeleton: {fileID: 5278833435567159774}
-  skeletonRef: {fileID: 187115693799767290}
   warpingValidDistance: 0.1
-  warpingSpeed: 3
+  warpingSpeed: 5
   debugDraw: 1
   contactDebugSphereRadius: 0.25
   animator: {fileID: 8750898013512099561}
+  leftFootPosition: {x: 0, y: 0, z: 0}
+  rightFootPosition: {x: 0, y: 0, z: 0}
+  leftHandPosition: {x: 0, y: 0, z: 0}
+  rightHandPosition: {x: 0, y: 0, z: 0}
+  spineRig: {fileID: 8480285455501219237}
+  legsRig: {fileID: 187115693559271464}
+  armsRig: {fileID: 187115693344249444}
+  hipsRigEffector: {fileID: 8480285453563407199}
+  spineRigEffector: {fileID: 8480285454993536912}
+  leftLegRigEffector: {fileID: 187115693960092091}
+  rightLegRigEffector: {fileID: 187115693324091599}
+  aimRigEffector: {fileID: 187115693581496043}
+  hipsRef: {fileID: 5278833435567159774}
+  hipsOriginalLocalPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &1034048263089636346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1160,19 +1172,19 @@ MonoBehaviour:
   movementSpeedDampingOnTurn: 0.1
   movementSpeedNoTurn: 1
   rotationSpeedToTurn: 1
+  initialJumpSpeed: 14
+  maxJumpSpeed: 17
+  jumpDeceleration: 22
+  jumpTime: 0.25
   contactAngleMax: 30
   contactDistanceMax: 3
   iterations: 4
   stepping: 5
   fIKOn: 1
-  feetIKGroundDistance: 2
-  footHeight: 0.12
+  feetIKGroundDistance: 1
+  pelvisAdjustmentSpeed: 0.28
+  feetAdjustmentSpeed: 0.5
   debugDraw: 1
-  heightFromGroundRaycast: 1.14
-  raycastDownDistance: 1.5
-  pelvisOffset: 0
-  pelvisUpAndDownSpeed: 0.28
-  feetToIkPositionSpeed: 0.5
 --- !u!114 &1034048263089636344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1186,7 +1198,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parkourData: {fileID: 11400000, guid: 57b0340850686c540a5b0716d5285217, type: 2}
-  fIKOn: 0
   feetIKGroundDistance: 2
   footHeight: 0.05
 --- !u!114 &1034048263089636343
@@ -1202,17 +1213,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   climbingData: {fileID: 11400000, guid: b678b7f44b1c9824fadc2b58a3fd82d6, type: 2}
-  desiredSpeedLedge: 1
-  desiredCornerMinDistance: 0.2
-  maxClimbableHeight: 3.2
-  maxJumpRadius: 1.5
+  desiredLedgeSpeed: 0.5
+  desiredLedgeAcceleration: 5
+  desiredCornerSpeed: 1.5
+  desiredCornerMaxDistance: 0.35
+  maxClimbableHeight: 3.5
+  maxLedgeDistance: 1.5
+  minLedgeDistance: 0.65
+  nearbyLedgeRayLength: 2
+  nearbyLedgeMaxDistance: 0.75
+  freeHangTransitionSpeed: 3
+  freeHangForwardOffset: 0.15
+  headAimIKSpeed: 3
+  bodyAimIKSpeed: 5
   fIKOn: 1
-  footLength: 0.2
+  footLength: 0.19
+  feetRayLength: 1.25
+  feetAdjustmentSpeed: 15
   hIKOn: 1
-  handIKYDistance: 0.02
+  handIKYDistance: -0.055
   handLength: 0.05
+  handRayLength: 1
+  handsAdjustmentSpeed: 10
+  handsAimIKIntensity: 0.25
   debugDraw: 1
-  aimDebugSphereRadius: 0.25
+  aimDebugSphereRadius: 0.35
 --- !u!1 &1156780776229898572
 GameObject:
   m_ObjectHideFlags: 0
@@ -3169,8 +3194,8 @@ MonoBehaviour:
         transform: {fileID: 0}
         weight: 0
     m_Offset: {x: 0, y: 0, z: 0}
-    m_MinLimit: -180
-    m_MaxLimit: 180
+    m_MinLimit: -10
+    m_MaxLimit: 10
     m_AimAxis: 4
     m_UpAxis: 2
     m_WorldUpType: 0
@@ -3182,7 +3207,7 @@ MonoBehaviour:
       y: 1
       z: 1
   m_SourceObjectsGUIToggle: 1
-  m_SettingsGUIToggle: 0
+  m_SettingsGUIToggle: 1
 --- !u!1 &8480285453972926730
 GameObject:
   m_ObjectHideFlags: 0
@@ -3363,8 +3388,8 @@ MonoBehaviour:
         transform: {fileID: 0}
         weight: 0
     m_Offset: {x: 0, y: 0, z: 0}
-    m_MinLimit: -180
-    m_MaxLimit: 180
+    m_MinLimit: -10
+    m_MaxLimit: 10
     m_AimAxis: 4
     m_UpAxis: 2
     m_WorldUpType: 0
@@ -3593,8 +3618,8 @@ MonoBehaviour:
         transform: {fileID: 0}
         weight: 0
     m_Offset: {x: 0, y: 0, z: 0}
-    m_MinLimit: -180
-    m_MaxLimit: 180
+    m_MinLimit: -10
+    m_MaxLimit: 10
     m_AimAxis: 4
     m_UpAxis: 2
     m_WorldUpType: 0
@@ -3765,8 +3790,8 @@ MonoBehaviour:
         transform: {fileID: 0}
         weight: 0
     m_Offset: {x: 0, y: 0, z: 0}
-    m_MinLimit: -180
-    m_MaxLimit: 180
+    m_MinLimit: -10
+    m_MaxLimit: 10
     m_AimAxis: 4
     m_UpAxis: 2
     m_WorldUpType: 0
@@ -3778,7 +3803,7 @@ MonoBehaviour:
       y: 1
       z: 1
   m_SourceObjectsGUIToggle: 1
-  m_SettingsGUIToggle: 0
+  m_SettingsGUIToggle: 1
 --- !u!1 &8480285455143743686
 GameObject:
   m_ObjectHideFlags: 0
@@ -3937,7 +3962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Effectors:
   - m_Transform: {fileID: 0}
     m_Style:

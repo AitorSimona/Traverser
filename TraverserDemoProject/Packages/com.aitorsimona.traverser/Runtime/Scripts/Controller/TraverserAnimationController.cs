@@ -110,7 +110,71 @@ namespace Traverser
         public Vector3 hipsOriginalLocalPosition;
 
 
+        public float ragdollSpeed = 1.0f;
+
+        public Rigidbody hipsRB;
+        public Rigidbody spineRB;
+        public Rigidbody headRB;
+        public Rigidbody leftArmRB;
+        public Rigidbody leftForeArmRB;
+        public Rigidbody leftHandRB;
+        public Rigidbody rightArmRB;
+        public Rigidbody rightForeArmRB;
+        public Rigidbody rightHandRB;
+        public Rigidbody leftUpperLegRB;
+        public Rigidbody leftLowerLegRB;
+        public Rigidbody rightUpperLegRB;
+        public Rigidbody rightLowerLegRB;
+
+
         // --- Basic Methods ---
+
+        private void FixedUpdate()
+        {
+
+        }
+
+        private void LateUpdate()
+        {
+            // --- Hips / Spine ---
+            //hipsRB.MovePosition(Vector3.Lerp(hipsRB.position, animator.GetBoneTransform(HumanBodyBones.Hips).position, ragdollSpeed*Time.deltaTime));
+            //hipsRB.MoveRotation(Quaternion.Slerp(hipsRB.rotation, animator.GetBoneTransform(HumanBodyBones.Hips).rotation, ragdollSpeed * Time.deltaTime));
+
+            AdjustRagdollComponent(ref hipsRB, HumanBodyBones.Hips);
+            AdjustRagdollComponent(ref spineRB, HumanBodyBones.Spine);
+
+            // --- Head ---
+            AdjustRagdollComponent(ref headRB, HumanBodyBones.Head);
+
+            // --- Left arm ---
+            AdjustRagdollComponent(ref leftArmRB, HumanBodyBones.LeftUpperArm);
+            AdjustRagdollComponent(ref leftForeArmRB, HumanBodyBones.LeftLowerArm);
+            AdjustRagdollComponent(ref leftHandRB, HumanBodyBones.LeftHand);
+
+            // --- Right arm ---
+            AdjustRagdollComponent(ref rightArmRB, HumanBodyBones.RightUpperArm);
+            AdjustRagdollComponent(ref rightForeArmRB, HumanBodyBones.RightLowerArm);
+            AdjustRagdollComponent(ref rightHandRB, HumanBodyBones.RightHand);
+
+            // --- Left leg ---
+            AdjustRagdollComponent(ref leftUpperLegRB, HumanBodyBones.LeftUpperLeg);
+            AdjustRagdollComponent(ref leftLowerLegRB, HumanBodyBones.LeftLowerLeg);
+
+            // --- Right leg
+            AdjustRagdollComponent(ref rightUpperLegRB, HumanBodyBones.RightUpperLeg);
+            AdjustRagdollComponent(ref rightLowerLegRB, HumanBodyBones.RightLowerLeg);
+        }
+
+        private void AdjustRagdollComponent(ref Rigidbody rb, HumanBodyBones bone)
+        {
+            rb.AddForce((animator.GetBoneTransform(bone).position - rb.position).normalized*ragdollSpeed, ForceMode.Acceleration);
+            //rb.MovePosition(animator.GetBoneTransform(bone).position);
+            //rb.MoveRotation(animator.GetBoneTransform(bone).rotation);
+
+            //rb.MovePosition(Vector3.Lerp(rb.position, animator.GetBoneTransform(bone).position, ragdollSpeed));
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, animator.GetBoneTransform(bone).rotation, ragdollSpeed));
+
+        }
 
         private void Awake()
         {

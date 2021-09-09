@@ -167,12 +167,12 @@ namespace Traverser
 
         private void AdjustRagdollComponent(ref Rigidbody rb, HumanBodyBones bone)
         {
-            rb.AddForce((animator.GetBoneTransform(bone).position - rb.position).normalized*ragdollSpeed, ForceMode.Acceleration);
+            //rb.AddForce((animator.GetBoneTransform(bone).position - rb.position).normalized*ragdollSpeed, ForceMode.Acceleration);
             //rb.MovePosition(animator.GetBoneTransform(bone).position);
             //rb.MoveRotation(animator.GetBoneTransform(bone).rotation);
 
             //rb.MovePosition(Vector3.Lerp(rb.position, animator.GetBoneTransform(bone).position, ragdollSpeed));
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, animator.GetBoneTransform(bone).rotation, ragdollSpeed));
+            //rb.MoveRotation(Quaternion.Slerp(rb.rotation, animator.GetBoneTransform(bone).rotation, ragdollSpeed));
 
         }
 

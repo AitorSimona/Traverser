@@ -20,6 +20,9 @@ namespace Traverser
         [Tooltip("Mask used in collision checks, character will only collide against objects of assigned layers.")]
         public LayerMask characterCollisionMask;
 
+        [Tooltip("Layer used to prevent collisions between controller and ragdoll components. Set all skeleton parts to this layer")]
+        public string ragdollLayer;
+
         [Tooltip("Radius of the ground collision check sphere.")]
         [Range(0.1f, 1.0f)]
         public float groundProbeRadius = 0.25f;

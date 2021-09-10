@@ -133,6 +133,9 @@ namespace Traverser
 
         private void FixedUpdate()
         {
+            //hipsRB.AddForce((animator.GetBoneTransform(HumanBodyBones.Hips).position - hipsRB.position).normalized * ragdollSpeed);
+            //hipsRB.MovePosition(animator.GetBoneTransform(HumanBodyBones.Hips).position);
+
 
         }
 
@@ -145,7 +148,7 @@ namespace Traverser
             //ConfigurableJoint joint = hipsRB.GetComponent<ConfigurableJoint>();
             //joint.targetPosition = originalHipsPos - animator.GetBoneTransform(HumanBodyBones.Hips).position;
 
-            hipsRB.AddForce((animator.GetBoneTransform(HumanBodyBones.Hips).position - hipsRB.position).normalized * ragdollSpeed);
+            //hipsRB.MovePosition(animator.GetBoneTransform(HumanBodyBones.Hips).position);
 
             AdjustRagdollComponent(ref hipsRB, HumanBodyBones.Hips);
             AdjustRagdollComponent(ref spineRB, HumanBodyBones.Spine);
@@ -174,8 +177,8 @@ namespace Traverser
 
         private void AdjustRagdollComponent(ref Rigidbody rb, HumanBodyBones bone)
         {
-            //rb.AddForce((animator.GetBoneTransform(bone).position - rb.position).normalized*ragdollSpeed, ForceMode.Acceleration);
-            //rb.MovePosition(animator.GetBoneTransform(bone).position);
+            //rb.AddForce((animator.GetBoneTransform(bone).position - rb.position).normalized*ragdollSpeed, ForceMode.VelocityChange);
+            rb.MovePosition(animator.GetBoneTransform(bone).position);
             //rb.MoveRotation(animator.GetBoneTransform(bone).rotation);
             //rb.GetComponent<ConfigurableJoint>().targetVelocity = (animator.GetBoneTransform(bone).position - rb.position).normalized;
 

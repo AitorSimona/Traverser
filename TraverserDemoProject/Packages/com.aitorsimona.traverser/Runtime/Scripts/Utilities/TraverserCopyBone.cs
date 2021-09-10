@@ -6,6 +6,7 @@ public class TraverserCopyBone : MonoBehaviour
 {
     public Transform copyBone;
     private ConfigurableJoint configJoint;
+    private Rigidbody rigidbody;
 
     private Quaternion initialRotation;
 
@@ -13,6 +14,7 @@ public class TraverserCopyBone : MonoBehaviour
     void Start()
     {
         configJoint = GetComponent<ConfigurableJoint>();
+        rigidbody = GetComponent<Rigidbody>();
         initialRotation = copyBone.transform.localRotation;
     }
 
@@ -24,11 +26,14 @@ public class TraverserCopyBone : MonoBehaviour
     private void FixedUpdate()
     {
 
+        configJoint.targetRotation = Quaternion.Inverse(copyBone.localRotation) * initialRotation;
+
+
     }
 
     private void LateUpdate()
     {
-        configJoint.targetRotation = Quaternion.Inverse(copyBone.localRotation) * initialRotation;
 
+        //rigidbody.MoveRotation(copyBone.rotation);
     }
 }

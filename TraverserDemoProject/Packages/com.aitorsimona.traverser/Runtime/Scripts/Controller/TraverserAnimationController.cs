@@ -126,6 +126,8 @@ namespace Traverser
         public Rigidbody rightUpperLegRB;
         public Rigidbody rightLowerLegRB;
 
+        private Vector3 originalHipsPos;
+
 
         // --- Basic Methods ---
 
@@ -140,8 +142,12 @@ namespace Traverser
             //hipsRB.MovePosition(Vector3.Lerp(hipsRB.position, animator.GetBoneTransform(HumanBodyBones.Hips).position, ragdollSpeed*Time.deltaTime));
             //hipsRB.MoveRotation(Quaternion.Slerp(hipsRB.rotation, animator.GetBoneTransform(HumanBodyBones.Hips).rotation, ragdollSpeed * Time.deltaTime));
 
+            //ConfigurableJoint joint = hipsRB.GetComponent<ConfigurableJoint>();
+            //joint.targetPosition = originalHipsPos - animator.GetBoneTransform(HumanBodyBones.Hips).position;
+
+            hipsRB.AddForce((animator.GetBoneTransform(HumanBodyBones.Hips).position - hipsRB.position).normalized * ragdollSpeed);
+
             AdjustRagdollComponent(ref hipsRB, HumanBodyBones.Hips);
-            //hipsRB.AddForce((animator.GetBoneTransform(HumanBodyBones.Hips).position - hipsRB.position).normalized * ragdollSpeed);
             AdjustRagdollComponent(ref spineRB, HumanBodyBones.Spine);
 
             // --- Head ---
@@ -193,6 +199,7 @@ namespace Traverser
             animator = GetComponent<Animator>();
             transition = new TraverserTransition(this, ref controller);
             animatorParameters = new Dictionary<string, int>();
+            originalHipsPos = animator.GetBoneTransform(HumanBodyBones.Hips).position;
 
             hipsEffectorOriginalTransform = TraverserTransform.Get(hipsRigEffector.transform.localPosition, hipsRigEffector.transform.localRotation);
             spineEffectorOriginalTransform = TraverserTransform.Get(spineRigEffector.transform.localPosition, spineRigEffector.transform.localRotation);

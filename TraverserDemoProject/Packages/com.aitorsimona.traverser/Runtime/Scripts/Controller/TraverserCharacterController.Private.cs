@@ -182,7 +182,6 @@ namespace Traverser
             // --- Prevent collisions between ragdoll and controller ---
             Physics.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(ragdollLayer), true);
             //Physics.IgnoreLayerCollision(LayerMask.NameToLayer(ragdollLayer), LayerMask.NameToLayer(ragdollLayer), true);
-
         }
 
         // Start is called before the first frame update

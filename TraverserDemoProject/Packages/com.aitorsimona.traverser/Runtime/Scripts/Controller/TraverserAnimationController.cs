@@ -141,6 +141,7 @@ namespace Traverser
             //hipsRB.MoveRotation(Quaternion.Slerp(hipsRB.rotation, animator.GetBoneTransform(HumanBodyBones.Hips).rotation, ragdollSpeed * Time.deltaTime));
 
             AdjustRagdollComponent(ref hipsRB, HumanBodyBones.Hips);
+            //hipsRB.AddForce((animator.GetBoneTransform(HumanBodyBones.Hips).position - hipsRB.position).normalized * ragdollSpeed);
             AdjustRagdollComponent(ref spineRB, HumanBodyBones.Spine);
 
             // --- Head ---
@@ -170,6 +171,10 @@ namespace Traverser
             //rb.AddForce((animator.GetBoneTransform(bone).position - rb.position).normalized*ragdollSpeed, ForceMode.Acceleration);
             //rb.MovePosition(animator.GetBoneTransform(bone).position);
             //rb.MoveRotation(animator.GetBoneTransform(bone).rotation);
+            //rb.GetComponent<ConfigurableJoint>().targetVelocity = (animator.GetBoneTransform(bone).position - rb.position).normalized;
+
+            //rb.GetComponent<ConfigurableJoint>().targetRotation = animator.GetBoneTransform(bone).rotation;
+            //rb.GetComponent<ConfigurableJoint>().targetPosition = animator.GetBoneTransform(bone).position;
 
             //rb.MovePosition(Vector3.Lerp(rb.position, animator.GetBoneTransform(bone).position, ragdollSpeed));
             //rb.MoveRotation(Quaternion.Slerp(rb.rotation, animator.GetBoneTransform(bone).rotation, ragdollSpeed));

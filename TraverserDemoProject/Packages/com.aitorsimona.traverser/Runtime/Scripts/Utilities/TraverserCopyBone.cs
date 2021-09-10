@@ -9,6 +9,9 @@ public class TraverserCopyBone : MonoBehaviour
     private Rigidbody rigidbody;
 
     private Quaternion initialRotation;
+    private Quaternion previousLocal;
+
+    public float adaptSpeed = 10.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -25,14 +28,16 @@ public class TraverserCopyBone : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+        copyBone.localRotation = previousLocal;
+        //rigidbody.MovePosition(copyBone.position);
         configJoint.targetRotation = Quaternion.Inverse(copyBone.localRotation) * initialRotation;
-
 
     }
 
     private void LateUpdate()
     {
+        previousLocal = copyBone.localRotation;
+        copyBone.rotation = Quaternion.Slerp(copyBone.rotation, transform.rotation, Time.deltaTime* adaptSpeed);
 
         //rigidbody.MoveRotation(copyBone.rotation);
     }

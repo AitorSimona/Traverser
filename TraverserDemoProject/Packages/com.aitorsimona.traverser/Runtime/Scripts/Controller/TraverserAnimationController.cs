@@ -128,6 +128,7 @@ namespace Traverser
 
         private Vector3 originalHipsPos;
 
+        
 
         // --- Basic Methods ---
 
@@ -179,6 +180,7 @@ namespace Traverser
         {
             //rb.AddForce((animator.GetBoneTransform(bone).position - rb.position).normalized*ragdollSpeed, ForceMode.VelocityChange);
             rb.MovePosition(animator.GetBoneTransform(bone).position);
+            //animator.GetBoneTransform(bone).rotation = rb.rotation;
             //rb.MoveRotation(animator.GetBoneTransform(bone).rotation);
             //rb.GetComponent<ConfigurableJoint>().targetVelocity = (animator.GetBoneTransform(bone).position - rb.position).normalized;
 

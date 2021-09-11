@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a460ec869d7fd954c9deae5ca114b73c, type: 3}
+  m_Name: CurrentRagdollProfile
+  m_EditorClassIdentifier: 
+  hipsRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 10000
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 10000
+  spineRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 10000
+    angularYZDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 10000
+  headRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 10000
+    angularYZDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 10000
+  leftUpperLegRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 1000
+    angularYZDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 1000
+  leftLowerLegRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 1000
+    angularYZDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 1000
+  rightUpperLegRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 1000
+    angularYZDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 1000
+  rightLowerLegRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 1000
+    angularYZDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 1000
+  leftArmRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+    angularYZDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+  leftForeArmRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+    angularYZDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+  leftHandRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+    angularYZDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+  rightArmRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+    angularYZDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+  rightForeArmRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+    angularYZDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+  rightHandRGJoint:
+    weight: 0
+    angularXDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10
+    angularYZDrive:
+      positionSpring: 10
+      positionDamper: 0
+      maximumForce: 10

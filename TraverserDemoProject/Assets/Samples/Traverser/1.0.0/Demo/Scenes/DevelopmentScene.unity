@@ -627,6 +627,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 2559285841571683922}
+  adaptSpeed: 0
 --- !u!1 &73587163
 GameObject:
   m_ObjectHideFlags: 0
@@ -932,6 +933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 6000407480967167828}
+  adaptSpeed: 0
 --- !u!1 &130951499
 GameObject:
   m_ObjectHideFlags: 0
@@ -1853,6 +1855,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 7151331951777253004}
+  adaptSpeed: 0
 --- !u!1 &219164106
 GameObject:
   m_ObjectHideFlags: 0
@@ -3556,7 +3559,7 @@ PrefabInstance:
       objectReference: {fileID: 2094693978}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.00000012946202
+      value: 0.00000019419349
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3564,7 +3567,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.000007628296
+      value: -0.000011442444
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4027,6 +4030,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 1852576805613920153}
+  adaptSpeed: 0
 --- !u!1 &549924313
 GameObject:
   m_ObjectHideFlags: 0
@@ -4955,6 +4959,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 5901452234317452601}
+  adaptSpeed: 0
 --- !u!1 &655709555
 GameObject:
   m_ObjectHideFlags: 0
@@ -6549,6 +6554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 8169382869618495505}
+  adaptSpeed: 0
 --- !u!1 &890847768
 GameObject:
   m_ObjectHideFlags: 0
@@ -6803,6 +6809,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 5742672706364265661}
+  adaptSpeed: 0
 --- !u!1001 &906581720
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7058,6 +7065,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 5790970485721297769}
+  adaptSpeed: 0
 --- !u!1001 &921877550
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9562,6 +9570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 7410462539776466600}
+  adaptSpeed: 0
 --- !u!1 &1327231371
 GameObject:
   m_ObjectHideFlags: 0
@@ -9930,6 +9939,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 5465940245854168878}
+  adaptSpeed: 0
 --- !u!1001 &1348981244
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10670,6 +10680,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 2563496968428279289}
+  adaptSpeed: 0
 --- !u!4 &1446639886 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5654321407401618868, guid: c3e8d8e458c449c4986e9f6d78b7a9bb, type: 3}
@@ -13527,6 +13538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 5477181765396409995}
+  adaptSpeed: 0
 --- !u!1 &1883283336
 GameObject:
   m_ObjectHideFlags: 0
@@ -14809,6 +14821,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   copyBone: {fileID: 6502182840572556690}
+  adaptSpeed: 0
 --- !u!1001 &2071591823
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -19,17 +19,19 @@ public class TraverserCopyBone : MonoBehaviour
         configJoint = GetComponent<ConfigurableJoint>();
         rigidbody = GetComponent<Rigidbody>();
         initialRotation = copyBone.transform.localRotation;
+        transform.localRotation = copyBone.localRotation;
     }
 
     // Update is called once per frame
     void Update()
     {
+        copyBone.localRotation = previousLocal;
+
     }
 
     private void FixedUpdate()
     {
         copyBone.localRotation = previousLocal;
-        //rigidbody.MovePosition(copyBone.position);
         configJoint.targetRotation = Quaternion.Inverse(copyBone.localRotation) * initialRotation;
 
     }
@@ -37,8 +39,6 @@ public class TraverserCopyBone : MonoBehaviour
     private void LateUpdate()
     {
         previousLocal = copyBone.localRotation;
-        copyBone.rotation = Quaternion.Slerp(copyBone.rotation, transform.rotation, Time.deltaTime* adaptSpeed);
-
-        //rigidbody.MoveRotation(copyBone.rotation);
+        copyBone.localRotation = Quaternion.Slerp(copyBone.localRotation, transform.localRotation, adaptSpeed);
     }
 }

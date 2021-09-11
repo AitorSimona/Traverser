@@ -29,12 +29,17 @@ namespace Traverser
         {
             [Range(0.0f, 1.0f)]
             public float weight;
+            public float rbDrag;
+            public float rbAngularDrag;
             public TraverserJointDrive angularXDrive;
             public TraverserJointDrive angularYZDrive;
+
 
             public void Initialize()
             {
                 weight = 0.0f;
+                rbDrag = 0.0f;
+                rbAngularDrag = 0.0f;
                 angularXDrive.Initialize();
                 angularYZDrive.Initialize();
             }
@@ -42,6 +47,8 @@ namespace Traverser
             public void SetJointData(ref TraverserRagdollProfile.TraverserJointData jointData)
             {
                 weight = jointData.weight;
+                rbDrag = jointData.rbDrag;
+                rbAngularDrag = jointData.rbAngularDrag;
                 angularXDrive.positionSpring = jointData.angularXDrive.positionSpring;
                 angularXDrive.positionDamper = jointData.angularXDrive.positionDamper;
                 angularXDrive.maximumForce = jointData.angularXDrive.maximumForce;

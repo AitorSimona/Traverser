@@ -69,6 +69,8 @@ namespace Traverser
         public void SetRagdollJoint(ref TraverserRagdollProfile.TraverserJointData jointData)
         {
             weight = jointData.weight;
+            rb.drag = jointData.rbDrag;
+            rb.angularDrag = jointData.rbAngularDrag;
             angularXDrive.positionSpring = jointData.angularXDrive.positionSpring;
             angularXDrive.positionDamper = jointData.angularXDrive.positionDamper;
             angularXDrive.maximumForce = jointData.angularXDrive.maximumForce;

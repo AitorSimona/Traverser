@@ -12,6 +12,10 @@ namespace Traverser
         [Tooltip("A reference to the locomotion ability's dataset (scriptable object asset).")]
         public TraverserClimbingData climbingData;
 
+        [Header("Physics")]
+        [Tooltip("A reference to the climbing ability's ragdoll profile. If not set, climbing wil use the default profile.")]
+        public TraverserRagdollProfile ragdollProfile;
+
         [Header("Ledge traversal settings")]
         [Tooltip("Desired speed in meters per second for ledge climbing.")]
         [Range(0.0f, 10.0f)]
@@ -485,6 +489,9 @@ namespace Traverser
 
             previousLeftHandRotation = animationController.animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
             previousRightHandRotation = animationController.animator.GetBoneTransform(HumanBodyBones.RightHand).rotation;
+
+            if (abilityController.ragdollController != null)
+                abilityController.ragdollController.SetRagdollProfile(ref ragdollProfile);
         }
 
         public void OnExit()
@@ -494,6 +501,9 @@ namespace Traverser
 
             // --- Turn off/on controller ---
             controller.ConfigureController(true);
+
+            if (abilityController.ragdollController != null)
+                abilityController.ragdollController.SetDefaultRagdollProfile();
         }
 
         public bool IsAbilityEnabled()

@@ -166,6 +166,11 @@ namespace Traverser
             currentProfile.rightLowerLegRGJoint.SetJointData(ref ragdollProfile.rightLowerLegRGJoint);
         }
 
+        public void SetDefaultRagdollProfile()
+        {
+            SetRagdollProfile(ref defaultProfile);
+        }
+
         private void UpdateRagdoll(ref TraverserRagdollProfile ragdollProfile)
         {
             // --- Hips / Spine ---

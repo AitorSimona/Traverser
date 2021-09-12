@@ -3559,7 +3559,7 @@ PrefabInstance:
       objectReference: {fileID: 2094693978}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.00000012946202
+      value: 0.00000006473101
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3567,7 +3567,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.000007628296
+      value: -0.000003814148
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -15448,6 +15448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   climbingData: {fileID: 11400000, guid: b678b7f44b1c9824fadc2b58a3fd82d6, type: 2}
+  ragdollProfile: {fileID: 11400000, guid: 9ab96299282b5214ea9645b4928a938d, type: 2}
   desiredLedgeSpeed: 0.5
   desiredLedgeAcceleration: 5
   desiredCornerSpeed: 1.5
@@ -15501,6 +15502,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   locomotionData: {fileID: 11400000, guid: c7c06b04f0fb89449b4c1601b6c22310, type: 2}
+  ragdollProfile: {fileID: 11400000, guid: 93f7169e99e18614cabb1a3b41ece54a, type: 2}
   cameraTransform: {fileID: 468898140}
   minimumInputIntensity: 0.1
   walkSpeed: 1.5
@@ -15541,6 +15543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputController: {fileID: 0}
+  ragdollController: {fileID: 0}
 --- !u!4 &1031632035474554343
 Transform:
   m_ObjectHideFlags: 0

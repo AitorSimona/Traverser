@@ -13,6 +13,10 @@ namespace Traverser
         [Tooltip("A reference to the locomotion ability's dataset (scriptable object asset).")]
         public TraverserLocomotionData locomotionData;
 
+        [Header("Physics")]
+        [Tooltip("A reference to the locomotion ability's ragdoll profile. If not set, locomotion wil use the default profile.")]
+        public TraverserRagdollProfile ragdollProfile;
+
         [Header("Movement settings")]
 
         [Tooltip("A reference to the character's camera to adapt movement.")]
@@ -490,11 +494,15 @@ namespace Traverser
             lastRightFootPositionY = transform.InverseTransformPoint(rightFootIKTransform.t).y;
             lastLeftFootPositionY = transform.InverseTransformPoint(leftFootIKTransform.t).y;
             lastPelvisCorrectedY = animationController.GetSkeletonPosition().y;
+
+            if(abilityController.ragdollController != null)
+                abilityController.ragdollController.SetRagdollProfile(ref ragdollProfile);
         }
 
         public void OnExit()
         {
-
+            if (abilityController.ragdollController != null)
+                abilityController.ragdollController.SetDefaultRagdollProfile();
         }
 
         public bool IsAbilityEnabled()

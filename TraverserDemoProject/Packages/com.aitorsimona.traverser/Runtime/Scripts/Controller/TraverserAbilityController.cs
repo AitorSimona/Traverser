@@ -11,6 +11,8 @@ namespace Traverser
 
         [HideInInspector]
         public TraverserInputController inputController;
+        [HideInInspector]
+        public TraverserRagdollController ragdollController;
 
         private TraverserCharacterController controller;
         private TraverserAnimationController animationController;
@@ -26,6 +28,7 @@ namespace Traverser
             inputController = GetComponent<TraverserInputController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
+            ragdollController = GetComponent<TraverserRagdollController>();
             abilities = GetComponents<TraverserAbility>();
 
             Assert.IsTrue(controller != null);

@@ -400,11 +400,11 @@ namespace Traverser
                 // ---  We are falling and colliding against a ledge ---
                 auxledgeGeometry.Initialize(ref collider);
 
-                if (!ledgeGeometry.IsInitialized())
-                {
-                    previousLedgeGeometry = ledgeGeometry;
-                    ledgeGeometry.Initialize(ref auxledgeGeometry);
-                }
+                //if (!ledgeGeometry.IsInitialized())
+                //{
+                //    previousLedgeGeometry = ledgeGeometry;
+                //    ledgeGeometry.Initialize(ref auxledgeGeometry);
+                //}
 
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.GetSkeletonPosition(), ref auxledgeGeometry, ref ledgeHook);
                 Vector3 difference = (contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight));
@@ -427,6 +427,8 @@ namespace Traverser
                 // --- If transition start is successful, change state ---
                 if (ret)
                 {
+                    previousLedgeGeometry = ledgeGeometry;
+                    ledgeGeometry.Initialize(ref auxledgeGeometry);
                     SetState(ClimbingState.LedgeToLedge);
                     controller.targetVelocity = Vector3.zero;
                 }

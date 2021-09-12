@@ -8,7 +8,7 @@ namespace Traverser
     {
         // --- Attributes ---
 
-        [Tooltip("When set to false, default profile will be used, without overriding current profile.")]
+        [Tooltip("When set to false, ragdoll weight will be set to 0.")]
         public bool active = true;
 
         [Header("Ragdoll Joints")]
@@ -53,7 +53,7 @@ namespace Traverser
             if (active)
                 UpdateRagdoll(ref currentProfile);
             else
-                UpdateRagdoll(ref defaultProfile);
+                DeactivateRagdoll();
 
             hipsRGJoint.UpdateJoint();
             spineRGJoint.UpdateJoint();
@@ -166,7 +166,7 @@ namespace Traverser
             currentProfile.rightLowerLegRGJoint.SetJointData(ref ragdollProfile.rightLowerLegRGJoint);
         }
 
-        public void UpdateRagdoll(ref TraverserRagdollProfile ragdollProfile)
+        private void UpdateRagdoll(ref TraverserRagdollProfile ragdollProfile)
         {
             // --- Hips / Spine ---
             hipsRGJoint.SetRagdollJoint(ref ragdollProfile.hipsRGJoint);
@@ -192,6 +192,34 @@ namespace Traverser
             // --- Right leg
             rightUpperLegRGJoint.SetRagdollJoint(ref ragdollProfile.rightUpperLegRGJoint);
             rightLowerLegRGJoint.SetRagdollJoint(ref ragdollProfile.rightLowerLegRGJoint);
+        }
+
+        private void DeactivateRagdoll()
+        {
+            // --- Hips / Spine ---
+            hipsRGJoint.weight = 0.0f;
+            spineRGJoint.weight = 0.0f;
+
+            // --- Head ---
+            headRGJoint.weight = 0.0f;
+
+            // --- Left arm ---
+            leftArmRGJoint.weight = 0.0f;
+            leftForeArmRGJoint.weight = 0.0f;
+            leftHandRGJoint.weight = 0.0f;
+
+            // --- Right arm ---
+            rightArmRGJoint.weight = 0.0f;
+            rightForeArmRGJoint.weight = 0.0f;
+            rightHandRGJoint.weight = 0.0f;
+
+            // --- Left leg ---
+            leftUpperLegRGJoint.weight = 0.0f;
+            leftLowerLegRGJoint.weight = 0.0f;
+
+            // --- Right leg
+            rightUpperLegRGJoint.weight = 0.0f;
+            rightLowerLegRGJoint.weight = 0.0f;
         }
 
         // --------------------------------

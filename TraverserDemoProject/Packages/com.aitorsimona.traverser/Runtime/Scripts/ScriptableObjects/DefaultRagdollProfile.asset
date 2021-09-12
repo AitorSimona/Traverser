@@ -14,24 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hipsRGJoint:
     weight: 0
-    rbDrag: 0
-    rbAngularDrag: 0
+    rbDrag: 100000
+    rbAngularDrag: 100000
     angularXDrive:
       positionSpring: 0
       positionDamper: 0
-      maximumForce: 10000
+      maximumForce: 0
     angularYZDrive:
       positionSpring: 0
       positionDamper: 0
-      maximumForce: 10000
+      maximumForce: 0
   spineRGJoint:
-    weight: 0.5
-    rbDrag: 0
-    rbAngularDrag: 0
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 1000000
       positionDamper: 0
-      maximumForce: 10000
+      maximumForce: 1000000
     angularYZDrive:
       positionSpring: 1000
       positionDamper: 0
@@ -50,121 +50,121 @@ MonoBehaviour:
       maximumForce: 10000
   leftUpperLegRGJoint:
     weight: 0.5
-    rbDrag: 10
-    rbAngularDrag: 10
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
   leftLowerLegRGJoint:
-    weight: 0.5
-    rbDrag: 10
-    rbAngularDrag: 10
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
   rightUpperLegRGJoint:
     weight: 0.5
-    rbDrag: 10
-    rbAngularDrag: 10
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
   rightLowerLegRGJoint:
-    weight: 0.5
-    rbDrag: 10
-    rbAngularDrag: 10
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
   leftArmRGJoint:
-    weight: 0.5
-    rbDrag: 0
-    rbAngularDrag: 0
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
   leftForeArmRGJoint:
     weight: 0.5
-    rbDrag: 0
-    rbAngularDrag: 0
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
   leftHandRGJoint:
     weight: 0.5
-    rbDrag: 0
-    rbAngularDrag: 0
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
   rightArmRGJoint:
-    weight: 0.5
-    rbDrag: 0
-    rbAngularDrag: 0
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
   rightForeArmRGJoint:
     weight: 0.5
-    rbDrag: 0
-    rbAngularDrag: 0
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
   rightHandRGJoint:
     weight: 0.5
-    rbDrag: 0
-    rbAngularDrag: 0
+    rbDrag: 100
+    rbAngularDrag: 100
     angularXDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 1000
+      maximumForce: 100000

@@ -205,6 +205,28 @@ namespace Traverser
 
         private void LateUpdate()
         {
+            // --- Free hang, update weight ---
+            // --- We update it even when in other abilities so the weight value is valid when jump hanging to ledges ---
+            int hash;
+            animationController.animatorParameters.TryGetValue("FreeHangWeight", out hash);
+
+            if (hash != 0)
+                animationController.animator.SetFloat(hash, freehangWeight);
+
+            // --- Perform a transition to free hanging if legs cannot find a surface ---
+            if (leftLegFreeHang && rightLegFreeHang)
+            {
+                freehangWeight = Mathf.Lerp(freehangWeight, 1.0f, freeHangTransitionSpeed * Time.deltaTime);
+            }
+            else if (freehangWeight > 0.0f)
+            {
+                // --- Return to braced hanging ---
+                freehangWeight = Mathf.Lerp(freehangWeight, 0.0f, freeHangTransitionSpeed * Time.deltaTime);
+
+                if (freehangWeight < 0.05)
+                    freehangWeight = 0.0f;
+            }
+
             // --- Keep character on ledge if it moves ---
             if (!abilityController.isCurrent(this))
                 return;
@@ -236,23 +258,14 @@ namespace Traverser
                 animationController.transition.SetDestinationOffset(ref movableLedgeDelta);
             }
 
-            // --- Free hang ---
-            int hash;
-            animationController.animatorParameters.TryGetValue("FreeHangWeight", out hash);
-
-            if (hash != 0)
-                animationController.animator.SetFloat(hash, freehangWeight);
+            // --- Free hang, adjust hips ---
 
             // --- Perform a transition to free hanging if legs cannot find a surface ---
             if (leftLegFreeHang && rightLegFreeHang)
-            {
-                freehangWeight = Mathf.Lerp(freehangWeight, 1.0f, freeHangTransitionSpeed * Time.deltaTime);
                 animationController.hipsRef.position = animationController.GetSkeletonPosition() + transform.forward * freeHangForwardOffset * freehangWeight;
-            }
             else if (freehangWeight > 0.0f)
             {
                 // --- Return to braced hanging ---
-                freehangWeight = Mathf.Lerp(freehangWeight, 0.0f, freeHangTransitionSpeed * Time.deltaTime);
                 animationController.hipsRef.position = animationController.GetSkeletonPosition() + transform.forward * freeHangForwardOffset * freehangWeight;
 
                 if (freehangWeight < 0.05)

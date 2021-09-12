@@ -138,7 +138,7 @@ namespace Traverser
         private Vector3 movableLedgeDelta;
         private float movableLedgeIKAdjustmentSpeed = 100.0f;
 
-        // --- Character will be adjusted to movable ledge if target animation transition is below this normalized time ---
+        // --- Character will be adjusted to movable ledge if target animation transition is above this normalized time ---
         private float ledgeAdjustmentLimitTime = 0.25f;
 
         // --- Ledge geometry will be changed to new one after this normalized time has passed in the target animation ---
@@ -397,7 +397,7 @@ namespace Traverser
                 && (contactTransform.t - (transform.position + Vector3.up* controller.capsuleHeight)).magnitude < maxDistance
                 && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
             {
-                // ---  We are falling and colliding against a ledge
+                // ---  We are falling and colliding against a ledge ---
                 auxledgeGeometry.Initialize(ref collider);
 
                 if (!ledgeGeometry.IsInitialized())

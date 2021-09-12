@@ -42,10 +42,6 @@ namespace Traverser
         [Range(0.01f, 0.1f)]
         public float warpingValidDistance = 0.1f;
 
-        [Tooltip("The bigger the speed the more influence the warper will have over motion.")]
-        [Range(1.0f, 10.0f)]
-        public float warpingSpeed = 3.0f;
-
         [Header("Debug")]
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show debug geometry.")]
         public bool debugDraw = false;
@@ -105,91 +101,7 @@ namespace Traverser
         public GameObject leftLegRigEffector;
         public GameObject rightLegRigEffector;
         public GameObject aimRigEffector;
-
         public Transform hipsRef;
-        public Vector3 hipsOriginalLocalPosition;
-
-
-        //public float ragdollSpeed = 1.0f;
-
-        //public TraverserRagdollJoint hipsRGJoint;
-        //public TraverserRagdollJoint spineRGJoint;
-        //public TraverserRagdollJoint headRGJoint;
-        //public TraverserRagdollJoint leftArmRGJoint;
-        //public TraverserRagdollJoint leftForeArmRGJoint;
-        //public TraverserRagdollJoint leftHandRGJoint;
-        //public TraverserRagdollJoint rightArmRGJoint;
-        //public TraverserRagdollJoint rightForeArmRGJoint;
-        //public TraverserRagdollJoint rightHandRGJoint;
-        //public TraverserRagdollJoint leftUpperLegRGJoint;
-        //public TraverserRagdollJoint leftLowerLegRGJoint;
-        //public TraverserRagdollJoint rightUpperLegRGJoint;
-        //public TraverserRagdollJoint rightLowerLegRGJoint;
-
-        //public TraverserRagdollProfile defaultProfile;
-       
-        // --- Basic Methods ---
-
-        //private void LateUpdate()
-        //{
-        //    // --- Hips / Spine ---
-        //    AdjustRagdollComponent(ref hipsRGJoint, HumanBodyBones.Hips);
-        //    AdjustRagdollComponent(ref spineRGJoint, HumanBodyBones.Spine);
-
-        //    // --- Head ---
-        //    AdjustRagdollComponent(ref headRGJoint, HumanBodyBones.Head);
-
-        //    // --- Left arm ---
-        //    AdjustRagdollComponent(ref leftArmRGJoint, HumanBodyBones.LeftUpperArm);
-        //    AdjustRagdollComponent(ref leftForeArmRGJoint, HumanBodyBones.LeftLowerArm);
-        //    AdjustRagdollComponent(ref leftHandRGJoint, HumanBodyBones.LeftHand);
-
-        //    // --- Right arm ---
-        //    AdjustRagdollComponent(ref rightArmRGJoint, HumanBodyBones.RightUpperArm);
-        //    AdjustRagdollComponent(ref rightForeArmRGJoint, HumanBodyBones.RightLowerArm);
-        //    AdjustRagdollComponent(ref rightHandRGJoint, HumanBodyBones.RightHand);
-
-        //    // --- Left leg ---
-        //    AdjustRagdollComponent(ref leftUpperLegRGJoint, HumanBodyBones.LeftUpperLeg);
-        //    AdjustRagdollComponent(ref leftLowerLegRGJoint, HumanBodyBones.LeftLowerLeg);
-
-        //    // --- Right leg
-        //    AdjustRagdollComponent(ref rightUpperLegRGJoint, HumanBodyBones.RightUpperLeg);
-        //    AdjustRagdollComponent(ref rightLowerLegRGJoint, HumanBodyBones.RightLowerLeg);
-        //}
-
-        //private void AdjustRagdollComponent(ref TraverserRagdollJoint copyBone, HumanBodyBones bone)
-        //{
-        //    copyBone.MoveRBPosition(animator.GetBoneTransform(bone).position);
-        //}
-
-        //public void SetRagdollProfile(ref TraverserRagdollProfile ragdollProfile)
-        //{
-        //    // --- Hips / Spine ---
-        //    hipsRGJoint.SetRagdollJoint(ref ragdollProfile.hipsRGJoint);
-        //    spineRGJoint.SetRagdollJoint(ref ragdollProfile.spineRGJoint);
-
-        //    // --- Head ---
-        //    headRGJoint.SetRagdollJoint(ref ragdollProfile.headRGJoint);
-
-        //    // --- Left arm ---
-        //    leftArmRGJoint.SetRagdollJoint(ref ragdollProfile.leftArmRGJoint);
-        //    leftForeArmRGJoint.SetRagdollJoint(ref ragdollProfile.leftForeArmRGJoint);
-        //    leftHandRGJoint.SetRagdollJoint(ref ragdollProfile.leftHandRGJoint);
-
-        //    // --- Right arm ---
-        //    rightArmRGJoint.SetRagdollJoint(ref ragdollProfile.rightArmRGJoint);
-        //    rightForeArmRGJoint.SetRagdollJoint(ref ragdollProfile.rightForeArmRGJoint);
-        //    rightHandRGJoint.SetRagdollJoint(ref ragdollProfile.rightHandRGJoint);
-
-        //    // --- Left leg ---
-        //    leftUpperLegRGJoint.SetRagdollJoint(ref ragdollProfile.leftUpperLegRGJoint);
-        //    leftLowerLegRGJoint.SetRagdollJoint(ref ragdollProfile.leftLowerLegRGJoint);
-
-        //    // --- Right leg
-        //    rightUpperLegRGJoint.SetRagdollJoint(ref ragdollProfile.rightUpperLegRGJoint);
-        //    rightLowerLegRGJoint.SetRagdollJoint(ref ragdollProfile.rightLowerLegRGJoint);
-        //}
 
         private void Awake()
         {
@@ -210,8 +122,6 @@ namespace Traverser
             leftLegEffectorOriginalTransform = TraverserTransform.Get(leftLegRigEffector.transform.localPosition, leftLegRigEffector.transform.localRotation);
             rightLegEffectorOriginalTransform = TraverserTransform.Get(rightLegRigEffector.transform.localPosition, rightLegRigEffector.transform.localRotation);
             aimEffectorOriginalTransform = TraverserTransform.Get(aimRigEffector.transform.localPosition, aimRigEffector.transform.localRotation);
-            hipsOriginalLocalPosition = hipsRef.localPosition;
-
 
             // --- Save all animator parameter hashes for future reference ---
             foreach (AnimatorControllerParameter param in animator.parameters)
@@ -277,6 +187,10 @@ namespace Traverser
                 // --- We might be transitioning from transition animation to target, if so get normalized time from next state (target) ---
                 if (animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName(transition.targetAnimName))
                     currentTime = animator.GetNextAnimatorStateInfo(0).normalizedTime;
+
+                // --- If we have already left target anim, force teleport ---
+                else if (!animator.GetCurrentAnimatorStateInfo(0).IsName(transition.targetAnimName))
+                    currentTime = 1.0f;
 
                 // --- Update curve to a possibly changed destination ---
                 OffsetCurve(matchPosition);

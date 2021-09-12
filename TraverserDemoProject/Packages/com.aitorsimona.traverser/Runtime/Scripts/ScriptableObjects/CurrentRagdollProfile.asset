@@ -37,7 +37,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 10000
   headRGJoint:
-    weight: 0.5
+    weight: 0.25
     rbDrag: 0
     rbAngularDrag: 0
     angularXDrive:
@@ -49,7 +49,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 10000
   leftUpperLegRGJoint:
-    weight: 0.5
+    weight: 1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -61,19 +61,19 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   leftLowerLegRGJoint:
-    weight: 0.25
-    rbDrag: 100
-    rbAngularDrag: 100
+    weight: 1
+    rbDrag: 1
+    rbAngularDrag: 0
     angularXDrive:
-      positionSpring: 100000
+      positionSpring: 10
       positionDamper: 0
-      maximumForce: 100000
+      maximumForce: 100
     angularYZDrive:
-      positionSpring: 100000
+      positionSpring: 10
       positionDamper: 0
-      maximumForce: 100000
+      maximumForce: 100
   rightUpperLegRGJoint:
-    weight: 0.5
+    weight: 1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -85,19 +85,19 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   rightLowerLegRGJoint:
-    weight: 0.25
-    rbDrag: 100
-    rbAngularDrag: 100
+    weight: 1
+    rbDrag: 1
+    rbAngularDrag: 0
     angularXDrive:
-      positionSpring: 100000
+      positionSpring: 10
       positionDamper: 0
-      maximumForce: 100000
+      maximumForce: 100
     angularYZDrive:
-      positionSpring: 100000
+      positionSpring: 10
       positionDamper: 0
-      maximumForce: 100000
+      maximumForce: 100
   leftArmRGJoint:
-    weight: 0.25
+    weight: 0.1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -109,7 +109,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   leftForeArmRGJoint:
-    weight: 0.5
+    weight: 0.1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -121,7 +121,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   leftHandRGJoint:
-    weight: 0.5
+    weight: 0.1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -133,7 +133,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   rightArmRGJoint:
-    weight: 0.25
+    weight: 0.1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -145,7 +145,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   rightForeArmRGJoint:
-    weight: 0.5
+    weight: 0.1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -157,7 +157,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   rightHandRGJoint:
-    weight: 0.5
+    weight: 0.1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:

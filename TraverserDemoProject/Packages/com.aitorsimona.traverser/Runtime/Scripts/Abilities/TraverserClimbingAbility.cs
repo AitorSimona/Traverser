@@ -1094,11 +1094,11 @@ namespace Traverser
 
                 // --- Left foot ---
                 float weight = animationController.animator.GetFloat("IKLeftFootWeight");
-                AdjustFootIK(AvatarIKGoal.LeftFoot, ref previousLeftFootPosition, animationController.leftFootPosition, weight);
+                AdjustFootIK(AvatarIKGoal.LeftFoot, ref previousLeftFootPosition, animationController.leftFootPosition, ref leftLegFreeHang, weight);
 
                 // --- Right foot ---
                 weight = animationController.animator.GetFloat("IKRightFootWeight");
-                AdjustFootIK(AvatarIKGoal.RightFoot, ref previousRightFootPosition, animationController.rightFootPosition, weight);
+                AdjustFootIK(AvatarIKGoal.RightFoot, ref previousRightFootPosition, animationController.rightFootPosition, ref rightLegFreeHang, weight);
 
             }
 
@@ -1124,7 +1124,7 @@ namespace Traverser
             }
         }
 
-        private void AdjustFootIK(AvatarIKGoal ikGoal, ref Vector3 previousFootPosition, Vector3 bonePosition ,float weight)
+        private void AdjustFootIK(AvatarIKGoal ikGoal, ref Vector3 previousFootPosition, Vector3 bonePosition, ref bool freeHang, float weight)
         {
             if (weight > 0.0f)
             {
@@ -1148,12 +1148,12 @@ namespace Traverser
                 if (Physics.Raycast(rayOrigin, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
                 {
                     footPosition = Vector3.Lerp(previousFootPosition, hit.point - transform.forward * footLength, feetAdjustmentSpeed * Time.deltaTime);
-                    leftLegFreeHang = false;
+                    freeHang = false;
                 }
                 else
                 {
                     footPosition = Vector3.Lerp(previousFootPosition, bonePosition, feetAdjustmentSpeed * Time.deltaTime);
-                    leftLegFreeHang = true;
+                    freeHang = true;
                 }
 
                 // --- Update previous foot position ---

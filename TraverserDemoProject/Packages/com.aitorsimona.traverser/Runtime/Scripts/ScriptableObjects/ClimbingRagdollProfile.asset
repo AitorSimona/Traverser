@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a460ec869d7fd954c9deae5ca114b73c, type: 3}
   m_Name: ClimbingRagdollProfile
   m_EditorClassIdentifier: 
+  blendTime: 1
   hipsRGJoint:
     weight: 0
     rbDrag: 100000

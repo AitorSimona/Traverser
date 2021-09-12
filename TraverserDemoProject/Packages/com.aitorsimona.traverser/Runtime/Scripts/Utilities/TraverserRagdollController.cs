@@ -29,14 +29,19 @@ namespace Traverser
         [Header("Ragdoll Profiles")]
         [Tooltip("This profile will be loaded at startup if ragdoll controller is enabled.")]
         public TraverserRagdollProfile defaultProfile;
-        [Tooltip("This profile will be overriden on calls to SetProfile.")]
+        [Tooltip("This is the active profile.")]
         public TraverserRagdollProfile currentProfile;
+        [Tooltip("This profile will be overriden on calls to SetProfile and used to blend from previous to current.")]
+        public TraverserRagdollProfile blendProfile;
 
         // --------------------------------
 
         // --- Private Variables ---
 
         private Animator animator;
+        private float blendTime = 0.25f;
+        private float currentBlendTime = 0.0f;
+        private bool isBlending = false;
 
         // --------------------------------
 
@@ -50,6 +55,9 @@ namespace Traverser
 
         void Update()
         {
+            if (isBlending)
+                BlendProfile(Time.deltaTime);
+
             if (active)
                 UpdateRagdoll(ref currentProfile);
             else
@@ -133,6 +141,46 @@ namespace Traverser
 
         // --- Utility Methods ---
 
+        private void BlendProfile(float deltaTime)
+        {
+            // --- Update blending ---
+            currentBlendTime += deltaTime;
+            float normalizedBlendTime;
+
+            if (Mathf.Approximately(blendTime, 0.0f))
+                normalizedBlendTime = 1.0f;
+            else
+                normalizedBlendTime = currentBlendTime / blendTime;
+
+            if (normalizedBlendTime >= 1.0f)
+                isBlending = false;
+
+            // --- Hips / Spine ---
+            currentProfile.hipsRGJoint.BlendJointData(ref blendProfile.hipsRGJoint, normalizedBlendTime);
+            currentProfile.spineRGJoint.BlendJointData(ref blendProfile.spineRGJoint, normalizedBlendTime);
+
+            // --- Head ---
+            currentProfile.headRGJoint.BlendJointData(ref blendProfile.headRGJoint, normalizedBlendTime);
+
+            // --- Left arm ---
+            currentProfile.leftArmRGJoint.BlendJointData(ref blendProfile.leftArmRGJoint, normalizedBlendTime);
+            currentProfile.leftForeArmRGJoint.BlendJointData(ref blendProfile.leftForeArmRGJoint, normalizedBlendTime);
+            currentProfile.leftHandRGJoint.BlendJointData(ref blendProfile.leftHandRGJoint, normalizedBlendTime);
+
+            // --- Right arm ---
+            currentProfile.rightArmRGJoint.BlendJointData(ref blendProfile.rightArmRGJoint, normalizedBlendTime);
+            currentProfile.rightForeArmRGJoint.BlendJointData(ref blendProfile.rightForeArmRGJoint, normalizedBlendTime);
+            currentProfile.rightHandRGJoint.BlendJointData(ref blendProfile.rightHandRGJoint, normalizedBlendTime);
+
+            // --- Left leg ---
+            currentProfile.leftUpperLegRGJoint.BlendJointData(ref blendProfile.leftUpperLegRGJoint, normalizedBlendTime);
+            currentProfile.leftLowerLegRGJoint.BlendJointData(ref blendProfile.leftLowerLegRGJoint, normalizedBlendTime);
+
+            // --- Right leg
+            currentProfile.rightUpperLegRGJoint.BlendJointData(ref blendProfile.rightUpperLegRGJoint, normalizedBlendTime);
+            currentProfile.rightLowerLegRGJoint.BlendJointData(ref blendProfile.rightLowerLegRGJoint, normalizedBlendTime);
+        }
+
         private void AdjustRagdollComponent(ref TraverserRagdollJoint ragdollJoint, HumanBodyBones bone)
         {
             ragdollJoint.MoveRBPosition(animator.GetBoneTransform(bone).position);
@@ -140,30 +188,37 @@ namespace Traverser
 
         public void SetRagdollProfile(ref TraverserRagdollProfile ragdollProfile)
         {
+            // --- Update control variables ---
+            isBlending = true;
+            currentBlendTime = 0.0f;
+            blendTime = ragdollProfile.blendTime;
+
             // --- Hips / Spine ---
-            currentProfile.hipsRGJoint.SetJointData(ref ragdollProfile.hipsRGJoint);
-            currentProfile.spineRGJoint.SetJointData(ref ragdollProfile.spineRGJoint);
+            blendProfile.hipsRGJoint.SetJointData(ref ragdollProfile.hipsRGJoint);
+            blendProfile.spineRGJoint.SetJointData(ref ragdollProfile.spineRGJoint);
 
             // --- Head ---
-            currentProfile.headRGJoint.SetJointData(ref ragdollProfile.headRGJoint);
+            blendProfile.headRGJoint.SetJointData(ref ragdollProfile.headRGJoint);
 
             // --- Left arm ---
-            currentProfile.leftArmRGJoint.SetJointData(ref ragdollProfile.leftArmRGJoint);
-            currentProfile.leftForeArmRGJoint.SetJointData(ref ragdollProfile.leftForeArmRGJoint);
-            currentProfile.leftHandRGJoint.SetJointData(ref ragdollProfile.leftHandRGJoint);
+            blendProfile.leftArmRGJoint.SetJointData(ref ragdollProfile.leftArmRGJoint);
+            blendProfile.leftForeArmRGJoint.SetJointData(ref ragdollProfile.leftForeArmRGJoint);
+            blendProfile.leftHandRGJoint.SetJointData(ref ragdollProfile.leftHandRGJoint);
 
             // --- Right arm ---
-            currentProfile.rightArmRGJoint.SetJointData(ref ragdollProfile.rightArmRGJoint);
-            currentProfile.rightForeArmRGJoint.SetJointData(ref ragdollProfile.rightForeArmRGJoint);
-            currentProfile.rightHandRGJoint.SetJointData(ref ragdollProfile.rightHandRGJoint);
+            blendProfile.rightArmRGJoint.SetJointData(ref ragdollProfile.rightArmRGJoint);
+            blendProfile.rightForeArmRGJoint.SetJointData(ref ragdollProfile.rightForeArmRGJoint);
+            blendProfile.rightHandRGJoint.SetJointData(ref ragdollProfile.rightHandRGJoint);
 
             // --- Left leg ---
-            currentProfile.leftUpperLegRGJoint.SetJointData(ref ragdollProfile.leftUpperLegRGJoint);
-            currentProfile.leftLowerLegRGJoint.SetJointData(ref ragdollProfile.leftLowerLegRGJoint);
+            blendProfile.leftUpperLegRGJoint.SetJointData(ref ragdollProfile.leftUpperLegRGJoint);
+            blendProfile.leftLowerLegRGJoint.SetJointData(ref ragdollProfile.leftLowerLegRGJoint);
 
             // --- Right leg
-            currentProfile.rightUpperLegRGJoint.SetJointData(ref ragdollProfile.rightUpperLegRGJoint);
-            currentProfile.rightLowerLegRGJoint.SetJointData(ref ragdollProfile.rightLowerLegRGJoint);
+            blendProfile.rightUpperLegRGJoint.SetJointData(ref ragdollProfile.rightUpperLegRGJoint);
+            blendProfile.rightLowerLegRGJoint.SetJointData(ref ragdollProfile.rightLowerLegRGJoint);
+
+
         }
 
         public void SetDefaultRagdollProfile()

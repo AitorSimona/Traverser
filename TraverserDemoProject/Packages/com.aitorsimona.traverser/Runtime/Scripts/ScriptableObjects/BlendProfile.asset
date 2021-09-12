@@ -1,0 +1,171 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a460ec869d7fd954c9deae5ca114b73c, type: 3}
+  m_Name: BlendProfile
+  m_EditorClassIdentifier: 
+  blendTime: 0
+  hipsRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  spineRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  headRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  leftUpperLegRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  leftLowerLegRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  rightUpperLegRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  rightLowerLegRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  leftArmRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  leftForeArmRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  leftHandRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  rightArmRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  rightForeArmRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  rightHandRGJoint:
+    weight: 0
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0

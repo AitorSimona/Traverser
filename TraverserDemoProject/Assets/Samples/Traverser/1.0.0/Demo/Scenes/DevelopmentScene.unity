@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 1481.6191, g: 1835.6934, b: 2430.2617, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3559,7 +3559,7 @@ PrefabInstance:
       objectReference: {fileID: 2094693978}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.00000012946202
+      value: 0.00000006473101
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3567,7 +3567,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.000007628296
+      value: -0.000003814148
       objectReference: {fileID: 0}
     - target: {fileID: 5452177371190244246, guid: 7e49b650421497d419eab8a9fd783ceb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -15504,6 +15504,7 @@ MonoBehaviour:
   rightLowerLegRGJoint: {fileID: 1877301226}
   defaultProfile: {fileID: 11400000, guid: 93f7169e99e18614cabb1a3b41ece54a, type: 2}
   currentProfile: {fileID: 11400000, guid: f459b6c851bd5b14987819fc24dc66b3, type: 2}
+  blendProfile: {fileID: 11400000, guid: 086a5d637d1be384e896aa45022529ea, type: 2}
 --- !u!114 &919132148497652999
 MonoBehaviour:
   m_ObjectHideFlags: 0

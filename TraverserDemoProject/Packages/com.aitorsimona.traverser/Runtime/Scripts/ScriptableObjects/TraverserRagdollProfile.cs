@@ -44,11 +44,12 @@ namespace Traverser
                 angularYZDrive.Initialize();
             }
 
-            public void SetJointData(ref TraverserRagdollProfile.TraverserJointData jointData)
+            public void SetJointData(ref TraverserJointData jointData)
             {
                 weight = jointData.weight;
                 rbDrag = jointData.rbDrag;
                 rbAngularDrag = jointData.rbAngularDrag;
+
                 angularXDrive.positionSpring = jointData.angularXDrive.positionSpring;
                 angularXDrive.positionDamper = jointData.angularXDrive.positionDamper;
                 angularXDrive.maximumForce = jointData.angularXDrive.maximumForce;
@@ -57,7 +58,26 @@ namespace Traverser
                 angularYZDrive.positionDamper = jointData.angularYZDrive.positionDamper;
                 angularYZDrive.maximumForce = jointData.angularYZDrive.maximumForce;
             }
+
+            public void BlendJointData(ref TraverserJointData jointData, float currentBlendNormalizedTime)
+            {
+                weight = Mathf.Lerp(weight, jointData.weight, currentBlendNormalizedTime);
+                rbDrag = Mathf.Lerp(rbDrag, jointData.rbDrag, currentBlendNormalizedTime);
+                rbAngularDrag = Mathf.Lerp(rbAngularDrag, jointData.rbAngularDrag, currentBlendNormalizedTime);
+                
+                angularXDrive.positionSpring = Mathf.Lerp(angularXDrive.positionSpring ,jointData.angularXDrive.positionSpring, currentBlendNormalizedTime);
+                angularXDrive.positionDamper = Mathf.Lerp(angularXDrive.positionDamper, jointData.angularXDrive.positionDamper, currentBlendNormalizedTime);
+                angularXDrive.maximumForce = Mathf.Lerp(angularXDrive.maximumForce, jointData.angularXDrive.maximumForce, currentBlendNormalizedTime);
+
+                angularYZDrive.positionSpring = Mathf.Lerp(angularYZDrive.positionSpring, jointData.angularYZDrive.positionSpring, currentBlendNormalizedTime);
+                angularYZDrive.positionDamper = Mathf.Lerp(angularYZDrive.positionDamper, jointData.angularYZDrive.positionDamper, currentBlendNormalizedTime);
+                angularYZDrive.maximumForce = Mathf.Lerp(angularYZDrive.maximumForce, jointData.angularYZDrive.maximumForce, currentBlendNormalizedTime);
+            }
         }
+
+        [Tooltip("The time it will take to blend to this profile in seconds.")]
+        [Range(0.0f, 1.0f)]
+        public float blendTime;
 
         public TraverserJointData hipsRGJoint;
         public TraverserJointData spineRGJoint;
@@ -76,6 +96,5 @@ namespace Traverser
         public TraverserJointData rightArmRGJoint;
         public TraverserJointData rightForeArmRGJoint;
         public TraverserJointData rightHandRGJoint;
-
     }
 }

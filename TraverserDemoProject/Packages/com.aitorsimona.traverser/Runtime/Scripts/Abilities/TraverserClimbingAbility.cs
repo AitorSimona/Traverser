@@ -134,6 +134,10 @@ namespace Traverser
         private bool movingLeft = false;
         private float cornersBoundsOffset = 0.1f;
 
+        // --- Mocing ledges ---
+        private Vector3 movableLedgeDelta;
+        private float movableLedgeIKAdjustmentSpeed = 100.0f;
+
         // --- Character will be adjusted to movable ledge if target animation transition is below this normalized time ---
         private float ledgeAdjustmentLimitTime = 0.25f;
 
@@ -206,7 +210,6 @@ namespace Traverser
                 return;
 
             // --- Adapt to moving ledges ---
-            Vector3 delta;
 
             if (animationController.transition.isON
                 &&
@@ -217,20 +220,20 @@ namespace Traverser
             {
                 // --- Update ledge if it moves, but do not teleport controller, warping will handle it ---
                 ledgeGeometry.UpdateLedge();
-                delta = auxledgeGeometry.UpdateLedge();
+                movableLedgeDelta = auxledgeGeometry.UpdateLedge();
             }
             else
             {
                 // --- Update ledge if it moves, teleport controller to follow ledge ---
                 auxledgeGeometry.UpdateLedge();
-                delta = ledgeGeometry.UpdateLedge();
-                controller.TeleportTo(transform.position + delta);
+                movableLedgeDelta = ledgeGeometry.UpdateLedge();
+                controller.TeleportTo(transform.position + movableLedgeDelta);
             }
 
             // --- Notify transition handler to adapt motion warping to new destination
             if (state != ClimbingState.Dismount)
             {
-                animationController.transition.SetDestinationOffset(ref delta);
+                animationController.transition.SetDestinationOffset(ref movableLedgeDelta);
             }
 
             // --- Free hang ---
@@ -731,10 +734,10 @@ namespace Traverser
         
         public bool OnLedgeMovement(ref TraverserLedgeObject.TraverserLedgeHook desiredLedgeHook, Vector3 targetPosition)
         {
-            bool canMove;
+            bool canMove = false;
 
             // --- Update movement while far enough from the edge's corners ---
-            if (!ledgeGeometry.IsOutOfBounds(ref ledgeHook, desiredCornerMaxDistance - cornersBoundsOffset))
+            if (!ledgeGeometry.IsOutOfBounds(ref desiredLedgeHook, desiredCornerMaxDistance - cornersBoundsOffset))
             {
                 ledgeHook = desiredLedgeHook;
                 controller.targetDisplacement = targetPosition - transform.position;
@@ -766,7 +769,7 @@ namespace Traverser
                 {
                     canMove = false;
                 }
-                else
+                else if (movableLedgeDelta == Vector3.zero)
                 {
                     ledgeDetected = false;
                     ledgeHook = desiredLedgeHook;
@@ -828,6 +831,7 @@ namespace Traverser
                 && abilityController.inputController.GetInputMovement().x != 0.0f
                 && distanceToCorner <= desiredCornerMaxDistance
                 && distanceToLedge < nearbyLedgeMaxDistance
+                && movableLedgeDelta == Vector3.zero
                 && hit.transform.GetComponent<TraverserClimbingObject>())
             {
                 // --- Create geometry given new ledge ---
@@ -1142,19 +1146,25 @@ namespace Traverser
                 Vector3 rayOrigin = bonePosition - transform.forward * 0.75f;
                 rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
 
+                float speedModifier = feetAdjustmentSpeed;
+
+                if (movableLedgeDelta != Vector3.zero)
+                    speedModifier = movableLedgeIKAdjustmentSpeed;
+
                 if (debugDraw)
                     Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * feetRayLength);
 
                 if (Physics.Raycast(rayOrigin, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
                 {
-                    footPosition = Vector3.Lerp(previousFootPosition, hit.point - transform.forward * footLength, feetAdjustmentSpeed * Time.deltaTime);
+                    footPosition = Vector3.Lerp(previousFootPosition, hit.point - transform.forward * footLength, speedModifier * Time.deltaTime);
                     freeHang = false;
                 }
                 else
                 {
-                    footPosition = Vector3.Lerp(previousFootPosition, bonePosition, feetAdjustmentSpeed * Time.deltaTime);
+                    footPosition = Vector3.Lerp(previousFootPosition, bonePosition, speedModifier * Time.deltaTime);
                     freeHang = true;
                 }
+
 
                 // --- Update previous foot position ---
                 previousFootPosition = footPosition;
@@ -1237,6 +1247,9 @@ namespace Traverser
                     handDirection = ((targetAimPosition + transform.forward * 0.15f) - bonePosition).normalized;
                     speedModifier *= handsAimIKIntensity;
                 }
+
+                if (movableLedgeDelta != Vector3.zero)
+                    speedModifier = movableLedgeIKAdjustmentSpeed;
 
                 // --- Using the computed position and rotation, smoothly transition to desired transform ---
                 handPosition = Vector3.Lerp(previousHandPosition, handPosition, speedModifier * Time.deltaTime);

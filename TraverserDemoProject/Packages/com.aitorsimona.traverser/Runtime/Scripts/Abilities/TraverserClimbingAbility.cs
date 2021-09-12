@@ -15,6 +15,8 @@ namespace Traverser
         [Header("Physics")]
         [Tooltip("A reference to the climbing ability's ragdoll profile. If not set, climbing wil use the default profile.")]
         public TraverserRagdollProfile ragdollProfile;
+        [Tooltip("The profile used for free hang hops (ledge to ledge).")]
+        public TraverserRagdollProfile freehangTransitionRagdollProfile;
 
         [Header("Ledge traversal settings")]
         [Tooltip("Desired speed in meters per second for ledge climbing.")]
@@ -594,6 +596,9 @@ namespace Traverser
 
                 SetState(ClimbingState.Climbing);
                 controller.ConfigureController(false);
+
+                if (abilityController.ragdollController != null)
+                    abilityController.ragdollController.SetRagdollProfile(ref ragdollProfile);
             }
         }
 
@@ -1035,6 +1040,9 @@ namespace Traverser
 
                         ledgeHook = auxHook;
                         ledgeDetected = false;
+
+                        if (abilityController.ragdollController != null && freehangWeight != 0.0f)
+                            abilityController.ragdollController.SetRagdollProfile(ref freehangTransitionRagdollProfile);
                     }
                 }
                 

@@ -100,6 +100,9 @@ namespace Traverser
 
             public bool IsEqual(ref BoxCollider ledgeCollider)
             {
+                if (ledgeCollider == null)
+                    return false;
+
                 return ledgeCollider.Equals(originalCollider);
             }
 

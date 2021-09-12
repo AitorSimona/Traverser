@@ -1131,43 +1131,42 @@ namespace Traverser
         }
 
         private void AdjustFootIK(AvatarIKGoal ikGoal, ref Vector3 previousFootPosition, Vector3 bonePosition, ref bool freeHang, float weight)
-        {
+        {        
+            // --- Set weight ---
+            animationController.animator.SetIKPositionWeight(ikGoal, weight);
+            animationController.animator.SetIKRotationWeight(ikGoal, weight);
+
+            // --- Initialize previous foot position ---
+            if (previousFootPosition == Vector3.zero)
+                previousFootPosition = animationController.animator.GetIKPosition(ikGoal);
+
+            // --- Throw a ray to detect a surface, else activate free hang (requires both feet failing collision test) ---
+            Vector3 footPosition;
+            RaycastHit hit;
+            Vector3 rayOrigin = bonePosition - transform.forward * 0.75f;
+            rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
+
+            float speedModifier = feetAdjustmentSpeed;
+
+            if (movableLedgeDelta != Vector3.zero)
+                speedModifier = movableLedgeIKAdjustmentSpeed;
+
+            if (debugDraw)
+                Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * feetRayLength);
+
+            if (Physics.Raycast(rayOrigin, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
+            {
+                footPosition = Vector3.Lerp(previousFootPosition, hit.point - transform.forward * footLength, speedModifier * Time.deltaTime);
+                freeHang = false;
+            }
+            else
+            {
+                footPosition = Vector3.Lerp(previousFootPosition, bonePosition, speedModifier * Time.deltaTime);
+                freeHang = true;
+            }
+
             if (weight > 0.0f)
             {
-                // --- Set weight ---
-                animationController.animator.SetIKPositionWeight(ikGoal, weight);
-                animationController.animator.SetIKRotationWeight(ikGoal, weight);
-
-                // --- Initialize previous foot position ---
-                if (previousFootPosition == Vector3.zero)
-                    previousFootPosition = animationController.animator.GetIKPosition(ikGoal);
-
-                // --- Throw a ray to detect a surface, else activate free hang (requires both feet failing collision test) ---
-                Vector3 footPosition;
-                RaycastHit hit;
-                Vector3 rayOrigin = bonePosition - transform.forward * 0.75f;
-                rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
-
-                float speedModifier = feetAdjustmentSpeed;
-
-                if (movableLedgeDelta != Vector3.zero)
-                    speedModifier = movableLedgeIKAdjustmentSpeed;
-
-                if (debugDraw)
-                    Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * feetRayLength);
-
-                if (Physics.Raycast(rayOrigin, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-                {
-                    footPosition = Vector3.Lerp(previousFootPosition, hit.point - transform.forward * footLength, speedModifier * Time.deltaTime);
-                    freeHang = false;
-                }
-                else
-                {
-                    footPosition = Vector3.Lerp(previousFootPosition, bonePosition, speedModifier * Time.deltaTime);
-                    freeHang = true;
-                }
-
-
                 // --- Update previous foot position ---
                 previousFootPosition = footPosition;
 

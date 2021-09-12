@@ -645,7 +645,7 @@ namespace Traverser
                     controller.targetDisplacement = Vector3.zero;
                 }
             }
-            else if (closeToDrop && abilityController.inputController.GetInputButtonEast() && freehangWeight == 0.0f)
+            else if (closeToDrop && abilityController.inputController.GetInputButtonEast() /*&& freehangWeight == 0.0f*/)
             {
                 // --- React to dismount ---
                 bool ret;
@@ -728,7 +728,7 @@ namespace Traverser
             OnNearbyLedgeMovement(ref desiredLedgeHook, targetPosition);
 
             // --- Handle ledge to ledge transition, if ledge is detected ---
-            if (!onNearbyLedgeTransition && cornerRotationLerpValue <= cornerLerpInitialValue && freehangWeight == 0.0f)
+            if (!onNearbyLedgeTransition && cornerRotationLerpValue <= cornerLerpInitialValue /*&& freehangWeight == 0.0f*/)
                 OnLedgeToLedge();
 
             return canMove;

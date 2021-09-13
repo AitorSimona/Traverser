@@ -251,8 +251,8 @@ namespace Traverser
 
             if(fIKOn)
             {
-                FindFootIKTarget(animationController.rightFootPosition, ref rightFootIKTransform);
-                FindFootIKTarget(animationController.leftFootPosition, ref leftFootIKTransform);
+                FindFootIKTarget(animationController.rightFootPos, ref rightFootIKTransform);
+                FindFootIKTarget(animationController.leftFootPos, ref leftFootIKTransform);
             }
 
             return ret;
@@ -420,7 +420,7 @@ namespace Traverser
                         animationController.animator.CrossFade(locomotionData.fallTransitionAnimation.animationStateName, locomotionData.fallTransitionAnimation.transitionDuration, 0);
 
                         TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
-                        TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.GetSkeletonPosition())
+                        TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonPos)
                             + transform.forward * locomotionData.fallToRollTransitionData.targetOffset + Vector3.up * controller.capsuleHeight / 2.0f, // roll animation offset
                             transform.rotation);
 
@@ -435,7 +435,7 @@ namespace Traverser
                         animationController.animator.CrossFade(locomotionData.fallTransitionAnimation.animationStateName, locomotionData.fallTransitionAnimation.transitionDuration, 0);
 
                         TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
-                        TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.GetSkeletonPosition())
+                        TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.skeletonPos)
                             + transform.forward * locomotionData.hardLandingTransitionData.targetOffset + Vector3.up * controller.capsuleHeight / 2.0f, // roll animation offset
                             transform.rotation);
 
@@ -484,16 +484,16 @@ namespace Traverser
             currentJumpSpeed = 0.0f;
             wasJumping = false;
 
-            FindFootIKTarget(animationController.rightFootPosition, ref rightFootIKTransform);
-            FindFootIKTarget(animationController.leftFootPosition, ref leftFootIKTransform);
+            FindFootIKTarget(animationController.rightFootPos, ref rightFootIKTransform);
+            FindFootIKTarget(animationController.leftFootPos, ref leftFootIKTransform);
 
             // --- Update last IK positions to prevent working with outdated data ---
-            rightFootIKTransform.t = animationController.rightFootPosition;
-            leftFootIKTransform.t = animationController.leftFootPosition;
+            rightFootIKTransform.t = animationController.rightFootPos;
+            leftFootIKTransform.t = animationController.leftFootPos;
 
             lastRightFootPositionY = transform.InverseTransformPoint(rightFootIKTransform.t).y;
             lastLeftFootPositionY = transform.InverseTransformPoint(leftFootIKTransform.t).y;
-            lastPelvisCorrectedY = animationController.GetSkeletonPosition().y;
+            lastPelvisCorrectedY = animationController.skeletonPos.y;
 
             if(abilityController.ragdollController != null)
                 abilityController.ragdollController.SetRagdollProfile(ref ragdollProfile);

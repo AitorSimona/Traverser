@@ -42,6 +42,17 @@ namespace Traverser
         [Range(0.01f, 0.1f)]
         public float warpingValidDistance = 0.1f;
 
+        [Header("Runtime rig")]
+        public Rig spineRig;
+        public Rig legsRig;
+        public Rig armsRig;
+        public GameObject hipsRigEffector;
+        public GameObject spineRigEffector;
+        public GameObject leftLegRigEffector;
+        public GameObject rightLegRigEffector;
+        public GameObject aimRigEffector;
+        public Transform hipsRef;
+
         [Header("Debug")]
         [Tooltip("If active, debug utilities will be shown (information/geometry draw). Select the object to show debug geometry.")]
         public bool debugDraw = false;
@@ -54,6 +65,20 @@ namespace Traverser
         [HideInInspector]
         public Animator animator;
         public TraverserTransition transition;
+
+        // --- IK properties ---
+        public Vector3 skeletonPos { get => skeletonPosition; }
+        public Vector3 leftFootPos { get => leftFootPosition; }
+        public Vector3 rightFootPos { get => rightFootPosition; }
+        public Vector3 leftHandPos { get => leftHandPosition; }
+        public Vector3 rightHandPos { get => rightHandPosition; }
+
+        // --- Runtime rig effectors transforms ---
+        public TraverserTransform hipsEffectorOGTransform { get => hipsEffectorOriginalTransform; }
+        public TraverserTransform spineEffectorOGTransform { get => spineEffectorOriginalTransform; }
+        public TraverserTransform leftLegEffectorOGTransform { get => leftLegEffectorOriginalTransform; }
+        public TraverserTransform rightLegEffectorOGTransform { get => rightLegEffectorOriginalTransform; }
+        public TraverserTransform aimEffectorOGTransform { get => aimEffectorOriginalTransform; }
 
         // --------------------------------
 
@@ -72,10 +97,18 @@ namespace Traverser
 
         // --- Used to store the bone's positions/rotations for use in the next frame ---
         private Vector3 skeletonPosition = Vector3.zero;
-        public Vector3 leftFootPosition = Vector3.zero;
-        public Vector3 rightFootPosition = Vector3.zero;
-        public Vector3 leftHandPosition = Vector3.zero;
-        public Vector3 rightHandPosition = Vector3.zero;
+        private Vector3 leftFootPosition = Vector3.zero;
+        private Vector3 rightFootPosition = Vector3.zero;
+        private Vector3 leftHandPosition = Vector3.zero;
+        private Vector3 rightHandPosition = Vector3.zero;
+
+        // --- Runtime rig ---
+        // --- Store runtime rig effector transforms ---
+        private TraverserTransform hipsEffectorOriginalTransform;
+        private TraverserTransform spineEffectorOriginalTransform;
+        private TraverserTransform leftLegEffectorOriginalTransform;
+        private TraverserTransform rightLegEffectorOriginalTransform;
+        private TraverserTransform aimEffectorOriginalTransform;
 
         // --- Curve related private variables ---
         private Vector3[] points;
@@ -85,23 +118,6 @@ namespace Traverser
         private int currentPoint = 0;
 
         // --------------------------------
-
-        public Rig spineRig;
-        public Rig legsRig;
-        public Rig armsRig;
-
-        public TraverserTransform hipsEffectorOriginalTransform;
-        public TraverserTransform spineEffectorOriginalTransform;
-        public TraverserTransform leftLegEffectorOriginalTransform;
-        public TraverserTransform rightLegEffectorOriginalTransform;
-        public TraverserTransform aimEffectorOriginalTransform;
-
-        public GameObject hipsRigEffector;
-        public GameObject spineRigEffector;
-        public GameObject leftLegRigEffector;
-        public GameObject rightLegRigEffector;
-        public GameObject aimRigEffector;
-        public Transform hipsRef;
 
         private void Awake()
         {
@@ -347,11 +363,6 @@ namespace Traverser
         // --------------------------------
 
         // --- Utility Methods ---
-
-        public Vector3 GetSkeletonPosition()
-        {
-            return skeletonPosition;
-        }
 
         public void GetPositionAtTime(float normalizedTime, out Vector3 position, AvatarTarget target)
         {

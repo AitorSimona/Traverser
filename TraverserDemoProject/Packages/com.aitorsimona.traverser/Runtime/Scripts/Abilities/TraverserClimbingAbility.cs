@@ -264,11 +264,11 @@ namespace Traverser
 
             // --- Perform a transition to free hanging if legs cannot find a surface ---
             if (leftLegFreeHang && rightLegFreeHang)
-                animationController.hipsRef.position = animationController.GetSkeletonPosition() + transform.forward * freeHangForwardOffset * freehangWeight;
+                animationController.hipsRef.position = animationController.skeletonPos + transform.forward * freeHangForwardOffset * freehangWeight;
             else if (freehangWeight > 0.0f)
             {
                 // --- Return to braced hanging ---
-                animationController.hipsRef.position = animationController.GetSkeletonPosition() + transform.forward * freeHangForwardOffset * freehangWeight;
+                animationController.hipsRef.position = animationController.skeletonPos + transform.forward * freeHangForwardOffset * freehangWeight;
 
                 if (freehangWeight < 0.05)
                     freehangWeight = 0.0f;
@@ -301,7 +301,7 @@ namespace Traverser
                 aimDirection.Normalize();
 
                 if(moveIntensity > 0.1f)
-                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t + aimDirection * moveIntensity * headAimIKSpeed;
+                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOGTransform.t + aimDirection * moveIntensity * headAimIKSpeed;
             }
             else
             {
@@ -309,7 +309,7 @@ namespace Traverser
                 animationController.spineRig.weight = Mathf.Lerp(animationController.spineRig.weight, 0.0f, bodyAimIKSpeed * Time.deltaTime);
 
                 if (animationController.spineRig.weight < 0.1f)
-                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOriginalTransform.t;
+                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOGTransform.t;
             }
 
             return this;
@@ -388,7 +388,7 @@ namespace Traverser
                 if (!collider.Equals(controller.current.ground as BoxCollider))
                 {
                     // --- We want to reach the pre climb position and then activate the animation ---
-                    TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.GetSkeletonPosition(), ref auxledgeGeometry, ref ledgeHook);
+                    TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeletonPos, ref auxledgeGeometry, ref ledgeHook);
 
                     // --- Offset contact transform ---
                     contactTransform.t -= transform.forward * climbingData.mountTransitionData.contactOffset;
@@ -421,7 +421,7 @@ namespace Traverser
                 //    ledgeGeometry.Initialize(ref auxledgeGeometry);
                 //}
 
-                TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.GetSkeletonPosition(), ref auxledgeGeometry, ref ledgeHook);
+                TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeletonPos, ref auxledgeGeometry, ref ledgeHook);
                 Vector3 difference = (contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight));
 
                 // --- Decide whether to trigger a short or large hang transition ---
@@ -467,7 +467,7 @@ namespace Traverser
                     // --- Initialize ledge and compute contact transform ---
                     auxledgeGeometry.Initialize(ref collider);
                     TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(controller.previous.position);
-                    Vector3 skeletonPosition = animationController.GetSkeletonPosition();
+                    Vector3 skeletonPosition = animationController.skeletonPos;
                     Vector3 hookPosition = auxledgeGeometry.GetPosition(ref auxHook);
                     hookPosition.y += (skeletonPosition.y - transform.position.y);
                     Quaternion hookRotation = Quaternion.LookRotation(-auxledgeGeometry.GetNormal(auxHook.index), transform.up);
@@ -502,10 +502,10 @@ namespace Traverser
 
         public void OnEnter()
         {
-            previousLeftFootPosition = animationController.leftFootPosition;
-            previousRightFootPosition = animationController.rightFootPosition;
-            previousLeftHandPosition = animationController.leftHandPosition;
-            previousRightHandPosition = animationController.rightHandPosition;
+            previousLeftFootPosition = animationController.leftFootPos;
+            previousRightFootPosition = animationController.rightFootPos;
+            previousLeftHandPosition = animationController.leftHandPos;
+            previousRightHandPosition = animationController.rightHandPos;
 
             previousLeftHandRotation = animationController.animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
             previousRightHandRotation = animationController.animator.GetBoneTransform(HumanBodyBones.RightHand).rotation;
@@ -567,7 +567,7 @@ namespace Traverser
             if (!animationController.transition.isON)
             {
                 SetState(ClimbingState.Climbing);
-                TraverserTransform hangedTransform = GetHangedTransform(animationController.GetSkeletonPosition(), ref ledgeGeometry, ref ledgeHook);
+                TraverserTransform hangedTransform = GetHangedTransform(animationController.skeletonPos, ref ledgeGeometry, ref ledgeHook);
                 controller.ConfigureController(false);
                 animationController.animator.Play(climbingData.ledgeIdleAnimation.animationStateName);
                 //Quaternion backupRot = animationController.hipsRef.rotation;
@@ -692,7 +692,7 @@ namespace Traverser
             {
                 // --- Trigger a jump back transition if required by player ---
 
-                TraverserTransform contactTransform = TraverserTransform.Get(animationController.GetSkeletonPosition(), transform.rotation);
+                TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeletonPos, transform.rotation);
                 
                 // --- Offset target transform ---
                 TraverserTransform targetTransform = contactTransform;
@@ -970,7 +970,7 @@ namespace Traverser
                     // --- Adjust the aim position so we don't end in another ledge edge ---
                     Vector3 ledgePos = hit.collider.bounds.center - transform.forward * hit.collider.bounds.size.magnitude;
                     TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHookAt(ledgePos, desiredCornerMaxDistance);
-                    TraverserTransform contactTransform = TraverserTransform.Get(animationController.GetSkeletonPosition(), transform.rotation);
+                    TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeletonPos, transform.rotation);
 
                     Vector3 hookPosition = auxledgeGeometry.GetPosition(ref auxHook) - auxledgeGeometry.GetNormal(auxHook.index) * controller.capsuleRadius;
                     hookPosition.y -= controller.capsuleHeight * (1.0f - hangedTransformHeightRatio);
@@ -1123,11 +1123,11 @@ namespace Traverser
 
                 // --- Left foot ---
                 float weight = animationController.animator.GetFloat("IKLeftFootWeight");
-                AdjustFootIK(AvatarIKGoal.LeftFoot, ref previousLeftFootPosition, animationController.leftFootPosition, ref leftLegFreeHang, weight);
+                AdjustFootIK(AvatarIKGoal.LeftFoot, ref previousLeftFootPosition, animationController.leftFootPos, ref leftLegFreeHang, weight);
 
                 // --- Right foot ---
                 weight = animationController.animator.GetFloat("IKRightFootWeight");
-                AdjustFootIK(AvatarIKGoal.RightFoot, ref previousRightFootPosition, animationController.rightFootPosition, ref rightLegFreeHang, weight);
+                AdjustFootIK(AvatarIKGoal.RightFoot, ref previousRightFootPosition, animationController.rightFootPos, ref rightLegFreeHang, weight);
 
             }
 
@@ -1145,11 +1145,11 @@ namespace Traverser
 
                 // --- Left hand ---
                 float weight = animationController.animator.GetFloat("IKLeftHandWeight");
-                AdjustHandIK(AvatarIKGoal.LeftHand, HumanBodyBones.LeftHand, ref previousLeftHandPosition, ref previousLeftHandRotation, animationController.leftHandPosition, weight);
+                AdjustHandIK(AvatarIKGoal.LeftHand, HumanBodyBones.LeftHand, ref previousLeftHandPosition, ref previousLeftHandRotation, animationController.leftHandPos, weight);
 
                 // --- Right hand ---
                 weight = animationController.animator.GetFloat("IKRightHandWeight");
-                AdjustHandIK(AvatarIKGoal.RightHand, HumanBodyBones.RightHand, ref previousRightHandPosition, ref previousRightHandRotation, animationController.rightHandPosition, weight);                
+                AdjustHandIK(AvatarIKGoal.RightHand, HumanBodyBones.RightHand, ref previousRightHandPosition, ref previousRightHandRotation, animationController.rightHandPos, weight);                
             }
         }
 

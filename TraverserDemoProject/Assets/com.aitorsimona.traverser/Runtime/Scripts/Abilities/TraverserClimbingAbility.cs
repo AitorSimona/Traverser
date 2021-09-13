@@ -53,6 +53,9 @@ namespace Traverser
         public float freeHangTransitionSpeed = 1.0f;
         [Tooltip("How much we offset the character towards its forward during free hang.")]
         public float freeHangForwardOffset = 0.25f;
+        [Tooltip("How much we offset the character towards its down vector during free hang.")]
+        public float freeHangDownwardsOffset = 0.25f;
+
 
         [Header("Aim IK settings")]
         [Tooltip("How fast the head rotates towards the target direction. Used in ledge to ledge.")]
@@ -233,11 +236,12 @@ namespace Traverser
                     freehangWeight = 0.0f;
             }
 
-            Vector3 freehangOffset = transform.forward * freeHangForwardOffset * freehangWeight;
+            Vector3 freehangOffset = transform.forward * freeHangForwardOffset * freehangWeight
+                + Vector3.down * freeHangDownwardsOffset * freehangWeight;
 
-            // --- Adjust ragdoll offset ---
-            if (abilityController.ragdollController != null)
-                abilityController.ragdollController.SetOffset(freehangOffset);
+            //// --- Adjust ragdoll offset ---
+            //if (abilityController.ragdollController != null)
+            //    abilityController.ragdollController.SetOffset(freehangOffset/2.0f);
 
 
             if (!abilityController.isCurrent(this))
@@ -317,7 +321,7 @@ namespace Traverser
                 aimDirection.Normalize();
 
                 if(moveIntensity > 0.1f)
-                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOGTransform.t + aimDirection * moveIntensity * headAimIKSpeed;
+                    animationController.aimRigEffector.transform.localPosition = animationController.aimEffectorOGTransform.t + transform.InverseTransformDirection(aimDirection) * moveIntensity * headAimIKSpeed;
             }
             else
             {
@@ -1177,7 +1181,8 @@ namespace Traverser
             Vector3 footPosition;
             RaycastHit hit;
             Vector3 rayOrigin = bonePosition - transform.forward * 0.75f;
-            rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
+            rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight
+                + Vector3.down * freeHangDownwardsOffset * freehangWeight;
 
             float speedModifier = feetAdjustmentSpeed;
 
@@ -1204,7 +1209,8 @@ namespace Traverser
                 previousFootPosition = footPosition;
 
                 // --- Adjust to free hang forward offset ---
-                footPosition -= transform.forward * freeHangForwardOffset * freehangWeight;
+                footPosition += (-transform.forward * freeHangForwardOffset * freehangWeight)
+                    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
 
                 // --- Set IK position ---
                 animationController.animator.SetIKPosition(ikGoal, footPosition);
@@ -1242,7 +1248,8 @@ namespace Traverser
                 rayOrigin += -forward * handRayLength * 0.5f - Vector3.up * 0.1f;
 
                 // --- Offset ray according to free hang forward offset ---
-                rayOrigin += forward * freeHangForwardOffset * freehangWeight;
+                rayOrigin += forward * freeHangForwardOffset * freehangWeight
+                    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
                 Vector3 handDirection = forward;
 
                 // --- Throw ray to detect surface ---
@@ -1303,7 +1310,8 @@ namespace Traverser
                 previousHandRotation = IKRotation;
 
                 // --- Adjust position according to free hang forward offset ---
-                handPosition -= forward * freeHangForwardOffset * freehangWeight;
+                handPosition -= forward * freeHangForwardOffset * freehangWeight
+                    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
                 
 
                 // --- Set IK position and rotation ---

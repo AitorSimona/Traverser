@@ -7144,10 +7144,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: FerrisWheel
       objectReference: {fileID: 0}
-    - target: {fileID: 5399953427880628091, guid: c48ba41d440ebbf4babd30809930403f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.22824502
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c48ba41d440ebbf4babd30809930403f, type: 3}
 --- !u!1001 &5909181097056632417
@@ -7208,14 +7204,6 @@ PrefabInstance:
     - target: {fileID: 5909181097483866641, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6827678277304017766, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}
-      propertyPath: handLength
-      value: 0.07
-      objectReference: {fileID: 0}
-    - target: {fileID: 6827678277304017766, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}
-      propertyPath: freeHangForwardOffset
-      value: 0.15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}

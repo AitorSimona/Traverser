@@ -137,9 +137,6 @@ namespace Traverser
             // --- Decide which transition to play depending on object type ---
             switch (parkourObject.type)
             {
-                case TraverserParkourObject.TraverserParkourType.Wall:
-                    ret = HandleWallTransition(ref contactTransform, ref targetTransform);
-                    break;
                 case TraverserParkourObject.TraverserParkourType.Table:
                     ret = HandleTableTransition(ref contactTransform, ref targetTransform);
                     break;
@@ -172,54 +169,6 @@ namespace Traverser
                     break;
             }
             
-            return ret;
-        }
-
-        private bool HandleWallTransition(ref TraverserTransform contactTransform, ref TraverserTransform targetTransform)
-        {
-            bool ret = false;
-
-            // --- Get speed from controller ---
-            //float speed = Vector3.Magnitude(controller.targetVelocity);
-
-            // --- NON-WORKING SOLUTION ---
-
-            // --- Compute direction of animation depending on wall's normal ---
-            //Vector3 contactRight = Vector3.Cross(controller.contactNormal, parkourObject.transform.up);
-            //bool right = Vector3.Dot(transform.forward, contactRight) > 0.0;
-
-            //// --- Target should be contact + animationDirection*Speed ---
-            //target = controller.contactTransform.t;
-
-            //if (right)
-            //{
-            //    target += contactRight * 1.0f;
-            //    targetTransform.q *= Quaternion.Euler(0.0f, 90.0f, 0.0f);
-            //}
-            //else
-            //{
-            //    target -= contactRight * 1.0f;
-            //    targetTransform.q *= Quaternion.Euler(0.0f, -90.0f, 0.0f);
-            //}
-
-            //targetTransform.t = target;
-
-            //// --- Check if we are jogging or running and play appropriate transition ---
-            //if (speed <= locomotionAbility.movementSpeedSlow + 0.1 && speed >= walkSpeed)
-            //{
-            //    if(right)
-            //        ret = animationController.transition.StartTransition("JogTransition", "WallRunRight", "JogTransitionTrigger", "WallRunRightTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
-            //    else
-            //        ret = animationController.transition.StartTransition("JogTransition", "WallRunLeft", "JogTransitionTrigger", "WallRunLeftTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
-            //}
-            //else if (speed > locomotionAbility.movementSpeedSlow + 0.1)
-            //{
-            //    if (right)
-            //        ret = animationController.transition.StartTransition("RunTransition", "WallRunRight", "RunTransitionTrigger", "WallRunRightTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
-            //    else
-            //        ret = animationController.transition.StartTransition("RunTransition", "WallRunLeft", "RunTransitionTrigger", "WallRunLeftTrigger", 3.0f, 0.5f, ref controller.contactTransform, ref targetTransform);
-            //}
-
             return ret;
         }
 

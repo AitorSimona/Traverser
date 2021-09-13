@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.aitorsimona.traverser": "https://github.com/AitorSimona/Traverser.git",
     "com.unity.animation.rigging": "1.0.3",
     "com.unity.cinemachine": "2.6.3",
     "com.unity.collab-proxy": "1.3.9",

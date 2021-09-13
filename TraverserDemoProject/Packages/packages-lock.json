@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.aitorsimona.traverser": {
-      "version": "file:com.aitorsimona.traverser",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.unity.animation.rigging": {
       "version": "1.0.3",
       "depth": 0,

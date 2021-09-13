@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Traverser
 {
     [RequireComponent(typeof(TraverserAbilityController))]
-    [RequireComponent(typeof(TraverserCharacterController))]
     [RequireComponent(typeof(TraverserLocomotionAbility))]
 
     public class TraverserParkourAbility : MonoBehaviour, TraverserAbility
@@ -14,12 +12,6 @@ namespace Traverser
         [Header("Animation")]
         [Tooltip("A reference to the parkour ability's dataset (scriptable object asset).")]
         public TraverserParkourData parkourData;
-        [Tooltip("The maximum distance of the ray that enables foot IK, the bigger the ray the further we detect the ground.")]
-        [Range(0.0f, 5.0f)]
-        public float feetIKGroundDistance = 1.0f;
-        [Tooltip("The character's foot height (size in Y, meters).")]
-        [Range(0.0f, 1.0f)]
-        public float footHeight = 1.0f;
 
         // -------------------------------------------------
 

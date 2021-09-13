@@ -73,7 +73,7 @@ MonoBehaviour:
     targetAnim: DropPlatformRun
     triggerTransitionAnim: RunTransitionTrigger
     triggerTargetAnim: PlatformDropTrigger
-    contactOffset: 1.5
+    contactOffset: 1
     targetOffset: 0.1
     forceTarget: 0
   vaultLedgeWalkTransitionData:

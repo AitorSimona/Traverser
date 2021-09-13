@@ -488,8 +488,6 @@ namespace Traverser
             FindFootIKTarget(animationController.leftFootPos, ref leftFootIKTransform);
 
             // --- Update last IK positions to prevent working with outdated data ---
-            rightFootIKTransform.t = animationController.rightFootPos;
-            leftFootIKTransform.t = animationController.leftFootPos;
 
             lastRightFootPositionY = transform.InverseTransformPoint(rightFootIKTransform.t).y;
             lastLeftFootPositionY = transform.InverseTransformPoint(leftFootIKTransform.t).y;

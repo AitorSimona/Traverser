@@ -216,7 +216,7 @@ namespace Traverser
                 animationController.animator.SetFloat(hash, freehangWeight);
 
             // --- Perform a transition to free hanging if legs cannot find a surface ---
-            if (leftLegFreeHang && rightLegFreeHang)
+            if (leftLegFreeHang && rightLegFreeHang && state != ClimbingState.DropDown)
             {
                 freehangWeight = Mathf.Lerp(freehangWeight, 1.0f, freeHangTransitionSpeed * Time.deltaTime);
             }
@@ -567,10 +567,12 @@ namespace Traverser
             if (!animationController.transition.isON)
             {
                 SetState(ClimbingState.Climbing);
-                animationController.animator.CrossFade(climbingData.ledgeIdleAnimation.animationStateName, climbingData.ledgeIdleAnimation.transitionDuration, 0);
                 TraverserTransform hangedTransform = GetHangedTransform(animationController.GetSkeletonPosition(), ref ledgeGeometry, ref ledgeHook);
                 controller.ConfigureController(false);
+                animationController.animator.Play(climbingData.ledgeIdleAnimation.animationStateName);
+                //Quaternion backupRot = animationController.hipsRef.rotation;
                 transform.rotation = hangedTransform.q;
+                //animationController.hipsRef.rotation = backupRot;
             }
         }
 
@@ -1220,25 +1222,26 @@ namespace Traverser
                     previousHandRotation = IKRotation;
 
                 // --- Compute hand position given ledge hook ---
-                TraverserLedgeObject.TraverserLedgeHook hook = ledgeGeometry.GetHook(IKPosition - transform.forward * 0.3f);
+                Vector3 forward = animationController.hipsRef.forward;
+                TraverserLedgeObject.TraverserLedgeHook hook = ledgeGeometry.GetHook(IKPosition - forward * 0.3f);
                 Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                 Vector3 rayOrigin = bonePosition;
                 rayOrigin.y = handPosition.y;
 
                 // --- Offset ray to prevent null hits ---
-                rayOrigin += -transform.forward * handRayLength * 0.5f - Vector3.up * 0.1f;
+                rayOrigin += -forward * handRayLength * 0.5f - Vector3.up * 0.1f;
 
                 // --- Offset ray according to free hang forward offset ---
-                rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight;
-                Vector3 handDirection = transform.forward;
+                rayOrigin += forward * freeHangForwardOffset * freehangWeight;
+                Vector3 handDirection = forward;
 
                 // --- Throw ray to detect surface ---
                 RaycastHit hit;
-                bool collided = Physics.Raycast(rayOrigin, transform.forward, out hit, handRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+                bool collided = Physics.Raycast(rayOrigin, forward, out hit, handRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
                 BoxCollider collider = hit.collider as BoxCollider;
 
                 if (debugDraw)
-                    Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * handRayLength);
+                    Debug.DrawLine(rayOrigin, rayOrigin + forward * handRayLength);
 
                 // --- On collision, check if the surface is either the current or previous ledge geometry ---
                 if (collided 
@@ -1251,7 +1254,7 @@ namespace Traverser
                 }
 
                 // --- Update hand position according to user defined parameters ---
-                handPosition -= transform.forward * handLength;
+                handPosition -= forward * handLength;
                 handPosition.y += handIKYDistance;
 
                 // --- Aim IK, if a ledge was found, aim the hand towards the given target position ---
@@ -1266,7 +1269,7 @@ namespace Traverser
                     aimDirection.Normalize();
 
                     handPosition += aimDirection * moveIntensity;
-                    handDirection = ((targetAimPosition + transform.forward * 0.15f) - bonePosition).normalized;
+                    handDirection = ((targetAimPosition + forward * 0.15f) - bonePosition).normalized;
                     speedModifier *= handsAimIKIntensity;
                 }
 
@@ -1283,7 +1286,7 @@ namespace Traverser
                 previousHandRotation = IKRotation;
 
                 // --- Adjust position according to free hang forward offset ---
-                handPosition -= transform.forward * freeHangForwardOffset * freehangWeight;
+                handPosition -= forward * freeHangForwardOffset * freehangWeight;
 
                 // --- Set IK position and rotation ---
                 animationController.animator.SetIKPosition(ikGoal, handPosition);

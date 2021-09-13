@@ -42,7 +42,7 @@ ModelImporter:
       name: DropDown
       takeName: Take 001
       internalID: 0
-      firstFrame: 0
+      firstFrame: 17
       lastFrame: 67
       wrapMode: 0
       orientationOffsetY: 0

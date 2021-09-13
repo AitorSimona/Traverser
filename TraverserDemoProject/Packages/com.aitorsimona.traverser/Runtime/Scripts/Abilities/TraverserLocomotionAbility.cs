@@ -173,7 +173,6 @@ namespace Traverser
         // --- Stores previous inpu intensity to decelerate character ---
         private float previousMovementIntensity = 0.0f;
 
-
         private LocomotionAbilityState state;
 
 
@@ -203,6 +202,7 @@ namespace Traverser
             if (!abilityController.isCurrent(this))
                 return;
 
+            // --- Adapt locomotion to moving ground (movable ledges for example) ---
             if (controller.current.ground != null
                 && controller.current.ground.Equals(controller.previous.ground))
             {
@@ -343,7 +343,6 @@ namespace Traverser
                     // --- If we are not close to the desired angle or contact point, do not handle contacts ---
                     if (Mathf.Abs(angle) > contactAngleMax || Mathf.Abs(Vector3.Distance(contactTransform.t, tmp.t)) > contactDistanceMax)
                     {
-                        //Debug.Log(Mathf.Abs(angle));
                         continue;
                     }
 
@@ -369,8 +368,6 @@ namespace Traverser
                     // --- Check forward collision for possible ledge contact and inform abilities ---
 
                     // --- We are falling and we have found a forward collision ---             
-                    //TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
-
                     if (contactAbility == null)
                     {
                         foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
@@ -710,14 +707,6 @@ namespace Traverser
         {
             if (!abilityController.isCurrent(this) || !fIKOn)
             {
-                //// --- Update last IK positions to prevent working with outdated data ---
-                //rightFootIKTransform.t = animationController.rightFootPosition;
-                //leftFootIKTransform.t = animationController.leftFootPosition;
-
-                //lastRightFootPositionY = transform.InverseTransformPoint(rightFootIKTransform.t).y;
-                //lastLeftFootPositionY = transform.InverseTransformPoint(leftFootIKTransform.t).y;
-                //lastPelvisCorrectedY = animationController.GetSkeletonPosition().y;
-
                 return;
             }
 

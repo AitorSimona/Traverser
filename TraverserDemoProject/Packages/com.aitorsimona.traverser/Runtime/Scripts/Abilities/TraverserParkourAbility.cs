@@ -14,10 +14,6 @@ namespace Traverser
         [Header("Animation")]
         [Tooltip("A reference to the parkour ability's dataset (scriptable object asset).")]
         public TraverserParkourData parkourData;
-
-        //[Header("Feet IK settings")]
-        //[Tooltip("Activates or deactivates foot IK placement for the climbing ability.")]
-        //public bool fIKOn = true;
         [Tooltip("The maximum distance of the ray that enables foot IK, the bigger the ray the further we detect the ground.")]
         [Range(0.0f, 5.0f)]
         public float feetIKGroundDistance = 1.0f;
@@ -34,9 +30,6 @@ namespace Traverser
         private TraverserAnimationController animationController;
         private TraverserLocomotionAbility locomotionAbility;
 
-        // --- Ray for feet IK checks ---
-        //private Ray IKRay;
-
         // --- Default delta/epsilon used for parkour speed checks ---
         private float epsilon = 0.001f;
         private float maxYDifference = 0.25f;
@@ -48,7 +41,6 @@ namespace Traverser
         public void Start()
         {
             Debug.Assert(parkourData);
-            //IKRay = new Ray();
             abilityController = GetComponent<TraverserAbilityController>();
             controller = GetComponent<TraverserCharacterController>();
             animationController = GetComponent<TraverserAnimationController>();
@@ -191,7 +183,6 @@ namespace Traverser
             //float speed = Vector3.Magnitude(controller.targetVelocity);
 
             // --- NON-WORKING SOLUTION ---
-
 
             // --- Compute direction of animation depending on wall's normal ---
             //Vector3 contactRight = Vector3.Cross(controller.contactNormal, parkourObject.transform.up);
@@ -384,44 +375,6 @@ namespace Traverser
         {
             if (!abilityController.isCurrent(this))
                 return;
-
-            //// --- Set weights to 0 and return if IK is off ---
-            //if (!fIKOn)
-            //{
-            //    animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.0f);
-            //    animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.0f);
-            //    return;
-            //}
-
-            //// --- Else, sample foot weight from the animator's parameters, which are set by the animations themselves through curves ---
-
-            //RaycastHit hit;
-
-            //// --- Left foot ---
-            //animationController.animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, animationController.animator.GetFloat("IKLeftFootWeight"));
-
-            //IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.LeftFoot) + Vector3.up;
-            //IKRay.direction = Vector3.down;
-
-            //if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-            //{
-            //    Vector3 footPosition = hit.point;
-            //    footPosition.y += footHeight;
-            //    animationController.animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosition);
-            //}
-
-            //// --- Right foot ---
-            //animationController.animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, animationController.animator.GetFloat("IKRightFootWeight"));
-           
-            //IKRay.origin = animationController.animator.GetIKPosition(AvatarIKGoal.RightFoot) + Vector3.up;
-            //IKRay.direction = Vector3.down;
-
-            //if (Physics.Raycast(IKRay, out hit, feetIKGroundDistance, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
-            //{
-            //    Vector3 footPosition = hit.point;
-            //    footPosition.y += footHeight;
-            //    animationController.animator.SetIKPosition(AvatarIKGoal.RightFoot, footPosition);
-            //}
         }
 
         // -------------------------------------------------

@@ -1181,7 +1181,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1849755178828654129}
-  m_LocalRotation: {x: 0.26097977, y: -0.66183275, z: 0.26544654, w: 0.6506959}
+  m_LocalRotation: {x: 0.26097977, y: -0.66183275, z: 0.26544654, w: 0.65069586}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -8756,7 +8756,7 @@ MonoBehaviour:
   nearbyLedgeRayLength: 2
   nearbyLedgeMaxDistance: 1
   freeHangTransitionSpeed: 3
-  freeHangForwardOffset: 0.25
+  freeHangForwardOffset: 0.15
   headAimIKSpeed: 3
   bodyAimIKSpeed: 5
   fIKOn: 1
@@ -8765,7 +8765,7 @@ MonoBehaviour:
   feetAdjustmentSpeed: 15
   hIKOn: 1
   handIKYDistance: -0.03
-  handLength: 0.06
+  handLength: 0.07
   handRayLength: 1
   handsAdjustmentSpeed: 10
   handsAimIKIntensity: 0.25

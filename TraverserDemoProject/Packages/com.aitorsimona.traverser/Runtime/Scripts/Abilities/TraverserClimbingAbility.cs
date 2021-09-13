@@ -431,12 +431,6 @@ namespace Traverser
                 // ---  We are falling and colliding against a ledge ---
                 auxledgeGeometry.Initialize(ref collider);
 
-                //if (!ledgeGeometry.IsInitialized())
-                //{
-                //    previousLedgeGeometry = ledgeGeometry;
-                //    ledgeGeometry.Initialize(ref auxledgeGeometry);
-                //}
-
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeletonPos, ref auxledgeGeometry, ref ledgeHook);
                 Vector3 difference = (contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight));
 
@@ -1273,6 +1267,7 @@ namespace Traverser
                 handPosition -= forward * handLength;
                 handPosition.y += handIKYDistance;
 
+                // --- Adapt to free hang ---
                 if(!animationController.transition.isON)
                 {
                     handPosition -= forward * (handIKLengthFreehang * freehangWeight);

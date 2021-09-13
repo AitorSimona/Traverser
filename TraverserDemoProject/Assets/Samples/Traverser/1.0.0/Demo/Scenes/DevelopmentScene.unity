@@ -7159,7 +7159,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1849755178828654131, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.65069586
+      value: 0.6506959
       objectReference: {fileID: 0}
     - target: {fileID: 5909181097483866638, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}
       propertyPath: m_Name
@@ -7208,6 +7208,18 @@ PrefabInstance:
     - target: {fileID: 5909181097483866641, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6827678277304017766, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}
+      propertyPath: handLength
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 6827678277304017766, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}
+      propertyPath: handIKYDistance
+      value: -0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6827678277304017766, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}
+      propertyPath: nearbyLedgeMaxDistance
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 615beafb8c4da3343a20dce4235c6c07, type: 3}

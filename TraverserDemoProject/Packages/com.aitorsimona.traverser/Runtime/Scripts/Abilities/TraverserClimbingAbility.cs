@@ -168,6 +168,8 @@ namespace Traverser
         private bool rightLegFreeHang = false;
         private bool leftLegFreeHang = false;
         private float freehangWeight = 0.0f;
+        private float handIKYFreehang = -0.04f;
+        private float handIKLengthFreehang = -0.04f;
 
         // --- IK ---
         private Vector3 previousLeftFootPosition = Vector3.zero;
@@ -1271,6 +1273,12 @@ namespace Traverser
                 handPosition -= forward * handLength;
                 handPosition.y += handIKYDistance;
 
+                if(!animationController.transition.isON)
+                {
+                    handPosition -= forward * (handIKLengthFreehang * freehangWeight);
+                    handPosition.y += handIKYFreehang * freehangWeight;
+                }
+
                 // --- Aim IK, if a ledge was found, aim the hand towards the given target position ---
                 Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
                 bool useAimIK = ikGoal == AvatarIKGoal.LeftHand ? leftStickInput.x < 0.0f : leftStickInput.x >= 0.0f;
@@ -1301,6 +1309,7 @@ namespace Traverser
 
                 // --- Adjust position according to free hang forward offset ---
                 handPosition -= forward * freeHangForwardOffset * freehangWeight;
+                
 
                 // --- Set IK position and rotation ---
                 animationController.animator.SetIKPosition(ikGoal, handPosition);

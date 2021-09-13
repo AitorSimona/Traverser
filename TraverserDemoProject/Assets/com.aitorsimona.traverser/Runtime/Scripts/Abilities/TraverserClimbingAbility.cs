@@ -236,14 +236,7 @@ namespace Traverser
                     freehangWeight = 0.0f;
             }
 
-            Vector3 freehangOffset = transform.forward * freeHangForwardOffset * freehangWeight
-                + Vector3.down * freeHangDownwardsOffset * freehangWeight;
-
-            //// --- Adjust ragdoll offset ---
-            //if (abilityController.ragdollController != null)
-            //    abilityController.ragdollController.SetOffset(freehangOffset/2.0f);
-
-
+            // --- Return if climbing is not the active ability ---
             if (!abilityController.isCurrent(this))
             {
                 freehangWeight = 0.0f;
@@ -281,6 +274,9 @@ namespace Traverser
 
             // --- Perform a transition to free hanging if legs cannot find a surface ---
 
+            Vector3 freehangOffset = transform.forward * freeHangForwardOffset * freehangWeight
+                + Vector3.down * freeHangDownwardsOffset * freehangWeight;
+
             if (leftLegFreeHang && rightLegFreeHang)
                 animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos + freehangOffset;
             else if (freehangWeight > 0.0f)
@@ -291,8 +287,6 @@ namespace Traverser
                 if (freehangWeight < 0.05)
                     freehangWeight = 0.0f;
             }
-
- 
 
             // --- Draw ledge geometry ---
             if (debugDraw)

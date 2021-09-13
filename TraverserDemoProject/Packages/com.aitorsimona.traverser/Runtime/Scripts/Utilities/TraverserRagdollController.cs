@@ -42,6 +42,7 @@ namespace Traverser
         private float blendTime = 0.25f;
         private float currentBlendTime = 0.0f;
         private bool isBlending = false;
+        private Vector3 offset = Vector3.zero;
 
         // --------------------------------
 
@@ -122,6 +123,8 @@ namespace Traverser
             AdjustRagdollComponent(ref rightUpperLegRGJoint, HumanBodyBones.RightUpperLeg);
             AdjustRagdollComponent(ref rightLowerLegRGJoint, HumanBodyBones.RightLowerLeg);
 
+
+
             hipsRGJoint.LateUpdateJoint();
             spineRGJoint.LateUpdateJoint();
             headRGJoint.LateUpdateJoint();
@@ -183,7 +186,12 @@ namespace Traverser
 
         private void AdjustRagdollComponent(ref TraverserRagdollJoint ragdollJoint, HumanBodyBones bone)
         {
-            ragdollJoint.MoveRBPosition(animator.GetBoneTransform(bone).position);
+            ragdollJoint.MoveRBPosition(animator.GetBoneTransform(bone).position + offset);
+        }
+
+        public void SetOffset(Vector3 desiredOffset)
+        {
+            offset = desiredOffset;
         }
 
         public void SetRagdollProfile(ref TraverserRagdollProfile ragdollProfile)

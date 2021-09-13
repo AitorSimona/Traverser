@@ -216,7 +216,9 @@ namespace Traverser
                 animationController.animator.SetFloat(hash, freehangWeight);
 
             // --- Perform a transition to free hanging if legs cannot find a surface ---
-            if (leftLegFreeHang && rightLegFreeHang && state != ClimbingState.DropDown)
+            if (leftLegFreeHang && rightLegFreeHang 
+                && state != ClimbingState.DropDown
+                && state != ClimbingState.Dismount)
             {
                 freehangWeight = Mathf.Lerp(freehangWeight, 1.0f, freeHangTransitionSpeed * Time.deltaTime);
             }
@@ -229,9 +231,18 @@ namespace Traverser
                     freehangWeight = 0.0f;
             }
 
-            // --- Keep character on ledge if it moves ---
+            Vector3 freehangOffset = transform.forward * freeHangForwardOffset * freehangWeight;
+
+            // --- Adjust ragdoll offset ---
+            if (abilityController.ragdollController != null)
+                abilityController.ragdollController.SetOffset(freehangOffset);
+
+
             if (!abilityController.isCurrent(this))
+            {
+                freehangWeight = 0.0f;
                 return;
+            }
 
             // --- Adapt to moving ledges ---
 
@@ -263,16 +274,19 @@ namespace Traverser
             // --- Free hang, adjust hips ---
 
             // --- Perform a transition to free hanging if legs cannot find a surface ---
+
             if (leftLegFreeHang && rightLegFreeHang)
-                animationController.hipsRef.position = animationController.skeletonPos + transform.forward * freeHangForwardOffset * freehangWeight;
+                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos + freehangOffset;
             else if (freehangWeight > 0.0f)
             {
                 // --- Return to braced hanging ---
-                animationController.hipsRef.position = animationController.skeletonPos + transform.forward * freeHangForwardOffset * freehangWeight;
+                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos + freehangOffset;
 
                 if (freehangWeight < 0.05)
                     freehangWeight = 0.0f;
             }
+
+ 
 
             // --- Draw ledge geometry ---
             if (debugDraw)
@@ -1222,7 +1236,7 @@ namespace Traverser
                     previousHandRotation = IKRotation;
 
                 // --- Compute hand position given ledge hook ---
-                Vector3 forward = animationController.hipsRef.forward;
+                Vector3 forward = animationController.animator.GetBoneTransform(HumanBodyBones.Hips).forward;
                 TraverserLedgeObject.TraverserLedgeHook hook = ledgeGeometry.GetHook(IKPosition - forward * 0.3f);
                 Vector3 handPosition = ledgeGeometry.GetPosition(ref hook);
                 Vector3 rayOrigin = bonePosition;

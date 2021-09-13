@@ -1181,7 +1181,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1849755178828654129}
-  m_LocalRotation: {x: 0.26097977, y: -0.66183275, z: 0.26544654, w: 0.65069586}
+  m_LocalRotation: {x: 0.26097977, y: -0.66183275, z: 0.26544654, w: 0.6506959}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6848,7 +6848,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5909181097483866638}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 14.713, y: 0.13, z: -15.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -8620,13 +8620,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   warpingValidDistance: 0.1
-  debugDraw: 1
-  contactDebugSphereRadius: 0.25
-  animator: {fileID: 3019675903891687032}
-  leftFootPosition: {x: 0, y: 0, z: 0}
-  rightFootPosition: {x: 0, y: 0, z: 0}
-  leftHandPosition: {x: 0, y: 0, z: 0}
-  rightHandPosition: {x: 0, y: 0, z: 0}
   spineRig: {fileID: 2677780226251289908}
   legsRig: {fileID: 5909181095853322425}
   armsRig: {fileID: 5909181096006088437}
@@ -8636,6 +8629,9 @@ MonoBehaviour:
   rightLegRigEffector: {fileID: 5909181096011096158}
   aimRigEffector: {fileID: 5909181095833325178}
   hipsRef: {fileID: 1863165711474841935}
+  debugDraw: 1
+  contactDebugSphereRadius: 0.25
+  animator: {fileID: 3019675903891687032}
 --- !u!114 &6827678277304017767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8758,9 +8754,9 @@ MonoBehaviour:
   maxLedgeDistance: 1.5
   minLedgeDistance: 0.65
   nearbyLedgeRayLength: 2
-  nearbyLedgeMaxDistance: 0.75
+  nearbyLedgeMaxDistance: 1
   freeHangTransitionSpeed: 3
-  freeHangForwardOffset: 0.15
+  freeHangForwardOffset: 0.25
   headAimIKSpeed: 3
   bodyAimIKSpeed: 5
   fIKOn: 1
@@ -8768,8 +8764,8 @@ MonoBehaviour:
   feetRayLength: 1.25
   feetAdjustmentSpeed: 15
   hIKOn: 1
-  handIKYDistance: -0.055
-  handLength: 0.05
+  handIKYDistance: -0.03
+  handLength: 0.06
   handRayLength: 1
   handsAdjustmentSpeed: 10
   handsAimIKIntensity: 0.25

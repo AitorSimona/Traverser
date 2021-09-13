@@ -1068,7 +1068,7 @@ namespace Traverser
             ledgeHk = ledgeGeom.GetHook(fromPosition);
             Vector3 hookPosition = ledgeGeom.GetPosition(ref ledgeHk);
             Quaternion hangedRotation = Quaternion.LookRotation(ledgeGeom.GetNormal(ledgeHk.index), transform.up);
-            Vector3 hangedPosition = hookPosition - ledgeGeom.GetNormal(ledgeHk.index) * controller.capsuleRadius;
+            Vector3 hangedPosition = hookPosition - ledgeGeom.GetNormal(ledgeHk.index) * controller.capsuleRadius * 1.25f;
             hangedPosition.y = hookPosition.y - controller.capsuleHeight;
             return TraverserTransform.Get(hangedPosition, hangedRotation);
         }

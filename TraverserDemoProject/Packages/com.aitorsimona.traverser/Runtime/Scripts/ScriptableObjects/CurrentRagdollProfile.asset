@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a460ec869d7fd954c9deae5ca114b73c, type: 3}
   m_Name: CurrentRagdollProfile
   m_EditorClassIdentifier: 
+  blendTime: 0
   hipsRGJoint:
     weight: 0
     rbDrag: 100000
@@ -49,7 +50,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 10000
   leftUpperLegRGJoint:
-    weight: 1
+    weight: 0.1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -61,19 +62,19 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   leftLowerLegRGJoint:
-    weight: 1
+    weight: 0.1
     rbDrag: 1
-    rbAngularDrag: 0
+    rbAngularDrag: 1
     angularXDrive:
-      positionSpring: 10
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 100
+      maximumForce: 100000
     angularYZDrive:
-      positionSpring: 10
+      positionSpring: 100000
       positionDamper: 0
-      maximumForce: 100
+      maximumForce: 100000
   rightUpperLegRGJoint:
-    weight: 1
+    weight: 0.1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -85,17 +86,17 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   rightLowerLegRGJoint:
-    weight: 1
-    rbDrag: 1
+    weight: 0.1
+    rbDrag: 0
     rbAngularDrag: 0
     angularXDrive:
-      positionSpring: 10
+      positionSpring: 1000
       positionDamper: 0
-      maximumForce: 100
+      maximumForce: 1000
     angularYZDrive:
-      positionSpring: 10
+      positionSpring: 1000
       positionDamper: 0
-      maximumForce: 100
+      maximumForce: 1000
   leftArmRGJoint:
     weight: 0.1
     rbDrag: 100
@@ -121,7 +122,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   leftHandRGJoint:
-    weight: 0.1
+    weight: 0
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -157,7 +158,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 100000
   rightHandRGJoint:
-    weight: 0.1
+    weight: 0
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:

@@ -420,7 +420,7 @@ namespace Traverser
                         animationController.animator.CrossFade(locomotionData.fallTransitionAnimation.animationStateName, locomotionData.fallTransitionAnimation.transitionDuration, 0);
 
                         TraverserTransform contactTransform = TraverserTransform.Get(transform.position, transform.rotation);
-                        TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.animator.bodyPosition)
+                        TraverserTransform targetTransform = TraverserTransform.Get(collision.ground.ClosestPoint(animationController.GetSkeletonPosition())
                             + transform.forward * locomotionData.fallToRollTransitionData.targetOffset + Vector3.up * controller.capsuleHeight / 2.0f, // roll animation offset
                             transform.rotation);
 

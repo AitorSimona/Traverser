@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a460ec869d7fd954c9deae5ca114b73c, type: 3}
   m_Name: ClimbingFreehangTransitionRagdollProfile
   m_EditorClassIdentifier: 
-  blendTime: 0.1
+  blendTime: 0
   hipsRGJoint:
     weight: 0
     rbDrag: 100000
@@ -26,7 +26,7 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 0
   spineRGJoint:
-    weight: 0.25
+    weight: 0.1
     rbDrag: 100
     rbAngularDrag: 100
     angularXDrive:
@@ -34,9 +34,9 @@ MonoBehaviour:
       positionDamper: 0
       maximumForce: 1000000
     angularYZDrive:
-      positionSpring: 1000
+      positionSpring: 1000000
       positionDamper: 0
-      maximumForce: 10000
+      maximumForce: 1000000
   headRGJoint:
     weight: 0.25
     rbDrag: 0
@@ -66,11 +66,11 @@ MonoBehaviour:
     rbDrag: 0
     rbAngularDrag: 0
     angularXDrive:
-      positionSpring: 10
+      positionSpring: 25
       positionDamper: 0
       maximumForce: 100
     angularYZDrive:
-      positionSpring: 10
+      positionSpring: 25
       positionDamper: 0
       maximumForce: 100
   rightUpperLegRGJoint:
@@ -90,11 +90,11 @@ MonoBehaviour:
     rbDrag: 0
     rbAngularDrag: 0
     angularXDrive:
-      positionSpring: 10
+      positionSpring: 25
       positionDamper: 0
       maximumForce: 100
     angularYZDrive:
-      positionSpring: 10
+      positionSpring: 25
       positionDamper: 0
       maximumForce: 100
   leftArmRGJoint:

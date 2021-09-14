@@ -430,7 +430,7 @@ namespace Traverser
                 TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
 
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeletonPos, ref auxledgeGeometry, ref ledgeHook);
-                Vector3 difference = (auxledgeGeometry.GetPosition(ref auxHook) - (transform.position + Vector3.up * controller.capsuleHeight * hangedTransformHeightRatio));
+                Vector3 difference = (auxledgeGeometry.GetPosition(ref auxHook) - (transform.position + Vector3.up * controller.capsuleHeight));
    
                 bool collided = AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t, transform.forward);
                 

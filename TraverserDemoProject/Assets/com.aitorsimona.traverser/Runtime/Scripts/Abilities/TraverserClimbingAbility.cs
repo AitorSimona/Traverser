@@ -171,7 +171,7 @@ namespace Traverser
         private bool leftLegFreeHang = false;
         private float freehangWeight = 0.0f;
         private float handIKYFreehang = -0.06f;
-        private float handIKLengthFreehang = -0.04f;
+        private float handIKLengthFreehang = -0.03f;
 
         // --- IK ---
         private Vector3 previousLeftFootPosition = Vector3.zero;
@@ -427,12 +427,16 @@ namespace Traverser
             {
                 // ---  We are falling and colliding against a ledge ---
                 auxledgeGeometry.Initialize(ref collider);
+                TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
 
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeletonPos, ref auxledgeGeometry, ref ledgeHook);
-                Vector3 difference = (contactTransform.t - (transform.position + Vector3.up * controller.capsuleHeight));
-
+                Vector3 difference = (auxledgeGeometry.GetPosition(ref auxHook) - (transform.position + Vector3.up * controller.capsuleHeight));
+   
+                bool collided = AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t);
+                
                 // --- Decide whether to trigger a short or large hang transition ---
-                if (difference.magnitude > maxDistance / 4.0f
+                if (collided
+                    && difference.magnitude > maxDistance / 2.0f
                     && difference.y < maxYDifference
                     && locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling)
                 {
@@ -440,7 +444,7 @@ namespace Traverser
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);
                 }
                 else if (difference.y < maxYDifference
-                    && difference.magnitude <= maxDistance / 4.0f)
+                    && difference.magnitude <= maxDistance / 2.0f)
                 {
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangShortTransitionData, ref contactTransform, ref hangedTransform);
@@ -1065,9 +1069,19 @@ namespace Traverser
 
         // --- Utilities ---    
 
-        private void AdjustToFreehang(ref TraverserLedgeObject.TraverserLedgeGeometry ledgeGeom, ref TraverserLedgeObject.TraverserLedgeHook ledgeHk, ref Vector3 position)
+        private bool AdjustToFreehang(ref TraverserLedgeObject.TraverserLedgeGeometry ledgeGeom, ref TraverserLedgeObject.TraverserLedgeHook ledgeHk, ref Vector3 position)
         {
-            position += freehangWeight > 0.0f ? ledgeGeom.GetNormal(ledgeHk.index) * 0.2f - Vector3.up * 0.3f : Vector3.zero;
+            // --- Throw a ray to check for surface, and decide if we are performing a transition to free hang ---
+            RaycastHit hit;
+            bool collided = Physics.Raycast(position, transform.forward, out hit, maxDistance * 1.5f, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+
+            if (debugDraw)
+                Debug.DrawLine(position, position + transform.forward * maxDistance * 1.5f);
+
+            if(!collided)
+                position += ledgeGeom.GetNormal(ledgeHk.index) * 0.25f - Vector3.up * 0.3f;
+
+            return collided;
         }
 
         private bool IsCapsuleColliding(ref Vector3 start)
@@ -1094,7 +1108,6 @@ namespace Traverser
         {
             // --- Compute the character's skeleton position and rotation when hanging on a ledge ---
             TraverserTransform skeletonTransform = GetHangedTransform(fromPosition, ref ledgeGeom, ref ledgeHk);
-            AdjustToFreehang(ref ledgeGeom, ref ledgeHk, ref skeletonTransform.t);
             skeletonTransform.t.y += controller.capsuleHeight * hangedTransformHeightRatio;
             return skeletonTransform;
         }
@@ -1276,11 +1289,11 @@ namespace Traverser
                 handPosition.y += handIKYDistance;
 
                 // --- Adapt to free hang ---
-                if(!animationController.transition.isON)
-                {
+                //if(!animationController.transition.isON)
+                //{
                     handPosition -= forward * (handIKLengthFreehang * freehangWeight);
                     handPosition.y += handIKYFreehang * freehangWeight;
-                }
+                //}
 
                 // --- Aim IK, if a ledge was found, aim the hand towards the given target position ---
                 Vector2 leftStickInput = abilityController.inputController.GetInputMovement();

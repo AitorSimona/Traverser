@@ -68,6 +68,9 @@ namespace Traverser
         // --- The current state's actual collision situation ---
         public ref TraverserCollision current { get => ref state.currentCollision; }
 
+        // --- The state before the simulation ---
+        public ref TraverserCollision snapshot { get => ref snapshotState.currentCollision; }
+
         // --- Character controller's capsule collider height, center and radius ---
         public float capsuleHeight { get => characterController.height; }
 

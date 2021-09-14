@@ -378,7 +378,7 @@ namespace Traverser
             return ret;
         }
 
-        public bool OnContact(TraverserTransform contactTransform, float deltaTime)
+        public bool OnContact(ref TraverserTransform contactTransform, float deltaTime)
         {
             bool ret = false;
 
@@ -422,7 +422,7 @@ namespace Traverser
             }
             else if ((locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling
                 || locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Jumping)
-                && (contactTransform.t - (transform.position + Vector3.up* controller.capsuleHeight)).magnitude < maxDistance
+                && (contactTransform.t - (controller.snapshot.position + Vector3.up* controller.capsuleHeight)).magnitude < maxDistance
                 && collider.gameObject.GetComponent<TraverserClimbingObject>() != null)
             {
                 // ---  We are falling and colliding against a ledge ---
@@ -430,10 +430,17 @@ namespace Traverser
                 TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHook(contactTransform.t);
 
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeletonPos, ref auxledgeGeometry, ref ledgeHook);
-                Vector3 difference = (auxledgeGeometry.GetPosition(ref auxHook) - (transform.position + Vector3.up * controller.capsuleHeight));
-   
+                Vector3 hookPos = auxledgeGeometry.GetPosition(ref auxHook);
+                Vector3 difference = (hookPos - (controller.snapshot.position + Vector3.up * controller.capsuleHeight));
+                //float YDiff = difference.y + hangedTransformHeightRatio;
+
+
                 bool collided = AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t, transform.forward);
-                
+                //float distModifier = 2.0f;
+
+                //if (locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Jumping)
+                //    distModifier = 1.25f;
+
                 // --- Decide whether to trigger a short or large hang transition ---
                 if (collided
                     && difference.magnitude > maxDistance / 2.0f

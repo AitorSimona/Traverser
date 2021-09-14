@@ -59,7 +59,7 @@ namespace Traverser
             return null;
         }
 
-        public bool OnContact(TraverserTransform contactTransform, float deltaTime)
+        public bool OnContact(ref TraverserTransform contactTransform, float deltaTime)
         {
             bool ret = false;
 

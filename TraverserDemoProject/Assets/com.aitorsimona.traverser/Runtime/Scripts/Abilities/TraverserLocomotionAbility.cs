@@ -351,7 +351,7 @@ namespace Traverser
                         foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
                         {
                             // --- If any ability reacts to the collision, break ---
-                            if (ability.IsAbilityEnabled() && ability.OnContact(contactTransform, deltaTime))
+                            if (ability.IsAbilityEnabled() && ability.OnContact(ref contactTransform, deltaTime))
                             {
                                 contactAbility = ability;
                                 break;
@@ -373,7 +373,7 @@ namespace Traverser
                         foreach (TraverserAbility ability in GetComponents(typeof(TraverserAbility)))
                         {
                             // --- If any ability reacts to the collision, break ---
-                            if (ability.IsAbilityEnabled() && ability.OnContact(controller.contactTransform, deltaTime))
+                            if (ability.IsAbilityEnabled() && ability.OnContact(ref controller.contactTransform, deltaTime))
                             {
                                 contactAbility = ability;
                                 break;
@@ -456,7 +456,7 @@ namespace Traverser
             return contactAbility;
         }
 
-        public bool OnContact(TraverserTransform contactTransform, float deltaTime)
+        public bool OnContact(ref TraverserTransform contactTransform, float deltaTime)
         {
             return false;
         }

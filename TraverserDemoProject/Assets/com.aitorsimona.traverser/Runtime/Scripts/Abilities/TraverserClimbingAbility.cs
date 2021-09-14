@@ -51,10 +51,10 @@ namespace Traverser
         [Header("Freehang settings")]
         [Tooltip("How fast the character transitions into freehang.")]
         public float freeHangTransitionSpeed = 1.0f;
-        [Tooltip("How much we offset the character towards its forward during free hang.")]
-        public float freeHangForwardOffset = 0.25f;
-        [Tooltip("How much we offset the character towards its down vector during free hang.")]
-        public float freeHangDownwardsOffset = 0.25f;
+        //[Tooltip("How much we offset the character towards its forward during free hang.")]
+        //public float freeHangForwardOffset = 0.25f;
+        //[Tooltip("How much we offset the character towards its down vector during free hang.")]
+        //public float freeHangDownwardsOffset = 0.25f;
 
 
         [Header("Aim IK settings")]
@@ -141,7 +141,6 @@ namespace Traverser
 
         // --- Mocing ledges ---
         private Vector3 movableLedgeDelta;
-        private float movableLedgeIKAdjustmentSpeed = 100.0f;
 
         // --- Character will be adjusted to movable ledge if target animation transition is above this normalized time ---
         private float ledgeAdjustmentLimitTime = 0.25f;
@@ -171,7 +170,7 @@ namespace Traverser
         private bool rightLegFreeHang = false;
         private bool leftLegFreeHang = false;
         private float freehangWeight = 0.0f;
-        private float handIKYFreehang = -0.04f;
+        private float handIKYFreehang = -0.06f;
         private float handIKLengthFreehang = -0.04f;
 
         // --- IK ---
@@ -274,15 +273,15 @@ namespace Traverser
 
             // --- Perform a transition to free hanging if legs cannot find a surface ---
 
-            Vector3 freehangOffset = transform.forward * freeHangForwardOffset * freehangWeight
-                + Vector3.down * freeHangDownwardsOffset * freehangWeight;
+            //Vector3 freehangOffset = transform.forward * freeHangForwardOffset * freehangWeight
+            //    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
 
             if (leftLegFreeHang && rightLegFreeHang)
-                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos + freehangOffset;
+                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos/* + freehangOffset*/;
             else if (freehangWeight > 0.0f)
             {
                 // --- Return to braced hanging ---
-                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos + freehangOffset;
+                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos /*+ freehangOffset*/;
 
                 if (freehangWeight < 0.05)
                     freehangWeight = 0.0f;
@@ -1087,6 +1086,7 @@ namespace Traverser
         {
             // --- Compute the character's skeleton position and rotation when hanging on a ledge ---
             TraverserTransform skeletonTransform = GetHangedTransform(fromPosition, ref ledgeGeom, ref ledgeHk);
+            //skeletonTransform 
             skeletonTransform.t.y += controller.capsuleHeight * hangedTransformHeightRatio;
             return skeletonTransform;
         }
@@ -1175,42 +1175,41 @@ namespace Traverser
             Vector3 footPosition;
             RaycastHit hit;
             Vector3 rayOrigin = bonePosition - transform.forward * 0.75f;
-            rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight
-                + Vector3.down * freeHangDownwardsOffset * freehangWeight;
+            //rayOrigin += transform.forward * freeHangForwardOffset * freehangWeight
+            //    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
 
-            float speedModifier = feetAdjustmentSpeed;
+            float speedModifier = feetAdjustmentSpeed * Time.deltaTime;
 
             if (movableLedgeDelta != Vector3.zero)
-                speedModifier = movableLedgeIKAdjustmentSpeed;
+                speedModifier = 1.0f;
 
             if (debugDraw)
                 Debug.DrawLine(rayOrigin, rayOrigin + transform.forward * feetRayLength);
 
             if (Physics.Raycast(rayOrigin, transform.forward, out hit, feetRayLength, controller.characterCollisionMask, QueryTriggerInteraction.Ignore))
             {
-                footPosition = Vector3.Lerp(previousFootPosition, hit.point - transform.forward * footLength, speedModifier * Time.deltaTime);
+                footPosition = Vector3.Lerp(previousFootPosition, hit.point - transform.forward * footLength, speedModifier);
                 freeHang = false;
             }
             else
             {
-                footPosition = Vector3.Lerp(previousFootPosition, bonePosition, speedModifier * Time.deltaTime);
+                footPosition = Vector3.Lerp(previousFootPosition, bonePosition, speedModifier);
                 freeHang = true;
             }
+          
+            // --- Update previous foot position ---
+            previousFootPosition = footPosition;
 
-            if (weight > 0.0f)
-            {
-                // --- Update previous foot position ---
-                previousFootPosition = footPosition;
+            // --- Adjust to free hang forward offset ---
+            //footPosition += (-transform.forward * freeHangForwardOffset * freehangWeight)
+            //    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
 
-                // --- Adjust to free hang forward offset ---
-                footPosition += (-transform.forward * freeHangForwardOffset * freehangWeight)
-                    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
-
-                // --- Set IK position ---
-                animationController.animator.SetIKPosition(ikGoal, footPosition);
-            }
-            else
+            // --- Set IK position ---
+            animationController.animator.SetIKPosition(ikGoal, footPosition);
+            
+            if (weight <= 0.0f)
                 previousFootPosition = bonePosition; // Keep previous position at bone position when weight is 0 
+
         }
 
         private void AdjustHandIK(AvatarIKGoal ikGoal, HumanBodyBones bone, ref Vector3 previousHandPosition, ref Quaternion previousHandRotation, Vector3 bonePosition, float weight)
@@ -1242,8 +1241,8 @@ namespace Traverser
                 rayOrigin += -forward * handRayLength * 0.5f - Vector3.up * 0.1f;
 
                 // --- Offset ray according to free hang forward offset ---
-                rayOrigin += forward * freeHangForwardOffset * freehangWeight
-                    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
+                //rayOrigin += forward * freeHangForwardOffset * freehangWeight
+                //    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
                 Vector3 handDirection = forward;
 
                 // --- Throw ray to detect surface ---
@@ -1278,7 +1277,7 @@ namespace Traverser
                 // --- Aim IK, if a ledge was found, aim the hand towards the given target position ---
                 Vector2 leftStickInput = abilityController.inputController.GetInputMovement();
                 bool useAimIK = ikGoal == AvatarIKGoal.LeftHand ? leftStickInput.x < 0.0f : leftStickInput.x >= 0.0f;
-                float speedModifier = handsAdjustmentSpeed;
+                float speedModifier = handsAdjustmentSpeed * Time.deltaTime;
 
                 if (!animationController.transition.isON && ledgeDetected && useAimIK)
                 {
@@ -1292,20 +1291,20 @@ namespace Traverser
                 }
 
                 if (movableLedgeDelta != Vector3.zero)
-                    speedModifier = movableLedgeIKAdjustmentSpeed;
+                    speedModifier = 1.0f;
 
                 // --- Using the computed position and rotation, smoothly transition to desired transform ---
-                handPosition = Vector3.Lerp(previousHandPosition, handPosition, speedModifier * Time.deltaTime);
+                handPosition = Vector3.Lerp(previousHandPosition, handPosition, speedModifier);
                 IKRotation = Quaternion.Slerp(previousHandRotation,
-                    Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), speedModifier * Time.deltaTime);
+                    Quaternion.LookRotation(handDirection + Vector3.up * 1.5f), speedModifier);
 
                 // --- Update previous hand position and rotation ---
                 previousHandPosition = handPosition;
                 previousHandRotation = IKRotation;
 
                 // --- Adjust position according to free hang forward offset ---
-                handPosition -= forward * freeHangForwardOffset * freehangWeight
-                    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
+                //handPosition -= forward * freeHangForwardOffset * freehangWeight
+                //    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
                 
 
                 // --- Set IK position and rotation ---

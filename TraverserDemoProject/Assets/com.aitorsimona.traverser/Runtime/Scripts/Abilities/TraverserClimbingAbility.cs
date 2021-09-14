@@ -129,7 +129,7 @@ namespace Traverser
         private float currentLedgeSpeed = 0.0f;
 
         // --- Jump hangs ---
-        private float maxDistance = 3.0f;
+        private float maxDistance = 1.0f;
         private float maxYDifference = 0.25f;
 
         // --- Procedural corners ---
@@ -1009,6 +1009,9 @@ namespace Traverser
                             return;
                     }
 
+                    // --- Offset warp point ---
+                    AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t);
+
                     // --- Compute aim angle and decide which transition has to be triggered ---
                     float angle = Vector3.SignedAngle(transform.up, (hookPosition - transform.position + Vector3.up * controller.capsuleHeight).normalized, -transform.forward);
 
@@ -1062,6 +1065,11 @@ namespace Traverser
 
         // --- Utilities ---    
 
+        private void AdjustToFreehang(ref TraverserLedgeObject.TraverserLedgeGeometry ledgeGeom, ref TraverserLedgeObject.TraverserLedgeHook ledgeHk, ref Vector3 position)
+        {
+            position += freehangWeight > 0.0f ? ledgeGeom.GetNormal(ledgeHk.index) * 0.2f - Vector3.up * 0.3f : Vector3.zero;
+        }
+
         private bool IsCapsuleColliding(ref Vector3 start)
         {
             Vector3 end = start;
@@ -1086,7 +1094,7 @@ namespace Traverser
         {
             // --- Compute the character's skeleton position and rotation when hanging on a ledge ---
             TraverserTransform skeletonTransform = GetHangedTransform(fromPosition, ref ledgeGeom, ref ledgeHk);
-            //skeletonTransform 
+            AdjustToFreehang(ref ledgeGeom, ref ledgeHk, ref skeletonTransform.t);
             skeletonTransform.t.y += controller.capsuleHeight * hangedTransformHeightRatio;
             return skeletonTransform;
         }

@@ -432,7 +432,7 @@ namespace Traverser
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeletonPos, ref auxledgeGeometry, ref ledgeHook);
                 Vector3 difference = (auxledgeGeometry.GetPosition(ref auxHook) - (transform.position + Vector3.up * controller.capsuleHeight));
    
-                bool collided = AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t);
+                bool collided = AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t, transform.forward);
                 
                 // --- Decide whether to trigger a short or large hang transition ---
                 if (collided
@@ -487,7 +487,9 @@ namespace Traverser
 
                     // --- Get target transform ---
                     TraverserTransform hangedTransform = GetHangedSkeletonTransform(skeletonPosition, ref auxledgeGeometry, ref auxHook);
-         
+
+                    AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t, -transform.forward);
+
                     // --- If capsule collides against any relevant collider, do not start the dropDown transition ---
                     if (!Physics.CheckCapsule(hangedTransform.t, hangedTransform.t + Vector3.up * controller.capsuleHeight, controller.capsuleRadius, controller.characterCollisionMask))
                     {
@@ -1014,7 +1016,7 @@ namespace Traverser
                     }
 
                     // --- Offset warp point ---
-                    AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t);
+                    AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t, transform.forward);
 
                     // --- Compute aim angle and decide which transition has to be triggered ---
                     float angle = Vector3.SignedAngle(transform.up, (hookPosition - transform.position + Vector3.up * controller.capsuleHeight).normalized, -transform.forward);
@@ -1069,14 +1071,14 @@ namespace Traverser
 
         // --- Utilities ---    
 
-        private bool AdjustToFreehang(ref TraverserLedgeObject.TraverserLedgeGeometry ledgeGeom, ref TraverserLedgeObject.TraverserLedgeHook ledgeHk, ref Vector3 position)
+        private bool AdjustToFreehang(ref TraverserLedgeObject.TraverserLedgeGeometry ledgeGeom, ref TraverserLedgeObject.TraverserLedgeHook ledgeHk, ref Vector3 position, Vector3 endDirection)
         {
             // --- Throw a ray to check for surface, and decide if we are performing a transition to free hang ---
             RaycastHit hit;
-            bool collided = Physics.Raycast(position, transform.forward, out hit, maxDistance * 1.5f, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+            bool collided = Physics.Raycast(position, endDirection, out hit, maxDistance * 1.5f, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
 
             if (debugDraw)
-                Debug.DrawLine(position, position + transform.forward * maxDistance * 1.5f);
+                Debug.DrawLine(position, position + endDirection * maxDistance * 1.5f);
 
             if(!collided)
                 position += ledgeGeom.GetNormal(ledgeHk.index) * 0.25f - Vector3.up * 0.3f;

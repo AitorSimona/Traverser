@@ -129,7 +129,7 @@ namespace Traverser
         private float currentLedgeSpeed = 0.0f;
 
         // --- Jump hangs ---
-        private float maxDistance = 1.0f;
+        private float maxDistance = 2.0f;
         private float maxYDifference = 0.25f;
 
         // --- Procedural corners ---
@@ -444,7 +444,7 @@ namespace Traverser
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);
                 }
                 else if (difference.y < maxYDifference
-                    && difference.magnitude <= maxDistance / 2.0f)
+                    && (difference.magnitude <= maxDistance / 2.0f || !collided))
                 {
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangShortTransitionData, ref contactTransform, ref hangedTransform);
@@ -1075,7 +1075,7 @@ namespace Traverser
         {
             // --- Throw a ray to check for surface, and decide if we are performing a transition to free hang ---
             RaycastHit hit;
-            bool collided = Physics.Raycast(position, endDirection, out hit, maxDistance * 1.5f, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
+            bool collided = Physics.Raycast(position, endDirection, out hit, maxDistance * 0.5f, controller.characterCollisionMask, QueryTriggerInteraction.Ignore);
 
             if (debugDraw)
                 Debug.DrawLine(position, position + endDirection * maxDistance * 1.5f);

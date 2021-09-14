@@ -17,7 +17,7 @@ MonoBehaviour:
     targetAnim: Mount
     triggerTransitionAnim: WalkTransitionTrigger
     triggerTargetAnim: MountTrigger
-    contactOffset: 1.5
+    contactOffset: 0.75
     targetOffset: 0.1
     forceTarget: 0
   jumpHangTransitionData:

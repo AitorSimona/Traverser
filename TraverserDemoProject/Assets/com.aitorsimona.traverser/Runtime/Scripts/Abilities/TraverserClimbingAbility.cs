@@ -438,7 +438,7 @@ namespace Traverser
                 if (collided
                     && difference.magnitude > maxDistance / 2.0f
                     && difference.y < maxYDifference
-                    && locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling)
+                    /*&& locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling*/)
                 {
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);

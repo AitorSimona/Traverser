@@ -982,7 +982,7 @@ namespace Traverser
                 {
                     // --- Adjust the aim position so we don't end in another ledge edge ---
                     Vector3 ledgePos = hit.collider.bounds.center - transform.forward * hit.collider.bounds.size.magnitude;
-                    TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHookAt(ledgePos, desiredCornerMaxDistance);
+                    TraverserLedgeObject.TraverserLedgeHook auxHook = auxledgeGeometry.GetHookAt(ledgePos, 0.5f);
                     TraverserTransform contactTransform = TraverserTransform.Get(animationController.skeletonPos, transform.rotation);
 
                     Vector3 hookPosition = auxledgeGeometry.GetPosition(ref auxHook) - auxledgeGeometry.GetNormal(auxHook.index) * controller.capsuleRadius;

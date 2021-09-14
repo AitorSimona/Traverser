@@ -347,6 +347,7 @@ namespace Traverser
             {
                 // --- Given a 3d position/ root motion transform, return the closer hook point ---
                 TraverserLedgeHook result = GetHook(position);
+                distanceOffset *= GetLength(result.index);
                 result.distance = Mathf.Clamp(result.distance, distanceOffset, GetLength(result.index) - distanceOffset);
 
                 return result;

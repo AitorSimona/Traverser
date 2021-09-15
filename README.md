@@ -95,3 +95,5 @@ If you encounter a bug, or want to suggest an idea, just drop it in the issues s
 [Guerrilla Games](https://www.youtube.com/watch?v=LrLHsbTK5bM&ab_channel=GDC)
 
 [The Coalition](https://www.gdcvault.com/play/1024219/Motion-Warping-in-Gears-of)
+
+[Naughty Dog](https://www.youtube.com/watch?v=7S-_vuoKgR4&ab_channel=GDC)

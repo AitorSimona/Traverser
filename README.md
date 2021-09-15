@@ -85,3 +85,13 @@ If you encounter a bug, or want to suggest an idea, just drop it in the issues s
 [Mixamo](https://www.mixamo.com/#/) character and several animations
 
 [Autodesk Maya](https://www.autodesk.com/products/maya/overview) 2019
+
+## Special thanks / References
+
+[Unity](https://unity.com/)
+
+[Kinematica](https://docs.unity3d.com/Packages/com.unity.kinematica@0.8/manual/index.html)
+
+[Guerrilla Games](https://www.youtube.com/watch?v=LrLHsbTK5bM&ab_channel=GDC)
+
+[The Coalition](https://www.gdcvault.com/play/1024219/Motion-Warping-in-Gears-of)

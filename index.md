@@ -4,7 +4,7 @@
 
 ### *By [Aitor Simona](https://aitorsimona.github.io/)*
 
-Traverser is a free and open soruce player traversal toolkit featuring Locomotion, Parkour and Climbing. 
+Traverser is a free and open source player traversal toolkit featuring Locomotion, Parkour and Climbing. 
 Includes procedural animation, physical animation, custom motion warping and root motion. 
 It is self-contained in a set of scripts. Use the given abilities or expand the system 
 through its shared ability workflow.

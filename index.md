@@ -1,4 +1,4 @@
-## Traverser 2.0
+# Traverser 2.0
 
 ![Image](docs/Welcome.PNG)
 

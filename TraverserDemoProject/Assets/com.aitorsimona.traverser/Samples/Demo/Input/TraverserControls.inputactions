@@ -134,7 +134,7 @@
                     "id": "7c4ef5c1-5485-46ec-9cdc-7343c873f7fd",
                     "path": "<Mouse>/delta",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "NormalizeVector2",
                     "groups": "Keyboard And Mouse",
                     "action": "Look",
                     "isComposite": false,
@@ -187,7 +187,7 @@
                 {
                     "name": "",
                     "id": "adbacf73-bb17-4f1b-ac9e-ee86874db623",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
@@ -209,7 +209,7 @@
                 {
                     "name": "",
                     "id": "3058fa93-488a-474c-adb5-76b14247eefa",
-                    "path": "<Keyboard>/r",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
@@ -231,7 +231,7 @@
                 {
                     "name": "",
                     "id": "abd47294-a740-48f8-9e52-eca708542f92",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/c",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
@@ -253,7 +253,7 @@
                 {
                     "name": "",
                     "id": "4900257d-82cd-4062-8246-8165b144e6e0",
-                    "path": "<Keyboard>/c",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",

@@ -58,8 +58,8 @@ through its shared ability workflow.
 
 ## CONTACT
 
-[LinkedIn](https://www.linkedin.com/in/aitor-simona-bouzas-aab43817b/)
-[Mail](simonaaitor@gmail.com)
+- [LinkedIn](https://www.linkedin.com/in/aitor-simona-bouzas-aab43817b/)
+- [Mail](simonaaitor@gmail.com)
 
 ## TOOLS USED
 

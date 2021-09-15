@@ -10,6 +10,8 @@ namespace Traverser
 
         [Tooltip("When set to false, ragdoll weight will be set to 0.")]
         public bool active = true;
+        [Tooltip("Layer used to prevent collisions between controller and ragdoll components. Set all skeleton parts to this layer")]
+        public string ragdollLayer;
 
         [Header("Ragdoll Joints")]
         public TraverserRagdollJoint hipsRGJoint;
@@ -46,6 +48,12 @@ namespace Traverser
         // --------------------------------
 
         // --- Basic Methods ---
+
+        private void Awake()
+        {
+            // --- Prevent collisions between ragdoll and controller ---
+            Physics.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(ragdollLayer), true);
+        }
 
         void Start()
         {

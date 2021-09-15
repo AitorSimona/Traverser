@@ -59,6 +59,10 @@ Unity's new Input system package
 
 Demo uses the High definition render pipeline
 
+## ISSUES
+
+If you encounter a bug, or want to suggest an idea, just drop it in the issues section, templates coming soon.
+
 ## CONTACT
 
 [LinkedIn](https://www.linkedin.com/in/aitor-simona-bouzas-aab43817b/)

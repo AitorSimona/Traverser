@@ -51,11 +51,6 @@ namespace Traverser
         [Header("Freehang settings")]
         [Tooltip("How fast the character transitions into freehang.")]
         public float freeHangTransitionSpeed = 1.0f;
-        //[Tooltip("How much we offset the character towards its forward during free hang.")]
-        //public float freeHangForwardOffset = 0.25f;
-        //[Tooltip("How much we offset the character towards its down vector during free hang.")]
-        //public float freeHangDownwardsOffset = 0.25f;
-
 
         [Header("Aim IK settings")]
         [Tooltip("How fast the head rotates towards the target direction. Used in ledge to ledge.")]
@@ -130,7 +125,7 @@ namespace Traverser
 
         // --- Jump hangs ---
         private float maxDistance = 2.0f;
-        private float maxYDifference = 0.25f;
+        private float maxYDifference = 0.5f;
 
         // --- Procedural corners ---
         private Vector3 previousHookNormal;
@@ -170,8 +165,8 @@ namespace Traverser
         private bool rightLegFreeHang = false;
         private bool leftLegFreeHang = false;
         private float freehangWeight = 0.0f;
-        private float handIKYFreehang = -0.06f;
-        private float handIKLengthFreehang = -0.03f;
+        private float handIKYFreehang = -0.05f;
+        private float handIKLengthFreehang = -0.02f;
 
         // --- IK ---
         private Vector3 previousLeftFootPosition = Vector3.zero;
@@ -273,15 +268,12 @@ namespace Traverser
 
             // --- Perform a transition to free hanging if legs cannot find a surface ---
 
-            //Vector3 freehangOffset = transform.forward * freeHangForwardOffset * freehangWeight
-            //    + Vector3.down * freeHangDownwardsOffset * freehangWeight;
-
             if (leftLegFreeHang && rightLegFreeHang)
-                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos/* + freehangOffset*/;
+                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos;
             else if (freehangWeight > 0.0f)
             {
                 // --- Return to braced hanging ---
-                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos /*+ freehangOffset*/;
+                animationController.animator.GetBoneTransform(HumanBodyBones.Hips).position = animationController.skeletonPos;
 
                 if (freehangWeight < 0.05)
                     freehangWeight = 0.0f;
@@ -432,20 +424,13 @@ namespace Traverser
                 TraverserTransform hangedTransform = GetHangedSkeletonTransform(animationController.skeletonPos, ref auxledgeGeometry, ref ledgeHook);
                 Vector3 hookPos = auxledgeGeometry.GetPosition(ref auxHook);
                 Vector3 difference = (hookPos - (controller.snapshot.position + Vector3.up * controller.capsuleHeight));
-                //float YDiff = difference.y + hangedTransformHeightRatio;
-
 
                 bool collided = AdjustToFreehang(ref auxledgeGeometry, ref auxHook, ref hangedTransform.t, transform.forward);
-                //float distModifier = 2.0f;
-
-                //if (locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Jumping)
-                //    distModifier = 1.25f;
 
                 // --- Decide whether to trigger a short or large hang transition ---
                 if (collided
                     && difference.magnitude > maxDistance / 2.0f
-                    && difference.y < maxYDifference
-                    /*&& locomotionAbility.GetLocomotionState() == TraverserLocomotionAbility.LocomotionAbilityState.Falling*/)
+                    && difference.y < maxYDifference)
                 {
                     animationController.animator.Play(climbingData.fallTransitionAnimation.animationStateName, 0);
                     ret = animationController.transition.StartTransition(ref climbingData.jumpHangTransitionData, ref contactTransform, ref hangedTransform);

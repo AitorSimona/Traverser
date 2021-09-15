@@ -5,7 +5,7 @@ Locomotion, Parkour and Climbing. It is self-contained in a set of scripts and h
 from the basic Unity functionality. Use the given abilities or expand the system through its shared 
 ability workflow.
 
-INCLUDE SAMPLE IMAGE HERE
+![Image](docs/Welcome.PNG)
 
 ### *By [Aitor Simona](https://aitorsimona.github.io/)*
 

@@ -47,6 +47,10 @@ through its shared ability workflow.
 | Jump to ledge   | West Button | Left Shift  |
 | Pull Up from ledge   | North Button | Q |
 
+## ISSUES
+
+If you encounter a bug, or want to suggest an idea, just drop it in the issues section, templates coming soon.
+
 ## DEPENDENCIES
 
 Unity's animation system, Mecanim's humanoid
@@ -58,10 +62,6 @@ Unity's Cinemachine package
 Unity's new Input system package
 
 Demo uses the High definition render pipeline
-
-## ISSUES
-
-If you encounter a bug, or want to suggest an idea, just drop it in the issues section, templates coming soon.
 
 ## CONTACT
 

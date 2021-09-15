@@ -1,4 +1,7 @@
 # Traverser 2.0
+
+INCLUDE SAMPLE IMAGE HERE
+
 ### *By Aitor Simona*
 
 Traverser is a free and open soruce player traversal toolkit featuring Locomotion, Parkour and Climbing. 
@@ -25,16 +28,18 @@ will look pink.
 
 ### INPUT
 
-- Connect any gamepad (recommended) or use keyboard/mouse
-- Move with left joystick, aim with right joystick
-- Run keeping left joystick pressed while moving
-- Use A for general parkour
-- Use A to jump back from ledge
-- Use B to drop from platforms
-- Use B to climb onto walls and drop down to ledges
-- Use X to jump to another ledge
-- Use Y to jump
-- Use Y to pull up from a ledge (also requires upwards left joystick)
+| Action        | Gamepad       | Keyboard/Mouse |
+| ------------- |:-------------:|:-------------:|
+| Movement      | Left Joystick |      WASD     |
+| Look          | Right Joystick|     Mouse     |
+| Run           | Left Joystick Button | Left Shift  |
+| Jump          | North Button  | Q |
+| Drop          | East Button | C  |
+| Climb         | East Button | C  |
+| Vault/Slide   | South Button | Space  |
+| Jump from ledge | South Button | Space  |
+| Jump to ledge   | West Button | Left Shift  |
+| Pull Up from ledge   | North Button | Q |
 
 ## DEPENDENCIES
 

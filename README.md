@@ -2,7 +2,7 @@
 
 INCLUDE SAMPLE IMAGE HERE
 
-### *By Aitor Simona*
+### *By [Aitor Simona](https://aitorsimona.github.io/)*
 
 Traverser is a free and open soruce player traversal toolkit featuring Locomotion, Parkour and Climbing. 
 Includes procedural animation, physical animation, custom motion warping and root motion. 
@@ -32,7 +32,6 @@ through its shared ability workflow.
 |                                |                | Free hang |     
 |                                |                | Aim IK |     
 
-
 ## INPUT
 
 | Action        | Gamepad       | Keyboard/Mouse |
@@ -56,6 +55,11 @@ through its shared ability workflow.
 - Unity's Cinemachine package
 - Unity's new Input system package
 - Demo uses the High definition render pipeline
+
+## CONTACT
+
+[LinkedIn](https://www.linkedin.com/in/aitor-simona-bouzas-aab43817b/)
+[Mail](simonaaitor@gmail.com)
 
 ## TOOLS USED
 

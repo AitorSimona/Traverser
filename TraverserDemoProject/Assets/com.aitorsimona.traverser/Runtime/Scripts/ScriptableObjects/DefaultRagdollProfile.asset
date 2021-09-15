@@ -1,0 +1,171 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a460ec869d7fd954c9deae5ca114b73c, type: 3}
+  m_Name: DefaultRagdollProfile
+  m_EditorClassIdentifier: 
+  blendTime: 0.5
+  hipsRGJoint:
+    weight: 0
+    rbDrag: 100000
+    rbAngularDrag: 100000
+    angularXDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+    angularYZDrive:
+      positionSpring: 0
+      positionDamper: 0
+      maximumForce: 0
+  spineRGJoint:
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 1000000
+      positionDamper: 0
+      maximumForce: 1000000
+    angularYZDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 10000
+  headRGJoint:
+    weight: 0.5
+    rbDrag: 0
+    rbAngularDrag: 0
+    angularXDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 10000
+    angularYZDrive:
+      positionSpring: 1000
+      positionDamper: 0
+      maximumForce: 10000
+  leftUpperLegRGJoint:
+    weight: 0.5
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+  leftLowerLegRGJoint:
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+  rightUpperLegRGJoint:
+    weight: 0.5
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+  rightLowerLegRGJoint:
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+  leftArmRGJoint:
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+  leftForeArmRGJoint:
+    weight: 0.5
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+  leftHandRGJoint:
+    weight: 0.5
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+  rightArmRGJoint:
+    weight: 0.25
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+  rightForeArmRGJoint:
+    weight: 0.5
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+  rightHandRGJoint:
+    weight: 0.5
+    rbDrag: 100
+    rbAngularDrag: 100
+    angularXDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000
+    angularYZDrive:
+      positionSpring: 100000
+      positionDamper: 0
+      maximumForce: 100000

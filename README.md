@@ -1,6 +1,6 @@
 # Traverser 2.0
 
-INCLUDE SAMPLE IMAGE HERE
+![Image](https://github.com/AitorSimona/Traverser/blob/gh-pages/docs/Welcome.PNG)
 
 ### *By [Aitor Simona](https://aitorsimona.github.io/)*
 

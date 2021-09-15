@@ -11,7 +11,7 @@ through its shared ability workflow.
 
 ## SHOWCASE 
 
-<iframe src="https://www.youtube.com/embed/Q-7dArXpln8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="854" height="480" src="https://www.youtube.com/embed/Q-7dArXpln8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## DOWNLOAD
 

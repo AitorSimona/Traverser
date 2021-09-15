@@ -61,7 +61,7 @@ through its shared ability workflow.
 
 ## ISSUES
 
-If you encounter a bug, or want to suggest an idea, just drop it in the issues section, templates coming soon.
+If you encounter a bug, or want to suggest an idea, just drop it in the issues section.
 
 ## DEPENDENCIES
 

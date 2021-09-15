@@ -11,50 +11,27 @@ through its shared ability workflow.
 
 ## FEATURES 
 
-| Custom Character Controller|
-| ------------- |
-| Extends Character Controller | 
-| Predictive Collision Detection |
-| Simulation |
-| Ground Snap |
+### Tools 
 
-| Custom Motion Warping|
-| ------------- |
-| Linear/Weighted | 
-| Custom Root motion|
+| Custom Character Controller    | Custom Motion Warping | Procedural Animation | Physical Animation |
+| -------------                  | -------------         | -------------        | ------------- |
+| Extends Character Controller   | Linear/Weighted       | Runtime rigging      | Active ragdoll |   
+| Predictive Collision Detection | Custom Root motion    | Aim IK               | Ragdoll profiles / blending |
+| Simulation                     |
+| Ground Snap                    |
 
-| Procedural Animation |
-| ------------- |
-| Runtime rigging | 
-| Aim IK |
+### Abilities 
 
-| Physical Animation |
-| ------------- |
-| Active ragdoll | 
-| Ragdoll profiles / blending |
+| Locomotion                     | Parkour        | Climbing |
+| -------------                  | -------------  | ------------- |
+| Movement & Rotation            | Vaulting       | Procedural ledge climbing - No Annotations | 
+| Jump / Grab ledge              | Sliding        | Nearby ledges |
+| Hard and Fall to roll landings | Ledge to ledge | Ledge to ledge |
+| Feet IK |                                       | Moving ledges |
+|                                |                | PullUp / DropDown / JumpBack |                                                  
+|                                |                | Free hang |     
+|                                |                | Aim IK |     
 
-| Locomotion |
-| ------------- |
-| Movement & Rotation | 
-| Jump / Grab ledge |
-| Hard and Fall to roll landings |
-| Feet IK |
-
-| Parkour |
-| ------------- |
-| Vaulting | 
-| Sliding |
-| Ledge to ledge |
-
-| Climbing |
-| ------------- |
-| Procedural ledge climbing | 
-| Nearby ledges |
-| Ledge to ledge |
-| Aim IK |
-| Free hang |
-| PullUp / DropDown / JumpBack |
-| Moving ledges |
 
 ## INPUT
 

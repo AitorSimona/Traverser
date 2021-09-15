@@ -1,8 +1,8 @@
 {
   "name": "com.aitorsimona.traverser",
-  "version": "1.0.0",
-  "displayName": "Traverser",
-  "description": "Traverser is a player traversal toolkit featuring as of now the most basic traversal abilities which are Locomotion, Parkour and Climbing. It is self-contained in a set of scripts and has no dependencies apart from the basic Unity functionality. Use the given abilities or expand the system through its shared ability workflow.",
+  "version": "2.0.0",
+  "displayName": "Traverser 2.0",
+  "description": "Traverser is a free and open source player traversal toolkit featuring Locomotion, Parkour and Climbing. Includes procedural animation, physical animation, custom motion warping and root motion. It is self-contained in a set of scripts. Use the given abilities or expand the system through its shared ability workflow.",
   "unity": "2020.2",
   "unityRelease": "2f1",
   "documentationUrl": "https://aitorsimona.github.io/Traverser/",
@@ -12,16 +12,12 @@
     "traversal",
     "locomotion",
     "parkour",
-    "climbing",
+    "procedural climbing",
     "character",
-    "controller"
-  ],
-  "samples": [
-        {
-            "displayName": "Demo",
-            "description": "Contains animations, models, prefabs and a demo scene. Recommended to see how the system is used.",
-            "path": "Samples~/TraverserSamples"
-        }
+    "controller",
+    "physical animation",
+    "procedural animation"
+    "custom root motion"
   ],
   "author": {
     "name": "Aitor Simona",

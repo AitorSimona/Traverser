@@ -1,4 +1,7 @@
 # Traverser 2.0
+
+INCLUDE SAMPLE IMAGE HERE
+
 ### *By Aitor Simona*
 
 Traverser is a free and open soruce player traversal toolkit featuring Locomotion, Parkour and Climbing. 
@@ -6,35 +9,37 @@ Includes procedural animation, physical animation, custom motion warping and roo
 It is self-contained in a set of scripts. Use the given abilities or expand the system 
 through its shared ability workflow.
 
-## HOW TO USE 
+## FEATURES 
 
-### DOWNLOADING
+| Custom Character Controller|
+| ------------- |
+| Extends Character Controller | 
+| Predictive Collision Detection |
+| Simulation |
+| Ground Snap |
 
-Download the Asset (release section in github) and drop it into the assets folder. 
-Traverser uses some unity packages, check dependencies below.
+| Custom Motion Warping|
+| ------------- |
+| Linear/Weighted | 
+| Custom Root motion|
 
-### DEMO
 
-You can also download the demo project to see how I use the given functionality. I also include 
-an exe build for you to play the demo. 
 
-The demo build can also be downloaded as an exe in the release section of github.
 
-IMPORTANT: The demo uses Unity's HDRP, make sure to install them first or all materials
-will look pink. 
+## INPUT
 
-### INPUT
-
-- Connect any gamepad (recommended) or use keyboard/mouse
-- Move with left joystick, aim with right joystick
-- Run keeping left joystick pressed while moving
-- Use A for general parkour
-- Use A to jump back from ledge
-- Use B to drop from platforms
-- Use B to climb onto walls and drop down to ledges
-- Use X to jump to another ledge
-- Use Y to jump
-- Use Y to pull up from a ledge (also requires upwards left joystick)
+| Action        | Gamepad       | Keyboard/Mouse |
+| ------------- |:-------------:|:-------------:|
+| Movement      | Left Joystick |      WASD     |
+| Look          | Right Joystick|     Mouse     |
+| Run           | Left Joystick Button | Left Shift  |
+| Jump          | North Button  | Q |
+| Drop          | East Button | C  |
+| Climb         | East Button | C  |
+| Vault/Slide   | South Button | Space  |
+| Jump from ledge | South Button | Space  |
+| Jump to ledge   | West Button | Left Shift  |
+| Pull Up from ledge   | North Button | Q |
 
 ## DEPENDENCIES
 

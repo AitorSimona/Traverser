@@ -9,24 +9,24 @@ Includes procedural animation, physical animation, custom motion warping and roo
 It is self-contained in a set of scripts. Use the given abilities or expand the system 
 through its shared ability workflow.
 
-## HOW TO USE 
+## FEATURES 
 
-### DOWNLOADING
+| Custom Character Controller|
+| ------------- |
+| Extends Character Controller | 
+| Predictive Collision Detection |
+| Simulation |
+| Ground Snap |
 
-Download the Asset (release section in github) and drop it into the assets folder. 
-Traverser uses some unity packages, check dependencies below.
+| Custom Motion Warping|
+| ------------- |
+| Linear/Weighted | 
+| Custom Root motion|
 
-### DEMO
 
-You can also download the demo project to see how I use the given functionality. I also include 
-an exe build for you to play the demo. 
 
-The demo build can also be downloaded as an exe in the release section of github.
 
-IMPORTANT: The demo uses Unity's HDRP, make sure to install them first or all materials
-will look pink. 
-
-### INPUT
+## INPUT
 
 | Action        | Gamepad       | Keyboard/Mouse |
 | ------------- |:-------------:|:-------------:|

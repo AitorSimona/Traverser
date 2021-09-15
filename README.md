@@ -53,15 +53,12 @@ If you encounter a bug, or want to suggest an idea, just drop it in the issues s
 
 ## DEPENDENCIES
 
-Unity's animation system, Mecanim's humanoid
-
-Unity's animation rigging package
-
-Unity's Cinemachine package
-
-Unity's new Input system package
-
-Demo uses the High definition render pipeline
+| Packages    |
+| -------------                  |
+| Animation Rigging   |
+| Cinemachine |
+| Input System                     |
+| Demo uses HDRP                    |
 
 ## CONTACT
 
@@ -71,12 +68,12 @@ Demo uses the High definition render pipeline
 
 ## TOOLS USED
 
-Microsoft Visual Studio 2019
+[Microsoft Visual Studio](https://visualstudio.microsoft.com/) 2019
 
-Unity 2020.2.2f1
+[Unity](https://unity.com/) 2020.2.2f1
 
-Kinematica's 0.8 demo assets
+[Kinematica](https://docs.unity3d.com/Packages/com.unity.kinematica@0.8/manual/index.html) 0.8 demo assets
 
-Mixamo character and several animations
+[Mixamo](https://www.mixamo.com/#/) character and several animations
 
-Autodesk Maya 2019
+[Autodesk Maya](https://www.autodesk.com/products/maya/overview) 2019

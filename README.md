@@ -49,22 +49,30 @@ through its shared ability workflow.
 
 ## DEPENDENCIES
 
-- Basic Unity functionality, core engine
-- Unity's animation system, Mecanim's humanoid
-- Unity's animation rigging package
-- Unity's Cinemachine package
-- Unity's new Input system package
-- Demo uses the High definition render pipeline
+Unity's animation system, Mecanim's humanoid
+
+Unity's animation rigging package
+
+Unity's Cinemachine package
+
+Unity's new Input system package
+
+Demo uses the High definition render pipeline
 
 ## CONTACT
 
-- [LinkedIn](https://www.linkedin.com/in/aitor-simona-bouzas-aab43817b/)
-- [Mail](simonaaitor@gmail.com)
+[LinkedIn](https://www.linkedin.com/in/aitor-simona-bouzas-aab43817b/)
+
+[Mail](simonaaitor@gmail.com)
 
 ## TOOLS USED
 
-- Microsoft Visual Studio 2019
-- Unity 2020.2.2f1
-- Kinematica's 0.8 demo assets
-- Mixamo character and several animations
-- Autodesk Maya 2019
+Microsoft Visual Studio 2019
+
+Unity 2020.2.2f1
+
+Kinematica's 0.8 demo assets
+
+Mixamo character and several animations
+
+Autodesk Maya 2019

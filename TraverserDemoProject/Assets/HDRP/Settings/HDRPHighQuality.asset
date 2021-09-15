@@ -197,7 +197,7 @@ MonoBehaviour:
     sssCustomSampleBudget: 20
     materialQuality: 0
   m_RenderPipelineSettings:
-    supportShadowMask: 0
+    supportShadowMask: 1
     supportSSR: 0
     supportSSRTransparent: 0
     supportSSAO: 1

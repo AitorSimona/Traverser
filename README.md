@@ -23,8 +23,12 @@ through its shared ability workflow.
 | Linear/Weighted | 
 | Custom Root motion|
 
-
-
+| Locomotion |
+| ------------- |
+| Movement & Rotation | 
+| Jump |
+| Hard and Fall to roll landings |
+| Feet IK |
 
 ## INPUT
 

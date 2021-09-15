@@ -11,7 +11,7 @@ through its shared ability workflow.
 
 ## SHOWCASE 
 
-[ShowcaseVideo](https://www.youtube.com/watch?v=Q-7dArXpln8&ab_channel=Animeidi_);
+[ShowcaseVideo](https://www.youtube.com/watch?v=Q-7dArXpln8&ab_channel=Animeidi_)
 
 ## DOWNLOAD
 

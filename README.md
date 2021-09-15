@@ -23,12 +23,38 @@ through its shared ability workflow.
 | Linear/Weighted | 
 | Custom Root motion|
 
+| Procedural Animation |
+| ------------- |
+| Runtime rigging | 
+| Aim IK |
+
+| Physical Animation |
+| ------------- |
+| Active ragdoll | 
+| Ragdoll profiles / blending |
+
 | Locomotion |
 | ------------- |
 | Movement & Rotation | 
-| Jump |
+| Jump / Grab ledge |
 | Hard and Fall to roll landings |
 | Feet IK |
+
+| Parkour |
+| ------------- |
+| Vaulting | 
+| Sliding |
+| Ledge to ledge |
+
+| Climbing |
+| ------------- |
+| Procedural ledge climbing | 
+| Nearby ledges |
+| Ledge to ledge |
+| Aim IK |
+| Free hang |
+| PullUp / DropDown / JumpBack |
+| Moving ledges |
 
 ## INPUT
 

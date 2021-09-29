@@ -1,0 +1,126 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756e5c001c7c05845b430eeb90f346bb, type: 3}
+  m_Name: AgentParkourData
+  m_EditorClassIdentifier: 
+  vaultTableJogTransitionData:
+    transitionAnim: JogTransition
+    targetAnim: VaultTableJog
+    triggerTransitionAnim: JogTransitionTrigger
+    triggerTargetAnim: TableTrigger
+    contactOffset: 0.5
+    targetOffset: 0.75
+    forceTarget: 0
+  vaultTableRunTransitionData:
+    transitionAnim: RunTransition
+    targetAnim: VaultTableRun
+    triggerTransitionAnim: RunTransitionTrigger
+    triggerTargetAnim: TableTrigger
+    contactOffset: 0.75
+    targetOffset: 0.75
+    forceTarget: 0
+  climbPlatformWalkTransitionData:
+    transitionAnim: WalkTransition
+    targetAnim: ClimbPlatformWalk
+    triggerTransitionAnim: WalkTransitionTrigger
+    triggerTargetAnim: PlatformClimbTrigger
+    contactOffset: 0.1
+    targetOffset: 0.25
+    forceTarget: 0
+  climbPlatformJogTransitionData:
+    transitionAnim: JogTransition
+    targetAnim: ClimbPlatformJog
+    triggerTransitionAnim: JogTransitionTrigger
+    triggerTargetAnim: PlatformClimbTrigger
+    contactOffset: 0.25
+    targetOffset: 0.25
+    forceTarget: 0
+  climbPlatformRunTransitionData:
+    transitionAnim: RunTransition
+    targetAnim: ClimbPlatformRun
+    triggerTransitionAnim: RunTransitionTrigger
+    triggerTargetAnim: PlatformClimbTrigger
+    contactOffset: 0.25
+    targetOffset: 0.25
+    forceTarget: 0
+  dropPlatformWalkTransitionData:
+    transitionAnim: WalkTransition
+    targetAnim: DropPlatformWalk
+    triggerTransitionAnim: WalkTransitionTrigger
+    triggerTargetAnim: PlatformDropTrigger
+    contactOffset: 1
+    targetOffset: 0.1
+    forceTarget: 0
+  dropPlatformJogTransitionData:
+    transitionAnim: JogTransition
+    targetAnim: DropPlatformJog
+    triggerTransitionAnim: JogTransitionTrigger
+    triggerTargetAnim: PlatformDropTrigger
+    contactOffset: 0.5
+    targetOffset: 0.1
+    forceTarget: 0
+  dropPlatformRunTransitionData:
+    transitionAnim: RunTransition
+    targetAnim: DropPlatformRun
+    triggerTransitionAnim: RunTransitionTrigger
+    triggerTargetAnim: PlatformDropTrigger
+    contactOffset: 1
+    targetOffset: 0.1
+    forceTarget: 0
+  vaultLedgeWalkTransitionData:
+    transitionAnim: WalkTransition
+    targetAnim: VaultLedgeWalk
+    triggerTransitionAnim: WalkTransitionTrigger
+    triggerTargetAnim: LedgeTrigger
+    contactOffset: 0.75
+    targetOffset: 0.5
+    forceTarget: 0
+  vaultLedgeJogTransitionData:
+    transitionAnim: JogTransition
+    targetAnim: VaultLedgeJog
+    triggerTransitionAnim: JogTransitionTrigger
+    triggerTargetAnim: LedgeTrigger
+    contactOffset: 1
+    targetOffset: 1.25
+    forceTarget: 0
+  vaultLedgeRunTransitionData:
+    transitionAnim: RunTransition
+    targetAnim: VaultLedgeRun
+    triggerTransitionAnim: RunTransitionTrigger
+    triggerTargetAnim: LedgeTrigger
+    contactOffset: 1
+    targetOffset: 0.5
+    forceTarget: 0
+  slideTunnelJogTransitionData:
+    transitionAnim: JogTransition
+    targetAnim: SlideTunnelJog
+    triggerTransitionAnim: JogTransitionTrigger
+    triggerTargetAnim: TunnelTrigger
+    contactOffset: 0.75
+    targetOffset: 2
+    forceTarget: 0
+  slideTunnelRunTransitionData:
+    transitionAnim: RunTransition
+    targetAnim: SlideTunnelRun
+    triggerTransitionAnim: RunTransitionTrigger
+    triggerTargetAnim: TunnelTrigger
+    contactOffset: 0.75
+    targetOffset: 2
+    forceTarget: 0
+  ledgeToLedgeTransitionData:
+    transitionAnim: JogTransition
+    targetAnim: LedgeToLedge
+    triggerTransitionAnim: JogTransitionTrigger
+    triggerTargetAnim: LedgeToLedgeTrigger
+    contactOffset: 0
+    targetOffset: 0
+    forceTarget: 1

@@ -1,0 +1,16 @@
+{
+    "FilenameValidation":
+    {
+        "Filenames":
+        [
+            {
+                "Filename": "Samples~/RebindingUI/Icons/*.png*",
+                "Targets": "+PS4,+XboxOne"
+            }
+        ]
+    },
+    "FileContentKeywordValidation":
+    {
+        "TimeoutMins": 10.0
+    }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "com.unity.animation.rigging",
+  "displayName": "Animation Rigging",
+  "version": "1.0.3",
+  "unity": "2020.2",
+  "unityRelease": "0a16",
+  "description": "Animation Rigging toolkit using Unity's Animation C# Jobs",
+  "keywords": [
+    "Animation",
+    "Rigging",
+    "Constraints"
+  ],
+  "category": "Animation",
+  "dependencies": {
+    "com.unity.burst": "1.3.4",
+    "com.unity.test-framework": "1.1.14"
+  },
+  "relatedPackages": {
+    "com.unity.animation.rigging.tests": "1.0.3"
+  },
+  "upmCi": {
+    "footprint": "c4c7a5d6c483c0c00c8f2d3f7fa50c812ee80ea6"
+  },
+  "repository": {
+    "url": "https://github.cds.internal.unity3d.com/unity/com.unity.animation.rigging.git",
+    "type": "git",
+    "revision": "536ae6adeb6f1066ee89b6938f6ba5828ea92e5f"
+  },
+  "samples": [
+    {
+      "displayName": "Animation Rigging Constraint Samples",
+      "description": "Import ConstraintSamples.unitypackage to see basic setup and usage of animation rigging constraints.",
+      "path": "Samples~/ConstraintSamples"
+    }
+  ]
+}

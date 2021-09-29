@@ -1,0 +1,19 @@
+{
+  "name": "com.unity.mathematics",
+  "displayName": "Mathematics",
+  "version": "1.2.1",
+  "unity": "2018.3",
+  "description": "Unity's C# SIMD math library providing vector types and math functions with a shader like syntax.",
+  "keywords": [
+    "unity"
+  ],
+  "dependencies": {},
+  "repository": {
+    "url": "https://github.com/Unity-Technologies/Unity.Mathematics.git",
+    "type": "git",
+    "revision": "71412d94b7a0b0fdbb3195a5e6559bf6a761e91a"
+  },
+  "upmCi": {
+    "footprint": "99ca159ce25999da4e65ffb731c7b4c872199eef"
+  }
+}

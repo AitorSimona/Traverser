@@ -1,0 +1,5 @@
+{
+	"displayName":"Animation Rigging Constraint Samples",
+	"description": "Import ConstraintSamples.unitypackage to see basic setup and usage of animation rigging constraints.",
+	"createSeparatePackage": false
+}

@@ -16,12 +16,15 @@
     "character",
     "controller",
     "physical animation",
-    "procedural animation"
+    "procedural animation",
     "custom root motion"
   ],
+  "dependencies": {
+    "com.aitorsimona.traverserDemo": "https://github.com/AitorSimona/Traverser/tree/demo"
+  },
   "author": {
     "name": "Aitor Simona",
     "email": "simonaaitor@gmail.com",
     "url": "https://aitorsimona.github.io/"
   }
-}
+  }

@@ -15,6 +15,8 @@ through its shared ability workflow.
 
 ## DOWNLOAD
 
+[Unity Asset Store](https://assetstore.unity.com/packages/tools/game-toolkits/traverser-player-traversal-toolkit-201063)
+
 [Demo Build](https://github.com/AitorSimona/Traverser/releases/download/2.0/Traverser_v2.0_Demo.zip)
 
 [Demo Project](https://github.com/AitorSimona/Traverser/releases/download/2.0/Traverser_v2.0_DemoProject.zip)
